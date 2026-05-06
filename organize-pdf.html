@@ -4,202 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organize PDF - Rearrange, Delete & Manage Pages | PDFTools</title>
-    <meta name="description" content="Organize your PDF pages with drag & drop. Rearrange, delete, duplicate and rotate individual pages.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
     <style>
-        .page-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-        .page-thumb {
-            background: rgba(255,255,255,0.5);
-            border: 2px solid rgba(255,255,255,0.6);
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-            cursor: grab;
-            transition: all 0.3s ease;
-            position: relative;
-            backdrop-filter: blur(10px);
-        }
-        .page-thumb:hover {
-            border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(99,102,241,0.2);
-        }
-        .page-thumb.dragging {
-            opacity: 0.4;
-            transform: scale(0.95);
-        }
-        .page-thumb.drag-over {
-            border-color: var(--accent);
-            background: rgba(236,72,153,0.05);
-        }
-        .page-thumb-img {
-            width: 100%;
-            aspect-ratio: 3/4;
-            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        .page-thumb-img::after {
-            content: '';
-            position: absolute;
-            top: 8px; left: 8px; right: 8px;
-            height: 3px;
-            background: repeating-linear-gradient(90deg, #cbd5e1 0px, #cbd5e1 20px, transparent 20px, transparent 25px);
-            border-radius: 2px;
-        }
-        .page-thumb-img::before {
-            content: '';
-            position: absolute;
-            top: 18px; left: 8px; right: 8px; bottom: 30px;
-            background: repeating-linear-gradient(180deg, #e2e8f0 0px, #e2e8f0 2px, transparent 2px, transparent 8px);
-            border-radius: 2px;
-            opacity: 0.6;
-        }
-        .page-number {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-medium);
-        }
-        .page-actions {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            display: flex;
-            gap: 3px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .page-thumb:hover .page-actions {
-            opacity: 1;
-        }
-        .page-action-btn {
-            width: 26px;
-            height: 26px;
-            border: none;
-            border-radius: 50%;
-            font-size: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .page-action-btn.rotate-btn {
-            background: rgba(99,102,241,0.15);
-            color: var(--primary);
-        }
-        .page-action-btn.copy-btn {
-            background: rgba(34,197,94,0.15);
-            color: var(--success);
-        }
-        .page-action-btn.delete-btn {
-            background: rgba(239,68,68,0.15);
-            color: var(--danger);
-        }
-        .page-action-btn:hover {
-            transform: scale(1.2);
-        }
-        .page-action-btn.delete-btn:hover {
-            background: var(--danger);
-            color: white;
-        }
-        .organize-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .organize-toolbar .left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .organize-toolbar .right {
-            display: flex;
-            gap: 8px;
-        }
-        .toolbar-action {
-            padding: 7px 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
-            background: rgba(255,255,255,0.4);
-            color: var(--text-medium);
-        }
-        .toolbar-action:hover {
-            background: var(--primary);
-            color: white;
-        }
-        .select-info {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-        .page-checkbox {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            border: 2px solid rgba(99,102,241,0.3);
-            background: rgba(255,255,255,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 2;
-            transition: all 0.2s;
-            font-size: 11px;
-            color: transparent;
-        }
-        .page-checkbox:hover {
-            border-color: var(--primary);
-        }
-        .page-checkbox.checked {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#14b8a6,#0d9488)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .fbadge{background:rgba(20,184,166,0.1);color:#0d9488;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
 
-        @media (max-width: 768px) {
-            .page-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-                padding: 15px;
-            }
-            .organize-toolbar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+        /* Toolbar */
+        .org-toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:12px 15px;background:rgba(30,41,59,0.95);border-radius:12px;margin-bottom:15px;align-items:center}
+        .org-toolbar .tb-group{display:flex;gap:4px;padding-right:10px;border-right:1px solid rgba(255,255,255,0.15)}
+        .org-toolbar .tb-group:last-child{border:none;margin-left:auto}
+        .tb-btn{padding:7px 12px;border:none;border-radius:8px;background:rgba(255,255,255,0.1);color:#94a3b8;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
+        .tb-btn:hover{background:rgba(255,255,255,0.2);color:#e2e8f0}
+        .tb-btn.danger:hover{background:rgba(239,68,68,0.3);color:#fca5a5}
+        .tb-btn.success{background:rgba(34,197,94,0.2);color:#86efac}
+        .tb-btn.success:hover{background:rgba(34,197,94,0.3)}
+
+        /* Page Grid */
+        .page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin:15px 0;max-height:550px;overflow-y:auto;padding:5px}
+        .page-grid::-webkit-scrollbar{width:6px}
+        .page-grid::-webkit-scrollbar-thumb{background:rgba(20,184,166,0.3);border-radius:3px}
+
+        .pg-card{position:relative;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;cursor:grab;transition:all .2s;background:#fff}
+        .pg-card:hover{border-color:#0d9488;box-shadow:0 5px 15px rgba(20,184,166,0.15);transform:translateY(-2px)}
+        .pg-card.selected{border-color:#0d9488;box-shadow:0 0 0 3px rgba(20,184,166,0.2)}
+        .pg-card.dragging{opacity:0.4;transform:scale(0.95)}
+        .pg-card.drag-over{border-color:#f97316;border-style:dashed}
+        .pg-card.deleted{opacity:0.3;border-color:#ef4444;pointer-events:none}
+
+        .pg-card canvas{width:100%;display:block}
+        .pg-card .pg-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:transparent;transition:background .15s}
+        .pg-card:hover .pg-overlay{background:rgba(0,0,0,0.03)}
+
+        .pg-card .pg-num{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));color:#fff;padding:15px 10px 6px;font-size:12px;font-weight:600;text-align:center}
+
+        .pg-card .pg-check{position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;opacity:0;transition:opacity .15s;cursor:pointer;z-index:2}
+        .pg-card:hover .pg-check{opacity:1}
+        .pg-card.selected .pg-check{opacity:1;background:#0d9488}
+
+        .pg-card .pg-rot-badge{position:absolute;top:6px;right:6px;background:rgba(168,85,247,0.9);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;display:none}
+        .pg-card.rotated .pg-rot-badge{display:block}
+
+        /* Page action buttons on hover */
+        .pg-actions{position:absolute;bottom:25px;left:0;right:0;display:flex;justify-content:center;gap:4px;opacity:0;transition:opacity .15s;z-index:2}
+        .pg-card:hover .pg-actions{opacity:1}
+        .pg-act{width:28px;height:28px;border:none;border-radius:50%;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+        .pg-act.rot{background:rgba(168,85,247,0.85);color:#fff}
+        .pg-act.dup{background:rgba(59,130,246,0.85);color:#fff}
+        .pg-act.del{background:rgba(239,68,68,0.85);color:#fff}
+        .pg-act:hover{transform:scale(1.2)}
+
+        /* Stats bar */
+        .stats-bar{display:flex;gap:15px;flex-wrap:wrap;align-items:center;padding:10px 15px;background:rgba(255,255,255,0.3);border-radius:10px;margin-bottom:15px;font-size:12px;color:var(--text-medium)}
+        .stats-bar .stat{font-weight:600}
+        .stats-bar .stat span{color:#0d9488;font-weight:800}
+        .stats-bar .changes{margin-left:auto;color:#f59e0b;font-weight:600}
+
+        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:22px;font-weight:800;color:#0d9488}.sbox p{font-size:11px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+
+        @media(max-width:768px){
+            .page-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+            .org-toolbar{gap:4px;padding:8px 10px}
+            .tb-btn{padding:5px 8px;font-size:11px}
+            .tb-btn span{display:none}
         }
-        @media (max-width: 480px) {
-            .page-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        @media(max-width:480px){
+            .page-grid{grid-template-columns:repeat(2,1fr)}
         }
     </style>
 </head>
@@ -219,98 +97,137 @@
         <div class="container">
             <div class="breadcrumb">
                 <a href="index.html"><i class="fas fa-home"></i> Home</a>
-                <i class="fas fa-chevron-right"></i>
-                <span>Organize PDF</span>
+                <i class="fas fa-chevron-right"></i><span>Organize PDF</span>
             </div>
             <div class="tool-title">
                 <div class="tool-title-icon icon-teal"><i class="fas fa-th-large"></i></div>
                 <div>
                     <h1>Organize PDF</h1>
-                    <p>Rearrange, delete, duplicate or rotate individual PDF pages with drag & drop.</p>
+                    <p>Rearrange, delete, duplicate, and rotate PDF pages with drag & drop!</p>
                 </div>
             </div>
         </div>
     </section>
-
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense - Banner Ad</div></div>
 
     <section class="tool-area">
         <div class="container">
             <div class="tool-wrapper glass">
 
-                <!-- Upload -->
-                <div id="uploadSection" data-section>
-                    <div class="upload-zone" id="dropZone">
-                        <div class="upload-zone-content">
-                            <div class="upload-icon"><i class="fas fa-th-large"></i></div>
-                            <h2>Upload PDF to Organize</h2>
-                            <p>Drag & drop pages to rearrange, delete or duplicate</p>
-                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                                <i class="fas fa-plus"></i> Select PDF File
-                            </button>
-                            <input type="file" id="fileInput" accept=".pdf" hidden>
-                            <div class="upload-hints">
-                                <span><i class="fas fa-arrows-alt"></i> Drag & Drop</span>
-                                <span><i class="fas fa-trash"></i> Delete Pages</span>
-                                <span><i class="fas fa-copy"></i> Duplicate</span>
-                            </div>
+                <!-- STEP 1: UPLOAD -->
+                <div id="s1">
+                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(20,184,166,0.3);border-radius:20px;margin:25px;cursor:pointer;"
+                         id="dropBox" onclick="document.getElementById('fi').click()">
+                        <div style="font-size:60px;margin-bottom:20px;color:#0d9488;"><i class="fas fa-th-large"></i></div>
+                        <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Organize</h2>
+                        <p style="color:var(--text-light);margin-bottom:25px;">Drag pages to reorder, delete, duplicate, or rotate</p>
+                        <button class="upload-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);"
+                                onclick="event.stopPropagation();document.getElementById('fi').click()">
+                            <i class="fas fa-plus"></i> Select PDF File
+                        </button>
+                        <input type="file" id="fi" accept=".pdf" style="display:none">
+                        <div class="upload-hints" style="margin-top:20px;">
+                            <span><i class="fas fa-arrows-alt"></i> Drag & Drop</span>
+                            <span><i class="fas fa-trash"></i> Delete Pages</span>
+                            <span><i class="fas fa-copy"></i> Duplicate</span>
+                            <span><i class="fas fa-sync-alt"></i> Rotate</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Editor -->
-                <div id="editorSection" data-section style="display:none;">
+                <!-- STEP 2: ORGANIZE -->
+                <div id="s2" style="display:none;">
+                    <div class="files-area">
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
 
-                    <!-- Toolbar -->
-                    <div class="organize-toolbar">
-                        <div class="left">
-                            <span class="select-info"><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span> — <span id="totalPages">8</span> Pages</span>
+                        <div class="file-card">
+                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="file-card-info">
+                                <h4 id="fn">document.pdf</h4>
+                                <div class="file-card-meta">
+                                    <span class="fbadge" id="fs">0 KB</span>
+                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
+                                </div>
+                            </div>
+                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
                         </div>
-                        <div class="right">
-                            <button class="toolbar-action" onclick="selectAll()"><i class="fas fa-check-double"></i> Select All</button>
-                            <button class="toolbar-action" onclick="deleteSelected()"><i class="fas fa-trash"></i> Delete Selected</button>
-                            <button class="toolbar-action" onclick="reversePages()"><i class="fas fa-exchange-alt"></i> Reverse Order</button>
-                            <button class="toolbar-action" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Add PDF</button>
+
+                        <!-- Toolbar -->
+                        <div class="org-toolbar">
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="selectAll()"><i class="fas fa-check-double"></i> <span>All</span></button>
+                                <button class="tb-btn" onclick="selectNone()"><i class="fas fa-times"></i> <span>None</span></button>
+                                <button class="tb-btn" onclick="invertSel()"><i class="fas fa-exchange-alt"></i> <span>Invert</span></button>
+                            </div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="rotateSelected(90)"><i class="fas fa-redo"></i> <span>Rotate 90°</span></button>
+                                <button class="tb-btn" onclick="duplicateSelected()"><i class="fas fa-copy"></i> <span>Duplicate</span></button>
+                                <button class="tb-btn danger" onclick="deleteSelected()"><i class="fas fa-trash"></i> <span>Delete</span></button>
+                            </div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="reverseAll()"><i class="fas fa-sort-amount-down"></i> <span>Reverse</span></button>
+                                <button class="tb-btn" onclick="undoAction()"><i class="fas fa-undo"></i> <span>Undo</span></button>
+                            </div>
+                            <div class="tb-group">
+                                <button class="tb-btn success" onclick="saveOrganized()"><i class="fas fa-download"></i> <span>Save PDF</span></button>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Page Grid -->
-                    <div class="page-grid" id="pageGrid"></div>
+                        <!-- Stats -->
+                        <div class="stats-bar">
+                            <div class="stat">Pages: <span id="statPages">0</span></div>
+                            <div class="stat">Selected: <span id="statSelected">0</span></div>
+                            <div class="changes" id="statChanges">No changes</div>
+                        </div>
 
-                    <div style="padding:0 20px 20px;">
-                        <button class="action-btn" onclick="startProcess()">
+                        <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">
+                            <i class="fas fa-info-circle" style="color:var(--primary)"></i>
+                            Drag pages to reorder • Click to select • Hover for actions
+                        </p>
+
+                        <!-- Page Grid -->
+                        <div class="page-grid" id="pageGrid"></div>
+
+                        <!-- Save Button -->
+                        <button class="action-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);margin-top:15px;" onclick="saveOrganized()">
                             <i class="fas fa-save"></i> Save Organized PDF
                         </button>
                     </div>
                 </div>
 
-                <!-- Processing -->
-                <div id="processingSection" data-section style="display:none;">
+                <!-- STEP 3: PROCESSING -->
+                <div id="s3" style="display:none;">
                     <div class="processing-area">
                         <div class="spinner"></div>
-                        <h3>Organizing your PDF...</h3>
-                        <p>Applying page changes</p>
-                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                        <span class="progress-text" id="progressText">0%</span>
+                        <h3 id="pt">Saving organized PDF...</h3>
+                        <p id="ps">Applying changes</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#14b8a6,#0d9488);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
                     </div>
                 </div>
 
-                <!-- Result -->
-                <div id="resultSection" data-section style="display:none;">
+                <!-- STEP 4: RESULT -->
+                <div id="s4" style="display:none;">
                     <div class="result-area">
                         <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                        <h2>PDF Organized Successfully!</h2>
-                        <p>Pages have been rearranged and saved</p>
-                        <div class="result-info glass-light">
-                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>organized.pdf</span></div>
-                            <div class="info-item"><i class="fas fa-copy"></i> <span id="finalPages">8 Pages</span></div>
+                        <h2>PDF Organized! 📑</h2>
+
+                        <div class="srow">
+                            <div class="sbox"><h4 id="rPages">0</h4><p>Final Pages</p></div>
+                            <div class="sbox"><h4 id="rChanges">0</h4><p>Changes Made</p></div>
+                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
                         </div>
-                        <button class="download-btn" onclick="alert('Download started!')">
+
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#0d9488"></i> <span id="rfn">organized.pdf</span></div>
+                        </div>
+
+                        <button class="download-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);" onclick="doDownload()">
                             <i class="fas fa-download"></i> Download Organized PDF
                         </button>
+
                         <div class="result-actions">
-                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Organize Another</button>
-                            <button class="btn-outline"><i class="fas fa-share-alt"></i> Share</button>
+                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Organize Another</button>
+                            <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-pen"></i> Continue Editing</button>
                         </div>
                     </div>
                 </div>
@@ -319,199 +236,495 @@
         </div>
     </section>
 
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
-
     <section class="related-tools">
         <div class="container">
-            <div class="section-header"><h2>Related Tools</h2><p>Tools that work great with Organize PDF</p></div>
+            <div class="section-header"><h2>Related Tools</h2></div>
             <div class="related-grid">
-                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
-                <a href="split-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-cut"></i></div><h4>Split PDF</h4></a>
-                <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-sync-alt"></i></div><h4>Rotate PDF</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+                <a href="split-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-cut"></i></div><h4>Split</h4></a>
+                <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-sync-alt"></i></div><h4>Rotate</h4></a>
                 <a href="page-numbers.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-list-ol"></i></div><h4>Page Numbers</h4></a>
-                <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
                 <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop</h4></a>
             </div>
         </div>
     </section>
 
     <section class="how-to-section">
         <div class="container">
-            <div class="section-header"><h2>How to Organize PDF Pages</h2><p>Simple drag & drop interface</p></div>
+            <div class="section-header"><h2>How to Organize PDF</h2></div>
             <div class="steps-row">
-                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload PDF</h4><p>Select the PDF file you want to organize.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-arrows-alt"></i><h4>Drag & Drop</h4><p>Drag pages to reorder. Use buttons to rotate, delete or duplicate.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Save & Download</h4><p>Click save and download your organized PDF.</p></div>
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your PDF.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-arrows-alt"></i><h4>Organize</h4><p>Drag, delete, rotate, duplicate.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Save</h4><p>Download organized PDF.</p></div>
             </div>
         </div>
     </section>
 
     <section class="faq-section">
         <div class="container">
-            <div class="section-header"><h2>Frequently Asked Questions</h2></div>
+            <div class="section-header"><h2>FAQ</h2></div>
             <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>Can I rearrange pages by dragging?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Yes! Simply click and drag any page thumbnail to a new position. The page order updates instantly.</p></div>
-                </div>
-                <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>Can I delete specific pages?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Yes! Hover over any page and click the red × button to remove it. You can also select multiple pages and delete them at once.</p></div>
-                </div>
-                <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>Can I add pages from another PDF?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Yes! Click "Add PDF" in the toolbar to insert pages from another PDF document.</p></div>
-                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I reorder pages by dragging?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Just click and drag any page thumbnail to a new position. The order updates instantly.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I delete specific pages?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Hover over a page and click the red × button, or select multiple pages and click Delete in the toolbar.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I duplicate a page?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Hover and click the blue copy button, or select pages and click Duplicate in the toolbar.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is there an undo feature?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Click the Undo button in the toolbar to reverse your last action.</p></div></div>
             </div>
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-simple">
-                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-                <p>© 2025 PDFTools. All rights reserved.</p>
-                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
-            </div>
-        </div>
-    </footer>
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
 
     <script src="js/tool-page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
     <script>
-        let pages = [];
-        let dragIdx = null;
+    // ==========================================
+    // ORGANIZE PDF - COMPLETE WORKING CODE
+    // PDF.js (thumbnails) + pdf-lib (save)
+    // ==========================================
 
-        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) {
-            document.getElementById('fileName').textContent = files[0].name;
-            // Simulate pages
-            const count = Math.floor(Math.random() * 8) + 4;
-            pages = [];
-            for (let i = 1; i <= count; i++) {
-                pages.push({ id: i, num: i, rotation: 0, selected: false });
+    window.addEventListener('load', function() {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    });
+
+    var O = {
+        rawBytes: null, name: 'document',
+        originalPages: 0,
+        // Each page: {origIdx, rotation, selected, canvasDataUrl}
+        pages: [],
+        undoHistory: [],
+        changeCount: 0,
+        blob: null
+    };
+
+    // File input
+    document.getElementById('fi').addEventListener('change', function() {
+        if (this.files && this.files[0]) onFile(this.files[0]);
+    });
+
+    // Drag drop
+    var dropBox = document.getElementById('dropBox');
+    dropBox.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = '#0d9488'; this.style.background = 'rgba(20,184,166,0.05)'; });
+    dropBox.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(20,184,166,0.3)'; this.style.background = ''; });
+    dropBox.addEventListener('drop', function(e) {
+        e.preventDefault(); this.style.borderColor = 'rgba(20,184,166,0.3)'; this.style.background = '';
+        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
+    });
+
+    // ===== LOAD PDF =====
+    async function onFile(file) {
+        hideE();
+        if (!file.name.toLowerCase().endsWith('.pdf')) { showE('Please select a PDF!'); return; }
+        O.name = file.name.replace(/\.pdf$/i, '');
+
+        try {
+            var ab = await readF(file);
+            O.rawBytes = new Uint8Array(ab);
+
+            var pdf = await pdfjsLib.getDocument({ data: O.rawBytes.slice(0) }).promise;
+            O.originalPages = pdf.numPages;
+            O.pages = [];
+            O.undoHistory = [];
+            O.changeCount = 0;
+
+            document.getElementById('fn').textContent = file.name;
+            document.getElementById('fs').textContent = szF(file.size);
+            document.getElementById('fp').textContent = O.originalPages;
+
+            // Render thumbnails
+            for (var i = 0; i < pdf.numPages; i++) {
+                var page = await pdf.getPage(i + 1);
+                var vp = page.getViewport({ scale: 0.4 });
+                var canvas = document.createElement('canvas');
+                canvas.width = vp.width;
+                canvas.height = vp.height;
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+
+                O.pages.push({
+                    origIdx: i,
+                    rotation: 0,
+                    selected: false,
+                    thumb: canvas.toDataURL('image/jpeg', 0.7)
+                });
             }
-            document.getElementById('totalPages').textContent = count;
-            showSection('editorSection');
-            renderPages();
+
+            renderGrid();
+            goTo('s2');
+        } catch(e) {
+            console.error(e);
+            showE('Cannot read PDF: ' + e.message);
+        }
+    }
+
+    function readF(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsArrayBuffer(f);
         });
+    }
 
-        function renderPages() {
-            const grid = document.getElementById('pageGrid');
-            grid.innerHTML = '';
+    // ===== RENDER PAGE GRID =====
+    function renderGrid() {
+        var grid = document.getElementById('pageGrid');
+        grid.innerHTML = '';
 
-            pages.forEach((page, idx) => {
-                const div = document.createElement('div');
-                div.className = 'page-thumb';
-                div.draggable = true;
-                div.dataset.idx = idx;
+        for (var i = 0; i < O.pages.length; i++) {
+            var pg = O.pages[i];
+            var card = document.createElement('div');
+            card.className = 'pg-card' + (pg.selected ? ' selected' : '') + (pg.rotation !== 0 ? ' rotated' : '');
+            card.draggable = true;
+            card.dataset.idx = i;
 
-                div.innerHTML = `
-                    <div class="page-checkbox ${page.selected ? 'checked' : ''}" onclick="event.stopPropagation();toggleSelect(${idx})">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <div class="page-actions">
-                        <button class="page-action-btn rotate-btn" onclick="event.stopPropagation();rotatePage(${idx})" title="Rotate 90°">
-                            <i class="fas fa-redo"></i>
-                        </button>
-                        <button class="page-action-btn copy-btn" onclick="event.stopPropagation();duplicatePage(${idx})" title="Duplicate">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                        <button class="page-action-btn delete-btn" onclick="event.stopPropagation();deletePage(${idx})" title="Delete">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="page-thumb-img" style="transform:rotate(${page.rotation}deg)">
-                        ${page.num}
-                    </div>
-                    <div class="page-number">Page ${page.num}</div>
-                `;
+            var img = document.createElement('img');
+            img.src = pg.thumb;
+            img.style.width = '100%';
+            img.style.display = 'block';
+            img.draggable = false;
+            if (pg.rotation !== 0) {
+                img.style.transform = 'rotate(' + pg.rotation + 'deg)';
+                if (pg.rotation === 90 || pg.rotation === 270) {
+                    img.style.maxWidth = '75%';
+                    img.style.margin = '12% auto';
+                }
+            }
+            card.appendChild(img);
 
-                // Drag events
-                div.addEventListener('dragstart', function(e) {
-                    dragIdx = idx;
-                    this.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'move';
-                });
-                div.addEventListener('dragend', function() {
-                    this.classList.remove('dragging');
-                    dragIdx = null;
-                    document.querySelectorAll('.page-thumb').forEach(p => p.classList.remove('drag-over'));
-                });
-                div.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.classList.add('drag-over');
-                });
-                div.addEventListener('dragleave', function() {
-                    this.classList.remove('drag-over');
-                });
-                div.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('drag-over');
-                    const dropIdx = parseInt(this.dataset.idx);
-                    if (dragIdx !== null && dragIdx !== dropIdx) {
-                        const item = pages.splice(dragIdx, 1)[0];
-                        pages.splice(dropIdx, 0, item);
-                        renderPages();
-                    }
-                });
+            // Overlay
+            var overlay = document.createElement('div');
+            overlay.className = 'pg-overlay';
+            card.appendChild(overlay);
 
-                grid.appendChild(div);
+            // Page number
+            var num = document.createElement('div');
+            num.className = 'pg-num';
+            num.textContent = 'Page ' + (i + 1) + ' (was ' + (pg.origIdx + 1) + ')';
+            card.appendChild(num);
+
+            // Checkbox
+            var check = document.createElement('div');
+            check.className = 'pg-check';
+            check.innerHTML = '<i class="fas fa-check"></i>';
+            check.dataset.idx = i;
+            check.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idx = parseInt(this.dataset.idx);
+                toggleSelect(idx);
+            });
+            card.appendChild(check);
+
+            // Rotation badge
+            var rotBadge = document.createElement('div');
+            rotBadge.className = 'pg-rot-badge';
+            rotBadge.textContent = pg.rotation + '°';
+            card.appendChild(rotBadge);
+
+            // Action buttons
+            var actions = document.createElement('div');
+            actions.className = 'pg-actions';
+
+            var rotBtn = document.createElement('button');
+            rotBtn.className = 'pg-act rot';
+            rotBtn.innerHTML = '<i class="fas fa-redo"></i>';
+            rotBtn.title = 'Rotate 90°';
+            rotBtn.dataset.idx = i;
+            rotBtn.addEventListener('click', function(e) { e.stopPropagation(); rotatePage(parseInt(this.dataset.idx)); });
+
+            var dupBtn = document.createElement('button');
+            dupBtn.className = 'pg-act dup';
+            dupBtn.innerHTML = '<i class="fas fa-copy"></i>';
+            dupBtn.title = 'Duplicate';
+            dupBtn.dataset.idx = i;
+            dupBtn.addEventListener('click', function(e) { e.stopPropagation(); duplicatePage(parseInt(this.dataset.idx)); });
+
+            var delBtn = document.createElement('button');
+            delBtn.className = 'pg-act del';
+            delBtn.innerHTML = '<i class="fas fa-times"></i>';
+            delBtn.title = 'Delete';
+            delBtn.dataset.idx = i;
+            delBtn.addEventListener('click', function(e) { e.stopPropagation(); deletePage(parseInt(this.dataset.idx)); });
+
+            actions.appendChild(rotBtn);
+            actions.appendChild(dupBtn);
+            actions.appendChild(delBtn);
+            card.appendChild(actions);
+
+            // Click to select
+            card.addEventListener('click', function() {
+                toggleSelect(parseInt(this.dataset.idx));
             });
 
-            document.getElementById('totalPages').textContent = pages.length;
+            // Drag events
+            card.addEventListener('dragstart', onDragStart);
+            card.addEventListener('dragover', onDragOver);
+            card.addEventListener('dragleave', onDragLeave);
+            card.addEventListener('drop', onDrop);
+            card.addEventListener('dragend', onDragEnd);
+
+            grid.appendChild(card);
         }
 
-        function toggleSelect(idx) {
-            pages[idx].selected = !pages[idx].selected;
-            renderPages();
-        }
+        updateStats();
+    }
 
-        function selectAll() {
-            const allSelected = pages.every(p => p.selected);
-            pages.forEach(p => p.selected = !allSelected);
-            renderPages();
-        }
+    // ===== DRAG REORDER =====
+    var dragIdx = null;
 
-        function rotatePage(idx) {
-            pages[idx].rotation = (pages[idx].rotation + 90) % 360;
-            renderPages();
+    function onDragStart(e) {
+        dragIdx = parseInt(this.dataset.idx);
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    }
+    function onDragOver(e) { e.preventDefault(); this.classList.add('drag-over'); }
+    function onDragLeave() { this.classList.remove('drag-over'); }
+    function onDrop(e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+        var dropIdx = parseInt(this.dataset.idx);
+        if (dragIdx !== null && dragIdx !== dropIdx) {
+            saveUndo();
+            var item = O.pages.splice(dragIdx, 1)[0];
+            O.pages.splice(dropIdx, 0, item);
+            O.changeCount++;
+            renderGrid();
         }
+    }
+    function onDragEnd() {
+        this.classList.remove('dragging');
+        dragIdx = null;
+        document.querySelectorAll('.pg-card').forEach(function(c) { c.classList.remove('drag-over'); });
+    }
 
-        function duplicatePage(idx) {
-            const copy = { ...pages[idx], id: Date.now(), selected: false };
-            pages.splice(idx + 1, 0, copy);
-            renderPages();
-        }
+    // ===== SELECT/DESELECT =====
+    function toggleSelect(idx) {
+        O.pages[idx].selected = !O.pages[idx].selected;
+        var cards = document.querySelectorAll('.pg-card');
+        if (cards[idx]) cards[idx].classList.toggle('selected');
+        updateStats();
+    }
 
-        function deletePage(idx) {
-            if (pages.length <= 1) { alert('Cannot delete the last page!'); return; }
-            pages.splice(idx, 1);
-            renderPages();
-        }
+    function selectAll() {
+        O.pages.forEach(function(p) { p.selected = true; });
+        document.querySelectorAll('.pg-card').forEach(function(c) { c.classList.add('selected'); });
+        updateStats();
+    }
 
-        function deleteSelected() {
-            const remaining = pages.filter(p => !p.selected);
-            if (remaining.length === 0) { alert('Cannot delete all pages!'); return; }
-            pages = remaining;
-            renderPages();
-        }
+    function selectNone() {
+        O.pages.forEach(function(p) { p.selected = false; });
+        document.querySelectorAll('.pg-card').forEach(function(c) { c.classList.remove('selected'); });
+        updateStats();
+    }
 
-        function reversePages() {
-            pages.reverse();
-            renderPages();
-        }
+    function invertSel() {
+        O.pages.forEach(function(p) { p.selected = !p.selected; });
+        document.querySelectorAll('.pg-card').forEach(function(c) { c.classList.toggle('selected'); });
+        updateStats();
+    }
 
-        function startProcess() {
-            document.getElementById('finalPages').textContent = pages.length + ' Pages';
-            showSection('processingSection');
-            simulateProcess(function() {
-                showSection('resultSection');
-            });
-        }
+    // ===== PAGE OPERATIONS =====
+    function rotatePage(idx) {
+        saveUndo();
+        O.pages[idx].rotation = (O.pages[idx].rotation + 90) % 360;
+        O.changeCount++;
+        renderGrid();
+    }
 
-        function resetTool() {
-            pages = [];
-            showSection('uploadSection');
+    function duplicatePage(idx) {
+        saveUndo();
+        var copy = JSON.parse(JSON.stringify(O.pages[idx]));
+        copy.selected = false;
+        O.pages.splice(idx + 1, 0, copy);
+        O.changeCount++;
+        renderGrid();
+    }
+
+    function deletePage(idx) {
+        if (O.pages.length <= 1) { showE('Cannot delete the last page!'); return; }
+        saveUndo();
+        O.pages.splice(idx, 1);
+        O.changeCount++;
+        renderGrid();
+    }
+
+    // Batch operations
+    function rotateSelected(deg) {
+        var any = O.pages.some(function(p) { return p.selected; });
+        if (!any) { showE('Select pages first!'); return; }
+        hideE();
+        saveUndo();
+        O.pages.forEach(function(p) {
+            if (p.selected) p.rotation = (p.rotation + deg) % 360;
+        });
+        O.changeCount++;
+        renderGrid();
+    }
+
+    function duplicateSelected() {
+        var any = O.pages.some(function(p) { return p.selected; });
+        if (!any) { showE('Select pages first!'); return; }
+        hideE();
+        saveUndo();
+        var newPages = [];
+        O.pages.forEach(function(p) {
+            newPages.push(p);
+            if (p.selected) {
+                var copy = JSON.parse(JSON.stringify(p));
+                copy.selected = false;
+                newPages.push(copy);
+            }
+        });
+        O.pages = newPages;
+        O.changeCount++;
+        renderGrid();
+    }
+
+    function deleteSelected() {
+        var selected = O.pages.filter(function(p) { return p.selected; });
+        if (selected.length === 0) { showE('Select pages first!'); return; }
+        var remaining = O.pages.filter(function(p) { return !p.selected; });
+        if (remaining.length === 0) { showE('Cannot delete all pages!'); return; }
+        hideE();
+        saveUndo();
+        O.pages = remaining;
+        O.changeCount++;
+        renderGrid();
+    }
+
+    function reverseAll() {
+        saveUndo();
+        O.pages.reverse();
+        O.changeCount++;
+        renderGrid();
+    }
+
+    // ===== UNDO =====
+    function saveUndo() {
+        O.undoHistory.push(JSON.parse(JSON.stringify(O.pages)));
+        if (O.undoHistory.length > 20) O.undoHistory.shift();
+    }
+
+    function undoAction() {
+        if (O.undoHistory.length === 0) { showE('Nothing to undo!'); return; }
+        hideE();
+        O.pages = O.undoHistory.pop();
+        O.changeCount = Math.max(0, O.changeCount - 1);
+        renderGrid();
+    }
+
+    // ===== UPDATE STATS =====
+    function updateStats() {
+        var sel = O.pages.filter(function(p) { return p.selected; }).length;
+        document.getElementById('statPages').textContent = O.pages.length;
+        document.getElementById('statSelected').textContent = sel;
+        document.getElementById('statChanges').textContent = O.changeCount > 0
+            ? O.changeCount + ' change' + (O.changeCount !== 1 ? 's' : '')
+            : 'No changes';
+    }
+
+    // ==========================================
+    // ✅ SAVE ORGANIZED PDF
+    // ==========================================
+    async function saveOrganized() {
+        if (O.changeCount === 0 && O.pages.length === O.originalPages) {
+            showE('No changes made. Rearrange, delete, or rotate pages first.');
+            return;
         }
+        hideE();
+        goTo('s3');
+
+        try {
+            prog(10, 'Loading PDF...', 'Preparing document');
+
+            var srcPdf = await PDFLib.PDFDocument.load(O.rawBytes.slice(0), { ignoreEncryption: true });
+            var newPdf = await PDFLib.PDFDocument.create();
+
+            newPdf.setCreator('PDFTools - PDF Organizer');
+
+            for (var i = 0; i < O.pages.length; i++) {
+                prog(
+                    10 + Math.round((i / O.pages.length) * 75),
+                    'Page ' + (i + 1) + '/' + O.pages.length,
+                    'Adding page ' + (O.pages[i].origIdx + 1)
+                );
+
+                var pg = O.pages[i];
+                var copiedPages = await newPdf.copyPages(srcPdf, [pg.origIdx]);
+                var copiedPage = copiedPages[0];
+
+                // Apply rotation
+                if (pg.rotation !== 0) {
+                    var currentRot = copiedPage.getRotation().angle;
+                    copiedPage.setRotation(PDFLib.degrees((currentRot + pg.rotation) % 360));
+                }
+
+                newPdf.addPage(copiedPage);
+                await sleep(5);
+            }
+
+            prog(90, 'Saving...', 'Generating PDF');
+
+            var savedBytes = await newPdf.save();
+            O.blob = new Blob([savedBytes], { type: 'application/pdf' });
+
+            prog(100, 'Done!', 'PDF organized');
+
+            document.getElementById('rPages').textContent = O.pages.length;
+            document.getElementById('rChanges').textContent = O.changeCount;
+            document.getElementById('rSz').textContent = szF(O.blob.size);
+            document.getElementById('rfn').textContent = O.name + '_organized.pdf';
+
+            setTimeout(function() { goTo('s4'); }, 400);
+
+        } catch(e) {
+            console.error(e);
+            goTo('s2');
+            showE('Save failed: ' + e.message);
+        }
+    }
+
+    // ===== DOWNLOAD =====
+    function doDownload() {
+        if (!O.blob) { alert('No file.'); return; }
+        var url = URL.createObjectURL(O.blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = O.name + '_organized.pdf';
+        a.style.display = 'none';
+        document.body.appendChild(a); a.click();
+        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    }
+
+    // ===== RESET =====
+    function doReset() {
+        O.rawBytes = null; O.name = 'document';
+        O.originalPages = 0; O.pages = [];
+        O.undoHistory = []; O.changeCount = 0;
+        O.blob = null;
+        hideE();
+        document.getElementById('fi').value = '';
+        document.getElementById('pageGrid').innerHTML = '';
+        goTo('s1');
+    }
+
+    // ===== HELPERS =====
+    function goTo(id) {
+        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
+        document.getElementById(id).style.display = 'block';
+    }
+    function prog(p, t, s) {
+        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
+        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
+    }
+    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
+    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
+    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
+    function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+
+    console.log('Organize PDF tool loaded');
     </script>
+
 </body>
-</html> 
+</html>

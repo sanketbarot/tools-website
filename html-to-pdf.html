@@ -3,16 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML to PDF - Convert Web Pages to PDF | PDFTools</title>
+    <title>HTML to PDF - Convert Web Pages to PDF Free | PDFTools</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#4f46e5)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700}
+        .fbadge{background:rgba(99,102,241,0.1);color:#4f46e5;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+
+        .input-tabs{display:flex;gap:0;margin-bottom:15px;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,0.4)}
+        .input-tab{flex:1;padding:14px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;background:rgba(255,255,255,0.3);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+        .input-tab:hover{background:rgba(99,102,241,0.1)}
+        .input-tab.on{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff}
+
+        .url-input-box{display:flex;gap:10px;margin-bottom:15px}
+        .url-input-box input{flex:1;padding:14px 18px;border:2px solid rgba(255,255,255,0.4);border-radius:12px;background:rgba(255,255,255,0.5);font-size:15px;outline:none;transition:all .2s}
+        .url-input-box input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
+        .url-input-box button{padding:14px 24px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s}
+        .url-input-box button:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(99,102,241,0.3)}
+
+        .code-editor{width:100%;min-height:300px;padding:15px;border:2px solid rgba(255,255,255,0.4);border-radius:12px;background:#1e293b;color:#a5f3fc;font-family:'Courier New',monospace;font-size:13px;line-height:1.6;resize:vertical;outline:none;tab-size:2}
+        .code-editor:focus{border-color:#6366f1}
+        .code-editor::placeholder{color:#64748b}
+
+        .html-upload-area{border:2px dashed rgba(99,102,241,0.3);border-radius:12px;padding:25px;text-align:center;cursor:pointer;background:rgba(255,255,255,0.3);margin-bottom:15px}
+
+        .preview-frame{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin:15px 0;max-height:400px;overflow-y:auto}
+        .preview-frame .preview-content{padding:20px;font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#333}
+
+        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
+
+        .template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:10px 0}
+        .tpl-card{padding:12px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s;font-size:12px}
+        .tpl-card:hover{border-color:#6366f1;transform:translateY(-2px)}
+        .tpl-card i{font-size:20px;color:#6366f1;margin-bottom:6px;display:block}
+        .tpl-card h5{font-size:12px;font-weight:700}
+
+        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:22px;font-weight:800;color:#4f46e5}.sbox p{font-size:11px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+
+        @media(max-width:768px){
+            .url-input-box{flex-direction:column}
+            .opt-grid{grid-template-columns:1fr}
+            .template-grid{grid-template-columns:repeat(2,1fr)}
+        }
+    </style>
 </head>
 <body>
-    <div class="bg-animation">
-        <div class="blob blob-1 blob-purple"></div>
-        <div class="blob blob-2 blob-blue"></div>
-        <div class="blob blob-3 blob-cyan"></div>
-    </div>
 
     <nav class="navbar glass">
         <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
@@ -26,82 +67,269 @@
 
     <section class="tool-header">
         <div class="container">
-            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>HTML to PDF</span></div>
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i><span>HTML to PDF</span>
+            </div>
             <div class="tool-title">
                 <div class="tool-title-icon icon-indigo"><i class="fas fa-code"></i></div>
-                <div><h1>HTML to PDF</h1><p>Convert any web page into a downloadable PDF document.</p></div>
+                <div>
+                    <h1>HTML to PDF</h1>
+                    <p>Convert HTML code or web content into downloadable PDF files. Live preview included!</p>
+                </div>
             </div>
         </div>
     </section>
-
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
 
     <section class="tool-area">
         <div class="container">
             <div class="tool-wrapper glass">
-                <div id="uploadSection" data-section>
-                    <div style="padding:50px 25px;text-align:center;">
-                        <div style="font-size:50px;margin-bottom:20px;">
-                            <i class="fas fa-globe" style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i>
+
+                <!-- STEP 1: INPUT -->
+                <div id="s1">
+                    <div class="files-area">
+
+                        <!-- Input Tabs -->
+                        <div class="input-tabs">
+                            <div class="input-tab on" onclick="setMode('code',this)">
+                                <i class="fas fa-code"></i> Write/Paste HTML
+                            </div>
+                            <div class="input-tab" onclick="setMode('file',this)">
+                                <i class="fas fa-file-code"></i> Upload HTML File
+                            </div>
+                            <div class="input-tab" onclick="setMode('template',this)">
+                                <i class="fas fa-magic"></i> Templates
+                            </div>
                         </div>
-                        <h2 style="font-size:24px;margin-bottom:8px;">Enter Web Page URL</h2>
-                        <p style="color:var(--text-light);margin-bottom:30px;">Paste any website URL to convert to PDF</p>
-                        <div class="url-input-group" style="margin:0;padding:0;max-width:600px;margin:0 auto;">
-                            <input type="url" id="urlInput" placeholder="https://example.com" style="border-radius:12px;">
-                            <button onclick="startProcess()" style="border-radius:12px;"><i class="fas fa-exchange-alt"></i> Convert</button>
+
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                        <!-- CODE MODE -->
+                        <div id="codeMode">
+                            <textarea class="code-editor" id="htmlCode" placeholder="<!-- Paste or write your HTML here -->
+<h1>Hello World!</h1>
+<p>This is my document content.</p>
+<ul>
+  <li>Item 1</li>
+  <li>Item 2</li>
+</ul>
+<table border='1'>
+  <tr><th>Name</th><th>Age</th></tr>
+  <tr><td>John</td><td>30</td></tr>
+</table>"><h1 style="color:#1e293b;">Welcome to PDFTools</h1>
+<p style="font-size:16px;color:#475569;line-height:1.8;">This is a sample HTML document that will be converted to PDF. You can write any HTML content here including headings, paragraphs, lists, tables, and styled elements.</p>
+
+<h2 style="color:#6366f1;">Features</h2>
+<ul style="font-size:14px;color:#475569;">
+  <li>Write or paste HTML code</li>
+  <li>Upload HTML files</li>
+  <li>Use ready-made templates</li>
+  <li>Live preview before converting</li>
+  <li>Multiple page size options</li>
+</ul>
+
+<h2 style="color:#6366f1;">Sample Table</h2>
+<table style="width:100%;border-collapse:collapse;font-size:14px;">
+  <tr style="background:#6366f1;color:#fff;">
+    <th style="padding:8px;border:1px solid #ddd;">Name</th>
+    <th style="padding:8px;border:1px solid #ddd;">Role</th>
+    <th style="padding:8px;border:1px solid #ddd;">Email</th>
+  </tr>
+  <tr>
+    <td style="padding:8px;border:1px solid #ddd;">John Doe</td>
+    <td style="padding:8px;border:1px solid #ddd;">Developer</td>
+    <td style="padding:8px;border:1px solid #ddd;">john@example.com</td>
+  </tr>
+  <tr style="background:#f8fafc;">
+    <td style="padding:8px;border:1px solid #ddd;">Jane Smith</td>
+    <td style="padding:8px;border:1px solid #ddd;">Designer</td>
+    <td style="padding:8px;border:1px solid #ddd;">jane@example.com</td>
+  </tr>
+</table>
+
+<p style="margin-top:20px;color:#94a3b8;font-size:12px;">Generated with PDFTools - Free Online PDF Tools</p></textarea>
                         </div>
-                        <div style="margin-top:25px;">
-                            <div class="options-panel glass-light" style="max-width:600px;margin:20px auto 0;text-align:left;">
-                                <h4><i class="fas fa-cog"></i> Options</h4>
-                                <div class="options-row">
-                                    <div class="option-field"><label>Page Size</label><select><option>A4</option><option>Letter</option><option>Legal</option></select></div>
-                                    <div class="option-field"><label>Orientation</label><select><option>Portrait</option><option>Landscape</option></select></div>
+
+                        <!-- FILE MODE -->
+                        <div id="fileMode" style="display:none;">
+                            <div class="html-upload-area" onclick="document.getElementById('htmlFile').click()">
+                                <i class="fas fa-file-code" style="font-size:30px;color:var(--text-light);"></i>
+                                <p style="color:var(--text-light);margin-top:8px;">Click to upload HTML file</p>
+                                <p style="font-size:11px;color:var(--text-light);">.html or .htm files</p>
+                                <input type="file" id="htmlFile" accept=".html,.htm" style="display:none">
+                            </div>
+                            <p id="fileInfo" style="font-size:12px;color:var(--text-light);display:none;">
+                                <i class="fas fa-check-circle" style="color:#22c55e"></i> <span id="fileInfoText"></span>
+                            </p>
+                        </div>
+
+                        <!-- TEMPLATE MODE -->
+                        <div id="templateMode" style="display:none;">
+                            <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">Click a template to load it:</p>
+                            <div class="template-grid">
+                                <div class="tpl-card" onclick="loadTemplate('invoice')"><i class="fas fa-file-invoice-dollar"></i><h5>Invoice</h5></div>
+                                <div class="tpl-card" onclick="loadTemplate('letter')"><i class="fas fa-envelope"></i><h5>Letter</h5></div>
+                                <div class="tpl-card" onclick="loadTemplate('resume')"><i class="fas fa-user-tie"></i><h5>Resume</h5></div>
+                                <div class="tpl-card" onclick="loadTemplate('report')"><i class="fas fa-chart-bar"></i><h5>Report</h5></div>
+                                <div class="tpl-card" onclick="loadTemplate('certificate')"><i class="fas fa-certificate"></i><h5>Certificate</h5></div>
+                                <div class="tpl-card" onclick="loadTemplate('receipt')"><i class="fas fa-receipt"></i><h5>Receipt</h5></div>
+                            </div>
+                        </div>
+
+                        <!-- Preview Button -->
+                        <div style="display:flex;gap:10px;margin:15px 0;">
+                            <button class="btn-sm btn-primary-sm" onclick="showPreview()">
+                                <i class="fas fa-eye"></i> Preview
+                            </button>
+                            <button class="btn-sm btn-primary-sm" onclick="clearCode()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+
+                        <!-- Preview -->
+                        <div id="previewSection" style="display:none;">
+                            <h4 style="font-size:14px;margin-bottom:8px;">
+                                <i class="fas fa-eye" style="color:#6366f1"></i> Live Preview:
+                            </h4>
+                            <div class="preview-frame">
+                                <div class="preview-content" id="previewContent"></div>
+                            </div>
+                        </div>
+
+                        <!-- PDF Options -->
+                        <div class="options-panel glass-light" style="margin-top:15px;">
+                            <h4><i class="fas fa-cog"></i> PDF Options</h4>
+                            <div class="opt-grid">
+                                <div class="option-field">
+                                    <label>Page Size</label>
+                                    <select id="optPage">
+                                        <option value="a4">A4 (210 × 297mm)</option>
+                                        <option value="letter">Letter (8.5 × 11in)</option>
+                                        <option value="legal">Legal (8.5 × 14in)</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Orientation</label>
+                                    <select id="optOrient">
+                                        <option value="portrait">Portrait</option>
+                                        <option value="landscape">Landscape</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="opt-grid">
+                                <div class="option-field">
+                                    <label>Margin</label>
+                                    <select id="optMargin">
+                                        <option value="10">Small (10mm)</option>
+                                        <option value="20" selected>Normal (20mm)</option>
+                                        <option value="30">Wide (30mm)</option>
+                                        <option value="0">No Margin</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Background</label>
+                                    <select id="optBg">
+                                        <option value="white">White</option>
+                                        <option value="transparent">Transparent</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="opt-grid">
+                                <div class="option-field">
+                                    <label>Filename</label>
+                                    <input type="text" id="optName" value="document" placeholder="Enter filename">
+                                </div>
+                                <div class="option-field">
+                                    <label>Scale</label>
+                                    <select id="optScale">
+                                        <option value="1">1x (Normal)</option>
+                                        <option value="2" selected>2x (High Quality)</option>
+                                        <option value="3">3x (Ultra Quality)</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <p style="font-size:12px;color:var(--text-light);margin-top:15px;"><i class="fas fa-info-circle"></i> Or upload HTML file directly</p>
-                        <button class="upload-btn" onclick="document.getElementById('fileInput').click()" style="margin-top:10px;font-size:14px;padding:10px 25px;">
-                            <i class="fas fa-upload"></i> Upload HTML File
+
+                        <!-- Convert Button -->
+                        <button class="action-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);" onclick="convertToPDF()">
+                            <i class="fas fa-file-pdf"></i> Convert to PDF
                         </button>
-                        <input type="file" id="fileInput" accept=".html,.htm" hidden>
                     </div>
                 </div>
 
-                <div id="processingSection" data-section style="display:none;">
+                <!-- STEP 2: PROCESSING -->
+                <div id="s2" style="display:none;">
                     <div class="processing-area">
                         <div class="spinner"></div>
-                        <h3>Converting web page...</h3>
-                        <p>Rendering page and generating PDF</p>
-                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                        <span class="progress-text" id="progressText">0%</span>
+                        <h3 id="pt">Converting HTML to PDF...</h3>
+                        <p id="ps">Rendering content</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#6366f1,#4f46e5);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
                     </div>
                 </div>
 
-                <div id="resultSection" data-section style="display:none;">
+                <!-- STEP 3: RESULT -->
+                <div id="s3" style="display:none;">
                     <div class="result-area">
                         <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                        <h2>Web Page Converted!</h2>
-                        <p>Your PDF is ready to download</p>
-                        <button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download PDF</button>
+                        <h2>Converted to PDF! 📄</h2>
+
+                        <div class="srow">
+                            <div class="sbox"><h4 id="rPages">0</h4><p>Pages</p></div>
+                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
+                        </div>
+
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i> <span id="rfn">document.pdf</span></div>
+                        </div>
+
+                        <button class="download-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);" onclick="doDownload()">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+
                         <div class="result-actions">
-                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Convert Another</button>
+                            <button class="btn-outline" onclick="goTo('s1')"><i class="fas fa-pen"></i> Edit HTML</button>
+                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Start Over</button>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
-
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
 
     <section class="related-tools">
         <div class="container">
             <div class="section-header"><h2>Related Tools</h2></div>
             <div class="related-grid">
                 <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
+                <a href="word-to-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>Word to PDF</h4></a>
                 <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
-                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
-                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+                <a href="protect-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-shield-alt"></i></div><h4>Protect</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Convert HTML to PDF</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-code"></i><h4>Enter HTML</h4><p>Write, paste, or upload HTML.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-eye"></i><h4>Preview</h4><p>See how it looks before converting.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get your PDF file.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What HTML is supported?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>All standard HTML including headings, paragraphs, tables, lists, images (base64/data URLs), and inline CSS styles.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I use CSS styling?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Inline CSS styles and style tags are fully supported. External stylesheets may not load due to browser security.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Everything runs in your browser. No data sent to any server.</p></div></div>
             </div>
         </div>
     </section>
@@ -109,14 +337,329 @@
     <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
 
     <script src="js/tool-page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
-        function startProcess() {
-            const url = document.getElementById('urlInput').value;
-            if (!url) { alert('Please enter a URL!'); return; }
-            showSection('processingSection');
-            simulateProcess(() => showSection('resultSection'));
+    // ==========================================
+    // HTML TO PDF - COMPLETE WORKING CODE
+    // jsPDF + html2canvas
+    // ==========================================
+
+    var H = {
+        mode: 'code',     // code, file, template
+        htmlContent: '',
+        blob: null,
+        fileName: 'document'
+    };
+
+    // ===== INPUT MODE =====
+    function setMode(mode, el) {
+        H.mode = mode;
+        document.querySelectorAll('.input-tab').forEach(function(t) { t.classList.remove('on'); });
+        el.classList.add('on');
+        document.getElementById('codeMode').style.display = mode === 'code' ? 'block' : 'none';
+        document.getElementById('fileMode').style.display = mode === 'file' ? 'block' : 'none';
+        document.getElementById('templateMode').style.display = mode === 'template' ? 'block' : 'none';
+    }
+
+    // ===== FILE UPLOAD =====
+    document.getElementById('htmlFile').addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('htmlCode').value = e.target.result;
+                document.getElementById('fileInfo').style.display = 'block';
+                document.getElementById('fileInfoText').textContent = file.name + ' (' + szF(file.size) + ') loaded!';
+                H.fileName = file.name.replace(/\.(html?|htm)$/i, '');
+
+                // Switch to code mode to show content
+                setMode('code', document.querySelector('.input-tab'));
+            };
+            reader.readAsText(file);
         }
-        function resetTool() { showSection('uploadSection'); document.getElementById('urlInput').value = ''; }
+    });
+
+    // ===== TEMPLATES =====
+    function loadTemplate(type) {
+        var templates = {
+            invoice: '<div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;">'
+                + '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #6366f1;padding-bottom:15px;margin-bottom:20px;">'
+                + '<div><h1 style="color:#6366f1;margin:0;">INVOICE</h1><p style="color:#94a3b8;margin:5px 0;">Invoice #INV-2025-001</p></div>'
+                + '<div style="text-align:right;"><h3 style="margin:0;color:#1e293b;">Your Company</h3><p style="color:#64748b;font-size:12px;margin:3px 0;">123 Business St<br>City, State 12345<br>contact@company.com</p></div></div>'
+                + '<div style="display:flex;justify-content:space-between;margin-bottom:25px;"><div><h4 style="color:#6366f1;margin:0 0 5px;">Bill To:</h4><p style="margin:0;color:#334155;">John Doe<br>456 Client Ave<br>City, State 67890</p></div>'
+                + '<div style="text-align:right;"><p style="margin:3px 0;color:#64748b;">Date: January 15, 2025</p><p style="margin:3px 0;color:#64748b;">Due: February 15, 2025</p></div></div>'
+                + '<table style="width:100%;border-collapse:collapse;margin-bottom:20px;"><tr style="background:#6366f1;color:#fff;"><th style="padding:10px;text-align:left;">Description</th><th style="padding:10px;text-align:center;">Qty</th><th style="padding:10px;text-align:right;">Price</th><th style="padding:10px;text-align:right;">Total</th></tr>'
+                + '<tr><td style="padding:10px;border-bottom:1px solid #e2e8f0;">Web Development</td><td style="padding:10px;text-align:center;border-bottom:1px solid #e2e8f0;">40 hrs</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">$100.00</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">$4,000.00</td></tr>'
+                + '<tr style="background:#f8fafc;"><td style="padding:10px;border-bottom:1px solid #e2e8f0;">UI Design</td><td style="padding:10px;text-align:center;border-bottom:1px solid #e2e8f0;">20 hrs</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">$80.00</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">$1,600.00</td></tr>'
+                + '<tr><td style="padding:10px;border-bottom:1px solid #e2e8f0;">Hosting Setup</td><td style="padding:10px;text-align:center;border-bottom:1px solid #e2e8f0;">1</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">$200.00</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">$200.00</td></tr></table>'
+                + '<div style="text-align:right;margin-bottom:20px;"><p style="margin:3px 0;color:#64748b;">Subtotal: $5,800.00</p><p style="margin:3px 0;color:#64748b;">Tax (10%): $580.00</p><p style="margin:5px 0;font-size:20px;font-weight:bold;color:#6366f1;">Total: $6,380.00</p></div>'
+                + '<div style="border-top:1px solid #e2e8f0;padding-top:15px;"><p style="color:#94a3b8;font-size:12px;">Payment Terms: Net 30 | Thank you for your business!</p></div></div>',
+
+            letter: '<div style="font-family:Georgia,serif;max-width:650px;margin:0 auto;line-height:1.8;">'
+                + '<div style="text-align:right;margin-bottom:30px;color:#475569;"><p>Your Name<br>Your Address<br>City, State ZIP<br>Phone: (555) 123-4567<br>Email: you@email.com</p><p>Date: ' + new Date().toLocaleDateString() + '</p></div>'
+                + '<p style="margin-bottom:20px;">Dear Sir/Madam,</p>'
+                + '<p>I am writing to express my interest in the position advertised on your company website. With my experience and skills, I believe I would be a valuable addition to your team.</p>'
+                + '<p>Over the past five years, I have developed expertise in web development, project management, and team leadership. My track record includes successfully delivering projects on time and within budget.</p>'
+                + '<p>I would welcome the opportunity to discuss how my skills and experience align with your needs. Please find my resume attached for your review.</p>'
+                + '<p>Thank you for your time and consideration. I look forward to hearing from you.</p>'
+                + '<p style="margin-top:30px;">Sincerely,<br><br><em style="font-size:24px;">Your Name</em></p></div>',
+
+            resume: '<div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;">'
+                + '<div style="text-align:center;border-bottom:3px solid #1e293b;padding-bottom:15px;margin-bottom:20px;"><h1 style="margin:0;color:#1e293b;font-size:28px;">JOHN DOE</h1><p style="color:#6366f1;margin:5px 0;font-size:14px;">Full Stack Developer</p><p style="color:#94a3b8;font-size:12px;">📧 john@email.com | 📱 (555) 123-4567 | 🌐 johndoe.com | 📍 New York, NY</p></div>'
+                + '<h3 style="color:#1e293b;border-bottom:1px solid #e2e8f0;padding-bottom:5px;">PROFESSIONAL SUMMARY</h3><p style="color:#475569;font-size:13px;">Experienced developer with 5+ years building scalable web applications. Proficient in React, Node.js, Python, and cloud services.</p>'
+                + '<h3 style="color:#1e293b;border-bottom:1px solid #e2e8f0;padding-bottom:5px;">EXPERIENCE</h3>'
+                + '<div style="margin-bottom:15px;"><h4 style="margin:0;color:#1e293b;">Senior Developer — Tech Corp</h4><p style="color:#6366f1;font-size:12px;margin:2px 0;">Jan 2022 - Present</p><ul style="color:#475569;font-size:13px;margin:5px 0;"><li>Led team of 5 developers on enterprise projects</li><li>Increased site performance by 40%</li><li>Implemented CI/CD pipelines</li></ul></div>'
+                + '<div style="margin-bottom:15px;"><h4 style="margin:0;color:#1e293b;">Developer — StartupXYZ</h4><p style="color:#6366f1;font-size:12px;margin:2px 0;">Jun 2020 - Dec 2021</p><ul style="color:#475569;font-size:13px;margin:5px 0;"><li>Built React applications from scratch</li><li>Developed REST APIs with Node.js</li></ul></div>'
+                + '<h3 style="color:#1e293b;border-bottom:1px solid #e2e8f0;padding-bottom:5px;">SKILLS</h3><p style="color:#475569;font-size:13px;">JavaScript, React, Node.js, Python, AWS, Docker, MongoDB, PostgreSQL, Git, Agile</p>'
+                + '<h3 style="color:#1e293b;border-bottom:1px solid #e2e8f0;padding-bottom:5px;">EDUCATION</h3><p style="color:#475569;font-size:13px;"><strong>B.S. Computer Science</strong> — University of Technology (2016-2020)</p></div>',
+
+            report: '<div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;">'
+                + '<div style="background:#6366f1;color:#fff;padding:25px;border-radius:8px;margin-bottom:20px;text-align:center;"><h1 style="margin:0;">Annual Report 2025</h1><p style="margin:5px 0;opacity:0.8;">Company Performance Overview</p></div>'
+                + '<h2 style="color:#6366f1;">Executive Summary</h2><p style="color:#475569;line-height:1.8;">This report presents the company\'s performance metrics for the year 2025. Overall revenue grew by 25% compared to the previous year, with significant improvements in customer acquisition and retention.</p>'
+                + '<h2 style="color:#6366f1;">Key Metrics</h2>'
+                + '<table style="width:100%;border-collapse:collapse;margin:15px 0;"><tr style="background:#6366f1;color:#fff;"><th style="padding:10px;text-align:left;">Metric</th><th style="padding:10px;text-align:right;">2024</th><th style="padding:10px;text-align:right;">2025</th><th style="padding:10px;text-align:right;">Growth</th></tr>'
+                + '<tr><td style="padding:10px;border-bottom:1px solid #e2e8f0;">Revenue</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">$1.2M</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">$1.5M</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;color:#22c55e;">+25%</td></tr>'
+                + '<tr style="background:#f8fafc;"><td style="padding:10px;border-bottom:1px solid #e2e8f0;">Customers</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">5,000</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">7,500</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;color:#22c55e;">+50%</td></tr>'
+                + '<tr><td style="padding:10px;border-bottom:1px solid #e2e8f0;">Team Size</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">25</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;">40</td><td style="padding:10px;text-align:right;border-bottom:1px solid #e2e8f0;color:#22c55e;">+60%</td></tr></table>'
+                + '<h2 style="color:#6366f1;">Conclusion</h2><p style="color:#475569;line-height:1.8;">The company has shown strong growth across all key metrics. We plan to continue this trajectory in 2026 with expanded product offerings and market presence.</p></div>',
+
+            certificate: '<div style="font-family:Georgia,serif;max-width:700px;margin:0 auto;text-align:center;border:4px double #6366f1;padding:40px;">'
+                + '<p style="color:#6366f1;font-size:14px;letter-spacing:3px;margin-bottom:10px;">CERTIFICATE OF ACHIEVEMENT</p>'
+                + '<hr style="border:1px solid #6366f1;width:60%;margin:15px auto;">'
+                + '<p style="color:#64748b;font-size:14px;margin:20px 0;">This is to certify that</p>'
+                + '<h1 style="color:#1e293b;font-size:36px;margin:10px 0;">John Doe</h1>'
+                + '<p style="color:#64748b;font-size:14px;margin:20px 0;">has successfully completed the course</p>'
+                + '<h2 style="color:#6366f1;margin:10px 0;">Advanced Web Development</h2>'
+                + '<p style="color:#64748b;font-size:14px;margin:20px 0;">with distinction and is hereby awarded this certificate</p>'
+                + '<p style="color:#64748b;font-size:14px;margin-top:30px;">Date: ' + new Date().toLocaleDateString() + '</p>'
+                + '<div style="display:flex;justify-content:space-around;margin-top:40px;"><div><hr style="width:150px;border:1px solid #1e293b;"><p style="color:#64748b;font-size:12px;">Director</p></div><div><hr style="width:150px;border:1px solid #1e293b;"><p style="color:#64748b;font-size:12px;">Instructor</p></div></div></div>',
+
+            receipt: '<div style="font-family:Courier New,monospace;max-width:350px;margin:0 auto;padding:20px;border:1px dashed #ccc;">'
+                + '<div style="text-align:center;margin-bottom:15px;"><h2 style="margin:0;">PDFTools Store</h2><p style="font-size:12px;color:#666;margin:3px 0;">123 Main Street<br>City, State 12345<br>Tel: (555) 000-1234</p></div>'
+                + '<hr style="border:1px dashed #ccc;">'
+                + '<p style="font-size:12px;color:#666;margin:8px 0;">Date: ' + new Date().toLocaleString() + '<br>Receipt #: RCP-' + Math.floor(Math.random()*10000) + '</p>'
+                + '<hr style="border:1px dashed #ccc;">'
+                + '<table style="width:100%;font-size:13px;"><tr><td>Widget A x2</td><td style="text-align:right;">$19.98</td></tr><tr><td>Widget B x1</td><td style="text-align:right;">$24.99</td></tr><tr><td>Widget C x3</td><td style="text-align:right;">$44.97</td></tr></table>'
+                + '<hr style="border:1px dashed #ccc;">'
+                + '<table style="width:100%;font-size:13px;"><tr><td>Subtotal</td><td style="text-align:right;">$89.94</td></tr><tr><td>Tax (8%)</td><td style="text-align:right;">$7.20</td></tr><tr style="font-weight:bold;font-size:15px;"><td>TOTAL</td><td style="text-align:right;">$97.14</td></tr></table>'
+                + '<hr style="border:1px dashed #ccc;">'
+                + '<p style="text-align:center;font-size:11px;color:#999;margin-top:10px;">Thank you for shopping!<br>Return policy: 30 days with receipt</p></div>'
+        };
+
+        var html = templates[type] || '<p>Template not found</p>';
+        document.getElementById('htmlCode').value = html;
+        H.fileName = type;
+
+        // Switch to code mode
+        setMode('code', document.querySelector('.input-tab'));
+        showPreview();
+    }
+
+    // ===== PREVIEW =====
+    function showPreview() {
+        var html = document.getElementById('htmlCode').value.trim();
+        if (!html) { hideE(); return; }
+
+        document.getElementById('previewContent').innerHTML = html;
+        document.getElementById('previewSection').style.display = 'block';
+    }
+
+    function clearCode() {
+        document.getElementById('htmlCode').value = '';
+        document.getElementById('previewSection').style.display = 'none';
+        document.getElementById('previewContent').innerHTML = '';
+    }
+
+    // ==========================================
+    // ✅ CONVERT HTML TO PDF
+    // ==========================================
+    async function convertToPDF() {
+        hideE();
+
+        var html = document.getElementById('htmlCode').value.trim();
+        if (!html) {
+            showE('Please enter some HTML content!');
+            return;
+        }
+
+        goTo('s2');
+        prog(5, 'Preparing...', 'Setting up document');
+
+        try {
+            var pageFormat = document.getElementById('optPage').value;
+            var orient = document.getElementById('optOrient').value;
+            var marginMm = parseInt(document.getElementById('optMargin').value);
+            var bgColor = document.getElementById('optBg').value;
+            var scale = parseInt(document.getElementById('optScale').value);
+            H.fileName = document.getElementById('optName').value || 'document';
+
+            prog(15, 'Rendering HTML...', 'Creating render container');
+
+            // Create hidden render div
+            var renderDiv = document.createElement('div');
+            renderDiv.style.cssText =
+                'position:fixed;left:-99999px;top:0;'
+                + 'width:' + (pageFormat === 'a4' ? 794 : pageFormat === 'letter' ? 816 : 816) + 'px;'
+                + 'padding:' + marginMm + 'mm;'
+                + 'background:' + (bgColor === 'white' ? '#ffffff' : 'transparent') + ';'
+                + 'font-family:Arial,Helvetica,sans-serif;'
+                + 'font-size:14px;line-height:1.6;color:#333;'
+                + 'box-sizing:border-box;';
+
+            // Add default styles
+            renderDiv.innerHTML = '<style>'
+                + 'h1{font-size:24px;margin:15px 0 10px;color:#1e293b}'
+                + 'h2{font-size:20px;margin:12px 0 8px;color:#1e293b}'
+                + 'h3{font-size:16px;margin:10px 0 6px;color:#1e293b}'
+                + 'p{margin:8px 0}'
+                + 'table{border-collapse:collapse;width:100%}'
+                + 'td,th{padding:6px 10px}'
+                + 'ul,ol{margin:8px 0;padding-left:25px}'
+                + 'li{margin-bottom:4px}'
+                + 'img{max-width:100%;height:auto}'
+                + '</style>' + html;
+
+            document.body.appendChild(renderDiv);
+
+            prog(30, 'Capturing content...', 'Rendering to canvas');
+
+            // Render to canvas
+            var canvas = await html2canvas(renderDiv, {
+                scale: scale,
+                useCORS: true,
+                logging: false,
+                backgroundColor: bgColor === 'white' ? '#ffffff' : null,
+                width: renderDiv.offsetWidth,
+                height: renderDiv.scrollHeight
+            });
+
+            document.body.removeChild(renderDiv);
+
+            prog(60, 'Creating PDF...', 'Building pages');
+
+            // Create jsPDF
+            var { jsPDF } = window.jspdf;
+            var pdfOrient = orient === 'landscape' ? 'l' : 'p';
+
+            var pdf = new jsPDF({
+                orientation: pdfOrient,
+                unit: 'mm',
+                format: pageFormat
+            });
+
+            var pageWidth = pdf.internal.pageSize.getWidth();
+            var pageHeight = pdf.internal.pageSize.getHeight();
+
+            var contentWidth = pageWidth - (marginMm * 2);
+            var imgWidth = contentWidth;
+            var imgHeight = (canvas.height * imgWidth) / canvas.width;
+            var pageContentHeight = pageHeight - (marginMm * 2);
+
+            var totalPages = Math.ceil(imgHeight / pageContentHeight);
+
+            // Add pages
+            for (var p = 0; p < totalPages; p++) {
+                if (p > 0) pdf.addPage();
+
+                prog(
+                    60 + Math.round((p / totalPages) * 30),
+                    'Page ' + (p + 1) + '/' + totalPages,
+                    'Adding content'
+                );
+
+                var srcY = p * pageContentHeight * (canvas.width / contentWidth);
+                var srcH = Math.min(
+                    pageContentHeight * (canvas.width / contentWidth),
+                    canvas.height - srcY
+                );
+
+                if (srcH <= 0) break;
+
+                // Create page canvas
+                var pageCanvas = document.createElement('canvas');
+                pageCanvas.width = canvas.width;
+                pageCanvas.height = srcH;
+                var ctx = pageCanvas.getContext('2d');
+
+                if (bgColor === 'white') {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+                }
+
+                ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
+
+                var pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
+                var pageImgH = (srcH * imgWidth) / canvas.width;
+
+                pdf.addImage(pageImgData, 'JPEG', marginMm, marginMm, imgWidth, pageImgH);
+
+                await sleep(10);
+            }
+
+            // Metadata
+            pdf.setProperties({
+                title: H.fileName,
+                creator: 'PDFTools - HTML to PDF Converter'
+            });
+
+            prog(95, 'Saving...', 'Finalizing');
+
+            H.blob = pdf.output('blob');
+
+            prog(100, 'Done!', 'PDF ready');
+
+            document.getElementById('rPages').textContent = totalPages;
+            document.getElementById('rSz').textContent = szF(H.blob.size);
+            document.getElementById('rfn').textContent = H.fileName + '.pdf';
+
+            setTimeout(function() { goTo('s3'); }, 400);
+
+        } catch(e) {
+            console.error(e);
+            goTo('s1');
+            showE('Conversion failed: ' + e.message);
+        }
+    }
+
+    // ===== DOWNLOAD =====
+    function doDownload() {
+        if (!H.blob) { alert('No file.'); return; }
+        var url = URL.createObjectURL(H.blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = H.fileName + '.pdf';
+        a.style.display = 'none';
+        document.body.appendChild(a); a.click();
+        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    }
+
+    // ===== RESET =====
+    function doReset() {
+        H.blob = null; H.fileName = 'document'; H.mode = 'code';
+        hideE(); prog(0, 'Converting...', '');
+        document.getElementById('previewSection').style.display = 'none';
+        document.getElementById('fileInfo').style.display = 'none';
+        goTo('s1');
+    }
+
+    // ===== HELPERS =====
+    function goTo(id) {
+        ['s1','s2','s3'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
+        document.getElementById(id).style.display = 'block';
+    }
+    function prog(p,t,s) {
+        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
+        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
+    }
+    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
+    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
+    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
+    function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+
+    console.log('HTML to PDF tool loaded');
+    console.log('Libraries: jsPDF + html2canvas');
     </script>
+
 </body>
 </html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redact PDF - Remove Sensitive Information | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#475569,#334155)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .fbadge{background:rgba(71,85,105,0.1);color:#334155;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+
+        /* Toolbar */
+        .redact-toolbar{display:flex;flex-wrap:wrap;gap:5px;padding:10px 15px;background:rgba(30,41,59,0.95);border-radius:12px 12px 0 0;align-items:center}
+        .rt-group{display:flex;gap:4px;padding-right:10px;border-right:1px solid rgba(255,255,255,0.15)}
+        .rt-group:last-child{border:none;margin-left:auto}
+        .rt-btn{padding:7px 12px;border:none;border-radius:8px;background:rgba(255,255,255,0.1);color:#94a3b8;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
+        .rt-btn:hover{background:rgba(255,255,255,0.2);color:#e2e8f0}
+        .rt-btn.active{background:rgba(239,68,68,0.3);color:#fca5a5}
+        .rt-btn.save{background:rgba(34,197,94,0.2);color:#86efac}
+        .rt-btn.save:hover{background:rgba(34,197,94,0.3)}
+
+        /* PDF viewer */
+        .pdf-viewer{position:relative;background:#64748b;padding:15px;border-radius:0 0 12px 12px;text-align:center;overflow:auto;max-height:600px}
+        .page-wrap{position:relative;display:inline-block;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+        .page-wrap canvas{display:block}
+        .redact-overlay{position:absolute;top:0;left:0;width:100%;height:100%}
+
+        /* Redaction rectangles */
+        .redact-rect{position:absolute;background:rgba(0,0,0,0.85);cursor:move;border:2px solid transparent;transition:border-color .15s}
+        .redact-rect:hover{border-color:#ef4444}
+        .redact-rect .rr-remove{position:absolute;top:-10px;right:-10px;width:20px;height:20px;background:#ef4444;color:#fff;border:none;border-radius:50%;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:2}
+        .redact-rect:hover .rr-remove{display:flex}
+        .redact-rect .rr-resize{position:absolute;bottom:-5px;right:-5px;width:12px;height:12px;background:#ef4444;border-radius:50%;cursor:se-resize;display:none}
+        .redact-rect:hover .rr-resize{display:block}
+
+        /* Selection rectangle while drawing */
+        .selection-rect{position:absolute;border:2px dashed #ef4444;background:rgba(239,68,68,0.15);pointer-events:none}
+
+        /* Page navigation */
+        .pg-nav{display:flex;align-items:center;justify-content:center;gap:15px;padding:10px;background:rgba(30,41,59,0.9);color:#e2e8f0;border-radius:0 0 12px 12px;margin-top:-1px}
+        .pg-nav button{padding:5px 12px;background:rgba(255,255,255,0.1);border:none;border-radius:6px;color:#e2e8f0;cursor:pointer;font-size:12px}
+        .pg-nav button:hover{background:rgba(239,68,68,0.3)}
+        .pg-nav button:disabled{opacity:0.3}
+        .pg-nav span{font-size:13px;font-weight:600}
+
+        /* Redaction color options */
+        .color-opts{display:flex;gap:6px;align-items:center}
+        .color-opt{width:24px;height:24px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s}
+        .color-opt:hover{transform:scale(1.15)}
+        .color-opt.on{border-color:#fff;transform:scale(1.15)}
+        .color-opt.black{background:#000}
+        .color-opt.white{background:#fff;border:2px solid #ccc}
+        .color-opt.red{background:#dc2626}
+        .color-opt.gray{background:#6b7280}
+
+        /* Info bar */
+        .info-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:rgba(255,255,255,0.3);border-radius:10px;margin:10px 0;font-size:12px;flex-wrap:wrap;gap:8px}
+        .info-bar .stat{display:flex;align-items:center;gap:5px;color:var(--text-medium);font-weight:600}
+        .info-bar .stat span{color:#ef4444;font-weight:800}
+
+        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:22px;font-weight:800;color:#334155}.sbox p{font-size:11px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+
+        .warn-box{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 15px;font-size:12px;color:#92400e;margin:10px 0}
+        .warn-box i{color:#f59e0b;margin-right:6px}
+
+        @media(max-width:768px){
+            .rt-group{padding-right:5px}
+            .rt-btn{padding:5px 8px;font-size:11px}
+            .rt-btn span{display:none}
+            .pdf-viewer{padding:8px;max-height:400px}
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i><span>Redact PDF</span>
+            </div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-dark"><i class="fas fa-eraser"></i></div>
+                <div>
+                    <h1>Redact PDF</h1>
+                    <p>Permanently remove sensitive information by drawing black boxes over content.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <!-- STEP 1: UPLOAD -->
+                <div id="s1">
+                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(71,85,105,0.3);border-radius:20px;margin:25px;cursor:pointer;"
+                         id="dropBox" onclick="document.getElementById('fi').click()">
+                        <div style="font-size:60px;margin-bottom:20px;color:#334155;"><i class="fas fa-eraser"></i></div>
+                        <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Redact</h2>
+                        <p style="color:var(--text-light);margin-bottom:25px;">Draw over sensitive information to permanently remove it</p>
+                        <button class="upload-btn" style="background:linear-gradient(135deg,#475569,#334155);"
+                                onclick="event.stopPropagation();document.getElementById('fi').click()">
+                            <i class="fas fa-plus"></i> Select PDF File
+                        </button>
+                        <input type="file" id="fi" accept=".pdf" style="display:none">
+                        <div class="upload-hints" style="margin-top:20px;">
+                            <span><i class="fas fa-mouse-pointer"></i> Draw to Redact</span>
+                            <span><i class="fas fa-ban"></i> Permanent</span>
+                            <span><i class="fas fa-shield-alt"></i> Secure</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: REDACT EDITOR -->
+                <div id="s2" style="display:none;">
+                    <div class="files-area">
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                        <div class="file-card">
+                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="file-card-info">
+                                <h4 id="fn">document.pdf</h4>
+                                <div class="file-card-meta">
+                                    <span class="fbadge" id="fs">0 KB</span>
+                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
+                                </div>
+                            </div>
+                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
+                        </div>
+
+                        <div class="warn-box">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Important:</strong> Redaction is permanent! Blacked-out areas cannot be recovered. The content underneath is completely removed.
+                        </div>
+
+                        <!-- Toolbar -->
+                        <div class="redact-toolbar">
+                            <div class="rt-group">
+                                <button class="rt-btn active" id="toolDraw" onclick="setTool('draw')">
+                                    <i class="fas fa-vector-square"></i> <span>Draw Redaction</span>
+                                </button>
+                                <button class="rt-btn" id="toolMove" onclick="setTool('move')">
+                                    <i class="fas fa-arrows-alt"></i> <span>Move/Resize</span>
+                                </button>
+                            </div>
+                            <div class="rt-group">
+                                <span style="color:#94a3b8;font-size:11px;margin-right:4px;">Color:</span>
+                                <div class="color-opts">
+                                    <div class="color-opt black on" onclick="setColor('#000000',this)"></div>
+                                    <div class="color-opt white" onclick="setColor('#ffffff',this)"></div>
+                                    <div class="color-opt red" onclick="setColor('#dc2626',this)"></div>
+                                    <div class="color-opt gray" onclick="setColor('#6b7280',this)"></div>
+                                </div>
+                            </div>
+                            <div class="rt-group">
+                                <button class="rt-btn" onclick="undoRedact()"><i class="fas fa-undo"></i> <span>Undo</span></button>
+                                <button class="rt-btn" onclick="clearPageRedacts()"><i class="fas fa-trash"></i> <span>Clear Page</span></button>
+                            </div>
+                            <div class="rt-group">
+                                <button class="rt-btn save" onclick="saveRedacted()"><i class="fas fa-download"></i> <span>Save</span></button>
+                            </div>
+                        </div>
+
+                        <!-- PDF Viewer -->
+                        <div class="pdf-viewer" id="pdfViewer">
+                            <div class="page-wrap" id="pageWrap">
+                                <canvas id="pdfCanvas"></canvas>
+                                <div class="redact-overlay" id="redactOverlay"></div>
+                            </div>
+                        </div>
+
+                        <!-- Page Nav -->
+                        <div class="pg-nav">
+                            <button onclick="prevPage()" id="btnPrev" disabled><i class="fas fa-chevron-left"></i></button>
+                            <span>Page <span id="curPage">1</span> / <span id="totPages">1</span></span>
+                            <button onclick="nextPage()" id="btnNext"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+
+                        <!-- Info Bar -->
+                        <div class="info-bar">
+                            <div class="stat"><i class="fas fa-eraser" style="color:#ef4444;"></i> Redactions: <span id="redactCount">0</span></div>
+                            <div class="stat"><i class="fas fa-copy"></i> Page: <span id="pageInfo">1</span></div>
+                            <div style="display:flex;gap:8px;">
+                                <button class="btn-sm btn-primary-sm" onclick="saveRedacted()"><i class="fas fa-download"></i> Save Redacted PDF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: PROCESSING -->
+                <div id="s3" style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3 id="pt">Applying redactions...</h3>
+                        <p id="ps">Permanently removing content</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#475569,#334155);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
+                    </div>
+                </div>
+
+                <!-- STEP 4: RESULT -->
+                <div id="s4" style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>PDF Redacted! 🔒</h2>
+                        <p>Sensitive information has been permanently removed</p>
+
+                        <div class="srow">
+                            <div class="sbox"><h4 id="rPages">0</h4><p>Pages</p></div>
+                            <div class="sbox"><h4 id="rRedacts">0</h4><p>Redactions</p></div>
+                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
+                        </div>
+
+                        <div class="warn-box">
+                            <i class="fas fa-check-circle" style="color:#22c55e;"></i>
+                            <strong>Content permanently removed.</strong> The redacted areas cannot be recovered or revealed by any means.
+                        </div>
+
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#334155"></i> <span id="rfn">redacted.pdf</span></div>
+                        </div>
+
+                        <button class="download-btn" style="background:linear-gradient(135deg,#475569,#334155);" onclick="doDownload()">
+                            <i class="fas fa-download"></i> Download Redacted PDF
+                        </button>
+
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Redact Another</button>
+                            <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-pen"></i> Continue Editing</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="protect-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-shield-alt"></i></div><h4>Protect</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit</h4></a>
+                <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
+                <a href="sign-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-signature"></i></div><h4>Sign</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Redact PDF</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your PDF.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-vector-square"></i><h4>Select</h4><p>Draw over sensitive areas.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Save</h4><p>Download redacted PDF.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is redaction permanent?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! The content under redaction boxes is completely removed from the PDF. It cannot be recovered by any means.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I choose redaction color?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Choose between black (standard), white, red, or gray redaction boxes.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Everything runs in your browser. No files uploaded to any server.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+    <script>
+    // ==========================================
+    // REDACT PDF - COMPLETE WORKING CODE
+    // PDF.js (render) + Canvas (draw) + pdf-lib (save)
+    // ==========================================
+
+    window.addEventListener('load', function() {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    });
+
+    var R = {
+        rawBytes: null, name: 'document',
+        pdfDoc: null, pages: 0,
+        curPage: 1, scale: 1.5,
+        tool: 'draw',       // draw or move
+        color: '#000000',
+        // Per-page redactions: {pageNum: [{x,y,w,h,color}]}
+        redacts: {},
+        totalRedacts: 0,
+        isDrawing: false,
+        startX: 0, startY: 0,
+        selRect: null,       // temporary selection rectangle
+        blob: null
+    };
+
+    // File input
+    document.getElementById('fi').addEventListener('change', function() {
+        if (this.files && this.files[0]) loadPDF(this.files[0]);
+    });
+
+    // Drag drop
+    var dropBox = document.getElementById('dropBox');
+    dropBox.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = '#334155'; });
+    dropBox.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(71,85,105,0.3)'; });
+    dropBox.addEventListener('drop', function(e) {
+        e.preventDefault(); this.style.borderColor = 'rgba(71,85,105,0.3)';
+        if (e.dataTransfer.files[0]) loadPDF(e.dataTransfer.files[0]);
+    });
+
+    // ===== LOAD PDF =====
+    async function loadPDF(file) {
+        hideE();
+        if (!file.name.toLowerCase().endsWith('.pdf')) { showE('Please select a PDF!'); return; }
+        R.name = file.name.replace(/\.pdf$/i, '');
+
+        try {
+            var ab = await readF(file);
+            R.rawBytes = new Uint8Array(ab);
+            R.pdfDoc = await pdfjsLib.getDocument({ data: R.rawBytes.slice(0) }).promise;
+            R.pages = R.pdfDoc.numPages;
+            R.curPage = 1;
+            R.redacts = {};
+            R.totalRedacts = 0;
+
+            document.getElementById('fn').textContent = file.name;
+            document.getElementById('fs').textContent = szF(file.size);
+            document.getElementById('fp').textContent = R.pages;
+            document.getElementById('totPages').textContent = R.pages;
+
+            await renderPage(1);
+            setupDrawing();
+            goTo('s2');
+        } catch(e) {
+            console.error(e);
+            showE('Cannot read PDF: ' + e.message);
+        }
+    }
+
+    function readF(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsArrayBuffer(f);
+        });
+    }
+
+    // ===== RENDER PAGE =====
+    async function renderPage(num) {
+        R.curPage = num;
+        document.getElementById('curPage').textContent = num;
+        document.getElementById('pageInfo').textContent = num + '/' + R.pages;
+        document.getElementById('btnPrev').disabled = (num <= 1);
+        document.getElementById('btnNext').disabled = (num >= R.pages);
+
+        var pdf = await pdfjsLib.getDocument({ data: R.rawBytes.slice(0) }).promise;
+        var page = await pdf.getPage(num);
+        var vp = page.getViewport({ scale: R.scale });
+
+        var canvas = document.getElementById('pdfCanvas');
+        canvas.width = vp.width;
+        canvas.height = vp.height;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+
+        // Set overlay size
+        var overlay = document.getElementById('redactOverlay');
+        overlay.style.width = vp.width + 'px';
+        overlay.style.height = vp.height + 'px';
+
+        // Render existing redactions
+        renderRedactions();
+        updateCount();
+    }
+
+    function prevPage() { if (R.curPage > 1) renderPage(R.curPage - 1); }
+    function nextPage() { if (R.curPage < R.pages) renderPage(R.curPage + 1); }
+
+    // ===== TOOLS =====
+    function setTool(tool) {
+        R.tool = tool;
+        document.getElementById('toolDraw').classList.toggle('active', tool === 'draw');
+        document.getElementById('toolMove').classList.toggle('active', tool === 'move');
+
+        var overlay = document.getElementById('redactOverlay');
+        overlay.style.cursor = tool === 'draw' ? 'crosshair' : 'default';
+    }
+
+    function setColor(color, el) {
+        R.color = color;
+        document.querySelectorAll('.color-opt').forEach(function(c) { c.classList.remove('on'); });
+        el.classList.add('on');
+    }
+
+    // ===== DRAWING =====
+    function setupDrawing() {
+        var overlay = document.getElementById('redactOverlay');
+
+        overlay.addEventListener('mousedown', onDown);
+        overlay.addEventListener('mousemove', onMove);
+        overlay.addEventListener('mouseup', onUp);
+        overlay.addEventListener('mouseleave', onUp);
+
+        // Touch
+        overlay.addEventListener('touchstart', function(e) { e.preventDefault(); onDown(touchPos(e, overlay)); });
+        overlay.addEventListener('touchmove', function(e) { e.preventDefault(); onMove(touchPos(e, overlay)); });
+        overlay.addEventListener('touchend', function(e) { e.preventDefault(); onUp(e); });
+    }
+
+    function touchPos(e, el) {
+        var rect = el.getBoundingClientRect();
+        var t = e.touches[0];
+        return { offsetX: t.clientX - rect.left, offsetY: t.clientY - rect.top };
+    }
+
+    function onDown(e) {
+        if (R.tool !== 'draw') return;
+        R.isDrawing = true;
+        R.startX = e.offsetX;
+        R.startY = e.offsetY;
+
+        // Create selection rect
+        R.selRect = document.createElement('div');
+        R.selRect.className = 'selection-rect';
+        R.selRect.style.left = R.startX + 'px';
+        R.selRect.style.top = R.startY + 'px';
+        R.selRect.style.width = '0px';
+        R.selRect.style.height = '0px';
+        document.getElementById('redactOverlay').appendChild(R.selRect);
+    }
+
+    function onMove(e) {
+        if (!R.isDrawing || !R.selRect) return;
+
+        var x = Math.min(e.offsetX, R.startX);
+        var y = Math.min(e.offsetY, R.startY);
+        var w = Math.abs(e.offsetX - R.startX);
+        var h = Math.abs(e.offsetY - R.startY);
+
+        R.selRect.style.left = x + 'px';
+        R.selRect.style.top = y + 'px';
+        R.selRect.style.width = w + 'px';
+        R.selRect.style.height = h + 'px';
+    }
+
+    function onUp(e) {
+        if (!R.isDrawing) return;
+        R.isDrawing = false;
+
+        if (R.selRect) {
+            var w = parseInt(R.selRect.style.width);
+            var h = parseInt(R.selRect.style.height);
+
+            // Only add if large enough
+            if (w > 5 && h > 5) {
+                var pg = R.curPage;
+                if (!R.redacts[pg]) R.redacts[pg] = [];
+
+                R.redacts[pg].push({
+                    x: parseInt(R.selRect.style.left),
+                    y: parseInt(R.selRect.style.top),
+                    w: w,
+                    h: h,
+                    color: R.color
+                });
+
+                R.totalRedacts++;
+            }
+
+            R.selRect.remove();
+            R.selRect = null;
+        }
+
+        renderRedactions();
+        updateCount();
+    }
+
+    // ===== RENDER REDACTIONS =====
+    function renderRedactions() {
+        var overlay = document.getElementById('redactOverlay');
+        // Remove old redact rects
+        overlay.querySelectorAll('.redact-rect').forEach(function(el) { el.remove(); });
+
+        var pg = R.curPage;
+        var rects = R.redacts[pg] || [];
+
+        for (var i = 0; i < rects.length; i++) {
+            createRedactElement(rects[i], i, overlay);
+        }
+    }
+
+    function createRedactElement(rect, idx, parent) {
+        var div = document.createElement('div');
+        div.className = 'redact-rect';
+        div.style.left = rect.x + 'px';
+        div.style.top = rect.y + 'px';
+        div.style.width = rect.w + 'px';
+        div.style.height = rect.h + 'px';
+        div.style.background = rect.color;
+        div.dataset.idx = idx;
+
+        // Remove button
+        var rmBtn = document.createElement('button');
+        rmBtn.className = 'rr-remove';
+        rmBtn.innerHTML = '×';
+        rmBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            removeRedact(idx);
+        });
+        div.appendChild(rmBtn);
+
+        // Resize handle
+        var rsz = document.createElement('div');
+        rsz.className = 'rr-resize';
+        div.appendChild(rsz);
+
+        // Drag to move
+        var isDrag = false, isResize = false;
+        var startX, startY, origX, origY, origW, origH;
+
+        div.addEventListener('mousedown', function(e) {
+            if (R.tool !== 'move') return;
+            e.stopPropagation();
+            if (e.target === rsz) {
+                isResize = true; origW = rect.w; origH = rect.h;
+            } else if (e.target !== rmBtn) {
+                isDrag = true; origX = rect.x; origY = rect.y;
+            }
+            startX = e.clientX; startY = e.clientY;
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDrag) {
+                rect.x = origX + (e.clientX - startX);
+                rect.y = origY + (e.clientY - startY);
+                div.style.left = rect.x + 'px';
+                div.style.top = rect.y + 'px';
+            }
+            if (isResize) {
+                rect.w = Math.max(10, origW + (e.clientX - startX));
+                rect.h = Math.max(10, origH + (e.clientY - startY));
+                div.style.width = rect.w + 'px';
+                div.style.height = rect.h + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function() { isDrag = false; isResize = false; });
+
+        parent.appendChild(div);
+    }
+
+    // ===== REDACT OPERATIONS =====
+    function removeRedact(idx) {
+        var pg = R.curPage;
+        if (R.redacts[pg]) {
+            R.redacts[pg].splice(idx, 1);
+            R.totalRedacts = Math.max(0, R.totalRedacts - 1);
+            renderRedactions();
+            updateCount();
+        }
+    }
+
+    function undoRedact() {
+        var pg = R.curPage;
+        if (R.redacts[pg] && R.redacts[pg].length > 0) {
+            R.redacts[pg].pop();
+            R.totalRedacts = Math.max(0, R.totalRedacts - 1);
+            renderRedactions();
+            updateCount();
+        }
+    }
+
+    function clearPageRedacts() {
+        var pg = R.curPage;
+        if (R.redacts[pg]) {
+            R.totalRedacts -= R.redacts[pg].length;
+            R.redacts[pg] = [];
+            renderRedactions();
+            updateCount();
+        }
+    }
+
+    function updateCount() {
+        document.getElementById('redactCount').textContent = R.totalRedacts;
+    }
+
+    // ==========================================
+    // ✅ SAVE REDACTED PDF
+    // ==========================================
+    async function saveRedacted() {
+        if (R.totalRedacts === 0) {
+            showE('No redactions! Draw over sensitive areas first.');
+            return;
+        }
+        hideE();
+        goTo('s3');
+
+        try {
+            prog(10, 'Loading PDF...', 'Preparing document');
+
+            var pdfDoc = await PDFLib.PDFDocument.load(R.rawBytes.slice(0), { ignoreEncryption: true });
+            var pdfPages = pdfDoc.getPages();
+
+            // Get PDF.js for coordinate conversion
+            var pdfJsDoc = await pdfjsLib.getDocument({ data: R.rawBytes.slice(0) }).promise;
+
+            var totalRedactions = 0;
+
+            for (var pgNum = 1; pgNum <= R.pages; pgNum++) {
+                var rects = R.redacts[pgNum];
+                if (!rects || rects.length === 0) continue;
+
+                prog(
+                    10 + Math.round((pgNum / R.pages) * 70),
+                    'Page ' + pgNum + '/' + R.pages,
+                    'Applying ' + rects.length + ' redaction(s)'
+                );
+
+                var page = pdfPages[pgNum - 1];
+                var { width: pdfW, height: pdfH } = page.getSize();
+
+                // Get canvas dimensions for scale conversion
+                var pdfJsPage = await pdfJsDoc.getPage(pgNum);
+                var vp = pdfJsPage.getViewport({ scale: R.scale });
+                var canvasW = vp.width;
+                var canvasH = vp.height;
+
+                var scaleX = pdfW / canvasW;
+                var scaleY = pdfH / canvasH;
+
+                for (var i = 0; i < rects.length; i++) {
+                    var rect = rects[i];
+
+                    // Convert canvas coords to PDF coords
+                    var pdfX = rect.x * scaleX;
+                    var pdfY = pdfH - (rect.y * scaleY) - (rect.h * scaleY);
+                    var pdfRW = rect.w * scaleX;
+                    var pdfRH = rect.h * scaleY;
+
+                    // Parse color
+                    var c = hexRgb01(rect.color);
+
+                    // Draw filled rectangle (permanent redaction)
+                    page.drawRectangle({
+                        x: pdfX,
+                        y: pdfY,
+                        width: pdfRW,
+                        height: pdfRH,
+                        color: PDFLib.rgb(c.r, c.g, c.b),
+                        borderWidth: 0
+                    });
+
+                    totalRedactions++;
+                }
+            }
+
+            prog(85, 'Saving...', 'Generating redacted PDF');
+
+            var savedBytes = await pdfDoc.save();
+            R.blob = new Blob([savedBytes], { type: 'application/pdf' });
+
+            prog(100, 'Done!', 'Redaction complete');
+
+            document.getElementById('rPages').textContent = R.pages;
+            document.getElementById('rRedacts').textContent = totalRedactions;
+            document.getElementById('rSz').textContent = szF(R.blob.size);
+            document.getElementById('rfn').textContent = R.name + '_redacted.pdf';
+
+            setTimeout(function() { goTo('s4'); }, 400);
+
+        } catch(e) {
+            console.error(e);
+            goTo('s2');
+            showE('Save failed: ' + e.message);
+        }
+    }
+
+    function hexRgb01(hex) {
+        hex = hex.replace('#', '');
+        return {
+            r: parseInt(hex.substring(0, 2), 16) / 255,
+            g: parseInt(hex.substring(2, 4), 16) / 255,
+            b: parseInt(hex.substring(4, 6), 16) / 255
+        };
+    }
+
+    // ===== DOWNLOAD =====
+    function doDownload() {
+        if (!R.blob) { alert('No file.'); return; }
+        var url = URL.createObjectURL(R.blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = R.name + '_redacted.pdf';
+        a.style.display = 'none';
+        document.body.appendChild(a); a.click();
+        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    }
+
+    // ===== RESET =====
+    function doReset() {
+        R.rawBytes = null; R.name = 'document';
+        R.pdfDoc = null; R.pages = 0;
+        R.curPage = 1; R.tool = 'draw';
+        R.color = '#000000'; R.redacts = {};
+        R.totalRedacts = 0; R.blob = null;
+        hideE();
+        document.getElementById('fi').value = '';
+        document.getElementById('redactOverlay').innerHTML = '';
+        goTo('s1');
+    }
+
+    // ===== HELPERS =====
+    function goTo(id) {
+        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
+        document.getElementById(id).style.display = 'block';
+    }
+    function prog(p, t, s) {
+        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
+        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
+    }
+    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
+    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
+    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
+
+    console.log('Redact PDF tool loaded');
+    console.log('Libraries: PDF.js + pdf-lib');
+    </script>
+
+</body>
+</html>

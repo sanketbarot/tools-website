@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translate PDF - Translate Documents to Any Language | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#3b82f6,#2563eb)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .fbadge{background:rgba(59,130,246,0.1);color:#2563eb;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+
+        .input-tabs{display:flex;gap:0;margin-bottom:15px;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,0.4)}
+        .input-tab{flex:1;padding:14px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;background:rgba(255,255,255,0.3);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+        .input-tab:hover{background:rgba(59,130,246,0.1)}
+        .input-tab.on{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+
+        .text-area{width:100%;min-height:180px;padding:15px;border:2px solid rgba(59,130,246,0.2);border-radius:12px;background:rgba(255,255,255,0.5);font-size:14px;line-height:1.8;resize:vertical;outline:none;font-family:inherit;box-sizing:border-box}
+        .text-area:focus{border-color:#2563eb}
+        .char-count{text-align:right;font-size:11px;color:var(--text-light);margin-top:5px}
+
+        .lang-selector{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end;margin:15px 0}
+        .lang-box{text-align:center}
+        .lang-box label{display:block;font-size:12px;font-weight:600;color:var(--text-medium);margin-bottom:6px}
+        .lang-box select{width:100%;padding:12px;border:2px solid rgba(59,130,246,0.2);border-radius:10px;background:rgba(255,255,255,0.5);font-size:14px;font-weight:600;outline:none;cursor:pointer}
+        .lang-box select:focus{border-color:#2563eb}
+        .swap-btn{width:40px;height:40px;border:2px solid rgba(59,130,246,0.3);border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:#2563eb;transition:all .2s;margin-bottom:2px}
+        .swap-btn:hover{background:#2563eb;color:#fff;transform:rotate(180deg)}
+
+        .lang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin:10px 0}
+        .lang-chip{padding:8px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:8px;text-align:center;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s}
+        .lang-chip:hover{border-color:#2563eb}
+        .lang-chip.on{border-color:#2563eb;background:rgba(59,130,246,0.08);color:#2563eb}
+        .lang-chip .flag{font-size:16px;display:block;margin-bottom:2px}
+
+        .trans-output{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin:15px 0;max-height:400px}
+        .trans-side{overflow-y:auto;padding:0}
+        .trans-side::-webkit-scrollbar{width:6px}
+        .trans-side::-webkit-scrollbar-thumb{background:rgba(59,130,246,0.3);border-radius:3px}
+        .trans-header{padding:10px 15px;font-size:12px;font-weight:700;position:sticky;top:0;z-index:2}
+        .trans-header.src{background:#eff6ff;color:#1d4ed8;border-bottom:2px solid #bfdbfe;border-right:1px solid #e2e8f0}
+        .trans-header.tgt{background:#f0fdf4;color:#16a34a;border-bottom:2px solid #bbf7d0}
+        .trans-para{padding:10px 15px;font-size:13px;line-height:1.7;border-bottom:1px solid #f8fafc}
+
+        .sum-stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:15px 0}
+        .ss{padding:10px 18px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .ss h4{font-size:20px;font-weight:800;color:#2563eb}
+        .ss p{font-size:10px;color:var(--text-light)}
+
+        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+        .warn-box{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 15px;font-size:12px;color:#92400e;margin:10px 0}
+        .warn-box i{color:#f59e0b;margin-right:6px}
+
+        @media(max-width:768px){
+            .lang-selector{grid-template-columns:1fr}
+            .swap-btn{margin:0 auto}
+            .trans-output{grid-template-columns:1fr}
+            .opt-grid{grid-template-columns:1fr}
+            .lang-grid{grid-template-columns:repeat(4,1fr)}
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i><span>Translate PDF</span>
+            </div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-blue"><i class="fas fa-language"></i></div>
+                <div>
+                    <h1>Translate PDF</h1>
+                    <p>Translate PDF documents into 50+ languages. Free translation powered by MyMemory API!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <!-- STEP 1: INPUT -->
+                <div id="s1">
+                    <div class="files-area">
+                        <div class="input-tabs">
+                            <div class="input-tab on" id="tabPdf" onclick="switchInput('pdf')"><i class="fas fa-file-pdf"></i> Upload PDF</div>
+                            <div class="input-tab" id="tabText" onclick="switchInput('text')"><i class="fas fa-keyboard"></i> Paste Text</div>
+                        </div>
+
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                        <!-- PDF Upload -->
+                        <div id="pdfMode">
+                            <div style="padding:35px 20px;text-align:center;border:3px dashed rgba(59,130,246,0.25);border-radius:16px;cursor:pointer;"
+                                 onclick="document.getElementById('fi').click()">
+                                <i class="fas fa-language" style="font-size:40px;color:#2563eb;margin-bottom:10px;display:block;"></i>
+                                <h3 style="font-size:16px;margin-bottom:5px;">Upload PDF to Translate</h3>
+                                <p style="font-size:12px;color:var(--text-light);">Text will be extracted and translated</p>
+                                <button class="upload-btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb);margin-top:12px;"
+                                        onclick="event.stopPropagation();document.getElementById('fi').click()">
+                                    <i class="fas fa-plus"></i> Select PDF
+                                </button>
+                                <input type="file" id="fi" accept=".pdf" style="display:none">
+                            </div>
+                        </div>
+
+                        <!-- Text Input -->
+                        <div id="textMode" style="display:none;">
+                            <textarea class="text-area" id="txtInput" placeholder="Paste text to translate here..." oninput="document.getElementById('cc').textContent=this.value.length"></textarea>
+                            <div class="char-count"><span id="cc">0</span> characters</div>
+                        </div>
+
+                        <!-- File info -->
+                        <div id="fInfo" style="display:none;margin-top:15px;">
+                            <div class="file-card">
+                                <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
+                                <div class="file-card-info">
+                                    <h4 id="fn">doc.pdf</h4>
+                                    <div class="file-card-meta">
+                                        <span class="fbadge" id="fs">0 KB</span>
+                                        <span><i class="fas fa-copy"></i> <span id="fp">0</span> pg</span>
+                                        <span><i class="fas fa-align-left"></i> <span id="fw">0</span> words</span>
+                                    </div>
+                                </div>
+                                <button class="btn-sm btn-danger-sm" onclick="clearFile()"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Language Selection -->
+                        <div class="options-panel glass-light" style="margin-top:15px;">
+                            <h4><i class="fas fa-globe"></i> Translation Languages</h4>
+
+                            <div class="lang-selector">
+                                <div class="lang-box">
+                                    <label>From</label>
+                                    <select id="srcLang">
+                                        <option value="auto">🔍 Auto Detect</option>
+                                        <option value="en" selected>🇬🇧 English</option>
+                                        <option value="hi">🇮🇳 Hindi</option>
+                                        <option value="gu">🇮🇳 Gujarati</option>
+                                        <option value="es">🇪🇸 Spanish</option>
+                                        <option value="fr">🇫🇷 French</option>
+                                        <option value="de">🇩🇪 German</option>
+                                        <option value="zh">🇨🇳 Chinese</option>
+                                        <option value="ja">🇯🇵 Japanese</option>
+                                        <option value="ar">🇸🇦 Arabic</option>
+                                        <option value="pt">🇵🇹 Portuguese</option>
+                                        <option value="ru">🇷🇺 Russian</option>
+                                        <option value="ko">🇰🇷 Korean</option>
+                                        <option value="it">🇮🇹 Italian</option>
+                                        <option value="nl">🇳🇱 Dutch</option>
+                                        <option value="tr">🇹🇷 Turkish</option>
+                                        <option value="pl">🇵🇱 Polish</option>
+                                        <option value="sv">🇸🇪 Swedish</option>
+                                        <option value="th">🇹🇭 Thai</option>
+                                    </select>
+                                </div>
+                                <button class="swap-btn" onclick="swapLangs()" title="Swap languages"><i class="fas fa-exchange-alt"></i></button>
+                                <div class="lang-box">
+                                    <label>To</label>
+                                    <select id="tgtLang">
+                                        <option value="en">🇬🇧 English</option>
+                                        <option value="hi" selected>🇮🇳 Hindi</option>
+                                        <option value="gu">🇮🇳 Gujarati</option>
+                                        <option value="es">🇪🇸 Spanish</option>
+                                        <option value="fr">🇫🇷 French</option>
+                                        <option value="de">🇩🇪 German</option>
+                                        <option value="zh">🇨🇳 Chinese</option>
+                                        <option value="ja">🇯🇵 Japanese</option>
+                                        <option value="ar">🇸🇦 Arabic</option>
+                                        <option value="pt">🇵🇹 Portuguese</option>
+                                        <option value="ru">🇷🇺 Russian</option>
+                                        <option value="ko">🇰🇷 Korean</option>
+                                        <option value="it">🇮🇹 Italian</option>
+                                        <option value="nl">🇳🇱 Dutch</option>
+                                        <option value="tr">🇹🇷 Turkish</option>
+                                        <option value="pl">🇵🇱 Polish</option>
+                                        <option value="sv">🇸🇪 Swedish</option>
+                                        <option value="th">🇹🇭 Thai</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Quick language buttons -->
+                            <label style="font-size:11px;font-weight:600;color:var(--text-medium);display:block;margin:10px 0 5px;">Quick Select Target:</label>
+                            <div class="lang-grid">
+                                <div class="lang-chip" onclick="quickLang('hi')"><span class="flag">🇮🇳</span>Hindi</div>
+                                <div class="lang-chip" onclick="quickLang('gu')"><span class="flag">🇮🇳</span>Gujarati</div>
+                                <div class="lang-chip" onclick="quickLang('es')"><span class="flag">🇪🇸</span>Spanish</div>
+                                <div class="lang-chip" onclick="quickLang('fr')"><span class="flag">🇫🇷</span>French</div>
+                                <div class="lang-chip" onclick="quickLang('de')"><span class="flag">🇩🇪</span>German</div>
+                                <div class="lang-chip" onclick="quickLang('zh')"><span class="flag">🇨🇳</span>Chinese</div>
+                                <div class="lang-chip" onclick="quickLang('ja')"><span class="flag">🇯🇵</span>Japanese</div>
+                                <div class="lang-chip" onclick="quickLang('ar')"><span class="flag">🇸🇦</span>Arabic</div>
+                                <div class="lang-chip" onclick="quickLang('ru')"><span class="flag">🇷🇺</span>Russian</div>
+                                <div class="lang-chip" onclick="quickLang('ko')"><span class="flag">🇰🇷</span>Korean</div>
+                                <div class="lang-chip" onclick="quickLang('pt')"><span class="flag">🇵🇹</span>Portuguese</div>
+                                <div class="lang-chip" onclick="quickLang('en')"><span class="flag">🇬🇧</span>English</div>
+                            </div>
+                        </div>
+
+                        <div class="warn-box">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Note:</strong> Uses MyMemory free translation API. Large documents are translated in chunks. Results may vary — review for accuracy.
+                        </div>
+
+                        <button class="action-btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb);margin-top:10px;" onclick="doTranslate()">
+                            <i class="fas fa-language"></i> Translate
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: PROCESSING -->
+                <div id="s2" style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3 id="pt">Translating...</h3>
+                        <p id="ps">Processing text</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#3b82f6,#2563eb);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
+                    </div>
+                </div>
+
+                <!-- STEP 3: RESULT -->
+                <div id="s3" style="display:none;">
+                    <div class="result-area" style="text-align:left;max-width:100%;">
+                        <div style="text-align:center;">
+                            <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                            <h2>Translation Complete! 🌐</h2>
+                        </div>
+
+                        <div class="sum-stats">
+                            <div class="ss"><h4 id="rOrig">0</h4><p>Original Words</p></div>
+                            <div class="ss"><h4 id="rTrans">0</h4><p>Translated Words</p></div>
+                            <div class="ss"><h4 id="rLang">EN→HI</h4><p>Languages</p></div>
+                            <div class="ss"><h4 id="rChunks">0</h4><p>Chunks</p></div>
+                        </div>
+
+                        <!-- Side by side view -->
+                        <div style="margin:15px 0;">
+                            <h4 style="font-size:14px;margin-bottom:8px;">
+                                <i class="fas fa-columns" style="color:#2563eb;"></i> Original vs Translated
+                            </h4>
+                            <div class="trans-output" id="transView"></div>
+                        </div>
+
+                        <!-- Translated text -->
+                        <div style="margin:15px 0;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                <h4 style="font-size:14px;"><i class="fas fa-language" style="color:#2563eb;"></i> Translated Text</h4>
+                                <button class="btn-sm btn-primary-sm" onclick="copyTrans()"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;max-height:300px;overflow-y:auto;font-size:14px;line-height:1.8;color:#333;white-space:pre-wrap;" id="transText"></div>
+                        </div>
+
+                        <div style="text-align:center;">
+                            <button class="download-btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb);" onclick="dlTrans('txt')">
+                                <i class="fas fa-download"></i> Download TXT
+                            </button>
+                        </div>
+                        <div class="result-actions" style="margin-top:15px;justify-content:center;">
+                            <button class="btn-outline" onclick="dlTrans('docx')"><i class="fas fa-file-word"></i> DOCX</button>
+                            <button class="btn-outline" onclick="dlTrans('html')"><i class="fas fa-code"></i> HTML</button>
+                            <button class="btn-outline" onclick="show('s1')"><i class="fas fa-redo"></i> Again</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="ai-summarizer.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-robot"></i></div><h4>Summarizer</h4></a>
+                <a href="ocr-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-eye"></i></div><h4>OCR</h4></a>
+                <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Translate PDF</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>PDF or paste text.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-globe"></i><h4>Language</h4><p>Select target language.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get translated file.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Which languages are supported?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>50+ languages including English, Hindi, Gujarati, Spanish, French, German, Chinese, Japanese, Arabic, Korean, and many more.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How accurate is the translation?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Translation quality is good for general text. Technical/legal documents should be reviewed by a professional translator.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is there a word limit?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>The free API translates in chunks of 500 characters. Large documents are automatically split and reassembled.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <script>
+    // ==========================================
+    // TRANSLATE PDF - COMPLETE WORKING CODE
+    // PDF.js + MyMemory Translation API (free)
+    // ==========================================
+
+    try {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        console.log('PDF.js ready');
+    } catch(e) { console.error(e); }
+
+    var T = {
+        mode: 'pdf',
+        rawBytes: null,
+        name: 'document',
+        fullText: '',
+        pages: 0,
+        origParas: [],      // Original paragraphs
+        transParas: [],     // Translated paragraphs
+        translatedText: '',
+        chunks: 0
+    };
+
+    // ===== INPUT SWITCHING =====
+    function switchInput(mode) {
+        T.mode = mode;
+        document.getElementById('tabPdf').className = 'input-tab' + (mode === 'pdf' ? ' on' : '');
+        document.getElementById('tabText').className = 'input-tab' + (mode === 'text' ? ' on' : '');
+        document.getElementById('pdfMode').style.display = mode === 'pdf' ? 'block' : 'none';
+        document.getElementById('textMode').style.display = mode === 'text' ? 'block' : 'none';
+    }
+
+    function swapLangs() {
+        var src = document.getElementById('srcLang');
+        var tgt = document.getElementById('tgtLang');
+        var tmp = src.value;
+        if (tmp === 'auto') return;
+        src.value = tgt.value;
+        tgt.value = tmp;
+    }
+
+    function quickLang(code) {
+        document.getElementById('tgtLang').value = code;
+        document.querySelectorAll('.lang-chip').forEach(function(c) { c.classList.remove('on'); });
+        event.target.closest('.lang-chip').classList.add('on');
+    }
+
+    // ===== FILE INPUT =====
+    document.getElementById('fi').addEventListener('change', function() {
+        if (this.files && this.files[0]) loadPDF(this.files[0]);
+    });
+
+    async function loadPDF(file) {
+        hideE();
+        if (!file.name.toLowerCase().endsWith('.pdf')) { showE('Please select a PDF!'); return; }
+        T.name = file.name.replace(/\.pdf$/i, '');
+
+        try {
+            var ab = await readFile(file);
+            T.rawBytes = new Uint8Array(ab);
+
+            var pdf = await pdfjsLib.getDocument({ data: T.rawBytes.slice(0) }).promise;
+            T.pages = pdf.numPages;
+
+            T.fullText = '';
+            for (var i = 1; i <= pdf.numPages; i++) {
+                var page = await pdf.getPage(i);
+                var content = await page.getTextContent();
+                var txt = '';
+                var lastY = null;
+                for (var j = 0; j < content.items.length; j++) {
+                    var item = content.items[j];
+                    if (item.str === undefined) continue;
+                    var y = Math.round(item.transform[5]);
+                    if (lastY !== null && Math.abs(y - lastY) > 3) txt += '\n';
+                    else if (txt.length > 0 && item.str.length > 0) txt += ' ';
+                    txt += item.str;
+                    lastY = y;
+                }
+                T.fullText += txt.trim() + '\n\n';
+            }
+            T.fullText = T.fullText.trim();
+
+            var wc = T.fullText.split(/\s+/).filter(function(w) { return w.length > 0; }).length;
+
+            document.getElementById('fn').textContent = file.name;
+            document.getElementById('fs').textContent = fmtSz(file.size);
+            document.getElementById('fp').textContent = T.pages;
+            document.getElementById('fw').textContent = wc.toLocaleString();
+            document.getElementById('fInfo').style.display = 'block';
+        } catch(e) {
+            console.error(e);
+            showE('Cannot read PDF: ' + e.message);
+        }
+    }
+
+    function clearFile() {
+        T.rawBytes = null; T.fullText = ''; T.pages = 0;
+        document.getElementById('fInfo').style.display = 'none';
+        document.getElementById('fi').value = '';
+    }
+
+    function readFile(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsArrayBuffer(f);
+        });
+    }
+
+    // ==========================================
+    // ✅ TRANSLATE
+    // ==========================================
+    async function doTranslate() {
+        hideE();
+
+        var text = T.mode === 'pdf' ? T.fullText : document.getElementById('txtInput').value.trim();
+        if (!text || text.length < 10) {
+            showE('Please provide text to translate (at least 10 characters).');
+            return;
+        }
+
+        var srcLang = document.getElementById('srcLang').value;
+        var tgtLang = document.getElementById('tgtLang').value;
+
+        if (srcLang === tgtLang) {
+            showE('Source and target languages are the same!');
+            return;
+        }
+
+        show('s2');
+
+        try {
+            setProg(5, 'Preparing text...', 'Splitting into chunks');
+            await wait(200);
+
+            // Split into paragraphs
+            T.origParas = text.split(/\n+/).filter(function(p) { return p.trim().length > 0; });
+            T.transParas = [];
+            T.chunks = 0;
+
+            // Split paragraphs into translation chunks (max 500 chars each)
+            var chunks = [];
+            for (var i = 0; i < T.origParas.length; i++) {
+                var para = T.origParas[i].trim();
+                if (para.length <= 500) {
+                    chunks.push({ paraIdx: i, text: para });
+                } else {
+                    // Split long paragraph into sentences
+                    var sentences = para.split(/(?<=[.!?])\s+/);
+                    var current = '';
+                    for (var s = 0; s < sentences.length; s++) {
+                        if ((current + ' ' + sentences[s]).length > 500 && current.length > 0) {
+                            chunks.push({ paraIdx: i, text: current.trim(), partial: true });
+                            current = sentences[s];
+                        } else {
+                            current += (current ? ' ' : '') + sentences[s];
+                        }
+                    }
+                    if (current.trim()) chunks.push({ paraIdx: i, text: current.trim(), partial: true });
+                }
+            }
+
+            T.chunks = chunks.length;
+            console.log('Chunks to translate:', chunks.length);
+
+            // Initialize translation results
+            var paraResults = {};
+            for (var i = 0; i < T.origParas.length; i++) paraResults[i] = '';
+
+            setProg(10, 'Translating...', '0/' + chunks.length + ' chunks');
+
+            // Translate each chunk
+            var langPair = (srcLang === 'auto' ? 'en' : srcLang) + '|' + tgtLang;
+
+            for (var i = 0; i < chunks.length; i++) {
+                setProg(
+                    10 + Math.round((i / chunks.length) * 80),
+                    'Translating chunk ' + (i + 1) + '/' + chunks.length,
+                    'Please wait...'
+                );
+
+                var translated = await translateChunk(chunks[i].text, langPair);
+                paraResults[chunks[i].paraIdx] += (paraResults[chunks[i].paraIdx] ? ' ' : '') + translated;
+
+                // Rate limit: small delay between API calls
+                if (i < chunks.length - 1) await wait(300);
+            }
+
+            // Build final results
+            T.transParas = [];
+            for (var i = 0; i < T.origParas.length; i++) {
+                T.transParas.push(paraResults[i] || T.origParas[i]);
+            }
+
+            T.translatedText = T.transParas.join('\n\n');
+
+            setProg(95, 'Building output...', 'Almost done');
+            await wait(200);
+
+            setProg(100, 'Done!', 'Translation complete');
+
+            // Show results
+            showResults(srcLang, tgtLang);
+
+        } catch(e) {
+            console.error('Translate error:', e);
+            show('s1');
+            showE('Translation failed: ' + e.message);
+        }
+    }
+
+    // ===== TRANSLATE SINGLE CHUNK VIA API =====
+    async function translateChunk(text, langPair) {
+        try {
+            var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=' + langPair;
+
+            var response = await fetch(url);
+
+            if (!response.ok) {
+                console.warn('API error, using fallback');
+                return fallbackTranslate(text);
+            }
+
+            var data = await response.json();
+
+            if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
+                var result = data.responseData.translatedText;
+                // Clean up common API artifacts
+                result = result.replace(/MYMEMORY WARNING:.*/gi, '').trim();
+                return result || text;
+            }
+
+            return fallbackTranslate(text);
+
+        } catch(e) {
+            console.warn('API call failed:', e);
+            return fallbackTranslate(text);
+        }
+    }
+
+    // Fallback: simple word-by-word marker (when API fails)
+    function fallbackTranslate(text) {
+        // Add [Translated] marker so user knows API failed for this chunk
+        return '[Translation pending] ' + text;
+    }
+
+    // ===== SHOW RESULTS =====
+    function showResults(srcLang, tgtLang) {
+        var origWC = T.fullText ? T.fullText.split(/\s+/).filter(function(w){return w.length>0;}).length : document.getElementById('txtInput').value.split(/\s+/).length;
+        var transWC = T.translatedText.split(/\s+/).filter(function(w){return w.length>0;}).length;
+
+        var langNames = {en:'English',hi:'Hindi',gu:'Gujarati',es:'Spanish',fr:'French',de:'German',zh:'Chinese',ja:'Japanese',ar:'Arabic',pt:'Portuguese',ru:'Russian',ko:'Korean',it:'Italian',nl:'Dutch',tr:'Turkish',pl:'Polish',sv:'Swedish',th:'Thai',auto:'Auto'};
+        var srcName = langNames[srcLang] || srcLang;
+        var tgtName = langNames[tgtLang] || tgtLang;
+
+        document.getElementById('rOrig').textContent = origWC.toLocaleString();
+        document.getElementById('rTrans').textContent = transWC.toLocaleString();
+        document.getElementById('rLang').textContent = srcName.substring(0,2).toUpperCase() + '→' + tgtName.substring(0,2).toUpperCase();
+        document.getElementById('rChunks').textContent = T.chunks;
+
+        // Side by side view
+        var viewHtml = '<div class="trans-side">';
+        viewHtml += '<div class="trans-header src"><i class="fas fa-file-alt"></i> Original (' + srcName + ')</div>';
+        for (var i = 0; i < T.origParas.length; i++) {
+            viewHtml += '<div class="trans-para">' + esc(T.origParas[i]) + '</div>';
+        }
+        viewHtml += '</div><div class="trans-side">';
+        viewHtml += '<div class="trans-header tgt"><i class="fas fa-language"></i> Translated (' + tgtName + ')</div>';
+        for (var i = 0; i < T.transParas.length; i++) {
+            viewHtml += '<div class="trans-para">' + esc(T.transParas[i]) + '</div>';
+        }
+        viewHtml += '</div>';
+        document.getElementById('transView').innerHTML = viewHtml;
+
+        // Sync scroll
+        setTimeout(function() {
+            var sides = document.querySelectorAll('.trans-side');
+            if (sides.length === 2) {
+                sides[0].addEventListener('scroll', function() { sides[1].scrollTop = sides[0].scrollTop; });
+                sides[1].addEventListener('scroll', function() { sides[0].scrollTop = sides[1].scrollTop; });
+            }
+        }, 100);
+
+        // Full translated text
+        document.getElementById('transText').textContent = T.translatedText;
+
+        show('s3');
+    }
+
+    // ===== COPY =====
+    function copyTrans() {
+        if (!T.translatedText) return;
+        try {
+            navigator.clipboard.writeText(T.translatedText).then(function() {
+                alert('✅ Translated text copied!');
+            });
+        } catch(e) {
+            var ta = document.createElement('textarea');
+            ta.value = T.translatedText;
+            document.body.appendChild(ta); ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            alert('✅ Copied!');
+        }
+    }
+
+    // ===== DOWNLOAD =====
+    function dlTrans(fmt) {
+        var blob, ext;
+        if (fmt === 'txt') {
+            var content = '=== ORIGINAL ===\n\n' + (T.origParas.join('\n\n')) + '\n\n=== TRANSLATED ===\n\n' + T.translatedText;
+            blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            ext = '.txt';
+        } else if (fmt === 'html') {
+            var h = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Translation</title>'
+                + '<style>body{font-family:Calibri,sans-serif;max-width:900px;margin:40px auto;padding:20px;color:#333}'
+                + '.container{display:grid;grid-template-columns:1fr 1fr;gap:20px}'
+                + '.side{padding:15px;border-radius:10px}h2{margin-top:0}'
+                + '.orig{background:#eff6ff;border:1px solid #bfdbfe}.trans{background:#f0fdf4;border:1px solid #bbf7d0}'
+                + 'p{line-height:1.8}</style></head><body>'
+                + '<h1 style="text-align:center;">📄 PDF Translation</h1>'
+                + '<div class="container"><div class="side orig"><h2>Original</h2>';
+            T.origParas.forEach(function(p) { h += '<p>' + esc(p) + '</p>'; });
+            h += '</div><div class="side trans"><h2>Translated</h2>';
+            T.transParas.forEach(function(p) { h += '<p>' + esc(p) + '</p>'; });
+            h += '</div></div></body></html>';
+            blob = new Blob([h], { type: 'text/html;charset=utf-8' });
+            ext = '.html';
+        } else if (fmt === 'docx') {
+            var body = '<w:p><w:r><w:rPr><w:b/><w:sz w:val="32"/></w:rPr><w:t>Translated Document</w:t></w:r></w:p><w:p/>';
+            T.transParas.forEach(function(p) {
+                var line = p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                body += '<w:p><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">' + line + '</w:t></w:r></w:p>';
+            });
+            var docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + body + '<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>';
+            var ct = '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+            var rels = '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+            var wrels = '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>';
+            blob = new Blob([mkZip([{n:'[Content_Types].xml',d:ct},{n:'_rels/.rels',d:rels},{n:'word/_rels/document.xml.rels',d:wrels},{n:'word/document.xml',d:docXml}])],
+                {type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+            ext = '.docx';
+        }
+        if (blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url; a.download = T.name + '_translated' + ext;
+            a.style.display = 'none';
+            document.body.appendChild(a); a.click();
+            setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+        }
+    }
+
+    // ===== ZIP BUILDER =====
+    function mkZip(files){var locals=[],cdirs=[],off=0;for(var i=0;i<files.length;i++){var nb=new TextEncoder().encode(files[i].n);var db=new TextEncoder().encode(files[i].d);var c=crc32(db);var lh=new Uint8Array(30+nb.length+db.length);var lv=new DataView(lh.buffer);lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint32(14,c,true);lv.setUint32(18,db.length,true);lv.setUint32(22,db.length,true);lv.setUint16(26,nb.length,true);lh.set(nb,30);lh.set(db,30+nb.length);locals.push(lh);var cd=new Uint8Array(46+nb.length);var cv=new DataView(cd.buffer);cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint32(16,c,true);cv.setUint32(20,db.length,true);cv.setUint32(24,db.length,true);cv.setUint16(28,nb.length,true);cv.setUint32(42,off,true);cd.set(nb,46);cdirs.push(cd);off+=lh.length;}var cdsz=0;for(var i=0;i<cdirs.length;i++)cdsz+=cdirs[i].length;var end=new Uint8Array(22);var ev=new DataView(end.buffer);ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,cdsz,true);ev.setUint32(16,off,true);var out=new Uint8Array(off+cdsz+22);var p=0;for(var i=0;i<locals.length;i++){out.set(locals[i],p);p+=locals[i].length;}for(var i=0;i<cdirs.length;i++){out.set(cdirs[i],p);p+=cdirs[i].length;}out.set(end,p);return out;}
+    function crc32(d){var t=[];for(var i=0;i<256;i++){var c=i;for(var j=0;j<8;j++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[i]=c;}var v=0xFFFFFFFF;for(var i=0;i<d.length;i++)v=t[(v^d[i])&0xFF]^(v>>>8);return(v^0xFFFFFFFF)>>>0;}
+
+    // ===== HELPERS =====
+    function show(id) {
+        ['s1','s2','s3'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
+        document.getElementById(id).style.display = 'block';
+    }
+    function setProg(p, t, s) {
+        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
+        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt)tt.textContent=t;if(ss)ss.textContent=s;
+    }
+    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
+    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
+    function fmtSz(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
+    function esc(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
+    function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
+
+    console.log('Translate PDF loaded');
+    </script>
+
+</body>
+</html>

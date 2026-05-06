@@ -1,19 +1,881 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PDF to Excel - Convert PDF to XLSX | PDFTools</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><link rel="stylesheet" href="css/tool-page.css"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Excel - Convert PDF to XLSX Free | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:20px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#ef4444,#dc2626)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .file-card-meta .fbadge{background:rgba(22,163,74,0.1);color:#16a34a;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+        .convert-preview{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:center;padding:20px;background:rgba(255,255,255,0.3);border-radius:14px;margin-bottom:20px}
+        .cv-box{text-align:center;padding:20px 15px;border-radius:12px}
+        .cv-box.from{background:rgba(239,68,68,0.08);border:2px solid rgba(239,68,68,0.2)}
+        .cv-box.to{background:rgba(22,163,74,0.08);border:2px solid rgba(22,163,74,0.2)}
+        .cv-box i{font-size:36px;margin-bottom:8px;display:block}
+        .cv-box.from i{color:#ef4444}.cv-box.to i{color:#16a34a}
+        .cv-box h4{font-size:13px;font-weight:700}.cv-box p{font-size:11px;color:var(--text-light)}
+        .cv-arrow{font-size:28px;color:var(--primary)}
+        .fmt-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0}
+        .fmt-btn{padding:18px 12px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:12px;text-align:center;cursor:pointer;transition:all .2s}
+        .fmt-btn:hover{border-color:var(--primary)}
+        .fmt-btn.on{border-color:var(--primary);background:rgba(99,102,241,0.08)}
+        .fmt-btn i{font-size:28px;margin-bottom:8px;display:block}
+        .fmt-btn.fxlsx i{color:#16a34a}.fmt-btn.fcsv i{color:#64748b}.fmt-btn.ftsv i{color:#0891b2}
+        .fmt-btn h5{font-size:14px;font-weight:700}.fmt-btn p{font-size:10px;color:var(--text-light)}
+        .table-preview{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:auto;margin:15px 0;max-height:350px}
+        .table-preview table{width:100%;border-collapse:collapse;font-size:12px}
+        .table-preview th{background:#f1f5f9;padding:8px 12px;text-align:left;font-weight:700;color:#334155;border-bottom:2px solid #e2e8f0;position:sticky;top:0}
+        .table-preview td{padding:6px 12px;border-bottom:1px solid #f1f5f9;color:#475569}
+        .table-preview tr:hover td{background:#f8fafc}
+        .table-preview .pg-header{background:#eff6ff;color:#2563eb;font-weight:700;text-align:center;padding:8px}
+        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:22px;font-weight:800;color:#16a34a}.sbox p{font-size:11px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
+        @media(max-width:768px){.convert-preview{grid-template-columns:1fr}.cv-arrow{transform:rotate(90deg)}.fmt-row{grid-template-columns:1fr}.opt-grid{grid-template-columns:1fr}}
+    </style>
+</head>
 <body>
-<div class="bg-animation"><div class="blob blob-1 blob-green"></div><div class="blob blob-2 blob-teal"></div><div class="blob blob-3 blob-cyan"></div></div>
-<nav class="navbar glass"><a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a><div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div><div class="nav-links" id="navLinks"><a href="index.html"><i class="fas fa-home"></i> Home</a><a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a><a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a></div></nav>
-<section class="tool-header"><div class="container"><div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>PDF to Excel</span></div><div class="tool-title"><div class="tool-title-icon icon-green"><i class="fas fa-file-excel"></i></div><div><h1>PDF to Excel</h1><p>Extract tables and data from PDF into Excel spreadsheets.</p></div></div></div></section>
-<div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
-<section class="tool-area"><div class="container"><div class="tool-wrapper glass">
-<div id="uploadSection" data-section><div class="upload-zone" id="dropZone"><div class="upload-zone-content"><div class="upload-icon"><i class="fas fa-table"></i></div><h2>Upload PDF with Tables</h2><p>We'll extract data into Excel format</p><button class="upload-btn" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF</button><input type="file" id="fileInput" accept=".pdf" hidden></div></div></div>
-<div id="optionsSection" data-section style="display:none;"><div class="files-area"><div class="files-header"><h3><i class="fas fa-file-pdf"></i> <span id="fileName"></span></h3><button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i></button></div><div class="options-panel glass-light"><h4><i class="fas fa-cog"></i> Options</h4><div class="options-row"><div class="option-field"><label>Output Format</label><select><option>.xlsx (Excel)</option><option>.csv (CSV)</option></select></div><div class="option-field"><label>Table Detection</label><select><option>Auto Detect</option><option>Manual Selection</option></select></div></div></div><button class="action-btn" onclick="startProcess()"><i class="fas fa-exchange-alt"></i> Convert to Excel</button></div></div>
-<div id="processingSection" data-section style="display:none;"><div class="processing-area"><div class="spinner"></div><h3>Extracting data...</h3><p>Detecting tables and converting to Excel</p><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><span class="progress-text" id="progressText">0%</span></div></div>
-<div id="resultSection" data-section style="display:none;"><div class="result-area"><div class="result-icon success"><i class="fas fa-check-circle"></i></div><h2>Excel File Ready!</h2><button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download Excel</button><div class="result-actions"><button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Convert Another</button></div></div></div>
-</div></div></section>
-<section class="related-tools"><div class="container"><div class="section-header"><h2>Related Tools</h2></div><div class="related-grid"><a href="excel-to-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-file-excel"></i></div><h4>Excel to PDF</h4></a><a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a><a href="ocr-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-eye"></i></div><h4>OCR PDF</h4></a></div></div></section>
-<footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a></div></div></div></footer>
-<script src="js/tool-page.js"></script>
-<script>setupDropZone('dropZone','fileInput',['.pdf'],f=>{document.getElementById('fileName').textContent=f[0].name;showSection('optionsSection');});function startProcess(){showSection('processingSection');simulateProcess(()=>showSection('resultSection'));}function resetTool(){showSection('uploadSection');}</script>
-</body></html>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>PDF to Excel</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-green"><i class="fas fa-file-excel"></i></div>
+                <div><h1>PDF to Excel</h1><p>Extract data from PDF into Excel spreadsheets. 100% browser-based!</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <!-- STEP 1: UPLOAD -->
+                <div id="s1">
+                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(22,163,74,0.3);border-radius:20px;margin:25px;cursor:pointer;"
+                         id="dropBox" onclick="document.getElementById('fi').click()">
+                        <div style="font-size:60px;margin-bottom:20px;color:#16a34a;">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Convert</h2>
+                        <p style="color:var(--text-light);margin-bottom:25px;">Extract tables and data into Excel spreadsheet</p>
+                        <button class="upload-btn" style="background:linear-gradient(135deg,#22c55e,#16a34a);"
+                                onclick="event.stopPropagation();document.getElementById('fi').click()">
+                            <i class="fas fa-plus"></i> Select PDF File
+                        </button>
+                        <input type="file" id="fi" accept=".pdf" style="display:none">
+                        <div class="upload-hints" style="margin-top:20px;">
+                            <span><i class="fas fa-lock"></i> Private</span>
+                            <span><i class="fas fa-laptop"></i> Browser Only</span>
+                            <span><i class="fas fa-table"></i> XLSX / CSV</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: OPTIONS -->
+                <div id="s2" style="display:none;">
+                    <div class="files-area">
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                        <div class="file-card">
+                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="file-card-info">
+                                <h4 id="fn">document.pdf</h4>
+                                <div class="file-card-meta">
+                                    <span class="fbadge" id="fs">0 KB</span>
+                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
+                                </div>
+                            </div>
+                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
+                        </div>
+
+                        <div class="convert-preview">
+                            <div class="cv-box from"><i class="fas fa-file-pdf"></i><h4>PDF</h4><p id="pvPdf">doc.pdf</p></div>
+                            <div class="cv-arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="cv-box to"><i class="fas fa-file-excel"></i><h4>Excel</h4><p id="pvXls">doc.xlsx</p></div>
+                        </div>
+
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-cog"></i> Output Format</h4>
+                            <div class="fmt-row">
+                                <div class="fmt-btn fxlsx on" onclick="setFmt('xlsx',this)"><i class="fas fa-file-excel"></i><h5>.XLSX</h5><p>Excel Workbook</p></div>
+                                <div class="fmt-btn fcsv" onclick="setFmt('csv',this)"><i class="fas fa-file-csv"></i><h5>.CSV</h5><p>Comma Separated</p></div>
+                                <div class="fmt-btn ftsv" onclick="setFmt('tsv',this)"><i class="fas fa-table"></i><h5>.TSV</h5><p>Tab Separated</p></div>
+                            </div>
+
+                            <div class="opt-grid">
+                                <div class="option-field">
+                                    <label>Data Layout</label>
+                                    <select id="optLayout">
+                                        <option value="auto">Auto Detect Columns</option>
+                                        <option value="line">One Line Per Row</option>
+                                        <option value="space">Split by Spaces</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Sheets</label>
+                                    <select id="optSheets">
+                                        <option value="multi">Each Page = Separate Sheet</option>
+                                        <option value="single">All Pages in One Sheet</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn" style="background:linear-gradient(135deg,#22c55e,#16a34a);" onclick="doConvert()">
+                            <i class="fas fa-exchange-alt"></i> Convert to Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: PROCESSING -->
+                <div id="s3" style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3 id="pt">Converting to Excel...</h3>
+                        <p id="ps">Extracting data from pages</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#22c55e,#16a34a);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
+                    </div>
+                </div>
+
+                <!-- STEP 4: RESULT -->
+                <div id="s4" style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>Converted to Excel! 📊</h2>
+
+                        <div class="srow">
+                            <div class="sbox"><h4 id="rRows">0</h4><p>Rows</p></div>
+                            <div class="sbox"><h4 id="rCols">0</h4><p>Columns</p></div>
+                            <div class="sbox"><h4 id="rSheets">0</h4><p>Sheets</p></div>
+                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
+                        </div>
+
+                        <div style="text-align:left;">
+                            <h4 style="font-size:14px;margin-bottom:8px;">
+                                <i class="fas fa-table" style="color:#16a34a"></i> Data Preview:
+                            </h4>
+                            <div class="table-preview" id="tblPreview"></div>
+                        </div>
+
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item"><i class="fas fa-file-excel" style="color:#16a34a"></i> <span id="rfn">data.xlsx</span></div>
+                        </div>
+
+                        <button class="download-btn" style="background:linear-gradient(135deg,#22c55e,#16a34a);" onclick="doDownload()">
+                            <i class="fas fa-download"></i> Download Excel
+                        </button>
+
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Convert Another</button>
+                            <button class="btn-outline" onclick="copyCSV()"><i class="fas fa-copy"></i> Copy as CSV</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="excel-to-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-file-excel"></i></div><h4>Excel to PDF</h4></a>
+                <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
+                <a href="pdf-to-ppt.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-file-powerpoint"></i></div><h4>PDF to PPT</h4></a>
+                <a href="ocr-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-eye"></i></div><h4>OCR PDF</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Convert PDF to Excel</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your PDF file.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Options</h4><p>Choose XLSX/CSV format.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get your Excel file.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Will tables be detected?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>We auto-detect columns based on text positioning. Structured PDFs with clear tables work best.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I choose CSV format?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Choose between XLSX (Excel), CSV (comma-separated), or TSV (tab-separated) formats.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Everything runs in your browser. No server upload.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <script>
+    // ==========================================
+    // PDF TO EXCEL - COMPLETE WORKING CODE
+    // PDF.js + Custom XLSX/CSV Builder
+    // ==========================================
+
+    var D = {
+        file: null,
+        rawBytes: null,
+        name: 'data',
+        pages: 0,
+        allRows: [],     // Array of arrays (rows per page)
+        allText: '',
+        blob: null,
+        fmt: 'xlsx',
+        csvText: ''
+    };
+
+    // PDF.js init
+    window.addEventListener('load', function() {
+        try {
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            console.log('PDF.js ready');
+        } catch(e) { console.error(e); }
+    });
+
+    // File input
+    document.getElementById('fi').addEventListener('change', function() {
+        if (this.files && this.files[0]) onFile(this.files[0]);
+    });
+
+    // Drag drop
+    var dropBox = document.getElementById('dropBox');
+    dropBox.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '#16a34a';
+        this.style.background = 'rgba(22,163,74,0.05)';
+    });
+    dropBox.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.style.borderColor = 'rgba(22,163,74,0.3)';
+        this.style.background = '';
+    });
+    dropBox.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.borderColor = 'rgba(22,163,74,0.3)';
+        this.style.background = '';
+        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
+    });
+
+    // On file select
+    async function onFile(file) {
+        hideE();
+        if (!file.name.toLowerCase().endsWith('.pdf')) {
+            showE('Please select a PDF file!');
+            return;
+        }
+
+        D.file = file;
+        D.name = file.name.replace(/\.pdf$/i, '');
+
+        try {
+            var ab = await readF(file);
+            D.rawBytes = new Uint8Array(ab);
+
+            var pdf = await pdfjsLib.getDocument({ data: D.rawBytes.slice(0) }).promise;
+            D.pages = pdf.numPages;
+
+            document.getElementById('fn').textContent = file.name;
+            document.getElementById('fs').textContent = szF(file.size);
+            document.getElementById('fp').textContent = D.pages;
+            document.getElementById('pvPdf').textContent = file.name;
+            document.getElementById('pvXls').textContent = D.name + '.xlsx';
+
+            goTo('s2');
+        } catch(e) {
+            console.error(e);
+            showE('Cannot read PDF: ' + e.message);
+        }
+    }
+
+    function readF(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsArrayBuffer(f);
+        });
+    }
+
+    // Format select
+    function setFmt(f, el) {
+        D.fmt = f;
+        document.querySelectorAll('.fmt-btn').forEach(function(b) { b.classList.remove('on'); });
+        el.classList.add('on');
+        var ext = f === 'xlsx' ? '.xlsx' : f === 'csv' ? '.csv' : '.tsv';
+        document.getElementById('pvXls').textContent = D.name + ext;
+    }
+
+    // ===== CONVERT =====
+    async function doConvert() {
+        hideE();
+        goTo('s3');
+
+        try {
+            prog(5, 'Loading PDF...', 'Opening document');
+
+            var pdf = await pdfjsLib.getDocument({ data: D.rawBytes.slice(0) }).promise;
+            D.allRows = [];
+            D.allText = '';
+
+            var layout = document.getElementById('optLayout').value;
+
+            // Extract text from each page
+            for (var i = 1; i <= pdf.numPages; i++) {
+                prog(Math.round((i / pdf.numPages) * 60), 'Page ' + i + '/' + pdf.numPages, 'Extracting data...');
+
+                var page = await pdf.getPage(i);
+                var content = await page.getTextContent();
+                var viewport = page.getViewport({ scale: 1 });
+
+                var pageRows = [];
+
+                if (layout === 'auto') {
+                    pageRows = extractWithColumns(content, viewport);
+                } else if (layout === 'space') {
+                    pageRows = extractSplitBySpace(content);
+                } else {
+                    pageRows = extractLineByLine(content);
+                }
+
+                D.allRows.push(pageRows);
+            }
+
+            if (getTotalRows() < 1) {
+                goTo('s2');
+                showE('No data found in this PDF. It may be scanned. Try OCR tool first.');
+                return;
+            }
+
+            // Build output
+            prog(70, 'Building file...', 'Creating ' + D.fmt.toUpperCase());
+
+            if (D.fmt === 'xlsx') {
+                buildXLSX();
+            } else if (D.fmt === 'csv') {
+                buildCSV(',');
+            } else {
+                buildCSV('\t');
+            }
+
+            prog(100, 'Done!', 'File ready');
+            setTimeout(showResult, 400);
+
+        } catch(e) {
+            console.error(e);
+            goTo('s2');
+            showE('Conversion failed: ' + e.message);
+        }
+    }
+
+    // ===== EXTRACT WITH AUTO COLUMN DETECTION =====
+    function extractWithColumns(content, viewport) {
+        var items = content.items;
+        if (items.length === 0) return [];
+
+        // Group items by Y position (same row)
+        var rowMap = {};
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            if (!item.str || !item.str.trim()) continue;
+
+            var y = Math.round(item.transform[5]);
+            var x = Math.round(item.transform[4]);
+
+            // Round Y to group nearby items into same row
+            var rowKey = Math.round(y / 5) * 5;
+
+            if (!rowMap[rowKey]) {
+                rowMap[rowKey] = [];
+            }
+            rowMap[rowKey].push({ x: x, text: item.str.trim() });
+        }
+
+        // Sort rows by Y (top to bottom = descending Y)
+        var rowKeys = Object.keys(rowMap).map(Number).sort(function(a, b) { return b - a; });
+
+        // Detect column boundaries
+        var allX = [];
+        for (var k = 0; k < rowKeys.length; k++) {
+            var cells = rowMap[rowKeys[k]];
+            for (var c = 0; c < cells.length; c++) {
+                allX.push(cells[c].x);
+            }
+        }
+
+        // Find column boundaries by clustering X positions
+        allX.sort(function(a, b) { return a - b; });
+        var colBoundaries = [allX[0]];
+        for (var i = 1; i < allX.length; i++) {
+            if (allX[i] - allX[i - 1] > 30) {
+                colBoundaries.push(allX[i]);
+            }
+        }
+
+        // Limit to reasonable number of columns
+        if (colBoundaries.length > 20) {
+            colBoundaries = colBoundaries.slice(0, 20);
+        }
+
+        // Build rows with columns
+        var rows = [];
+        for (var k = 0; k < rowKeys.length; k++) {
+            var cells = rowMap[rowKeys[k]];
+            cells.sort(function(a, b) { return a.x - b.x; });
+
+            var row = new Array(colBoundaries.length).fill('');
+
+            for (var c = 0; c < cells.length; c++) {
+                // Find nearest column
+                var bestCol = 0;
+                var bestDist = 99999;
+                for (var cb = 0; cb < colBoundaries.length; cb++) {
+                    var dist = Math.abs(cells[c].x - colBoundaries[cb]);
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        bestCol = cb;
+                    }
+                }
+
+                if (row[bestCol]) {
+                    row[bestCol] += ' ' + cells[c].text;
+                } else {
+                    row[bestCol] = cells[c].text;
+                }
+            }
+
+            // Only add row if it has content
+            if (row.some(function(cell) { return cell.trim().length > 0; })) {
+                rows.push(row);
+            }
+        }
+
+        return rows;
+    }
+
+    // ===== EXTRACT LINE BY LINE =====
+    function extractLineByLine(content) {
+        var items = content.items;
+        var lines = [];
+        var currentLine = '';
+        var lastY = null;
+
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].str === undefined) continue;
+            var y = Math.round(items[i].transform[5]);
+
+            if (lastY !== null && Math.abs(y - lastY) > 3) {
+                if (currentLine.trim()) {
+                    lines.push([currentLine.trim()]);
+                }
+                currentLine = items[i].str;
+            } else {
+                if (currentLine && items[i].str) currentLine += ' ';
+                currentLine += items[i].str;
+            }
+            lastY = y;
+        }
+        if (currentLine.trim()) lines.push([currentLine.trim()]);
+
+        return lines;
+    }
+
+    // ===== EXTRACT SPLIT BY SPACES =====
+    function extractSplitBySpace(content) {
+        var lineRows = extractLineByLine(content);
+        var rows = [];
+
+        for (var i = 0; i < lineRows.length; i++) {
+            var line = lineRows[i][0] || '';
+            var parts = line.split(/\s{2,}/).filter(function(p) { return p.trim(); });
+            if (parts.length > 0) {
+                rows.push(parts);
+            }
+        }
+
+        return rows;
+    }
+
+    // ===== GET TOTAL ROWS =====
+    function getTotalRows() {
+        var total = 0;
+        for (var i = 0; i < D.allRows.length; i++) {
+            total += D.allRows[i].length;
+        }
+        return total;
+    }
+
+    // ===== GET MAX COLUMNS =====
+    function getMaxCols() {
+        var max = 0;
+        for (var i = 0; i < D.allRows.length; i++) {
+            for (var j = 0; j < D.allRows[i].length; j++) {
+                if (D.allRows[i][j].length > max) max = D.allRows[i][j].length;
+            }
+        }
+        return max;
+    }
+
+    // ==========================================
+    // ✅ BUILD XLSX (Excel)
+    // ==========================================
+    function buildXLSX() {
+        var multiSheet = document.getElementById('optSheets').value === 'multi';
+        var sheets = [];
+
+        if (multiSheet) {
+            for (var p = 0; p < D.allRows.length; p++) {
+                sheets.push({
+                    name: 'Page ' + (p + 1),
+                    rows: D.allRows[p]
+                });
+            }
+        } else {
+            var combined = [];
+            for (var p = 0; p < D.allRows.length; p++) {
+                if (p > 0) combined.push(['--- Page ' + (p + 1) + ' ---']);
+                for (var r = 0; r < D.allRows[p].length; r++) {
+                    combined.push(D.allRows[p][r]);
+                }
+            }
+            sheets.push({ name: 'Data', rows: combined });
+        }
+
+        // Build XLSX XML files
+        var sheetXmls = [];
+        var sheetRels = '';
+        var sheetCT = '';
+        var workbookSheets = '';
+
+        for (var s = 0; s < sheets.length; s++) {
+            var sNum = s + 1;
+            var sheet = sheets[s];
+
+            // Build sheet XML
+            var sheetData = '';
+            for (var r = 0; r < sheet.rows.length; r++) {
+                var row = sheet.rows[r];
+                var rowNum = r + 1;
+                sheetData += '<row r="' + rowNum + '">';
+
+                for (var c = 0; c < row.length; c++) {
+                    var cellRef = colLetter(c) + rowNum;
+                    var val = row[c] || '';
+
+                    // Check if number
+                    var numVal = parseFloat(val.replace(/,/g, ''));
+
+                    if (!isNaN(numVal) && val.trim() === numVal.toString()) {
+                        sheetData += '<c r="' + cellRef + '"><v>' + numVal + '</v></c>';
+                    } else {
+                        sheetData += '<c r="' + cellRef + '" t="inlineStr"><is><t>'
+                            + X(val) + '</t></is></c>';
+                    }
+                }
+
+                sheetData += '</row>';
+            }
+
+            var sheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+                + '<sheetData>' + sheetData + '</sheetData>'
+                + '</worksheet>';
+
+            sheetXmls.push({ n: 'xl/worksheets/sheet' + sNum + '.xml', d: sheetXml });
+
+            sheetRels += '<Relationship Id="rId' + sNum + '"'
+                + ' Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet"'
+                + ' Target="worksheets/sheet' + sNum + '.xml"/>';
+
+            sheetCT += '<Override PartName="/xl/worksheets/sheet' + sNum + '.xml"'
+                + ' ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';
+
+            workbookSheets += '<sheet name="' + X(sheet.name) + '" sheetId="' + sNum + '" r:id="rId' + sNum + '"/>';
+        }
+
+        // Workbook XML
+        var wbXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"'
+            + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+            + '<sheets>' + workbookSheets + '</sheets></workbook>';
+
+        // Content Types
+        var ctXml = '<?xml version="1.0" encoding="UTF-8"?>'
+            + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+            + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+            + '<Default Extension="xml" ContentType="application/xml"/>'
+            + '<Override PartName="/xl/workbook.xml"'
+            + ' ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+            + sheetCT + '</Types>';
+
+        // Root rels
+        var rootRels = '<?xml version="1.0" encoding="UTF-8"?>'
+            + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            + '<Relationship Id="rId1"'
+            + ' Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"'
+            + ' Target="xl/workbook.xml"/></Relationships>';
+
+        // Workbook rels
+        var wbRels = '<?xml version="1.0" encoding="UTF-8"?>'
+            + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            + sheetRels + '</Relationships>';
+
+        // ZIP all files
+        var allFiles = [
+            { n: '[Content_Types].xml', d: ctXml },
+            { n: '_rels/.rels', d: rootRels },
+            { n: 'xl/workbook.xml', d: wbXml },
+            { n: 'xl/_rels/workbook.xml.rels', d: wbRels }
+        ];
+
+        for (var i = 0; i < sheetXmls.length; i++) {
+            allFiles.push(sheetXmls[i]);
+        }
+
+        var zipData = makeZip(allFiles);
+        D.blob = new Blob([zipData], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+    }
+
+    // Column letter (0=A, 1=B, ... 25=Z, 26=AA)
+    function colLetter(c) {
+        var s = '';
+        c++;
+        while (c > 0) {
+            c--;
+            s = String.fromCharCode(65 + (c % 26)) + s;
+            c = Math.floor(c / 26);
+        }
+        return s;
+    }
+
+    // ===== BUILD CSV/TSV =====
+    function buildCSV(sep) {
+        var lines = [];
+        var singleSheet = document.getElementById('optSheets').value === 'single';
+
+        for (var p = 0; p < D.allRows.length; p++) {
+            if (!singleSheet && p > 0) {
+                lines.push('');
+                lines.push('--- Page ' + (p + 1) + ' ---');
+            }
+            for (var r = 0; r < D.allRows[p].length; r++) {
+                var row = D.allRows[p][r];
+                var cells = row.map(function(cell) {
+                    var val = (cell || '').toString();
+                    if (val.indexOf(sep) !== -1 || val.indexOf('"') !== -1 || val.indexOf('\n') !== -1) {
+                        return '"' + val.replace(/"/g, '""') + '"';
+                    }
+                    return val;
+                });
+                lines.push(cells.join(sep));
+            }
+        }
+
+        D.csvText = lines.join('\n');
+        var mimeType = sep === ',' ? 'text/csv' : 'text/tab-separated-values';
+        D.blob = new Blob(['\ufeff' + D.csvText], { type: mimeType + ';charset=utf-8' });
+    }
+
+    // ===== ZIP Builder =====
+    function makeZip(files) {
+        var locals=[], cdirs=[], off=0;
+        for(var i=0;i<files.length;i++){
+            var nb=new TextEncoder().encode(files[i].n);
+            var db=new TextEncoder().encode(files[i].d);
+            var c=crc32(db);
+            var lh=new Uint8Array(30+nb.length+db.length);
+            var lv=new DataView(lh.buffer);
+            lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);
+            lv.setUint32(14,c,true);lv.setUint32(18,db.length,true);
+            lv.setUint32(22,db.length,true);lv.setUint16(26,nb.length,true);
+            lh.set(nb,30);lh.set(db,30+nb.length);locals.push(lh);
+            var cd=new Uint8Array(46+nb.length);
+            var cv=new DataView(cd.buffer);
+            cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);
+            cv.setUint32(16,c,true);cv.setUint32(20,db.length,true);cv.setUint32(24,db.length,true);
+            cv.setUint16(28,nb.length,true);cv.setUint32(42,off,true);
+            cd.set(nb,46);cdirs.push(cd);off+=lh.length;
+        }
+        var cdsz=0;for(var i=0;i<cdirs.length;i++)cdsz+=cdirs[i].length;
+        var end=new Uint8Array(22);var ev=new DataView(end.buffer);
+        ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);
+        ev.setUint16(10,files.length,true);ev.setUint32(12,cdsz,true);ev.setUint32(16,off,true);
+        var out=new Uint8Array(off+cdsz+22);var p=0;
+        for(var i=0;i<locals.length;i++){out.set(locals[i],p);p+=locals[i].length;}
+        for(var i=0;i<cdirs.length;i++){out.set(cdirs[i],p);p+=cdirs[i].length;}
+        out.set(end,p);return out;
+    }
+
+    function crc32(d){
+        var t=[];for(var i=0;i<256;i++){var c=i;for(var j=0;j<8;j++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[i]=c;}
+        var v=0xFFFFFFFF;for(var i=0;i<d.length;i++)v=t[(v^d[i])&0xFF]^(v>>>8);
+        return(v^0xFFFFFFFF)>>>0;
+    }
+
+    // ===== SHOW RESULT =====
+    function showResult() {
+        var totalRows = getTotalRows();
+        var maxCols = getMaxCols();
+
+        document.getElementById('rRows').textContent = totalRows.toLocaleString();
+        document.getElementById('rCols').textContent = maxCols;
+        document.getElementById('rSheets').textContent = D.allRows.length;
+        document.getElementById('rSz').textContent = D.blob ? szF(D.blob.size) : '-';
+
+        var ext = D.fmt === 'xlsx' ? '.xlsx' : D.fmt === 'csv' ? '.csv' : '.tsv';
+        document.getElementById('rfn').textContent = D.name + ext;
+
+        // Build table preview
+        var tbl = document.getElementById('tblPreview');
+        tbl.innerHTML = '';
+
+        var previewHtml = '<table>';
+        var maxPreviewRows = 50;
+        var shown = 0;
+
+        for (var p = 0; p < D.allRows.length && shown < maxPreviewRows; p++) {
+            previewHtml += '<tr><td class="pg-header" colspan="' + maxCols + '">📄 Page ' + (p + 1) + '</td></tr>';
+
+            // Header row (first row of each page)
+            if (D.allRows[p].length > 0) {
+                previewHtml += '<tr>';
+                for (var c = 0; c < D.allRows[p][0].length; c++) {
+                    previewHtml += '<th>' + X(D.allRows[p][0][c] || '') + '</th>';
+                }
+                previewHtml += '</tr>';
+
+                // Data rows
+                for (var r = 1; r < D.allRows[p].length && shown < maxPreviewRows; r++) {
+                    previewHtml += '<tr>';
+                    for (var c = 0; c < D.allRows[p][r].length; c++) {
+                        previewHtml += '<td>' + X(D.allRows[p][r][c] || '') + '</td>';
+                    }
+                    previewHtml += '</tr>';
+                    shown++;
+                }
+            }
+        }
+
+        if (totalRows > maxPreviewRows) {
+            previewHtml += '<tr><td colspan="' + maxCols + '" style="text-align:center;color:var(--text-light);padding:12px;">'
+                + '... ' + (totalRows - maxPreviewRows) + ' more rows</td></tr>';
+        }
+
+        previewHtml += '</table>';
+        tbl.innerHTML = previewHtml;
+
+        goTo('s4');
+    }
+
+    // ===== DOWNLOAD =====
+    function doDownload() {
+        if (!D.blob) { alert('No file ready.'); return; }
+        var ext = D.fmt === 'xlsx' ? '.xlsx' : D.fmt === 'csv' ? '.csv' : '.tsv';
+        var url = URL.createObjectURL(D.blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = D.name + ext;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 500);
+    }
+
+    // ===== COPY CSV =====
+    function copyCSV() {
+        // Generate CSV text
+        var lines = [];
+        for (var p = 0; p < D.allRows.length; p++) {
+            for (var r = 0; r < D.allRows[p].length; r++) {
+                lines.push(D.allRows[p][r].join(','));
+            }
+        }
+        var csv = lines.join('\n');
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(csv).then(function() {
+                alert('✅ Copied ' + lines.length + ' rows as CSV!');
+            });
+        } else {
+            var ta = document.createElement('textarea');
+            ta.value = csv;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            alert('✅ Copied!');
+        }
+    }
+
+    // ===== RESET =====
+    function doReset() {
+        D.file=null;D.rawBytes=null;D.name='data';
+        D.pages=0;D.allRows=[];D.allText='';D.blob=null;D.fmt='xlsx';D.csvText='';
+        hideE();prog(0,'Converting...','');
+        document.getElementById('fi').value='';
+        document.querySelectorAll('.fmt-btn').forEach(function(b){b.classList.remove('on');});
+        document.querySelector('.fxlsx').classList.add('on');
+        goTo('s1');
+    }
+
+    // ===== HELPERS =====
+    function goTo(id) {
+        ['s1','s2','s3','s4'].forEach(function(s){document.getElementById(s).style.display='none';});
+        document.getElementById(id).style.display='block';
+    }
+
+    function prog(p,t,s) {
+        var b=document.getElementById('pb'),pt=document.getElementById('pp');
+        var tt=document.getElementById('pt'),ss=document.getElementById('ps');
+        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';
+        if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
+    }
+
+    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
+    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
+    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
+    function X(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+
+    console.log('PDF to Excel tool loaded');
+    </script>
+
+</body>
+</html>

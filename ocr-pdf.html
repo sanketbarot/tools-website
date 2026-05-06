@@ -4,80 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCR PDF - Extract Text from Scanned PDFs | PDFTools</title>
-    <meta name="description" content="OCR technology to extract text from scanned PDF documents. Convert image-based PDFs to searchable text.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
     <style>
-        .language-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .lang-chip {
-            padding: 10px 12px;
-            background: rgba(255,255,255,0.3);
-            border: 2px solid rgba(255,255,255,0.4);
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .lang-chip:hover { border-color: var(--primary); }
-        .lang-chip.selected {
-            background: rgba(99,102,241,0.1);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        .lang-chip .flag {
-            font-size: 18px;
-            display: block;
-            margin-bottom: 4px;
-        }
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#a855f7,#9333ea)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .fbadge{background:rgba(168,85,247,0.1);color:#9333ea;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
 
-        .ocr-output {
-            padding: 20px;
-        }
-        .ocr-text-preview {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            min-height: 200px;
-            max-height: 400px;
-            overflow-y: auto;
-            font-size: 14px;
-            line-height: 1.8;
-            color: var(--text-dark);
-            margin-bottom: 20px;
-            white-space: pre-wrap;
-        }
-        .ocr-stats {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .ocr-stat {
-            padding: 12px 20px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 10px;
-            text-align: center;
-        }
-        .ocr-stat h4 {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        .ocr-stat p {
-            font-size: 11px;
-            color: var(--text-light);
-        }
+        .lang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:10px 0}
+        .lang-chip{padding:10px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s;font-size:12px;font-weight:600}
+        .lang-chip:hover{border-color:#9333ea}
+        .lang-chip.on{border-color:#9333ea;background:rgba(168,85,247,0.08);color:#9333ea}
+        .lang-chip .flag{font-size:18px;display:block;margin-bottom:3px}
 
-        @media (max-width: 480px) {
-            .language-grid { grid-template-columns: repeat(3, 1fr); }
+        .text-output{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;max-height:400px;overflow-y:auto;font-size:14px;line-height:1.8;color:#333;margin:15px 0;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New',monospace}
+        .text-output::-webkit-scrollbar{width:6px}
+        .text-output::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.3);border-radius:3px}
+
+        .ocr-stats{display:flex;gap:15px;flex-wrap:wrap;margin:15px 0;justify-content:center}
+        .ocr-stat{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .ocr-stat h4{font-size:22px;font-weight:800;color:#9333ea}
+        .ocr-stat p{font-size:11px;color:var(--text-light)}
+
+        .output-tabs{display:flex;gap:0;margin-bottom:15px;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,0.4)}
+        .out-tab{flex:1;padding:12px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;background:rgba(255,255,255,0.3);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+        .out-tab:hover{background:rgba(168,85,247,0.1)}
+        .out-tab.on{background:linear-gradient(135deg,#a855f7,#9333ea);color:#fff}
+
+        .page-ocr-item{background:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.4);border-radius:10px;padding:12px 15px;margin-bottom:10px}
+        .page-ocr-item h5{font-size:13px;font-weight:700;color:#9333ea;margin-bottom:5px}
+        .page-ocr-item .conf{font-size:11px;color:var(--text-light)}
+        .conf-bar{height:4px;border-radius:2px;background:rgba(0,0,0,0.06);margin:5px 0;overflow:hidden}
+        .conf-fill{height:100%;border-radius:2px}
+
+        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
+
+        .progress-detail{font-size:12px;color:var(--text-light);text-align:center;margin-top:8px}
+
+        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:22px;font-weight:800;color:#9333ea}.sbox p{font-size:11px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+
+        @media(max-width:768px){
+            .lang-grid{grid-template-columns:repeat(3,1fr)}
+            .opt-grid{grid-template-columns:1fr}
         }
     </style>
 </head>
@@ -95,158 +70,178 @@
 
     <section class="tool-header">
         <div class="container">
-            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>OCR PDF</span></div>
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i><span>OCR PDF</span>
+            </div>
             <div class="tool-title">
                 <div class="tool-title-icon icon-purple"><i class="fas fa-eye"></i></div>
                 <div>
                     <h1>OCR PDF</h1>
-                    <p>Extract text from scanned PDFs using AI-powered OCR. Make your PDFs searchable and editable.</p>
+                    <p>Extract text from scanned PDFs and images using AI-powered OCR. Supports 100+ languages!</p>
                 </div>
             </div>
         </div>
     </section>
-
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
 
     <section class="tool-area">
         <div class="container">
             <div class="tool-wrapper glass">
 
-                <div id="uploadSection" data-section>
-                    <div class="upload-zone" id="dropZone">
-                        <div class="upload-zone-content">
-                            <div class="upload-icon"><i class="fas fa-eye"></i></div>
-                            <h2>Upload Scanned PDF</h2>
-                            <p>We'll extract text using AI-powered OCR technology</p>
-                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                                <i class="fas fa-plus"></i> Select PDF File
-                            </button>
-                            <input type="file" id="fileInput" accept=".pdf" hidden>
-                            <div class="upload-hints">
-                                <span><i class="fas fa-robot"></i> AI Powered</span>
-                                <span><i class="fas fa-globe"></i> 50+ Languages</span>
-                                <span><i class="fas fa-infinity"></i> Free</span>
-                            </div>
+                <!-- STEP 1: UPLOAD -->
+                <div id="s1">
+                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(168,85,247,0.3);border-radius:20px;margin:25px;cursor:pointer;"
+                         id="dropBox" onclick="document.getElementById('fi').click()">
+                        <div style="font-size:60px;margin-bottom:20px;color:#9333ea;"><i class="fas fa-eye"></i></div>
+                        <h2 style="font-size:24px;margin-bottom:8px;">Upload Scanned PDF or Image</h2>
+                        <p style="color:var(--text-light);margin-bottom:25px;">AI will extract text using Optical Character Recognition</p>
+                        <button class="upload-btn" style="background:linear-gradient(135deg,#a855f7,#9333ea);"
+                                onclick="event.stopPropagation();document.getElementById('fi').click()">
+                            <i class="fas fa-plus"></i> Select File
+                        </button>
+                        <input type="file" id="fi" accept=".pdf,image/jpeg,image/png,image/webp,image/bmp,.jpg,.jpeg,.png,.webp,.bmp" style="display:none">
+                        <div class="upload-hints" style="margin-top:20px;">
+                            <span><i class="fas fa-robot"></i> AI Powered</span>
+                            <span><i class="fas fa-globe"></i> 100+ Languages</span>
+                            <span><i class="fas fa-file-pdf"></i> PDF & Images</span>
+                        </div>
+                        <div class="accepted-formats" style="margin-top:10px;">
+                            Accepted: <span>PDF</span> <span>JPG</span> <span>PNG</span> <span>WEBP</span> <span>BMP</span>
                         </div>
                     </div>
                 </div>
 
-                <div id="optionsSection" data-section style="display:none;">
+                <!-- STEP 2: OPTIONS -->
+                <div id="s2" style="display:none;">
                     <div class="files-area">
-                        <div class="files-header">
-                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">scanned.pdf</span></h3>
-                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                        <div class="file-card">
+                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="file-card-info">
+                                <h4 id="fn">document.pdf</h4>
+                                <div class="file-card-meta">
+                                    <span class="fbadge" id="fs">0 KB</span>
+                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
+                                    <span id="ftypeLabel"><i class="fas fa-file"></i> PDF</span>
+                                </div>
+                            </div>
+                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
                         </div>
 
+                        <!-- Language Selection -->
                         <div class="options-panel glass-light">
                             <h4><i class="fas fa-globe"></i> Document Language</h4>
-                            <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">Select the language(s) in your document for best accuracy:</p>
-                            <div class="language-grid">
-                                <div class="lang-chip selected" onclick="toggleLang(this)"><span class="flag">🇬🇧</span>English</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇮🇳</span>Hindi</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇮🇳</span>Gujarati</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇪🇸</span>Spanish</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇫🇷</span>French</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇩🇪</span>German</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇨🇳</span>Chinese</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇯🇵</span>Japanese</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇸🇦</span>Arabic</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇵🇹</span>Portuguese</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇷🇺</span>Russian</div>
-                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇰🇷</span>Korean</div>
+                            <p style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Select language(s) for best accuracy:</p>
+                            <div class="lang-grid">
+                                <div class="lang-chip on" data-lang="eng" onclick="toggleLang(this)"><span class="flag">🇬🇧</span>English</div>
+                                <div class="lang-chip" data-lang="hin" onclick="toggleLang(this)"><span class="flag">🇮🇳</span>Hindi</div>
+                                <div class="lang-chip" data-lang="guj" onclick="toggleLang(this)"><span class="flag">🇮🇳</span>Gujarati</div>
+                                <div class="lang-chip" data-lang="spa" onclick="toggleLang(this)"><span class="flag">🇪🇸</span>Spanish</div>
+                                <div class="lang-chip" data-lang="fra" onclick="toggleLang(this)"><span class="flag">🇫🇷</span>French</div>
+                                <div class="lang-chip" data-lang="deu" onclick="toggleLang(this)"><span class="flag">🇩🇪</span>German</div>
+                                <div class="lang-chip" data-lang="chi_sim" onclick="toggleLang(this)"><span class="flag">🇨🇳</span>Chinese</div>
+                                <div class="lang-chip" data-lang="jpn" onclick="toggleLang(this)"><span class="flag">🇯🇵</span>Japanese</div>
+                                <div class="lang-chip" data-lang="ara" onclick="toggleLang(this)"><span class="flag">🇸🇦</span>Arabic</div>
+                                <div class="lang-chip" data-lang="por" onclick="toggleLang(this)"><span class="flag">🇵🇹</span>Portuguese</div>
+                                <div class="lang-chip" data-lang="rus" onclick="toggleLang(this)"><span class="flag">🇷🇺</span>Russian</div>
+                                <div class="lang-chip" data-lang="kor" onclick="toggleLang(this)"><span class="flag">🇰🇷</span>Korean</div>
                             </div>
                         </div>
 
+                        <!-- OCR Options -->
                         <div class="options-panel glass-light" style="margin-top:15px;">
                             <h4><i class="fas fa-cog"></i> OCR Options</h4>
-                            <div class="options-row">
+                            <div class="opt-grid">
                                 <div class="option-field">
                                     <label>Output Type</label>
-                                    <select>
-                                        <option>Searchable PDF (PDF + text layer)</option>
-                                        <option>Text Only (.txt)</option>
-                                        <option>Word Document (.docx)</option>
+                                    <select id="optOutput">
+                                        <option value="text">Text Only (.txt)</option>
+                                        <option value="docx">Word Document (.docx)</option>
+                                        <option value="searchable">Searchable PDF</option>
                                     </select>
                                 </div>
                                 <div class="option-field">
-                                    <label>Accuracy Mode</label>
-                                    <select>
-                                        <option>Balanced (Recommended)</option>
-                                        <option>High Accuracy (Slower)</option>
-                                        <option>Fast (Lower Accuracy)</option>
+                                    <label>Image Enhancement</label>
+                                    <select id="optEnhance">
+                                        <option value="auto">Auto Enhance (Recommended)</option>
+                                        <option value="none">No Enhancement</option>
+                                        <option value="bw">Convert to B&W</option>
+                                        <option value="gray">Grayscale</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        <button class="action-btn" onclick="startProcess()">
-                            <i class="fas fa-eye"></i> Run OCR
+                        <div style="background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.2);border-radius:10px;padding:12px 15px;margin:15px 0;font-size:12px;color:#7c3aed;">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Note:</strong> OCR engine will be downloaded (~2MB) on first use. This runs entirely in your browser — no data is sent to any server.
+                        </div>
+
+                        <button class="action-btn" style="background:linear-gradient(135deg,#a855f7,#9333ea);" onclick="startOCR()">
+                            <i class="fas fa-eye"></i> Start OCR
                         </button>
                     </div>
                 </div>
 
-                <div id="processingSection" data-section style="display:none;">
+                <!-- STEP 3: PROCESSING -->
+                <div id="s3" style="display:none;">
                     <div class="processing-area">
                         <div class="spinner"></div>
-                        <h3>Running OCR...</h3>
-                        <p>AI is analyzing and extracting text from your document</p>
-                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                        <span class="progress-text" id="progressText">0%</span>
+                        <h3 id="pt">Running OCR...</h3>
+                        <p id="ps">Initializing OCR engine</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#a855f7,#9333ea);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
+                        <div class="progress-detail" id="pDetail"></div>
                     </div>
                 </div>
 
-                <div id="resultSection" data-section style="display:none;">
+                <!-- STEP 4: RESULT -->
+                <div id="s4" style="display:none;">
                     <div class="result-area" style="text-align:left;max-width:100%;">
                         <div style="text-align:center;">
                             <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
                             <h2>OCR Complete! 🔍</h2>
-                            <p style="color:var(--text-medium);">Text has been extracted from your scanned PDF</p>
+                            <p style="color:var(--text-medium);">Text has been extracted from your document</p>
                         </div>
 
-                        <div class="ocr-output">
-                            <div class="ocr-stats">
-                                <div class="ocr-stat">
-                                    <h4>2,847</h4>
-                                    <p>Words Found</p>
-                                </div>
-                                <div class="ocr-stat">
-                                    <h4>12</h4>
-                                    <p>Pages Scanned</p>
-                                </div>
-                                <div class="ocr-stat">
-                                    <h4>98.5%</h4>
-                                    <p>Accuracy</p>
-                                </div>
-                                <div class="ocr-stat">
-                                    <h4>English</h4>
-                                    <p>Language</p>
-                                </div>
-                            </div>
+                        <!-- Stats -->
+                        <div class="ocr-stats">
+                            <div class="ocr-stat"><h4 id="rPages">0</h4><p>Pages</p></div>
+                            <div class="ocr-stat"><h4 id="rWords">0</h4><p>Words</p></div>
+                            <div class="ocr-stat"><h4 id="rChars">0</h4><p>Characters</p></div>
+                            <div class="ocr-stat"><h4 id="rConf">0%</h4><p>Accuracy</p></div>
+                        </div>
 
-                            <h4 style="margin-bottom:10px;"><i class="fas fa-file-alt" style="color:var(--primary)"></i> Extracted Text Preview:</h4>
-                            <div class="ocr-text-preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        <!-- Per-page confidence -->
+                        <div id="pageResults" style="margin:15px 0;"></div>
 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
-
-[This is sample extracted text. In production, actual OCR text would appear here.]</div>
-
-                            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
-                                <button class="btn-sm btn-primary-sm" onclick="copyText()"><i class="fas fa-copy"></i> Copy Text</button>
-                                <button class="btn-sm btn-primary-sm"><i class="fas fa-file-word"></i> Save as Word</button>
-                                <button class="btn-sm btn-primary-sm"><i class="fas fa-file-alt"></i> Save as TXT</button>
-                            </div>
-
-                            <div style="text-align:center;">
-                                <button class="download-btn" onclick="alert('Download!')">
-                                    <i class="fas fa-download"></i> Download Searchable PDF
-                                </button>
-                                <div class="result-actions" style="margin-top:15px;">
-                                    <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> OCR Another</button>
-                                    <button class="btn-outline"><i class="fas fa-language"></i> Translate Text</button>
+                        <!-- Extracted Text -->
+                        <div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                <h4 style="font-size:14px;"><i class="fas fa-file-alt" style="color:#9333ea"></i> Extracted Text</h4>
+                                <div style="display:flex;gap:8px;">
+                                    <button class="btn-sm btn-primary-sm" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="btn-sm btn-primary-sm" onclick="selectAll()"><i class="fas fa-check-double"></i> Select All</button>
                                 </div>
                             </div>
+                            <div class="text-output" id="textOutput" contenteditable="true">No text extracted.</div>
+                        </div>
+
+                        <!-- Download Options -->
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item"><i class="fas fa-file-alt" style="color:#9333ea"></i> <span id="rfn">ocr_result.txt</span></div>
+                            <div class="info-item"><i class="fas fa-weight-hanging"></i> <span id="rSz">0 KB</span></div>
+                        </div>
+
+                        <button class="download-btn" style="background:linear-gradient(135deg,#a855f7,#9333ea);" onclick="doDownload()">
+                            <i class="fas fa-download"></i> <span id="dlBtnText">Download Text File</span>
+                        </button>
+
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> OCR Another</button>
+                            <button class="btn-outline" onclick="downloadAlt('txt')"><i class="fas fa-file-alt"></i> Save as TXT</button>
+                            <button class="btn-outline" onclick="downloadAlt('docx')"><i class="fas fa-file-word"></i> Save as DOCX</button>
                         </div>
                     </div>
                 </div>
@@ -254,8 +249,6 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
             </div>
         </div>
     </section>
-
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
 
     <section class="related-tools">
         <div class="container">
@@ -263,10 +256,10 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
             <div class="related-grid">
                 <a href="scan-to-pdf.html" class="related-card glass"><div class="related-icon icon-pink"><i class="fas fa-camera"></i></div><h4>Scan to PDF</h4></a>
                 <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
-                <a href="translate-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-language"></i></div><h4>Translate PDF</h4></a>
-                <a href="ai-summarizer.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-robot"></i></div><h4>AI Summarizer</h4></a>
-                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="translate-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-language"></i></div><h4>Translate</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit</h4></a>
                 <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
             </div>
         </div>
     </section>
@@ -275,9 +268,9 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
         <div class="container">
             <div class="section-header"><h2>How OCR Works</h2></div>
             <div class="steps-row">
-                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Upload your scanned PDF document.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-robot"></i><h4>AI Analysis</h4><p>Our AI reads and extracts text from images.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get a searchable PDF or editable text file.</p></div>
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select scanned PDF or image.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-robot"></i><h4>OCR</h4><p>AI reads and extracts text.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get text, DOCX, or searchable PDF.</p></div>
             </div>
         </div>
     </section>
@@ -286,56 +279,502 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
         <div class="container">
             <div class="section-header"><h2>FAQ</h2></div>
             <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>What is OCR?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>OCR (Optical Character Recognition) is technology that converts images of text into actual editable and searchable text. It reads characters from scanned documents.</p></div>
-                </div>
-                <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>Which languages are supported?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>We support 50+ languages including English, Hindi, Gujarati, Spanish, French, German, Chinese, Japanese, Arabic, and many more.</p></div>
-                </div>
-                <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>How accurate is the OCR?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Our AI-powered OCR achieves 95-99% accuracy on clear documents. Accuracy depends on image quality, font, and language.</p></div>
-                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is OCR?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>OCR (Optical Character Recognition) converts images of text into actual editable text. It "reads" characters from scanned documents.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Which languages are supported?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100+ languages including English, Hindi, Gujarati, Chinese, Japanese, Arabic, and many more via Tesseract.js.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How accurate is it?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>95-99% accuracy on clear documents. Quality depends on image resolution, font clarity, and language.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Tesseract.js runs entirely in your browser. No data is sent to any server.</p></div></div>
             </div>
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-simple">
-                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-                <p>© 2025 PDFTools. All rights reserved.</p>
-                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
-            </div>
-        </div>
-    </footer>
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
 
     <script src="js/tool-page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
     <script>
-        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) {
-            document.getElementById('fileName').textContent = files[0].name;
-            showSection('optionsSection');
+    // ==========================================
+    // OCR PDF - COMPLETE WORKING CODE
+    // PDF.js (render pages) + Tesseract.js (OCR)
+    // ==========================================
+
+    window.addEventListener('load', function() {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    });
+
+    var O = {
+        rawBytes: null, name: 'document',
+        fileType: 'pdf',    // pdf or image
+        pages: 0,
+        langs: ['eng'],
+        allText: '',
+        pageTexts: [],      // [{text, confidence}]
+        avgConfidence: 0,
+        blob: null,
+        imageDataUrl: null   // if single image uploaded
+    };
+
+    // File input
+    document.getElementById('fi').addEventListener('change', function() {
+        if (this.files && this.files[0]) onFile(this.files[0]);
+    });
+
+    // Drag drop
+    var dropBox = document.getElementById('dropBox');
+    dropBox.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = '#9333ea'; this.style.background = 'rgba(168,85,247,0.05)'; });
+    dropBox.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(168,85,247,0.3)'; this.style.background = ''; });
+    dropBox.addEventListener('drop', function(e) {
+        e.preventDefault(); this.style.borderColor = 'rgba(168,85,247,0.3)'; this.style.background = '';
+        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
+    });
+
+    // ===== ON FILE =====
+    async function onFile(file) {
+        hideE();
+        O.name = file.name.replace(/\.[^.]+$/, '');
+
+        var isPDF = file.name.toLowerCase().endsWith('.pdf');
+        var isImage = file.type.startsWith('image/');
+
+        if (!isPDF && !isImage) {
+            showE('Please select a PDF or image file!');
+            return;
+        }
+
+        O.fileType = isPDF ? 'pdf' : 'image';
+
+        try {
+            if (isPDF) {
+                var ab = await readF(file);
+                O.rawBytes = new Uint8Array(ab);
+                var pdf = await pdfjsLib.getDocument({ data: O.rawBytes.slice(0) }).promise;
+                O.pages = pdf.numPages;
+                document.getElementById('ftypeLabel').innerHTML = '<i class="fas fa-file-pdf"></i> PDF';
+            } else {
+                O.imageDataUrl = await readAsDataURL(file);
+                O.pages = 1;
+                O.rawBytes = null;
+                document.getElementById('ftypeLabel').innerHTML = '<i class="fas fa-image"></i> Image';
+            }
+
+            document.getElementById('fn').textContent = file.name;
+            document.getElementById('fs').textContent = szF(file.size);
+            document.getElementById('fp').textContent = O.pages;
+
+            goTo('s2');
+        } catch(e) {
+            console.error(e);
+            showE('Cannot read file: ' + e.message);
+        }
+    }
+
+    function readF(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsArrayBuffer(f);
+        });
+    }
+
+    function readAsDataURL(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsDataURL(f);
+        });
+    }
+
+    // ===== LANGUAGE TOGGLE =====
+    function toggleLang(el) {
+        el.classList.toggle('on');
+        O.langs = [];
+        document.querySelectorAll('.lang-chip.on').forEach(function(c) {
+            O.langs.push(c.getAttribute('data-lang'));
+        });
+        if (O.langs.length === 0) {
+            O.langs = ['eng'];
+            document.querySelector('[data-lang="eng"]').classList.add('on');
+        }
+    }
+
+    // ==========================================
+    // ✅ START OCR
+    // ==========================================
+    async function startOCR() {
+        hideE();
+        if (O.pages === 0) { showE('No file loaded!'); return; }
+
+        goTo('s3');
+        O.pageTexts = [];
+        O.allText = '';
+
+        try {
+            var langStr = O.langs.join('+');
+            var enhance = document.getElementById('optEnhance').value;
+
+            prog(3, 'Initializing OCR engine...', 'Loading Tesseract.js (' + langStr + ')');
+            document.getElementById('pDetail').textContent = 'First time may take 10-30 seconds to download language data...';
+
+            // Create Tesseract worker
+            var worker = await Tesseract.createWorker(langStr, 1, {
+                logger: function(m) {
+                    if (m.status === 'recognizing text') {
+                        var p = Math.round(m.progress * 100);
+                        document.getElementById('pDetail').textContent = 'Recognizing: ' + p + '%';
+                    }
+                }
+            });
+
+            prog(15, 'OCR engine ready', 'Processing pages...');
+            document.getElementById('pDetail').textContent = '';
+
+            // Process each page
+            var totalConfidence = 0;
+
+            for (var i = 0; i < O.pages; i++) {
+                var pageNum = i + 1;
+                prog(
+                    15 + Math.round((i / O.pages) * 75),
+                    'Processing page ' + pageNum + '/' + O.pages,
+                    'Running OCR...'
+                );
+
+                // Get image for OCR
+                var imageSource;
+
+                if (O.fileType === 'pdf') {
+                    // Render PDF page to canvas
+                    imageSource = await renderPdfPageToCanvas(pageNum, enhance);
+                } else {
+                    // Use uploaded image
+                    imageSource = await enhanceImageForOCR(O.imageDataUrl, enhance);
+                }
+
+                // Run OCR on this page
+                var result = await worker.recognize(imageSource);
+                var pageText = result.data.text || '';
+                var pageConf = result.data.confidence || 0;
+
+                O.pageTexts.push({
+                    text: pageText.trim(),
+                    confidence: Math.round(pageConf),
+                    pageNum: pageNum
+                });
+
+                O.allText += pageText.trim() + '\n\n';
+                totalConfidence += pageConf;
+            }
+
+            // Cleanup worker
+            await worker.terminate();
+
+            O.allText = O.allText.trim();
+            O.avgConfidence = O.pages > 0 ? Math.round(totalConfidence / O.pages) : 0;
+
+            prog(95, 'Preparing results...', 'Almost done');
+
+            if (O.allText.length < 3) {
+                goTo('s2');
+                showE('No text could be extracted. The image may be too blurry, or the wrong language was selected.');
+                return;
+            }
+
+            // Create download blob
+            createOutputBlob();
+
+            prog(100, 'Done!', 'OCR complete');
+
+            setTimeout(showResults, 400);
+
+        } catch(e) {
+            console.error('OCR error:', e);
+            goTo('s2');
+            showE('OCR failed: ' + e.message + '. Try a different language or image quality.');
+        }
+    }
+
+    // ===== RENDER PDF PAGE TO CANVAS =====
+    async function renderPdfPageToCanvas(pageNum, enhance) {
+        var pdf = await pdfjsLib.getDocument({ data: O.rawBytes.slice(0) }).promise;
+        var page = await pdf.getPage(pageNum);
+        var vp = page.getViewport({ scale: 2 }); // Higher scale = better OCR
+
+        var canvas = document.createElement('canvas');
+        canvas.width = vp.width;
+        canvas.height = vp.height;
+        var ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+
+        // Apply enhancement
+        if (enhance !== 'none') {
+            applyEnhancement(ctx, canvas.width, canvas.height, enhance);
+        }
+
+        return canvas;
+    }
+
+    // ===== ENHANCE IMAGE FOR OCR =====
+    async function enhanceImageForOCR(dataUrl, enhance) {
+        return new Promise(function(resolve) {
+            var img = new Image();
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                var ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+
+                if (enhance !== 'none') {
+                    applyEnhancement(ctx, canvas.width, canvas.height, enhance);
+                }
+
+                resolve(canvas);
+            };
+            img.src = dataUrl;
+        });
+    }
+
+    // ===== APPLY ENHANCEMENT =====
+    function applyEnhancement(ctx, w, h, mode) {
+        var imageData = ctx.getImageData(0, 0, w, h);
+        var data = imageData.data;
+
+        for (var i = 0; i < data.length; i += 4) {
+            var r = data[i], g = data[i+1], b = data[i+2];
+
+            if (mode === 'bw') {
+                var gray = 0.299*r + 0.587*g + 0.114*b;
+                gray = gray > 140 ? 255 : 0;
+                data[i] = data[i+1] = data[i+2] = gray;
+            } else if (mode === 'gray') {
+                var gray = 0.299*r + 0.587*g + 0.114*b;
+                data[i] = data[i+1] = data[i+2] = gray;
+            } else {
+                // Auto enhance: increase contrast
+                var factor = 1.3;
+                data[i] = Math.min(255, Math.max(0, factor*(r-128)+128+10));
+                data[i+1] = Math.min(255, Math.max(0, factor*(g-128)+128+10));
+                data[i+2] = Math.min(255, Math.max(0, factor*(b-128)+128+10));
+            }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+    }
+
+    // ===== CREATE OUTPUT BLOB =====
+    function createOutputBlob() {
+        var outputType = document.getElementById('optOutput').value;
+
+        if (outputType === 'docx') {
+            // Build simple DOCX
+            var body = '';
+            O.pageTexts.forEach(function(pt, idx) {
+                var lines = pt.text.split('\n');
+                lines.forEach(function(line) {
+                    if (!line.trim()) { body += '<w:p/>'; return; }
+                    line = line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    body += '<w:p><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="24"/></w:rPr>'
+                        + '<w:t xml:space="preserve">' + line + '</w:t></w:r></w:p>';
+                });
+                if (idx < O.pageTexts.length - 1) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+            });
+
+            var docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                + '<w:document xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
+                + ' xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+                + body + '<w:sectPr><w:pgSz w:w="12240" w:h="15840"/>'
+                + '<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>';
+
+            var ct = '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+                + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+                + '<Default Extension="xml" ContentType="application/xml"/>'
+                + '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+
+            var rels = '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+
+            var wrels = '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>';
+
+            O.blob = new Blob([makeZip([
+                {n:'[Content_Types].xml',d:ct},{n:'_rels/.rels',d:rels},
+                {n:'word/_rels/document.xml.rels',d:wrels},{n:'word/document.xml',d:docXml}
+            ])], {type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+
+        } else {
+            // Plain text
+            var txt = '';
+            O.pageTexts.forEach(function(pt, idx) {
+                txt += '=== Page ' + pt.pageNum + ' (Confidence: ' + pt.confidence + '%) ===\n\n';
+                txt += pt.text + '\n\n';
+            });
+            O.blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+        }
+    }
+
+    // ZIP builder (same as other tools)
+    function makeZip(files) {
+        var locals=[], cdirs=[], off=0;
+        for(var i=0;i<files.length;i++){
+            var nb=new TextEncoder().encode(files[i].n);
+            var db=new TextEncoder().encode(files[i].d);
+            var c=crc32(db);
+            var lh=new Uint8Array(30+nb.length+db.length);
+            var lv=new DataView(lh.buffer);
+            lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);
+            lv.setUint32(14,c,true);lv.setUint32(18,db.length,true);
+            lv.setUint32(22,db.length,true);lv.setUint16(26,nb.length,true);
+            lh.set(nb,30);lh.set(db,30+nb.length);locals.push(lh);
+            var cd=new Uint8Array(46+nb.length);var cv=new DataView(cd.buffer);
+            cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);
+            cv.setUint32(16,c,true);cv.setUint32(20,db.length,true);cv.setUint32(24,db.length,true);
+            cv.setUint16(28,nb.length,true);cv.setUint32(42,off,true);
+            cd.set(nb,46);cdirs.push(cd);off+=lh.length;
+        }
+        var cdsz=0;for(var i=0;i<cdirs.length;i++)cdsz+=cdirs[i].length;
+        var end=new Uint8Array(22);var ev=new DataView(end.buffer);
+        ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);
+        ev.setUint16(10,files.length,true);ev.setUint32(12,cdsz,true);ev.setUint32(16,off,true);
+        var out=new Uint8Array(off+cdsz+22);var p=0;
+        for(var i=0;i<locals.length;i++){out.set(locals[i],p);p+=locals[i].length;}
+        for(var i=0;i<cdirs.length;i++){out.set(cdirs[i],p);p+=cdirs[i].length;}
+        out.set(end,p);return out;
+    }
+    function crc32(d){var t=[];for(var i=0;i<256;i++){var c=i;for(var j=0;j<8;j++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[i]=c;}var v=0xFFFFFFFF;for(var i=0;i<d.length;i++)v=t[(v^d[i])&0xFF]^(v>>>8);return(v^0xFFFFFFFF)>>>0;}
+
+    // ===== SHOW RESULTS =====
+    function showResults() {
+        var words = O.allText.split(/\s+/).filter(function(w){return w.length>0;}).length;
+
+        document.getElementById('rPages').textContent = O.pages;
+        document.getElementById('rWords').textContent = words.toLocaleString();
+        document.getElementById('rChars').textContent = O.allText.length.toLocaleString();
+        document.getElementById('rConf').textContent = O.avgConfidence + '%';
+
+        // Text output
+        document.getElementById('textOutput').textContent = O.allText;
+
+        // Per-page results
+        var container = document.getElementById('pageResults');
+        container.innerHTML = '';
+        O.pageTexts.forEach(function(pt) {
+            var confColor = pt.confidence >= 90 ? '#22c55e' : pt.confidence >= 70 ? '#f59e0b' : '#ef4444';
+            var div = document.createElement('div');
+            div.className = 'page-ocr-item';
+            div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;">'
+                + '<h5>Page ' + pt.pageNum + '</h5>'
+                + '<span class="conf">' + pt.confidence + '% confidence</span></div>'
+                + '<div class="conf-bar"><div class="conf-fill" style="width:' + pt.confidence + '%;background:' + confColor + ';"></div></div>';
+            container.appendChild(div);
         });
 
-        function toggleLang(el) {
-            el.classList.toggle('selected');
-        }
+        // File info
+        var outputType = document.getElementById('optOutput').value;
+        var ext = outputType === 'docx' ? '.docx' : '.txt';
+        document.getElementById('rfn').textContent = O.name + '_ocr' + ext;
+        document.getElementById('rSz').textContent = O.blob ? szF(O.blob.size) : '-';
+        document.getElementById('dlBtnText').textContent = 'Download ' + ext.toUpperCase() + ' File';
 
-        function copyText() {
-            var text = document.querySelector('.ocr-text-preview').textContent;
-            navigator.clipboard.writeText(text).then(function() {
-                alert('Text copied to clipboard!');
+        goTo('s4');
+    }
+
+    // ===== DOWNLOAD =====
+    function doDownload() {
+        if (!O.blob) { alert('No file.'); return; }
+        var outputType = document.getElementById('optOutput').value;
+        var ext = outputType === 'docx' ? '.docx' : '.txt';
+        dlBlob(O.blob, O.name + '_ocr' + ext);
+    }
+
+    function downloadAlt(type) {
+        if (type === 'txt') {
+            var txt = '';
+            O.pageTexts.forEach(function(pt) {
+                txt += '=== Page ' + pt.pageNum + ' ===\n\n' + pt.text + '\n\n';
             });
+            dlBlob(new Blob([txt], {type:'text/plain'}), O.name + '_ocr.txt');
+        } else if (type === 'docx') {
+            // Re-create DOCX output
+            var prevOutput = document.getElementById('optOutput').value;
+            document.getElementById('optOutput').value = 'docx';
+            createOutputBlob();
+            dlBlob(O.blob, O.name + '_ocr.docx');
+            document.getElementById('optOutput').value = prevOutput;
         }
+    }
 
-        function startProcess() {
-            showSection('processingSection');
-            simulateProcess(function() { showSection('resultSection'); }, 250);
-        }
+    function dlBlob(blob, name) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = name;
+        a.style.display = 'none';
+        document.body.appendChild(a); a.click();
+        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    }
 
-        function resetTool() { showSection('uploadSection'); }
+    // ===== COPY & SELECT =====
+    function copyText() {
+        if (!O.allText) { alert('No text.'); return; }
+        navigator.clipboard.writeText(O.allText).then(function() {
+            alert('✅ Copied ' + O.allText.length + ' characters!');
+        }).catch(function() {
+            var ta = document.createElement('textarea');
+            ta.value = O.allText;
+            document.body.appendChild(ta); ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            alert('✅ Copied!');
+        });
+    }
+
+    function selectAll() {
+        var el = document.getElementById('textOutput');
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    // ===== RESET =====
+    function doReset() {
+        O.rawBytes = null; O.name = 'document';
+        O.fileType = 'pdf'; O.pages = 0;
+        O.langs = ['eng']; O.allText = '';
+        O.pageTexts = []; O.avgConfidence = 0;
+        O.blob = null; O.imageDataUrl = null;
+        hideE();
+        document.getElementById('fi').value = '';
+        document.querySelectorAll('.lang-chip').forEach(function(c) { c.classList.remove('on'); });
+        document.querySelector('[data-lang="eng"]').classList.add('on');
+        goTo('s1');
+    }
+
+    // ===== HELPERS =====
+    function goTo(id) {
+        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
+        document.getElementById(id).style.display = 'block';
+    }
+    function prog(p, t, s) {
+        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
+        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
+    }
+    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
+    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
+    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
+
+    console.log('OCR PDF tool loaded');
+    console.log('Libraries: PDF.js + Tesseract.js');
     </script>
+
 </body>
 </html>

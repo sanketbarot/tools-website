@@ -4,17 +4,204 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Split PDF - Extract & Separate PDF Pages Free | PDFTools</title>
-    <meta name="description" content="Split PDF into multiple files or extract specific pages. Free online tool, no signup required.">
+    <meta name="description" content="Split PDF into multiple files or extract specific pages. Free, works in browser.">
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+
+    <!-- ✅ PDF-LIB for real PDF splitting -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+    <!-- ✅ JSZip for downloading multiple files as ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+        .page-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        .page-preview-grid::-webkit-scrollbar { width: 6px; }
+        .page-preview-grid::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+
+        .page-preview-item {
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-preview-item::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 6px; right: 6px; bottom: 25px;
+            background: repeating-linear-gradient(180deg, #cbd5e1 0px, #cbd5e1 1px, transparent 1px, transparent 6px);
+            opacity: 0.4;
+            border-radius: 3px;
+        }
+        .page-preview-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99,102,241,0.15);
+        }
+        .page-preview-item.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(236,72,153,0.05));
+        }
+        .page-preview-item.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 800;
+        }
+        .page-num-label {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary);
+            position: relative;
+            z-index: 1;
+        }
+        .page-bottom-label {
+            font-size: 10px;
+            color: var(--text-light);
+            position: absolute;
+            bottom: 5px;
+            font-weight: 600;
+        }
+
+        .split-mode-info {
+            padding: 12px 18px;
+            background: rgba(99,102,241,0.06);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 10px 10px 0;
+            margin: 10px 0 15px;
+            font-size: 13px;
+            color: var(--text-medium);
+        }
+        .split-mode-info i { color: var(--primary); margin-right: 8px; }
+
+        .select-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .select-action-btn {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(99,102,241,0.1);
+            color: var(--primary);
+            transition: all 0.2s;
+        }
+        .select-action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .split-file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .split-file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .split-file-item .file-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .split-file-item .file-info { flex: 1; }
+        .split-file-item .file-info h4 { font-size: 13px; font-weight: 600; }
+        .split-file-item .file-info span { font-size: 11px; color: var(--text-light); }
+        .split-file-item .download-single {
+            padding: 7px 14px;
+            background: rgba(34,197,94,0.1);
+            color: #16a34a;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .split-file-item .download-single:hover {
+            background: #16a34a;
+            color: white;
+        }
+
+        .error-box {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 10px;
+            padding: 12px 18px;
+            color: #dc2626;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .page-preview-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            .page-preview-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="bg-animation">
-        <div class="blob blob-1 blob-blue"></div>
-        <div class="blob blob-2 blob-purple"></div>
-        <div class="blob blob-3 blob-cyan"></div>
-    </div>
 
+    <!-- NAVBAR -->
     <nav class="navbar glass">
         <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
         <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
@@ -25,6 +212,7 @@
         </div>
     </nav>
 
+    <!-- HEADER -->
     <section class="tool-header">
         <div class="container">
             <div class="breadcrumb">
@@ -36,18 +224,23 @@
                 <div class="tool-title-icon icon-blue"><i class="fas fa-cut"></i></div>
                 <div>
                     <h1>Split PDF</h1>
-                    <p>Extract pages or split your PDF into multiple separate files easily.</p>
+                    <p>Extract pages or split your PDF into multiple separate files. Works 100% in your browser!</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense - Banner Ad</div></div>
+    <!-- AD -->
+    <div class="adsense-wrapper">
+        <div class="adsense-unit" data-slot="topBanner" data-format="auto"></div>
+    </div>
 
+    <!-- MAIN TOOL -->
     <section class="tool-area">
         <div class="container">
             <div class="tool-wrapper glass">
 
+                <!-- ========== UPLOAD ========== -->
                 <div id="uploadSection" data-section>
                     <div class="upload-zone" id="dropZone">
                         <div class="upload-zone-content">
@@ -57,88 +250,185 @@
                             <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
                                 <i class="fas fa-plus"></i> Select PDF File
                             </button>
-                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                            <input type="file" id="fileInput" accept=".pdf,application/pdf" hidden>
                             <div class="upload-hints">
-                                <span><i class="fas fa-lock"></i> Secure</span>
+                                <span><i class="fas fa-lock"></i> 100% Private</span>
+                                <span><i class="fas fa-laptop"></i> Browser Only</span>
                                 <span><i class="fas fa-infinity"></i> Free</span>
-                                <span><i class="fas fa-file-pdf"></i> Max 100MB</span>
                             </div>
+                            <p style="margin-top:12px;font-size:12px;color:var(--text-light);">
+                                <i class="fas fa-shield-alt"></i> Files never leave your device!
+                            </p>
                         </div>
                     </div>
                 </div>
 
+                <!-- ========== OPTIONS ========== -->
                 <div id="optionsSection" data-section style="display:none;">
                     <div class="files-area">
-                        <div class="files-header">
-                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span></h3>
-                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+
+                        <!-- Error -->
+                        <div class="error-box" id="errorBox">
+                            <i class="fas fa-exclamation-triangle"></i> <span id="errorText"></span>
                         </div>
 
+                        <!-- File Info -->
+                        <div class="files-header">
+                            <h3>
+                                <i class="fas fa-file-pdf" style="color:#2563eb"></i>
+                                <span id="fileName">document.pdf</span>
+                                <span style="font-size:13px;color:var(--text-light);font-weight:400;">
+                                    — <span id="pageCount">0</span> pages
+                                </span>
+                            </h3>
+                            <button class="btn-sm btn-danger-sm" onclick="resetTool()">
+                                <i class="fas fa-times"></i> Remove
+                            </button>
+                        </div>
+
+                        <!-- Split Mode Selection -->
                         <div class="options-panel glass-light">
-                            <h4><i class="fas fa-cog"></i> Split Options</h4>
+                            <h4><i class="fas fa-cog"></i> Split Mode</h4>
+
                             <div class="radio-group" style="margin-bottom:15px;">
                                 <div class="radio-option selected" onclick="setSplitMode('range')">
                                     <input type="radio" name="splitMode" value="range" checked>
-                                    <i class="fas fa-file-alt"></i> Extract by Range
+                                    <i class="fas fa-file-alt"></i> Extract Range
                                 </div>
                                 <div class="radio-option" onclick="setSplitMode('each')">
                                     <input type="radio" name="splitMode" value="each">
-                                    <i class="fas fa-copy"></i> Split Every Page
+                                    <i class="fas fa-copy"></i> Every Page
+                                </div>
+                                <div class="radio-option" onclick="setSplitMode('select')">
+                                    <input type="radio" name="splitMode" value="select">
+                                    <i class="fas fa-mouse-pointer"></i> Select Pages
                                 </div>
                                 <div class="radio-option" onclick="setSplitMode('custom')">
                                     <input type="radio" name="splitMode" value="custom">
-                                    <i class="fas fa-th"></i> Custom Pages
+                                    <i class="fas fa-keyboard"></i> Custom Input
                                 </div>
                             </div>
-                            <div class="options-row" id="rangeOptions">
-                                <div class="option-field">
-                                    <label>From Page</label>
-                                    <input type="number" id="fromPage" value="1" min="1">
+
+                            <!-- Range Mode -->
+                            <div id="rangeMode">
+                                <div class="split-mode-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Extract a continuous range of pages into a new PDF.
                                 </div>
-                                <div class="option-field">
-                                    <label>To Page</label>
-                                    <input type="number" id="toPage" value="5" min="1">
+                                <div class="options-row">
+                                    <div class="option-field">
+                                        <label>From Page</label>
+                                        <input type="number" id="fromPage" value="1" min="1">
+                                    </div>
+                                    <div class="option-field">
+                                        <label>To Page</label>
+                                        <input type="number" id="toPage" value="1" min="1">
+                                    </div>
                                 </div>
                             </div>
-                            <div id="customOptions" style="display:none;margin-top:10px;">
+
+                            <!-- Each Page Mode -->
+                            <div id="eachMode" style="display:none;">
+                                <div class="split-mode-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Every page becomes a separate PDF file. All files will be downloaded as a ZIP.
+                                </div>
+                            </div>
+
+                            <!-- Select Pages Mode -->
+                            <div id="selectMode" style="display:none;">
+                                <div class="split-mode-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Click on pages to select/deselect. Selected pages will be extracted into a new PDF.
+                                </div>
+                                <div class="select-actions">
+                                    <button class="select-action-btn" onclick="selectAllPages()">
+                                        <i class="fas fa-check-double"></i> Select All
+                                    </button>
+                                    <button class="select-action-btn" onclick="deselectAllPages()">
+                                        <i class="fas fa-times"></i> Deselect All
+                                    </button>
+                                    <button class="select-action-btn" onclick="selectOddPages()">
+                                        Odd Pages
+                                    </button>
+                                    <button class="select-action-btn" onclick="selectEvenPages()">
+                                        Even Pages
+                                    </button>
+                                </div>
+                                <div class="page-preview-grid" id="pageGrid"></div>
+                                <p style="font-size:12px;color:var(--text-light);margin-top:5px;">
+                                    <span id="selectedCount">0</span> pages selected
+                                </p>
+                            </div>
+
+                            <!-- Custom Input Mode -->
+                            <div id="customMode" style="display:none;">
+                                <div class="split-mode-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Enter page numbers separated by commas. Use dash for ranges. Example: 1,3,5-8,12
+                                </div>
                                 <div class="option-field">
-                                    <label>Enter page numbers (e.g., 1,3,5-8,12)</label>
+                                    <label>Page Numbers</label>
                                     <input type="text" id="customPages" placeholder="1,3,5-8,12">
                                 </div>
                             </div>
                         </div>
 
-                        <button class="action-btn" onclick="startProcess()">
+                        <!-- Split Button -->
+                        <button class="action-btn" id="splitBtn" onclick="splitPDF()">
                             <i class="fas fa-cut"></i> Split PDF
                         </button>
                     </div>
                 </div>
 
+                <!-- ========== PROCESSING ========== -->
                 <div id="processingSection" data-section style="display:none;">
                     <div class="processing-area">
                         <div class="spinner"></div>
-                        <h3>Splitting your PDF...</h3>
-                        <p>Please wait a moment</p>
+                        <h3 id="processTitle">Splitting your PDF...</h3>
+                        <p id="processSubtitle">Extracting selected pages</p>
                         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
                         <span class="progress-text" id="progressText">0%</span>
                     </div>
                 </div>
 
+                <!-- ========== RESULT ========== -->
                 <div id="resultSection" data-section style="display:none;">
                     <div class="result-area">
                         <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                        <h2>PDF Split Successfully!</h2>
+                        <h2>PDF Split Successfully! ✂️</h2>
                         <p>Your split files are ready to download</p>
+
                         <div class="result-info glass-light">
-                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>3 Files Created</span></div>
-                            <div class="info-item"><i class="fas fa-weight-hanging"></i> <span>1.2 MB Total</span></div>
+                            <div class="info-item">
+                                <i class="fas fa-file-pdf"></i>
+                                <span id="resultFileCount">1 File Created</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-copy"></i>
+                                <span id="resultPageCount">0 Pages</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-weight-hanging"></i>
+                                <span id="resultSize">0 MB</span>
+                            </div>
                         </div>
-                        <button class="download-btn" onclick="alert('Download started!')">
-                            <i class="fas fa-download"></i> Download Split Files
+
+                        <!-- Individual File Downloads -->
+                        <div class="split-file-list" id="splitFileList"></div>
+
+                        <!-- Download All Button -->
+                        <button class="download-btn" id="downloadAllBtn" onclick="downloadAllFiles()">
+                            <i class="fas fa-download"></i> Download All (ZIP)
                         </button>
+
                         <div class="result-actions">
-                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Split Another</button>
-                            <button class="btn-outline"><i class="fas fa-share-alt"></i> Share</button>
+                            <button class="btn-outline" onclick="resetTool()">
+                                <i class="fas fa-redo"></i> Split Another
+                            </button>
+                            <button class="btn-outline" onclick="goBackToOptions()">
+                                <i class="fas fa-arrow-left"></i> Change Options
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -147,11 +437,15 @@
         </div>
     </section>
 
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense - Ad</div></div>
+    <!-- AD -->
+    <div class="adsense-wrapper">
+        <div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div>
+    </div>
 
+    <!-- RELATED TOOLS -->
     <section class="related-tools">
         <div class="container">
-            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="section-header"><h2>Related Tools</h2><p>Tools that work great with Split PDF</p></div>
             <div class="related-grid">
                 <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
                 <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
@@ -163,62 +457,555 @@
         </div>
     </section>
 
+    <!-- HOW TO -->
     <section class="how-to-section">
         <div class="container">
-            <div class="section-header"><h2>How to Split PDF</h2><p>3 easy steps</p></div>
+            <div class="section-header"><h2>How to Split PDF</h2><p>Simple 3-step process</p></div>
             <div class="steps-row">
                 <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload PDF</h4><p>Select the PDF file you want to split.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Choose Method</h4><p>Select split by range, every page, or custom pages.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download your split PDF files instantly.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Choose Method</h4><p>Select range, every page, click pages, or type custom.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download individual files or all as ZIP.</p></div>
             </div>
         </div>
     </section>
 
+    <!-- FAQ -->
     <section class="faq-section">
         <div class="container">
-            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="section-header"><h2>Frequently Asked Questions</h2></div>
             <div class="faq-list">
                 <div class="faq-item glass" onclick="toggleFaq(this)">
                     <div class="faq-question"><h4>Can I extract specific pages from a PDF?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Yes! Use the "Custom Pages" option to select specific page numbers like 1,3,5-8,12.</p></div>
+                    <div class="faq-answer"><p>Yes! Use "Select Pages" mode to click individual pages, or "Custom Input" to type page numbers like 1,3,5-8,12.</p></div>
                 </div>
                 <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>Is splitting PDF free?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Absolutely! Our PDF splitter is 100% free with no limitations.</p></div>
+                    <div class="faq-question"><h4>Are my files secure?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>100% secure! All processing happens in your browser. Files never leave your device or get uploaded to any server.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I split every page into separate files?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! Select "Every Page" mode and each page becomes a separate PDF. Download all as a ZIP file.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Does splitting reduce PDF quality?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>No! We extract pages without any modification. All content, images, and formatting stay in original quality.</p></div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- FOOTER -->
     <footer class="footer">
         <div class="container">
             <div class="footer-simple">
                 <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
                 <p>© 2025 PDFTools. All rights reserved.</p>
-                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="contact.html">Contact</a>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Common JS -->
     <script src="js/tool-page.js"></script>
+    <script src="js/adsense.js"></script>
+
+    <!-- ✅ REAL SPLIT PDF LOGIC -->
     <script>
-        // Split PDF specific
-        setupDropZone('dropZone', 'fileInput', ['.pdf', 'application/pdf'], files => {
-            document.getElementById('fileName').textContent = files[0].name;
+    // ==========================================
+    // SPLIT PDF - REAL WORKING CODE
+    // Uses pdf-lib.js + JSZip
+    // ==========================================
+
+    var sourceFile = null;
+    var sourceArrayBuffer = null;
+    var sourcePdfDoc = null;
+    var totalPageCount = 0;
+    var selectedPages = [];
+    var splitResults = [];      // Array of { name, bytes, pages }
+    var currentMode = 'range';
+
+    // ========== DRAG & DROP ==========
+    var dropZone = document.getElementById('dropZone');
+    var fileInput = document.getElementById('fileInput');
+
+    if (dropZone) {
+        ['dragenter', 'dragover'].forEach(function(evt) {
+            dropZone.addEventListener(evt, function(e) {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+        });
+        ['dragleave', 'drop'].forEach(function(evt) {
+            dropZone.addEventListener(evt, function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+            });
+        });
+        dropZone.addEventListener('drop', function(e) {
+            var files = Array.from(e.dataTransfer.files);
+            var pdf = files.find(function(f) {
+                return f.type === 'application/pdf' || f.name.endsWith('.pdf');
+            });
+            if (pdf) loadPDF(pdf);
+            else showError('Please drop a PDF file!');
+        });
+        dropZone.addEventListener('click', function(e) {
+            if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
+                fileInput.click();
+            }
+        });
+    }
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files[0]) loadPDF(e.target.files[0]);
+            fileInput.value = '';
+        });
+    }
+
+    // ========== LOAD PDF ==========
+    async function loadPDF(file) {
+        hideError();
+        try {
+            sourceFile = file;
+            sourceArrayBuffer = await file.arrayBuffer();
+            sourcePdfDoc = await PDFLib.PDFDocument.load(sourceArrayBuffer, {
+                ignoreEncryption: true
+            });
+            totalPageCount = sourcePdfDoc.getPageCount();
+
+            // Update UI
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('pageCount').textContent = totalPageCount;
+            document.getElementById('toPage').value = totalPageCount;
+            document.getElementById('toPage').max = totalPageCount;
+            document.getElementById('fromPage').max = totalPageCount;
+
+            // Initialize selected pages array
+            selectedPages = new Array(totalPageCount).fill(false);
+
+            // Build page grid
+            buildPageGrid();
+
             showSection('optionsSection');
+
+        } catch (err) {
+            console.error('PDF load error:', err);
+            showError('Could not read PDF. File may be corrupted or password-protected.');
+        }
+    }
+
+    // ========== BUILD PAGE GRID ==========
+    function buildPageGrid() {
+        var grid = document.getElementById('pageGrid');
+        grid.innerHTML = '';
+
+        for (var i = 0; i < totalPageCount; i++) {
+            var div = document.createElement('div');
+            div.className = 'page-preview-item' + (selectedPages[i] ? ' selected' : '');
+            div.dataset.page = i;
+            div.innerHTML = '<span class="page-num-label">' + (i + 1) + '</span><span class="page-bottom-label">Page ' + (i + 1) + '</span>';
+            div.addEventListener('click', function() {
+                var idx = parseInt(this.dataset.page);
+                selectedPages[idx] = !selectedPages[idx];
+                this.classList.toggle('selected');
+                updateSelectedCount();
+            });
+            grid.appendChild(div);
+        }
+        updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+        var count = selectedPages.filter(function(s) { return s; }).length;
+        document.getElementById('selectedCount').textContent = count;
+    }
+
+    // ========== PAGE SELECTION HELPERS ==========
+    function selectAllPages() {
+        selectedPages = selectedPages.map(function() { return true; });
+        refreshPageGrid();
+    }
+
+    function deselectAllPages() {
+        selectedPages = selectedPages.map(function() { return false; });
+        refreshPageGrid();
+    }
+
+    function selectOddPages() {
+        selectedPages = selectedPages.map(function(_, i) { return (i + 1) % 2 !== 0; });
+        refreshPageGrid();
+    }
+
+    function selectEvenPages() {
+        selectedPages = selectedPages.map(function(_, i) { return (i + 1) % 2 === 0; });
+        refreshPageGrid();
+    }
+
+    function refreshPageGrid() {
+        var items = document.querySelectorAll('.page-preview-item');
+        items.forEach(function(item, i) {
+            if (selectedPages[i]) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+        updateSelectedCount();
+    }
+
+    // ========== SPLIT MODE TOGGLE ==========
+    function setSplitMode(mode) {
+        currentMode = mode;
+        document.getElementById('rangeMode').style.display = mode === 'range' ? 'block' : 'none';
+        document.getElementById('eachMode').style.display = mode === 'each' ? 'block' : 'none';
+        document.getElementById('selectMode').style.display = mode === 'select' ? 'block' : 'none';
+        document.getElementById('customMode').style.display = mode === 'custom' ? 'block' : 'none';
+
+        // Update radio options visual
+        document.querySelectorAll('.radio-option').forEach(function(opt) {
+            opt.classList.remove('selected');
+        });
+        event.target.closest('.radio-option').classList.add('selected');
+    }
+
+    // ========== PARSE CUSTOM PAGE INPUT ==========
+    function parseCustomPages(input) {
+        var pages = [];
+        var parts = input.split(',');
+
+        for (var i = 0; i < parts.length; i++) {
+            var part = parts[i].trim();
+            if (!part) continue;
+
+            if (part.indexOf('-') !== -1) {
+                var range = part.split('-');
+                var start = parseInt(range[0]);
+                var end = parseInt(range[1]);
+                if (isNaN(start) || isNaN(end)) continue;
+                for (var j = Math.min(start, end); j <= Math.max(start, end); j++) {
+                    if (j >= 1 && j <= totalPageCount && pages.indexOf(j - 1) === -1) {
+                        pages.push(j - 1); // 0-indexed
+                    }
+                }
+            } else {
+                var num = parseInt(part);
+                if (!isNaN(num) && num >= 1 && num <= totalPageCount && pages.indexOf(num - 1) === -1) {
+                    pages.push(num - 1); // 0-indexed
+                }
+            }
+        }
+
+        pages.sort(function(a, b) { return a - b; });
+        return pages;
+    }
+
+    // ========== GET PAGES TO EXTRACT ==========
+    function getPagesToExtract() {
+        var pages = [];
+
+        switch (currentMode) {
+            case 'range':
+                var from = parseInt(document.getElementById('fromPage').value) - 1;
+                var to = parseInt(document.getElementById('toPage').value) - 1;
+                if (isNaN(from) || isNaN(to) || from < 0 || to >= totalPageCount || from > to) {
+                    showError('Invalid page range! Please check From and To values.');
+                    return null;
+                }
+                for (var i = from; i <= to; i++) pages.push(i);
+                break;
+
+            case 'each':
+                for (var i = 0; i < totalPageCount; i++) pages.push(i);
+                break;
+
+            case 'select':
+                pages = selectedPages.reduce(function(acc, selected, idx) {
+                    if (selected) acc.push(idx);
+                    return acc;
+                }, []);
+                if (pages.length === 0) {
+                    showError('Please select at least one page!');
+                    return null;
+                }
+                break;
+
+            case 'custom':
+                var input = document.getElementById('customPages').value;
+                if (!input.trim()) {
+                    showError('Please enter page numbers!');
+                    return null;
+                }
+                pages = parseCustomPages(input);
+                if (pages.length === 0) {
+                    showError('No valid page numbers found! Use format: 1,3,5-8,12');
+                    return null;
+                }
+                break;
+        }
+
+        return pages;
+    }
+
+    // ==========================================
+    // ✅ REAL SPLIT FUNCTION
+    // ==========================================
+    async function splitPDF() {
+        hideError();
+
+        var pages = getPagesToExtract();
+        if (!pages) return;
+
+        showSection('processingSection');
+        splitResults = [];
+
+        try {
+            if (currentMode === 'each') {
+                // Split every page into separate PDF
+                for (var i = 0; i < pages.length; i++) {
+                    updateProgress(
+                        Math.round((i / pages.length) * 90),
+                        'Extracting page ' + (pages[i] + 1) + '...',
+                        'Creating file ' + (i + 1) + ' of ' + pages.length
+                    );
+
+                    var newPdf = await PDFLib.PDFDocument.create();
+                    var copiedPages = await newPdf.copyPages(sourcePdfDoc, [pages[i]]);
+                    newPdf.addPage(copiedPages[0]);
+
+                    var pdfBytes = await newPdf.save();
+                    var baseName = sourceFile.name.replace('.pdf', '').replace('.PDF', '');
+
+                    splitResults.push({
+                        name: baseName + '_page_' + (pages[i] + 1) + '.pdf',
+                        bytes: pdfBytes,
+                        pages: 1
+                    });
+                }
+            } else {
+                // Extract selected pages into single PDF
+                updateProgress(30, 'Extracting pages...', 'Copying ' + pages.length + ' pages');
+
+                var newPdf = await PDFLib.PDFDocument.create();
+                var copiedPages = await newPdf.copyPages(sourcePdfDoc, pages);
+
+                for (var i = 0; i < copiedPages.length; i++) {
+                    newPdf.addPage(copiedPages[i]);
+                }
+
+                updateProgress(70, 'Saving...', 'Generating PDF file');
+
+                var pdfBytes = await newPdf.save();
+                var baseName = sourceFile.name.replace('.pdf', '').replace('.PDF', '');
+                var pageLabel = pages.length === 1
+                    ? 'page_' + (pages[0] + 1)
+                    : 'pages_' + (pages[0] + 1) + '-' + (pages[pages.length - 1] + 1);
+
+                splitResults.push({
+                    name: baseName + '_' + pageLabel + '.pdf',
+                    bytes: pdfBytes,
+                    pages: pages.length
+                });
+            }
+
+            updateProgress(100, 'Complete!', 'Split successful');
+
+            // Show results
+            setTimeout(function() {
+                showResults();
+            }, 500);
+
+        } catch (err) {
+            console.error('Split error:', err);
+            showSection('optionsSection');
+            showError('Error splitting PDF: ' + err.message);
+        }
+    }
+
+    // ========== SHOW RESULTS ==========
+    function showResults() {
+        var totalPages = 0;
+        var totalSize = 0;
+
+        // Build file list
+        var list = document.getElementById('splitFileList');
+        list.innerHTML = '';
+
+        splitResults.forEach(function(result, idx) {
+            totalPages += result.pages;
+            totalSize += result.bytes.length;
+
+            var div = document.createElement('div');
+            div.className = 'split-file-item';
+            div.innerHTML =
+                '<div class="file-icon"><i class="fas fa-file-pdf"></i></div>' +
+                '<div class="file-info">' +
+                    '<h4>' + result.name + '</h4>' +
+                    '<span>' + result.pages + ' page(s) • ' + formatFileSize(result.bytes.length) + '</span>' +
+                '</div>' +
+                '<button class="download-single" onclick="downloadSingleFile(' + idx + ')">' +
+                    '<i class="fas fa-download"></i> Download' +
+                '</button>';
+            list.appendChild(div);
         });
 
-        function setSplitMode(mode) {
-            document.getElementById('rangeOptions').style.display = mode === 'range' ? 'grid' : 'none';
-            document.getElementById('customOptions').style.display = mode === 'custom' ? 'block' : 'none';
+        // Update stats
+        document.getElementById('resultFileCount').textContent = splitResults.length + ' File' + (splitResults.length > 1 ? 's' : '') + ' Created';
+        document.getElementById('resultPageCount').textContent = totalPages + ' Pages';
+        document.getElementById('resultSize').textContent = formatFileSize(totalSize);
+
+        // Show/hide download all button
+        var downloadAllBtn = document.getElementById('downloadAllBtn');
+        if (splitResults.length === 1) {
+            downloadAllBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+            downloadAllBtn.onclick = function() { downloadSingleFile(0); };
+        } else {
+            downloadAllBtn.innerHTML = '<i class="fas fa-download"></i> Download All as ZIP (' + splitResults.length + ' files)';
+            downloadAllBtn.onclick = downloadAllFiles;
         }
 
-        function startProcess() {
-            showSection('processingSection');
-            simulateProcess(() => showSection('resultSection'));
+        showSection('resultSection');
+    }
+
+    // ==========================================
+    // ✅ DOWNLOAD SINGLE FILE
+    // ==========================================
+    function downloadSingleFile(index) {
+        var result = splitResults[index];
+        if (!result) return;
+
+        try {
+            var blob = new Blob([result.bytes], { type: 'application/pdf' });
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = result.name;
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(function() {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+        } catch (err) {
+            console.error('Download error:', err);
+            alert('Download failed. Please try again.');
+        }
+    }
+
+    // ==========================================
+    // ✅ DOWNLOAD ALL AS ZIP
+    // ==========================================
+    async function downloadAllFiles() {
+        if (splitResults.length === 1) {
+            downloadSingleFile(0);
+            return;
         }
 
-        function resetTool() { showSection('uploadSection'); }
+        try {
+            var zip = new JSZip();
+            var baseName = sourceFile.name.replace('.pdf', '').replace('.PDF', '');
+
+            splitResults.forEach(function(result) {
+                zip.file(result.name, result.bytes);
+            });
+
+            var zipBlob = await zip.generateAsync({
+                type: 'blob',
+                compression: 'DEFLATE',
+                compressionOptions: { level: 6 }
+            });
+
+            var url = URL.createObjectURL(zipBlob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = baseName + '_split.zip';
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(function() {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+
+        } catch (err) {
+            console.error('ZIP error:', err);
+            alert('ZIP creation failed. Try downloading files individually.');
+        }
+    }
+
+    // ========== GO BACK TO OPTIONS ==========
+    function goBackToOptions() {
+        splitResults = [];
+        showSection('optionsSection');
+    }
+
+    // ========== RESET ==========
+    function resetTool() {
+        sourceFile = null;
+        sourceArrayBuffer = null;
+        sourcePdfDoc = null;
+        totalPageCount = 0;
+        selectedPages = [];
+        splitResults = [];
+        currentMode = 'range';
+        hideError();
+        updateProgress(0, 'Splitting your PDF...', 'Extracting selected pages');
+        showSection('uploadSection');
+    }
+
+    // ========== SHOW/HIDE SECTIONS ==========
+    function showSection(id) {
+        document.querySelectorAll('[data-section]').forEach(function(s) {
+            s.style.display = 'none';
+        });
+        var el = document.getElementById(id);
+        if (el) el.style.display = 'block';
+    }
+
+    // ========== PROGRESS ==========
+    function updateProgress(percent, title, subtitle) {
+        var fill = document.getElementById('progressFill');
+        var text = document.getElementById('progressText');
+        var titleEl = document.getElementById('processTitle');
+        var subEl = document.getElementById('processSubtitle');
+        if (fill) fill.style.width = percent + '%';
+        if (text) text.textContent = percent + '%';
+        if (titleEl && title) titleEl.textContent = title;
+        if (subEl && subtitle) subEl.textContent = subtitle;
+    }
+
+    // ========== ERROR ==========
+    function showError(msg) {
+        var el = document.getElementById('errorBox');
+        var textEl = document.getElementById('errorText');
+        if (el && textEl) {
+            textEl.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(function() { hideError(); }, 8000);
+        }
+    }
+
+    function hideError() {
+        var el = document.getElementById('errorBox');
+        if (el) el.style.display = 'none';
+    }
+
+    // ========== UTILS ==========
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 B';
+        var k = 1024;
+        var sizes = ['B', 'KB', 'MB', 'GB'];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    console.log('✅ Split PDF - Real Working Version Loaded!');
+    console.log('📦 Using pdf-lib.js + JSZip for browser-based PDF splitting');
     </script>
+
 </body>
 </html>

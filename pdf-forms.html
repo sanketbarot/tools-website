@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Forms - Fill & Create Interactive Forms | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#4f46e5)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .fbadge{background:rgba(99,102,241,0.1);color:#4f46e5;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+
+        /* Mode tabs */
+        .mode-tabs{display:flex;gap:0;margin:15px 0;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,0.4)}
+        .mode-tab{flex:1;padding:14px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;background:rgba(255,255,255,0.3);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+        .mode-tab:hover{background:rgba(99,102,241,0.1)}
+        .mode-tab.on{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff}
+
+        /* Form fields list */
+        .fields-list{max-height:500px;overflow-y:auto;margin:15px 0;padding:5px}
+        .fields-list::-webkit-scrollbar{width:6px}
+        .fields-list::-webkit-scrollbar-thumb{background:rgba(99,102,241,0.3);border-radius:3px}
+
+        .field-item{background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:all .2s}
+        .field-item:hover{border-color:rgba(99,102,241,0.3);box-shadow:0 3px 12px rgba(99,102,241,0.08)}
+        .field-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+        .field-header h5{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+        .field-header .field-type{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+        .field-type.text{background:rgba(59,130,246,0.1);color:#2563eb}
+        .field-type.check{background:rgba(34,197,94,0.1);color:#16a34a}
+        .field-type.radio{background:rgba(168,85,247,0.1);color:#9333ea}
+        .field-type.dropdown{background:rgba(249,115,22,0.1);color:#ea580c}
+        .field-type.button{background:rgba(236,72,153,0.1);color:#db2777}
+
+        .field-input{width:100%;padding:10px 14px;border:2px solid rgba(99,102,241,0.2);border-radius:10px;background:rgba(255,255,255,0.5);font-size:14px;outline:none;transition:all .2s;box-sizing:border-box}
+        .field-input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.12)}
+        .field-input.textarea{min-height:60px;resize:vertical}
+
+        .field-check{display:flex;align-items:center;gap:10px;cursor:pointer}
+        .field-check input{width:18px;height:18px;accent-color:#6366f1}
+        .field-check label{font-size:13px;cursor:pointer}
+
+        /* Create form */
+        .create-form-area{padding:15px}
+        .add-field-bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+        .add-field-btn{padding:8px 14px;border:2px solid rgba(99,102,241,0.25);border-radius:10px;background:rgba(255,255,255,0.3);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;display:flex;align-items:center;gap:5px}
+        .add-field-btn:hover{border-color:#6366f1;background:rgba(99,102,241,0.08);color:#6366f1}
+        .add-field-btn i{color:#6366f1}
+
+        .new-field-card{background:rgba(255,255,255,0.4);border:2px solid rgba(99,102,241,0.2);border-radius:12px;padding:14px;margin-bottom:10px;position:relative}
+        .new-field-card .nf-remove{position:absolute;top:8px;right:8px;width:24px;height:24px;background:#ef4444;color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center}
+        .nf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+        .nf-row label{font-size:11px;font-weight:600;color:var(--text-medium);display:block;margin-bottom:3px}
+        .nf-row input,.nf-row select{width:100%;padding:8px 10px;border:1px solid rgba(99,102,241,0.2);border-radius:8px;background:rgba(255,255,255,0.5);font-size:12px;outline:none;box-sizing:border-box}
+
+        /* Preview */
+        .form-preview{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:25px;margin:15px 0;max-height:400px;overflow-y:auto}
+        .form-preview h3{font-size:18px;margin-bottom:15px;color:#1e293b}
+        .form-preview .fp-field{margin-bottom:12px}
+        .form-preview .fp-field label{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:4px}
+        .form-preview .fp-field input,.form-preview .fp-field select,.form-preview .fp-field textarea{width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box}
+
+        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
+
+        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:22px;font-weight:800;color:#4f46e5}.sbox p{font-size:11px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+
+        .no-fields{text-align:center;padding:30px;color:var(--text-light)}
+        .no-fields i{font-size:40px;margin-bottom:10px;display:block;opacity:0.3}
+
+        @media(max-width:768px){
+            .opt-grid,.nf-row{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i><span>PDF Forms</span>
+            </div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-indigo"><i class="fas fa-wpforms"></i></div>
+                <div>
+                    <h1>PDF Forms</h1>
+                    <p>Fill existing PDF forms or create new interactive forms. 100% browser-based!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <!-- STEP 1: CHOOSE MODE -->
+                <div id="s1">
+                    <div class="files-area">
+                        <h3 style="text-align:center;font-size:20px;margin-bottom:5px;">
+                            <i class="fas fa-wpforms" style="color:#6366f1;"></i> What would you like to do?
+                        </h3>
+                        <p style="text-align:center;color:var(--text-light);margin-bottom:20px;">Fill an existing form or create a new one</p>
+
+                        <div class="mode-tabs">
+                            <div class="mode-tab on" onclick="setMode('fill',this)">
+                                <i class="fas fa-pen-square"></i> Fill Existing Form
+                            </div>
+                            <div class="mode-tab" onclick="setMode('create',this)">
+                                <i class="fas fa-plus-square"></i> Create New Form
+                            </div>
+                        </div>
+
+                        <!-- FILL MODE: Upload -->
+                        <div id="fillUpload">
+                            <div style="padding:40px 20px;text-align:center;border:3px dashed rgba(99,102,241,0.25);border-radius:16px;cursor:pointer;margin-top:15px;"
+                                 onclick="document.getElementById('fi').click()">
+                                <i class="fas fa-file-pdf" style="font-size:40px;color:#6366f1;margin-bottom:10px;display:block;"></i>
+                                <h3 style="font-size:16px;margin-bottom:5px;">Upload PDF with Form Fields</h3>
+                                <p style="font-size:12px;color:var(--text-light);">We'll detect and let you fill all form fields</p>
+                                <button class="upload-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);margin-top:15px;"
+                                        onclick="event.stopPropagation();document.getElementById('fi').click()">
+                                    <i class="fas fa-plus"></i> Select PDF
+                                </button>
+                                <input type="file" id="fi" accept=".pdf" style="display:none">
+                            </div>
+                        </div>
+
+                        <!-- CREATE MODE: Form Builder -->
+                        <div id="createMode" style="display:none;">
+                            <div class="options-panel glass-light" style="margin-top:15px;">
+                                <h4><i class="fas fa-plus-circle"></i> Add Form Fields</h4>
+                                <div class="add-field-bar">
+                                    <button class="add-field-btn" onclick="addNewField('text')"><i class="fas fa-text-height"></i> Text Field</button>
+                                    <button class="add-field-btn" onclick="addNewField('textarea')"><i class="fas fa-align-left"></i> Text Area</button>
+                                    <button class="add-field-btn" onclick="addNewField('checkbox')"><i class="fas fa-check-square"></i> Checkbox</button>
+                                    <button class="add-field-btn" onclick="addNewField('dropdown')"><i class="fas fa-caret-square-down"></i> Dropdown</button>
+                                    <button class="add-field-btn" onclick="addNewField('date')"><i class="fas fa-calendar"></i> Date</button>
+                                    <button class="add-field-btn" onclick="addNewField('email')"><i class="fas fa-envelope"></i> Email</button>
+                                    <button class="add-field-btn" onclick="addNewField('number')"><i class="fas fa-hashtag"></i> Number</button>
+                                </div>
+
+                                <div id="newFieldsList"></div>
+
+                                <div id="noFieldsMsg" class="no-fields">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <p>Click buttons above to add form fields</p>
+                                </div>
+                            </div>
+
+                            <!-- Form Title -->
+                            <div class="options-panel glass-light" style="margin-top:15px;">
+                                <h4><i class="fas fa-file-alt"></i> Form Settings</h4>
+                                <div class="opt-grid">
+                                    <div class="option-field">
+                                        <label>Form Title</label>
+                                        <input type="text" id="formTitle" value="My Form" placeholder="Enter form title">
+                                    </div>
+                                    <div class="option-field">
+                                        <label>Page Size</label>
+                                        <select id="formPageSize">
+                                            <option value="a4">A4</option>
+                                            <option value="letter">Letter</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="action-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);margin-top:15px;" onclick="createFormPDF()">
+                                <i class="fas fa-file-pdf"></i> Create Form PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: FILL FORM -->
+                <div id="s2" style="display:none;">
+                    <div class="files-area">
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                        <div class="file-card">
+                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="file-card-info">
+                                <h4 id="fn">document.pdf</h4>
+                                <div class="file-card-meta">
+                                    <span class="fbadge" id="fs">0 KB</span>
+                                    <span><i class="fas fa-wpforms"></i> <span id="fieldCount">0</span> fields</span>
+                                </div>
+                            </div>
+                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
+                        </div>
+
+                        <h4 style="font-size:15px;margin-bottom:10px;">
+                            <i class="fas fa-pen-square" style="color:#6366f1;"></i> Fill Form Fields
+                        </h4>
+
+                        <div class="fields-list" id="fieldsList"></div>
+
+                        <button class="action-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);" onclick="saveFilled()">
+                            <i class="fas fa-save"></i> Save Filled Form
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: PROCESSING -->
+                <div id="s3" style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3 id="pt">Processing form...</h3>
+                        <p id="ps">Saving data</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#6366f1,#4f46e5);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
+                    </div>
+                </div>
+
+                <!-- STEP 4: RESULT -->
+                <div id="s4" style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2 id="resultTitle">Form Saved! 📝</h2>
+
+                        <div class="srow">
+                            <div class="sbox"><h4 id="rFields">0</h4><p>Fields</p></div>
+                            <div class="sbox"><h4 id="rPages">0</h4><p>Pages</p></div>
+                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
+                        </div>
+
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#6366f1"></i> <span id="rfn">form.pdf</span></div>
+                        </div>
+
+                        <button class="download-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);" onclick="doDownload()">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Start Over</button>
+                            <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-pen"></i> Continue Editing</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit</h4></a>
+                <a href="sign-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-signature"></i></div><h4>Sign</h4></a>
+                <a href="protect-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-shield-alt"></i></div><h4>Protect</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Use PDF Forms</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload/Create</h4><p>Upload form PDF or create new.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-pen"></i><h4>Fill Fields</h4><p>Enter data in form fields.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Save filled/created form.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I fill existing PDF forms?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Upload any PDF with form fields and we'll detect and let you fill all text fields, checkboxes, and dropdowns.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I create new forms?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Use the "Create New Form" tab to add text fields, checkboxes, dropdowns, dates, and more.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Everything runs in your browser. No data sent to servers.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+    <script>
+    // ==========================================
+    // PDF FORMS - COMPLETE WORKING CODE
+    // pdf-lib (detect fields + fill + create)
+    // ==========================================
+
+    var F = {
+        mode: 'fill',       // fill or create
+        rawBytes: null,
+        name: 'form',
+        pages: 0,
+        fields: [],         // Detected form fields
+        newFields: [],       // Created form fields
+        blob: null,
+        fieldCounter: 0
+    };
+
+    // Mode switching
+    function setMode(mode, el) {
+        F.mode = mode;
+        document.querySelectorAll('.mode-tab').forEach(function(t) { t.classList.remove('on'); });
+        el.classList.add('on');
+        document.getElementById('fillUpload').style.display = mode === 'fill' ? 'block' : 'none';
+        document.getElementById('createMode').style.display = mode === 'create' ? 'block' : 'none';
+    }
+
+    // File input
+    document.getElementById('fi').addEventListener('change', function() {
+        if (this.files && this.files[0]) loadPDF(this.files[0]);
+    });
+
+    // ===== LOAD PDF & DETECT FIELDS =====
+    async function loadPDF(file) {
+        hideE();
+        if (!file.name.toLowerCase().endsWith('.pdf')) { showE('Please select a PDF!'); return; }
+        F.name = file.name.replace(/\.pdf$/i, '');
+
+        try {
+            var ab = await readF(file);
+            F.rawBytes = new Uint8Array(ab);
+
+            var pdfDoc = await PDFLib.PDFDocument.load(F.rawBytes.slice(0), { ignoreEncryption: true });
+            F.pages = pdfDoc.getPageCount();
+
+            // Detect form fields
+            var form = pdfDoc.getForm();
+            var pdfFields = form.getFields();
+
+            F.fields = [];
+
+            for (var i = 0; i < pdfFields.length; i++) {
+                var field = pdfFields[i];
+                var fieldName = field.getName();
+                var fieldType = field.constructor.name;
+
+                var fieldData = {
+                    name: fieldName,
+                    type: 'text',
+                    value: '',
+                    options: [],
+                    checked: false
+                };
+
+                if (fieldType === 'PDFTextField') {
+                    fieldData.type = 'text';
+                    try { fieldData.value = field.getText() || ''; } catch(e) {}
+                } else if (fieldType === 'PDFCheckBox') {
+                    fieldData.type = 'checkbox';
+                    try { fieldData.checked = field.isChecked(); } catch(e) {}
+                } else if (fieldType === 'PDFDropdown') {
+                    fieldData.type = 'dropdown';
+                    try {
+                        fieldData.options = field.getOptions() || [];
+                        fieldData.value = field.getSelected() ? field.getSelected()[0] : '';
+                    } catch(e) {}
+                } else if (fieldType === 'PDFRadioGroup') {
+                    fieldData.type = 'radio';
+                    try {
+                        fieldData.options = field.getOptions() || [];
+                        fieldData.value = field.getSelected() || '';
+                    } catch(e) {}
+                } else if (fieldType === 'PDFButton') {
+                    fieldData.type = 'button';
+                } else {
+                    fieldData.type = 'text';
+                }
+
+                F.fields.push(fieldData);
+            }
+
+            // If no form fields found, scan for text content
+            if (F.fields.length === 0) {
+                // Create generic fields for the user to fill
+                F.fields.push({ name: 'Note', type: 'text', value: '', info: 'This PDF has no interactive form fields. You can add text annotations.' });
+            }
+
+            // Update UI
+            document.getElementById('fn').textContent = file.name;
+            document.getElementById('fs').textContent = szF(file.size);
+            document.getElementById('fieldCount').textContent = F.fields.length;
+
+            renderFieldsList();
+            goTo('s2');
+
+        } catch(e) {
+            console.error(e);
+            showE('Cannot read PDF: ' + e.message);
+        }
+    }
+
+    function readF(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsArrayBuffer(f);
+        });
+    }
+
+    // ===== RENDER FIELDS LIST =====
+    function renderFieldsList() {
+        var container = document.getElementById('fieldsList');
+        container.innerHTML = '';
+
+        if (F.fields.length === 0 || (F.fields.length === 1 && F.fields[0].info)) {
+            container.innerHTML = '<div class="no-fields"><i class="fas fa-wpforms"></i><p>No interactive form fields found in this PDF.</p><p style="font-size:11px;">The PDF may have static text instead of fillable fields.</p></div>';
+            return;
+        }
+
+        for (var i = 0; i < F.fields.length; i++) {
+            var field = F.fields[i];
+            if (field.info) continue;
+
+            var item = document.createElement('div');
+            item.className = 'field-item';
+
+            var typeLabel = field.type === 'text' ? 'Text' : field.type === 'checkbox' ? 'Checkbox' : field.type === 'dropdown' ? 'Dropdown' : field.type === 'radio' ? 'Radio' : 'Button';
+            var typeClass = field.type === 'text' ? 'text' : field.type === 'checkbox' ? 'check' : field.type === 'dropdown' ? 'dropdown' : field.type === 'radio' ? 'radio' : 'button';
+            var icon = field.type === 'text' ? 'fa-text-height' : field.type === 'checkbox' ? 'fa-check-square' : field.type === 'dropdown' ? 'fa-caret-square-down' : field.type === 'radio' ? 'fa-dot-circle' : 'fa-square';
+
+            var inputHtml = '';
+
+            if (field.type === 'text') {
+                inputHtml = '<input type="text" class="field-input" data-idx="' + i + '" value="' + esc(field.value) + '" placeholder="Enter value..." oninput="updateFieldValue(' + i + ',this.value)">';
+            } else if (field.type === 'checkbox') {
+                inputHtml = '<div class="field-check"><input type="checkbox" id="chk' + i + '" ' + (field.checked ? 'checked' : '') + ' onchange="updateFieldCheck(' + i + ',this.checked)"><label for="chk' + i + '">Check this box</label></div>';
+            } else if (field.type === 'dropdown') {
+                var opts = '';
+                opts += '<option value="">-- Select --</option>';
+                for (var o = 0; o < field.options.length; o++) {
+                    opts += '<option value="' + esc(field.options[o]) + '"' + (field.value === field.options[o] ? ' selected' : '') + '>' + esc(field.options[o]) + '</option>';
+                }
+                inputHtml = '<select class="field-input" data-idx="' + i + '" onchange="updateFieldValue(' + i + ',this.value)">' + opts + '</select>';
+            } else if (field.type === 'radio') {
+                for (var o = 0; o < field.options.length; o++) {
+                    inputHtml += '<div class="field-check"><input type="radio" name="radio' + i + '" value="' + esc(field.options[o]) + '"' + (field.value === field.options[o] ? ' checked' : '') + ' onchange="updateFieldValue(' + i + ',this.value)"><label>' + esc(field.options[o]) + '</label></div>';
+                }
+            }
+
+            item.innerHTML = '<div class="field-header"><h5><i class="fas ' + icon + '" style="color:#6366f1;"></i> ' + esc(field.name) + '</h5><span class="field-type ' + typeClass + '">' + typeLabel + '</span></div>' + inputHtml;
+
+            container.appendChild(item);
+        }
+    }
+
+    function updateFieldValue(idx, val) { F.fields[idx].value = val; }
+    function updateFieldCheck(idx, checked) { F.fields[idx].checked = checked; }
+
+    // ==========================================
+    // ✅ SAVE FILLED FORM
+    // ==========================================
+    async function saveFilled() {
+        hideE();
+        goTo('s3');
+
+        try {
+            prog(10, 'Loading PDF...', 'Preparing form');
+
+            var pdfDoc = await PDFLib.PDFDocument.load(F.rawBytes.slice(0), { ignoreEncryption: true });
+            var form = pdfDoc.getForm();
+
+            prog(30, 'Filling fields...', 'Applying values');
+
+            for (var i = 0; i < F.fields.length; i++) {
+                var field = F.fields[i];
+                if (field.info) continue;
+
+                prog(30 + Math.round((i / F.fields.length) * 50), 'Field ' + (i + 1), field.name);
+
+                try {
+                    if (field.type === 'text') {
+                        var tf = form.getTextField(field.name);
+                        if (tf && field.value) tf.setText(field.value);
+                    } else if (field.type === 'checkbox') {
+                        var cb = form.getCheckBox(field.name);
+                        if (cb) {
+                            if (field.checked) cb.check();
+                            else cb.uncheck();
+                        }
+                    } else if (field.type === 'dropdown') {
+                        var dd = form.getDropdown(field.name);
+                        if (dd && field.value) dd.select(field.value);
+                    } else if (field.type === 'radio') {
+                        var rg = form.getRadioGroup(field.name);
+                        if (rg && field.value) rg.select(field.value);
+                    }
+                } catch(fieldErr) {
+                    console.warn('Field error:', field.name, fieldErr);
+                }
+            }
+
+            // Flatten form (make fields non-editable)
+            form.flatten();
+
+            prog(85, 'Saving...', 'Generating PDF');
+
+            var savedBytes = await pdfDoc.save();
+            F.blob = new Blob([savedBytes], { type: 'application/pdf' });
+
+            prog(100, 'Done!', 'Form saved');
+
+            document.getElementById('resultTitle').textContent = 'Form Filled & Saved! 📝';
+            document.getElementById('rFields').textContent = F.fields.length;
+            document.getElementById('rPages').textContent = F.pages;
+            document.getElementById('rSz').textContent = szF(F.blob.size);
+            document.getElementById('rfn').textContent = F.name + '_filled.pdf';
+
+            setTimeout(function() { goTo('s4'); }, 400);
+
+        } catch(e) {
+            console.error(e);
+            goTo('s2');
+            showE('Save failed: ' + e.message);
+        }
+    }
+
+    // ==========================================
+    // ✅ CREATE NEW FORM
+    // ==========================================
+    function addNewField(type) {
+        F.fieldCounter++;
+        var field = {
+            id: F.fieldCounter,
+            type: type,
+            label: type === 'text' ? 'Text Field' : type === 'textarea' ? 'Text Area' : type === 'checkbox' ? 'Checkbox' : type === 'dropdown' ? 'Dropdown' : type === 'date' ? 'Date' : type === 'email' ? 'Email' : 'Number',
+            name: 'field_' + F.fieldCounter,
+            placeholder: '',
+            options: type === 'dropdown' ? 'Option 1,Option 2,Option 3' : '',
+            required: false
+        };
+
+        F.newFields.push(field);
+        renderNewFields();
+    }
+
+    function renderNewFields() {
+        var container = document.getElementById('newFieldsList');
+        container.innerHTML = '';
+
+        var noMsg = document.getElementById('noFieldsMsg');
+        noMsg.style.display = F.newFields.length === 0 ? 'block' : 'none';
+
+        for (var i = 0; i < F.newFields.length; i++) {
+            var field = F.newFields[i];
+            var typeIcon = field.type === 'text' ? 'fa-text-height' : field.type === 'textarea' ? 'fa-align-left' : field.type === 'checkbox' ? 'fa-check-square' : field.type === 'dropdown' ? 'fa-caret-square-down' : field.type === 'date' ? 'fa-calendar' : field.type === 'email' ? 'fa-envelope' : 'fa-hashtag';
+
+            var extraField = '';
+            if (field.type === 'dropdown') {
+                extraField = '<div style="grid-column:1/3;"><label>Options (comma separated)</label><input type="text" value="' + esc(field.options) + '" onchange="updateNewField(' + i + ',\'options\',this.value)" placeholder="Option 1, Option 2, Option 3"></div>';
+            }
+
+            var card = document.createElement('div');
+            card.className = 'new-field-card';
+            card.innerHTML = '<button class="nf-remove" onclick="removeNewField(' + i + ')"><i class="fas fa-times"></i></button>'
+                + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'
+                + '<i class="fas ' + typeIcon + '" style="color:#6366f1;font-size:16px;"></i>'
+                + '<strong style="font-size:13px;">' + field.type.charAt(0).toUpperCase() + field.type.slice(1) + ' Field</strong></div>'
+                + '<div class="nf-row">'
+                + '<div><label>Label</label><input type="text" value="' + esc(field.label) + '" onchange="updateNewField(' + i + ',\'label\',this.value)"></div>'
+                + '<div><label>Field Name</label><input type="text" value="' + esc(field.name) + '" onchange="updateNewField(' + i + ',\'name\',this.value)"></div>'
+                + '</div>'
+                + '<div class="nf-row">'
+                + '<div><label>Placeholder</label><input type="text" value="' + esc(field.placeholder) + '" onchange="updateNewField(' + i + ',\'placeholder\',this.value)" placeholder="Enter placeholder..."></div>'
+                + '<div><label>Required</label><select onchange="updateNewField(' + i + ',\'required\',this.value===\'yes\')"><option value="no"' + (!field.required ? ' selected' : '') + '>No</option><option value="yes"' + (field.required ? ' selected' : '') + '>Yes</option></select></div>'
+                + '</div>'
+                + extraField;
+
+            container.appendChild(card);
+        }
+    }
+
+    function updateNewField(idx, key, val) { F.newFields[idx][key] = val; }
+    function removeNewField(idx) { F.newFields.splice(idx, 1); renderNewFields(); }
+
+    // ===== CREATE FORM PDF =====
+    async function createFormPDF() {
+        hideE();
+        if (F.newFields.length === 0) { showE('Add at least one field!'); return; }
+
+        goTo('s3');
+
+        try {
+            prog(10, 'Creating form...', 'Building PDF');
+
+            var pdfDoc = await PDFLib.PDFDocument.create();
+            var pageFormat = document.getElementById('formPageSize').value;
+            var formTitle = document.getElementById('formTitle').value || 'Form';
+
+            var pw = pageFormat === 'a4' ? 595.28 : 612;
+            var ph = pageFormat === 'a4' ? 841.89 : 792;
+
+            var page = pdfDoc.addPage([pw, ph]);
+            var font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+            var boldFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+            var form = pdfDoc.getForm();
+
+            var margin = 50;
+            var y = ph - margin;
+
+            // Title
+            page.drawText(formTitle, { x: margin, y: y, size: 24, font: boldFont, color: PDFLib.rgb(0.1, 0.1, 0.2) });
+            y -= 15;
+            page.drawLine({ start: { x: margin, y: y }, end: { x: pw - margin, y: y }, thickness: 2, color: PDFLib.rgb(0.39, 0.4, 0.95) });
+            y -= 30;
+
+            prog(30, 'Adding fields...', 'Building form');
+
+            var fieldWidth = pw - margin * 2;
+            var fieldHeight = 25;
+
+            for (var i = 0; i < F.newFields.length; i++) {
+                var field = F.newFields[i];
+
+                prog(30 + Math.round((i / F.newFields.length) * 50), 'Field ' + (i + 1), field.label);
+
+                // Check if need new page
+                if (y < margin + 60) {
+                    page = pdfDoc.addPage([pw, ph]);
+                    y = ph - margin;
+                }
+
+                // Label
+                var labelText = field.label + (field.required ? ' *' : '');
+                page.drawText(labelText, { x: margin, y: y, size: 11, font: boldFont, color: PDFLib.rgb(0.2, 0.2, 0.3) });
+                y -= 18;
+
+                if (field.type === 'text' || field.type === 'email' || field.type === 'number' || field.type === 'date') {
+                    var textField = form.createTextField(field.name);
+                    textField.addToPage(page, { x: margin, y: y - fieldHeight, width: fieldWidth, height: fieldHeight, borderWidth: 1, borderColor: PDFLib.rgb(0.7, 0.7, 0.8) });
+                    if (field.placeholder) {
+                        try { textField.setText(field.placeholder); } catch(e) {}
+                    }
+                    y -= fieldHeight + 15;
+
+                } else if (field.type === 'textarea') {
+                    var taHeight = 60;
+                    var taField = form.createTextField(field.name);
+                    taField.enableMultiline();
+                    taField.addToPage(page, { x: margin, y: y - taHeight, width: fieldWidth, height: taHeight, borderWidth: 1, borderColor: PDFLib.rgb(0.7, 0.7, 0.8) });
+                    y -= taHeight + 15;
+
+                } else if (field.type === 'checkbox') {
+                    var cbField = form.createCheckBox(field.name);
+                    cbField.addToPage(page, { x: margin, y: y - 18, width: 18, height: 18, borderWidth: 1, borderColor: PDFLib.rgb(0.7, 0.7, 0.8) });
+                    page.drawText(field.label, { x: margin + 25, y: y - 14, size: 11, font: font, color: PDFLib.rgb(0.3, 0.3, 0.4) });
+                    y -= 30;
+
+                } else if (field.type === 'dropdown') {
+                    var options = field.options.split(',').map(function(o) { return o.trim(); }).filter(function(o) { return o; });
+                    if (options.length > 0) {
+                        var ddField = form.createDropdown(field.name);
+                        ddField.addOptions(options);
+                        ddField.addToPage(page, { x: margin, y: y - fieldHeight, width: fieldWidth, height: fieldHeight, borderWidth: 1, borderColor: PDFLib.rgb(0.7, 0.7, 0.8) });
+                        y -= fieldHeight + 15;
+                    }
+                }
+            }
+
+            // Footer
+            page.drawText('Created with PDFTools', { x: margin, y: 30, size: 8, font: font, color: PDFLib.rgb(0.6, 0.6, 0.7) });
+
+            prog(85, 'Saving...', 'Generating PDF');
+
+            var savedBytes = await pdfDoc.save();
+            F.blob = new Blob([savedBytes], { type: 'application/pdf' });
+            F.name = formTitle.toLowerCase().replace(/\s+/g, '_');
+
+            prog(100, 'Done!', 'Form created');
+
+            document.getElementById('resultTitle').textContent = 'Form Created! 📝';
+            document.getElementById('rFields').textContent = F.newFields.length;
+            document.getElementById('rPages').textContent = pdfDoc.getPageCount();
+            document.getElementById('rSz').textContent = szF(F.blob.size);
+            document.getElementById('rfn').textContent = F.name + '.pdf';
+
+            setTimeout(function() { goTo('s4'); }, 400);
+
+        } catch(e) {
+            console.error(e);
+            goTo('s1');
+            showE('Create failed: ' + e.message);
+        }
+    }
+
+    // ===== DOWNLOAD =====
+    function doDownload() {
+        if (!F.blob) { alert('No file.'); return; }
+        var ext = F.mode === 'fill' ? '_filled.pdf' : '.pdf';
+        var url = URL.createObjectURL(F.blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = F.name + ext;
+        a.style.display = 'none';
+        document.body.appendChild(a); a.click();
+        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    }
+
+    // ===== RESET =====
+    function doReset() {
+        F.rawBytes = null; F.name = 'form';
+        F.pages = 0; F.fields = [];
+        F.newFields = []; F.blob = null;
+        F.fieldCounter = 0;
+        hideE();
+        document.getElementById('fi').value = '';
+        document.getElementById('fieldsList').innerHTML = '';
+        document.getElementById('newFieldsList').innerHTML = '';
+        document.getElementById('noFieldsMsg').style.display = 'block';
+        goTo('s1');
+    }
+
+    // ===== HELPERS =====
+    function goTo(id) {
+        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
+        document.getElementById(id).style.display = 'block';
+    }
+    function prog(p, t, s) {
+        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
+        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
+    }
+    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
+    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
+    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
+    function esc(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+
+    console.log('PDF Forms tool loaded');
+    console.log('Library: pdf-lib.js');
+    </script>
+
+</body>
+</html>

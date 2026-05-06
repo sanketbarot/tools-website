@@ -3,50 +3,908 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel to PDF - Convert XLS to PDF Free | PDFTools</title>
+    <title>Excel to PDF - Convert XLSX to PDF Free | PDFTools</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:20px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#14b8a6,#0d9488)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .fbadge{background:rgba(20,184,166,0.1);color:#0d9488;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+        .convert-preview{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:center;padding:20px;background:rgba(255,255,255,0.3);border-radius:14px;margin-bottom:20px}
+        .cv-box{text-align:center;padding:20px 15px;border-radius:12px}
+        .cv-box.from{background:rgba(20,184,166,0.08);border:2px solid rgba(20,184,166,0.2)}
+        .cv-box.to{background:rgba(239,68,68,0.08);border:2px solid rgba(239,68,68,0.2)}
+        .cv-box i{font-size:36px;margin-bottom:8px;display:block}
+        .cv-box.from i{color:#0d9488}.cv-box.to i{color:#ef4444}
+        .cv-box h4{font-size:13px;font-weight:700}.cv-box p{font-size:11px;color:var(--text-light)}
+        .cv-arrow{font-size:28px;color:var(--primary)}
+        .sheet-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+        .sheet-tab{padding:8px 16px;background:rgba(255,255,255,0.4);border:2px solid rgba(255,255,255,0.5);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+        .sheet-tab:hover{border-color:var(--primary)}
+        .sheet-tab.active{border-color:#0d9488;background:rgba(20,184,166,0.1);color:#0d9488}
+        .table-preview{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:auto;margin:10px 0;max-height:350px}
+        .table-preview table{width:100%;border-collapse:collapse;font-size:11px}
+        .table-preview th{background:#f0fdfa;padding:8px 10px;text-align:left;font-weight:700;color:#0d9488;border-bottom:2px solid #99f6e4;position:sticky;top:0}
+        .table-preview td{padding:6px 10px;border-bottom:1px solid #f1f5f9;color:#475569}
+        .table-preview tr:hover td{background:#f0fdfa}
+        .table-preview .row-num{color:#94a3b8;font-size:10px;width:30px;text-align:center;background:#f8fafc}
+        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:22px;font-weight:800;color:#0d9488}.sbox p{font-size:11px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
+        @media(max-width:768px){.convert-preview{grid-template-columns:1fr}.cv-arrow{transform:rotate(90deg)}.opt-grid{grid-template-columns:1fr}}
+    </style>
 </head>
 <body>
-    <nav class="navbar glass"><a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a><div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div><div class="nav-links" id="navLinks"><a href="index.html"><i class="fas fa-home"></i> Home</a><a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a><a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a></div></nav>
 
-    <section class="tool-header"><div class="container"><div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Excel to PDF</span></div><div class="tool-title"><div class="tool-title-icon icon-teal"><i class="fas fa-file-excel"></i></div><div><h1>Excel to PDF</h1><p>Transform your Excel spreadsheets into professional PDF documents.</p></div></div></div></section>
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
 
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Excel to PDF</span>
+            </div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-teal"><i class="fas fa-file-excel"></i></div>
+                <div>
+                    <h1>Excel to PDF</h1>
+                    <p>Convert Excel spreadsheets (.xlsx) to formatted PDF with tables. 100% browser-based!</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <section class="tool-area"><div class="container"><div class="tool-wrapper glass">
-        <div id="uploadSection" data-section><div class="upload-zone" id="dropZone"><div class="upload-zone-content"><div class="upload-icon"><i class="fas fa-file-excel"></i></div><h2>Upload Excel File</h2><p>Convert spreadsheets to PDF format</p><button class="upload-btn" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select Excel File</button><input type="file" id="fileInput" accept=".xls,.xlsx,.csv" hidden><div class="accepted-formats">Accepted: <span>.XLS</span> <span>.XLSX</span> <span>.CSV</span></div></div></div></div>
-        <div id="optionsSection" data-section style="display:none;"><div class="files-area"><div class="files-header"><h3><i class="fas fa-file-excel" style="color:#0d9488"></i> <span id="fileName"></span></h3><button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button></div>
-            <div class="options-panel glass-light"><h4><i class="fas fa-cog"></i> Options</h4><div class="options-row">
-                <div class="option-field"><label>Page Orientation</label><select><option>Landscape (Best for tables)</option><option>Portrait</option></select></div>
-                <div class="option-field"><label>Fit to Page</label><select><option>Fit All Columns</option><option>Actual Size</option><option>Fit to One Page</option></select></div>
-            </div></div>
-            <button class="action-btn" onclick="startProcess()"><i class="fas fa-exchange-alt"></i> Convert to PDF</button>
-        </div></div>
-        <div id="processingSection" data-section style="display:none;"><div class="processing-area"><div class="spinner"></div><h3>Converting Excel to PDF...</h3><p>Formatting spreadsheet layout</p><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><span class="progress-text" id="progressText">0%</span></div></div>
-        <div id="resultSection" data-section style="display:none;"><div class="result-area"><div class="result-icon success"><i class="fas fa-check-circle"></i></div><h2>Excel Converted to PDF!</h2><p>Your spreadsheet is now in PDF format</p><button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download PDF</button><div class="result-actions"><button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Convert Another</button></div></div></div>
-    </div></div></section>
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
 
-    <section class="related-tools"><div class="container"><div class="section-header"><h2>Related Tools</h2></div><div class="related-grid">
-        <a href="pdf-to-excel.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-file-excel"></i></div><h4>PDF to Excel</h4></a>
-        <a href="word-to-pdf.html" class="related-card glass"><div class="related-icon icon-indigo"><i class="fas fa-file-word"></i></div><h4>Word to PDF</h4></a>
-        <a href="ppt-to-pdf.html" class="related-card glass"><div class="related-icon icon-pink"><i class="fas fa-file-powerpoint"></i></div><h4>PPT to PDF</h4></a>
-        <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
-    </div></div></section>
+                <!-- STEP 1: UPLOAD -->
+                <div id="s1">
+                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(20,184,166,0.3);border-radius:20px;margin:25px;cursor:pointer;"
+                         id="dropBox" onclick="document.getElementById('fi').click()">
+                        <div style="font-size:60px;margin-bottom:20px;color:#0d9488;">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <h2 style="font-size:24px;margin-bottom:8px;">Upload Excel File</h2>
+                        <p style="color:var(--text-light);margin-bottom:25px;">Convert spreadsheet tables to PDF format</p>
+                        <button class="upload-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);"
+                                onclick="event.stopPropagation();document.getElementById('fi').click()">
+                            <i class="fas fa-plus"></i> Select Excel File
+                        </button>
+                        <input type="file" id="fi" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none">
+                        <div class="upload-hints" style="margin-top:20px;">
+                            <span><i class="fas fa-lock"></i> Private</span>
+                            <span><i class="fas fa-laptop"></i> Browser Only</span>
+                            <span><i class="fas fa-file-pdf"></i> PDF Output</span>
+                        </div>
+                        <div class="accepted-formats" style="margin-top:12px;">
+                            Accepted: <span>.XLSX</span> <span>.CSV</span>
+                        </div>
+                    </div>
+                </div>
 
-    <section class="how-to-section"><div class="container"><div class="section-header"><h2>How It Works</h2></div><div class="steps-row">
-        <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your Excel file.</p></div>
-        <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Settings</h4><p>Choose orientation and fit.</p></div>
-        <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get your PDF instantly.</p></div>
-    </div></div></section>
+                <!-- STEP 2: PREVIEW & OPTIONS -->
+                <div id="s2" style="display:none;">
+                    <div class="files-area">
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                        <div class="file-card">
+                            <div class="file-card-icon"><i class="fas fa-file-excel"></i></div>
+                            <div class="file-card-info">
+                                <h4 id="fn">data.xlsx</h4>
+                                <div class="file-card-meta">
+                                    <span class="fbadge" id="fs">0 KB</span>
+                                    <span><i class="fas fa-table"></i> <span id="fsheets">0</span> sheets</span>
+                                    <span><i class="fas fa-th"></i> <span id="frows">0</span> rows</span>
+                                </div>
+                            </div>
+                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
+                        </div>
+
+                        <div class="convert-preview">
+                            <div class="cv-box from"><i class="fas fa-file-excel"></i><h4>Excel</h4><p id="pvXls">data.xlsx</p></div>
+                            <div class="cv-arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="cv-box to"><i class="fas fa-file-pdf"></i><h4>PDF</h4><p id="pvPdf">data.pdf</p></div>
+                        </div>
+
+                        <!-- Sheet Tabs & Preview -->
+                        <div style="margin-bottom:15px;">
+                            <h4 style="font-size:14px;margin-bottom:8px;">
+                                <i class="fas fa-table" style="color:#0d9488"></i> Data Preview:
+                            </h4>
+                            <div class="sheet-tabs" id="sheetTabs"></div>
+                            <div class="table-preview" id="tblPreview"></div>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-cog"></i> PDF Options</h4>
+                            <div class="opt-grid">
+                                <div class="option-field">
+                                    <label>Page Size</label>
+                                    <select id="optPage">
+                                        <option value="a4">A4</option>
+                                        <option value="letter">Letter</option>
+                                        <option value="legal">Legal</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Orientation</label>
+                                    <select id="optOrient">
+                                        <option value="landscape">Landscape (Best for tables)</option>
+                                        <option value="portrait">Portrait</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="opt-grid">
+                                <div class="option-field">
+                                    <label>Font Size</label>
+                                    <select id="optFont">
+                                        <option value="7">7pt (Fit more data)</option>
+                                        <option value="8">8pt</option>
+                                        <option value="9" selected>9pt (Default)</option>
+                                        <option value="10">10pt</option>
+                                        <option value="11">11pt</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Table Style</label>
+                                    <select id="optStyle">
+                                        <option value="striped">Striped Rows</option>
+                                        <option value="bordered">Full Borders</option>
+                                        <option value="minimal">Minimal</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="opt-grid">
+                                <div class="option-field">
+                                    <label>Header Color</label>
+                                    <select id="optHeaderColor">
+                                        <option value="#0d9488">Teal (Default)</option>
+                                        <option value="#1e40af">Blue</option>
+                                        <option value="#15803d">Green</option>
+                                        <option value="#9333ea">Purple</option>
+                                        <option value="#1e293b">Dark</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Sheets to Include</label>
+                                    <select id="optSheets">
+                                        <option value="all">All Sheets</option>
+                                        <option value="current">Current Sheet Only</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);" onclick="doConvert()">
+                            <i class="fas fa-exchange-alt"></i> Convert to PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: PROCESSING -->
+                <div id="s3" style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3 id="pt">Converting to PDF...</h3>
+                        <p id="ps">Building tables</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#14b8a6,#0d9488);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
+                    </div>
+                </div>
+
+                <!-- STEP 4: RESULT -->
+                <div id="s4" style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>Converted to PDF! 📊</h2>
+
+                        <div class="srow">
+                            <div class="sbox"><h4 id="rSheets">0</h4><p>Sheets</p></div>
+                            <div class="sbox"><h4 id="rRows">0</h4><p>Rows</p></div>
+                            <div class="sbox"><h4 id="rPages">0</h4><p>PDF Pages</p></div>
+                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
+                        </div>
+
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i> <span id="rfn">data.pdf</span></div>
+                        </div>
+
+                        <button class="download-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);" onclick="doDownload()">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Convert Another</button>
+                            <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-sliders-h"></i> Change Options</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="pdf-to-excel.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-file-excel"></i></div><h4>PDF to Excel</h4></a>
+                <a href="word-to-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>Word to PDF</h4></a>
+                <a href="ppt-to-pdf.html" class="related-card glass"><div class="related-icon icon-pink"><i class="fas fa-file-powerpoint"></i></div><h4>PPT to PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="protect-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-shield-alt"></i></div><h4>Protect</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Convert Excel to PDF</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your Excel file.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Options</h4><p>Set page size, style, fonts.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get formatted PDF.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Will table formatting be preserved?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! We create properly formatted PDF tables with headers, borders, and styling options.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I convert multiple sheets?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! All sheets are included by default, each starting on a new page.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Everything runs in your browser. No server upload.</p></div></div>
+            </div>
+        </div>
+    </section>
 
     <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
 
     <script src="js/tool-page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script>
-        setupDropZone('dropZone', 'fileInput', ['.xls', '.xlsx', '.csv'], function(files) { document.getElementById('fileName').textContent = files[0].name; showSection('optionsSection'); });
-        function startProcess() { showSection('processingSection'); simulateProcess(function() { showSection('resultSection'); }); }
-        function resetTool() { showSection('uploadSection'); }
+    // ==========================================
+    // EXCEL TO PDF - COMPLETE WORKING CODE
+    // JSZip (read XLSX) + jsPDF (create PDF)
+    // Also supports CSV files
+    // ==========================================
+
+    var D = {
+        file: null, name: 'spreadsheet',
+        sheets: [],          // [{name, rows}]
+        activeSheet: 0,
+        blob: null, totalRows: 0
+    };
+
+    // File input
+    document.getElementById('fi').addEventListener('change', function() {
+        if (this.files && this.files[0]) onFile(this.files[0]);
+    });
+
+    // Drag drop
+    var dropBox = document.getElementById('dropBox');
+    dropBox.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '#0d9488';
+        this.style.background = 'rgba(20,184,166,0.05)';
+    });
+    dropBox.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.style.borderColor = 'rgba(20,184,166,0.3)';
+        this.style.background = '';
+    });
+    dropBox.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.borderColor = 'rgba(20,184,166,0.3)';
+        this.style.background = '';
+        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
+    });
+
+    // ===== ON FILE =====
+    async function onFile(file) {
+        hideE();
+        var name = file.name.toLowerCase();
+
+        if (!name.endsWith('.xlsx') && !name.endsWith('.csv') && !name.endsWith('.xls')) {
+            showE('Please select an .xlsx or .csv file!');
+            return;
+        }
+
+        if (name.endsWith('.xls') && !name.endsWith('.xlsx')) {
+            showE('Only .xlsx format is supported. Please save your .xls as .xlsx in Excel first.');
+            return;
+        }
+
+        D.file = file;
+        D.name = file.name.replace(/\.(xlsx|csv|xls)$/i, '');
+
+        try {
+            if (name.endsWith('.csv')) {
+                await parseCSV(file);
+            } else {
+                await parseXLSX(file);
+            }
+
+            if (D.sheets.length === 0 || D.totalRows === 0) {
+                showE('No data found in this file.');
+                return;
+            }
+
+            // Update UI
+            document.getElementById('fn').textContent = file.name;
+            document.getElementById('fs').textContent = szF(file.size);
+            document.getElementById('fsheets').textContent = D.sheets.length;
+            document.getElementById('frows').textContent = D.totalRows;
+            document.getElementById('pvXls').textContent = file.name;
+            document.getElementById('pvPdf').textContent = D.name + '.pdf';
+
+            buildSheetTabs();
+            showSheetPreview(0);
+
+            goTo('s2');
+        } catch(e) {
+            console.error(e);
+            showE('Cannot read file: ' + e.message);
+        }
+    }
+
+    // ===== PARSE CSV =====
+    async function parseCSV(file) {
+        var text = await file.text();
+        var lines = text.split('\n');
+        var rows = [];
+
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (!line) continue;
+
+            // Simple CSV parse (handles quoted fields)
+            var cells = parseCSVLine(line);
+            if (cells.length > 0) rows.push(cells);
+        }
+
+        D.sheets = [{ name: 'Sheet1', rows: rows }];
+        D.totalRows = rows.length;
+    }
+
+    function parseCSVLine(line) {
+        var cells = [];
+        var current = '';
+        var inQuotes = false;
+
+        for (var i = 0; i < line.length; i++) {
+            var ch = line[i];
+            if (ch === '"') {
+                inQuotes = !inQuotes;
+            } else if (ch === ',' && !inQuotes) {
+                cells.push(current.trim());
+                current = '';
+            } else {
+                current += ch;
+            }
+        }
+        cells.push(current.trim());
+        return cells;
+    }
+
+    // ===== PARSE XLSX =====
+    async function parseXLSX(file) {
+        var ab = await readF(file);
+        var zip = await JSZip.loadAsync(ab);
+        D.sheets = [];
+        D.totalRows = 0;
+
+        // Read shared strings
+        var sharedStrings = [];
+        var ssFile = zip.file('xl/sharedStrings.xml');
+        if (ssFile) {
+            var ssXml = await ssFile.async('text');
+            var parser = new DOMParser();
+            var ssDoc = parser.parseFromString(ssXml, 'text/xml');
+            var siElements = ssDoc.getElementsByTagName('si');
+
+            for (var i = 0; i < siElements.length; i++) {
+                var tElements = siElements[i].getElementsByTagName('t');
+                var str = '';
+                for (var j = 0; j < tElements.length; j++) {
+                    str += tElements[j].textContent || '';
+                }
+                sharedStrings.push(str);
+            }
+        }
+
+        // Read workbook to get sheet names
+        var sheetNames = [];
+        var wbFile = zip.file('xl/workbook.xml');
+        if (wbFile) {
+            var wbXml = await wbFile.async('text');
+            var wbDoc = new DOMParser().parseFromString(wbXml, 'text/xml');
+            var sheetElements = wbDoc.getElementsByTagName('sheet');
+            for (var i = 0; i < sheetElements.length; i++) {
+                sheetNames.push(sheetElements[i].getAttribute('name') || 'Sheet' + (i + 1));
+            }
+        }
+
+        // Read each sheet
+        var sheetIndex = 1;
+        while (true) {
+            var sheetFile = zip.file('xl/worksheets/sheet' + sheetIndex + '.xml');
+            if (!sheetFile) break;
+
+            var sheetXml = await sheetFile.async('text');
+            var sheetDoc = new DOMParser().parseFromString(sheetXml, 'text/xml');
+            var rowElements = sheetDoc.getElementsByTagName('row');
+
+            var rows = [];
+            var maxCol = 0;
+
+            for (var r = 0; r < rowElements.length; r++) {
+                var cellElements = rowElements[r].getElementsByTagName('c');
+                var rowData = {};
+                var rowMaxCol = 0;
+
+                for (var c = 0; c < cellElements.length; c++) {
+                    var cell = cellElements[c];
+                    var ref = cell.getAttribute('r') || '';
+                    var type = cell.getAttribute('t') || '';
+                    var colIdx = cellRefToCol(ref);
+
+                    var vEl = cell.getElementsByTagName('v')[0];
+                    var val = vEl ? vEl.textContent : '';
+
+                    // Resolve shared string
+                    if (type === 's' && val !== '') {
+                        var ssIdx = parseInt(val);
+                        val = sharedStrings[ssIdx] || val;
+                    }
+
+                    // Inline string
+                    if (type === 'inlineStr') {
+                        var isEl = cell.getElementsByTagName('t')[0];
+                        val = isEl ? isEl.textContent : '';
+                    }
+
+                    rowData[colIdx] = val;
+                    if (colIdx > rowMaxCol) rowMaxCol = colIdx;
+                }
+
+                if (rowMaxCol > maxCol) maxCol = rowMaxCol;
+
+                // Convert to array
+                var rowArray = [];
+                for (var ci = 0; ci <= maxCol; ci++) {
+                    rowArray.push(rowData[ci] || '');
+                }
+
+                // Only add non-empty rows
+                if (rowArray.some(function(c) { return c.trim().length > 0; })) {
+                    rows.push(rowArray);
+                }
+            }
+
+            // Ensure all rows have same column count
+            for (var r = 0; r < rows.length; r++) {
+                while (rows[r].length <= maxCol) rows[r].push('');
+            }
+
+            var sheetName = sheetNames[sheetIndex - 1] || 'Sheet ' + sheetIndex;
+            D.sheets.push({ name: sheetName, rows: rows });
+            D.totalRows += rows.length;
+
+            sheetIndex++;
+        }
+    }
+
+    // Convert cell reference like "B3" to column index (0-based)
+    function cellRefToCol(ref) {
+        var col = 0;
+        for (var i = 0; i < ref.length; i++) {
+            var ch = ref.charCodeAt(i);
+            if (ch >= 65 && ch <= 90) {
+                col = col * 26 + (ch - 64);
+            } else if (ch >= 97 && ch <= 122) {
+                col = col * 26 + (ch - 96);
+            } else {
+                break;
+            }
+        }
+        return col - 1;
+    }
+
+    function readF(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsArrayBuffer(f);
+        });
+    }
+
+    // ===== SHEET TABS =====
+    function buildSheetTabs() {
+        var tabs = document.getElementById('sheetTabs');
+        tabs.innerHTML = '';
+        for (var i = 0; i < D.sheets.length; i++) {
+            var tab = document.createElement('div');
+            tab.className = 'sheet-tab' + (i === 0 ? ' active' : '');
+            tab.textContent = D.sheets[i].name + ' (' + D.sheets[i].rows.length + ' rows)';
+            tab.dataset.idx = i;
+            tab.addEventListener('click', function() {
+                var idx = parseInt(this.dataset.idx);
+                D.activeSheet = idx;
+                document.querySelectorAll('.sheet-tab').forEach(function(t) { t.classList.remove('active'); });
+                this.classList.add('active');
+                showSheetPreview(idx);
+            });
+            tabs.appendChild(tab);
+        }
+    }
+
+    // ===== SHOW SHEET PREVIEW =====
+    function showSheetPreview(idx) {
+        var sheet = D.sheets[idx];
+        if (!sheet) return;
+
+        var html = '<table>';
+        var maxRows = Math.min(sheet.rows.length, 50);
+        var maxCols = 0;
+        for (var r = 0; r < sheet.rows.length; r++) {
+            if (sheet.rows[r].length > maxCols) maxCols = sheet.rows[r].length;
+        }
+
+        // Header row
+        if (sheet.rows.length > 0) {
+            html += '<tr><th class="row-num">#</th>';
+            for (var c = 0; c < Math.min(maxCols, 15); c++) {
+                html += '<th>' + X(sheet.rows[0][c] || colName(c)) + '</th>';
+            }
+            if (maxCols > 15) html += '<th>...</th>';
+            html += '</tr>';
+
+            // Data rows
+            for (var r = 1; r < maxRows; r++) {
+                html += '<tr><td class="row-num">' + r + '</td>';
+                for (var c = 0; c < Math.min(maxCols, 15); c++) {
+                    html += '<td>' + X(sheet.rows[r][c] || '') + '</td>';
+                }
+                if (maxCols > 15) html += '<td>...</td>';
+                html += '</tr>';
+            }
+        }
+
+        if (sheet.rows.length > maxRows) {
+            html += '<tr><td colspan="' + (Math.min(maxCols, 15) + 2) + '" style="text-align:center;color:var(--text-light);padding:10px;">'
+                + '... ' + (sheet.rows.length - maxRows) + ' more rows</td></tr>';
+        }
+
+        html += '</table>';
+        document.getElementById('tblPreview').innerHTML = html;
+    }
+
+    function colName(c) {
+        var s = '';
+        c++;
+        while (c > 0) { c--; s = String.fromCharCode(65 + (c % 26)) + s; c = Math.floor(c / 26); }
+        return s;
+    }
+
+    // ==========================================
+    // ✅ CONVERT TO PDF
+    // ==========================================
+    async function doConvert() {
+        hideE();
+        goTo('s3');
+
+        try {
+            var pageFormat = document.getElementById('optPage').value;
+            var orient = document.getElementById('optOrient').value;
+            var fontSize = parseInt(document.getElementById('optFont').value);
+            var tableStyle = document.getElementById('optStyle').value;
+            var headerColorHex = document.getElementById('optHeaderColor').value;
+            var sheetsOption = document.getElementById('optSheets').value;
+
+            var hc = hexRgb(headerColorHex);
+
+            prog(5, 'Creating PDF...', 'Setting up pages');
+
+            var { jsPDF } = window.jspdf;
+            var pdf = new jsPDF({
+                orientation: orient === 'landscape' ? 'l' : 'p',
+                unit: 'mm',
+                format: pageFormat
+            });
+
+            var pw = pdf.internal.pageSize.getWidth();
+            var ph = pdf.internal.pageSize.getHeight();
+            var margin = 15;
+            var contentW = pw - margin * 2;
+            var totalPdfPages = 0;
+
+            // Which sheets to include
+            var sheetsToProcess = [];
+            if (sheetsOption === 'current') {
+                sheetsToProcess = [D.sheets[D.activeSheet]];
+            } else {
+                sheetsToProcess = D.sheets;
+            }
+
+            for (var s = 0; s < sheetsToProcess.length; s++) {
+                if (s > 0) pdf.addPage();
+
+                var sheet = sheetsToProcess[s];
+                if (sheet.rows.length === 0) continue;
+
+                prog(
+                    5 + Math.round((s / sheetsToProcess.length) * 85),
+                    'Sheet: ' + sheet.name,
+                    'Drawing table (' + sheet.rows.length + ' rows)'
+                );
+
+                // Calculate column widths
+                var maxCols = 0;
+                for (var r = 0; r < sheet.rows.length; r++) {
+                    if (sheet.rows[r].length > maxCols) maxCols = sheet.rows[r].length;
+                }
+
+                // Limit columns to fit on page
+                var maxVisibleCols = Math.min(maxCols, Math.floor(contentW / 15));
+                var colW = contentW / maxVisibleCols;
+
+                var y = margin;
+                var headerHeight = 10;
+                var rowHeight = fontSize * 0.8 + 3;
+
+                // Sheet title
+                pdf.setFillColor(hc.r, hc.g, hc.b);
+                pdf.rect(margin, y, contentW, 8, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'bold');
+                pdf.text(sheet.name, margin + 3, y + 5.5);
+                pdf.setFontSize(8);
+                pdf.text(sheet.rows.length + ' rows × ' + maxCols + ' columns', pw - margin - 3, y + 5.5, { align: 'right' });
+                y += 12;
+
+                // Draw table rows
+                for (var r = 0; r < sheet.rows.length; r++) {
+                    // Check if new page needed
+                    if (y + rowHeight > ph - margin) {
+                        pdf.addPage();
+                        totalPdfPages++;
+                        y = margin;
+
+                        // Re-draw header on new page
+                        pdf.setFillColor(hc.r, hc.g, hc.b);
+                        pdf.rect(margin, y, contentW, 8, 'F');
+                        pdf.setTextColor(255, 255, 255);
+                        pdf.setFontSize(8);
+                        pdf.setFont(undefined, 'bold');
+                        pdf.text(sheet.name + ' (continued)', margin + 3, y + 5.5);
+                        y += 10;
+
+                        // Re-draw column headers
+                        if (sheet.rows.length > 0) {
+                            drawRow(pdf, sheet.rows[0], maxVisibleCols, colW, margin, y, rowHeight, true, hc, tableStyle, fontSize);
+                            y += rowHeight;
+                        }
+                    }
+
+                    var isHeader = (r === 0);
+                    var isEven = (r % 2 === 0);
+
+                    drawRow(pdf, sheet.rows[r], maxVisibleCols, colW, margin, y, rowHeight, isHeader, hc, tableStyle, fontSize);
+
+                    // Striped background
+                    if (!isHeader && tableStyle === 'striped' && isEven) {
+                        pdf.setFillColor(245, 250, 248);
+                        pdf.rect(margin, y, contentW, rowHeight, 'F');
+                        // Redraw text on top of stripe
+                        drawRowText(pdf, sheet.rows[r], maxVisibleCols, colW, margin, y, rowHeight, false, fontSize);
+                    }
+
+                    y += rowHeight;
+
+                    // Small delay for large files
+                    if (r % 100 === 0) {
+                        prog(
+                            5 + Math.round(((s + r / sheet.rows.length) / sheetsToProcess.length) * 85),
+                            'Sheet: ' + sheet.name,
+                            'Row ' + r + ' / ' + sheet.rows.length
+                        );
+                        await sleep(1);
+                    }
+                }
+
+                totalPdfPages++;
+            }
+
+            // Footer on all pages
+            var pageCount = pdf.internal.getNumberOfPages();
+            for (var p = 1; p <= pageCount; p++) {
+                pdf.setPage(p);
+                pdf.setTextColor(180, 180, 180);
+                pdf.setFontSize(7);
+                pdf.text('Created with PDFTools', margin, ph - 5);
+                pdf.text('Page ' + p + ' / ' + pageCount, pw - margin, ph - 5, { align: 'right' });
+            }
+
+            pdf.setProperties({
+                title: D.name,
+                creator: 'PDFTools - Excel to PDF'
+            });
+
+            prog(95, 'Saving...', 'Generating PDF');
+            D.blob = pdf.output('blob');
+
+            prog(100, 'Done!', 'PDF ready');
+
+            document.getElementById('rSheets').textContent = sheetsToProcess.length;
+            document.getElementById('rRows').textContent = D.totalRows.toLocaleString();
+            document.getElementById('rPages').textContent = pageCount;
+            document.getElementById('rSz').textContent = szF(D.blob.size);
+            document.getElementById('rfn').textContent = D.name + '.pdf';
+
+            setTimeout(function() { goTo('s4'); }, 400);
+
+        } catch(e) {
+            console.error(e);
+            goTo('s2');
+            showE('Conversion failed: ' + e.message);
+        }
+    }
+
+    // ===== DRAW TABLE ROW =====
+    function drawRow(pdf, rowData, maxCols, colW, startX, y, h, isHeader, hc, style, fontSize) {
+        // Background
+        if (isHeader) {
+            pdf.setFillColor(hc.r, hc.g, hc.b);
+            pdf.rect(startX, y, maxCols * colW, h, 'F');
+        }
+
+        // Borders
+        if (style === 'bordered' || isHeader) {
+            pdf.setDrawColor(200, 200, 200);
+            pdf.setLineWidth(0.2);
+            for (var c = 0; c <= maxCols; c++) {
+                pdf.line(startX + c * colW, y, startX + c * colW, y + h);
+            }
+            pdf.line(startX, y, startX + maxCols * colW, y);
+            pdf.line(startX, y + h, startX + maxCols * colW, y + h);
+        } else if (style === 'striped' || style === 'minimal') {
+            pdf.setDrawColor(230, 230, 230);
+            pdf.setLineWidth(0.1);
+            pdf.line(startX, y + h, startX + maxCols * colW, y + h);
+        }
+
+        // Text
+        drawRowText(pdf, rowData, maxCols, colW, startX, y, h, isHeader, fontSize);
+    }
+
+    function drawRowText(pdf, rowData, maxCols, colW, startX, y, h, isHeader, fontSize) {
+        if (isHeader) {
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFont(undefined, 'bold');
+        } else {
+            pdf.setTextColor(60, 60, 60);
+            pdf.setFont(undefined, 'normal');
+        }
+        pdf.setFontSize(fontSize);
+
+        for (var c = 0; c < maxCols && c < rowData.length; c++) {
+            var val = (rowData[c] || '').toString();
+            var truncated = val.length > Math.floor(colW / 2) ? val.substring(0, Math.floor(colW / 2)) + '..' : val;
+            var tx = startX + c * colW + 2;
+            var ty = y + h * 0.65;
+            pdf.text(truncated, tx, ty);
+        }
+    }
+
+    // ===== DOWNLOAD =====
+    function doDownload() {
+        if (!D.blob) { alert('No file ready.'); return; }
+        var url = URL.createObjectURL(D.blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = D.name + '.pdf';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 500);
+    }
+
+    // ===== RESET =====
+    function doReset() {
+        D.file = null; D.name = 'spreadsheet';
+        D.sheets = []; D.activeSheet = 0;
+        D.blob = null; D.totalRows = 0;
+        hideE(); prog(0, 'Converting...', '');
+        document.getElementById('fi').value = '';
+        document.getElementById('sheetTabs').innerHTML = '';
+        document.getElementById('tblPreview').innerHTML = '';
+        goTo('s1');
+    }
+
+    // ===== HELPERS =====
+    function goTo(id) {
+        ['s1','s2','s3','s4'].forEach(function(s) {
+            document.getElementById(s).style.display = 'none';
+        });
+        document.getElementById(id).style.display = 'block';
+    }
+
+    function prog(p, t, s) {
+        var b = document.getElementById('pb');
+        var pt = document.getElementById('pp');
+        var tt = document.getElementById('pt');
+        var ss = document.getElementById('ps');
+        if (b) b.style.width = p + '%';
+        if (pt) pt.textContent = p + '%';
+        if (tt && t) tt.textContent = t;
+        if (ss && s) ss.textContent = s;
+    }
+
+    function showE(m) {
+        var el = document.getElementById('em');
+        var t = document.getElementById('et');
+        if (el && t) { t.textContent = m; el.style.display = 'block'; }
+        setTimeout(hideE, 10000);
+    }
+    function hideE() {
+        var el = document.getElementById('em');
+        if (el) el.style.display = 'none';
+    }
+
+    function szF(b) {
+        if (!b) return '0 B';
+        var k = 1024, u = ['B', 'KB', 'MB', 'GB'];
+        var i = Math.floor(Math.log(b) / Math.log(k));
+        return (b / Math.pow(k, i)).toFixed(1) + ' ' + u[i];
+    }
+
+    function X(s) {
+        return s ? s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+    }
+
+    function hexRgb(hex) {
+        hex = hex.replace('#', '');
+        return {
+            r: parseInt(hex.substring(0, 2), 16),
+            g: parseInt(hex.substring(2, 4), 16),
+            b: parseInt(hex.substring(4, 6), 16)
+        };
+    }
+
+    function sleep(ms) {
+        return new Promise(function(r) { setTimeout(r, ms); });
+    }
+
+    console.log('Excel to PDF tool loaded');
+    console.log('Libraries: JSZip + jsPDF');
     </script>
+
 </body>
 </html>

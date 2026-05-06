@@ -4,94 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Page Numbers to PDF Free | PDFTools</title>
-    <meta name="description" content="Add page numbers to your PDF documents. Customize position, format, font and style.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
     <style>
-        .position-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            max-width: 280px;
-        }
-        .position-cell {
-            padding: 12px 8px;
-            text-align: center;
-            border: 2px solid rgba(255,255,255,0.4);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-light);
-            transition: all 0.2s;
-            background: rgba(255,255,255,0.2);
-        }
-        .position-cell:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        .position-cell.active {
-            background: rgba(99,102,241,0.15);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        .preview-page {
-            width: 200px;
-            height: 280px;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            margin: 0 auto;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-        .preview-page::before {
-            content: '';
-            position: absolute;
-            top: 20px; left: 20px; right: 20px; bottom: 40px;
-            background: repeating-linear-gradient(180deg, #f1f5f9 0px, #f1f5f9 2px, transparent 2px, transparent 10px);
-        }
-        .preview-number {
-            position: absolute;
-            font-weight: 700;
-            font-size: 12px;
-            color: var(--primary);
-        }
-        .preview-number.bottom-center { bottom: 12px; left: 50%; transform: translateX(-50%); }
-        .preview-number.bottom-left { bottom: 12px; left: 15px; }
-        .preview-number.bottom-right { bottom: 12px; right: 15px; }
-        .preview-number.top-center { top: 12px; left: 50%; transform: translateX(-50%); }
-        .preview-number.top-left { top: 12px; left: 15px; }
-        .preview-number.top-right { top: 12px; right: 15px; }
+        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#3b82f6,#2563eb)}
+        .file-card-info{flex:1;min-width:0}
+        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .fbadge{background:rgba(59,130,246,0.1);color:#2563eb;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
 
-        .preview-label {
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: 10px;
-        }
+        /* Position Grid */
+        .pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:280px}
+        .pos-cell{padding:12px 8px;text-align:center;border:2px solid rgba(255,255,255,0.4);border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--text-light);transition:all .2s;background:rgba(255,255,255,0.2)}
+        .pos-cell:hover{border-color:#2563eb;color:#2563eb}
+        .pos-cell.on{border-color:#2563eb;background:rgba(59,130,246,0.1);color:#2563eb}
 
-        .number-format-preview {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-        .format-chip {
-            padding: 8px 16px;
-            background: rgba(255,255,255,0.4);
-            border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .format-chip:hover, .format-chip.active {
-            border-color: var(--primary);
-            background: rgba(99,102,241,0.1);
-            color: var(--primary);
+        /* Format chips */
+        .fmt-chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+        .fmt-chip{padding:8px 16px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+        .fmt-chip:hover{border-color:#2563eb}
+        .fmt-chip.on{border-color:#2563eb;background:rgba(59,130,246,0.1);color:#2563eb}
+
+        /* Preview */
+        .preview-container{display:flex;gap:20px;margin:15px 0;align-items:flex-start;flex-wrap:wrap}
+        .preview-page{width:180px;height:250px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,0.08);flex-shrink:0}
+        .preview-page::before{content:'';position:absolute;top:20px;left:15px;right:15px;bottom:35px;background:repeating-linear-gradient(180deg,#f1f5f9 0px,#f1f5f9 2px,transparent 2px,transparent 9px);border-radius:2px;opacity:0.5}
+        .preview-num{position:absolute;font-weight:700;font-size:11px;transition:all .3s}
+        .preview-label{text-align:center;margin-top:8px;font-size:11px;color:var(--text-light)}
+
+        /* Color row */
+        .color-row{display:flex;align-items:center;gap:10px}
+        .color-row input[type=color]{width:36px;height:36px;border:2px solid rgba(59,130,246,0.3);border-radius:8px;cursor:pointer;padding:0;background:none}
+
+        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
+
+        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:22px;font-weight:800;color:#2563eb}.sbox p{font-size:11px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+
+        @media(max-width:768px){
+            .opt-grid{grid-template-columns:1fr}
+            .preview-container{justify-content:center}
+            .pos-grid{max-width:100%}
         }
     </style>
 </head>
@@ -109,106 +66,159 @@
 
     <section class="tool-header">
         <div class="container">
-            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Page Numbers</span></div>
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i><span>Page Numbers</span>
+            </div>
             <div class="tool-title">
                 <div class="tool-title-icon icon-blue"><i class="fas fa-list-ol"></i></div>
                 <div>
                     <h1>Add Page Numbers</h1>
-                    <p>Add customizable page numbers to any position in your PDF document.</p>
+                    <p>Add customizable page numbers to any position in your PDF. Live preview included!</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
-
     <section class="tool-area">
         <div class="container">
             <div class="tool-wrapper glass">
 
-                <div id="uploadSection" data-section>
-                    <div class="upload-zone" id="dropZone">
-                        <div class="upload-zone-content">
-                            <div class="upload-icon"><i class="fas fa-list-ol"></i></div>
-                            <h2>Upload PDF</h2>
-                            <p>Add page numbers with custom position, format and style</p>
-                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                                <i class="fas fa-plus"></i> Select PDF File
-                            </button>
-                            <input type="file" id="fileInput" accept=".pdf" hidden>
-                            <div class="upload-hints">
-                                <span><i class="fas fa-map-marker-alt"></i> Custom Position</span>
-                                <span><i class="fas fa-font"></i> Custom Font</span>
-                                <span><i class="fas fa-infinity"></i> Free</span>
-                            </div>
+                <!-- STEP 1: UPLOAD -->
+                <div id="s1">
+                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(59,130,246,0.3);border-radius:20px;margin:25px;cursor:pointer;"
+                         id="dropBox" onclick="document.getElementById('fi').click()">
+                        <div style="font-size:60px;margin-bottom:20px;color:#2563eb;"><i class="fas fa-list-ol"></i></div>
+                        <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF</h2>
+                        <p style="color:var(--text-light);margin-bottom:25px;">Add page numbers with custom position, format and style</p>
+                        <button class="upload-btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"
+                                onclick="event.stopPropagation();document.getElementById('fi').click()">
+                            <i class="fas fa-plus"></i> Select PDF File
+                        </button>
+                        <input type="file" id="fi" accept=".pdf" style="display:none">
+                        <div class="upload-hints" style="margin-top:20px;">
+                            <span><i class="fas fa-map-marker-alt"></i> Custom Position</span>
+                            <span><i class="fas fa-font"></i> Custom Font</span>
+                            <span><i class="fas fa-eye"></i> Live Preview</span>
                         </div>
                     </div>
                 </div>
 
-                <div id="optionsSection" data-section style="display:none;">
+                <!-- STEP 2: OPTIONS -->
+                <div id="s2" style="display:none;">
                     <div class="files-area">
-                        <div class="files-header">
-                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span></h3>
-                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                        <div class="file-card">
+                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="file-card-info">
+                                <h4 id="fn">document.pdf</h4>
+                                <div class="file-card-meta">
+                                    <span class="fbadge" id="fs">0 KB</span>
+                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
+                                </div>
+                            </div>
+                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
                         </div>
 
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 0 20px;">
+                        <!-- Options + Preview side by side -->
+                        <div style="display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;">
 
                             <!-- Left: Options -->
                             <div>
+                                <!-- Position -->
                                 <div class="options-panel glass-light" style="margin-bottom:15px;">
                                     <h4><i class="fas fa-map-marker-alt"></i> Position</h4>
-                                    <div class="position-grid">
-                                        <div class="position-cell" onclick="setPosition('top-left', this)">Top Left</div>
-                                        <div class="position-cell" onclick="setPosition('top-center', this)">Top Center</div>
-                                        <div class="position-cell" onclick="setPosition('top-right', this)">Top Right</div>
-                                        <div class="position-cell" onclick="setPosition('bottom-left', this)">Bottom Left</div>
-                                        <div class="position-cell active" onclick="setPosition('bottom-center', this)">Bottom Center</div>
-                                        <div class="position-cell" onclick="setPosition('bottom-right', this)">Bottom Right</div>
+                                    <div class="pos-grid">
+                                        <div class="pos-cell" data-pos="tl" onclick="setPos('tl',this)">Top Left</div>
+                                        <div class="pos-cell" data-pos="tc" onclick="setPos('tc',this)">Top Center</div>
+                                        <div class="pos-cell" data-pos="tr" onclick="setPos('tr',this)">Top Right</div>
+                                        <div class="pos-cell" data-pos="bl" onclick="setPos('bl',this)">Bottom Left</div>
+                                        <div class="pos-cell on" data-pos="bc" onclick="setPos('bc',this)">Bottom Center</div>
+                                        <div class="pos-cell" data-pos="br" onclick="setPos('br',this)">Bottom Right</div>
                                     </div>
                                 </div>
 
-                                <div class="options-panel glass-light">
-                                    <h4><i class="fas fa-text-height"></i> Number Format</h4>
-                                    <div class="number-format-preview">
-                                        <div class="format-chip active" onclick="setFormat(this)">1, 2, 3</div>
-                                        <div class="format-chip" onclick="setFormat(this)">Page 1</div>
-                                        <div class="format-chip" onclick="setFormat(this)">1 of N</div>
-                                        <div class="format-chip" onclick="setFormat(this)">i, ii, iii</div>
-                                        <div class="format-chip" onclick="setFormat(this)">- 1 -</div>
+                                <!-- Number Format -->
+                                <div class="options-panel glass-light" style="margin-bottom:15px;">
+                                    <h4><i class="fas fa-hashtag"></i> Number Format</h4>
+                                    <div class="fmt-chips">
+                                        <div class="fmt-chip on" data-fmt="num" onclick="setFmt('num',this)">1, 2, 3</div>
+                                        <div class="fmt-chip" data-fmt="page" onclick="setFmt('page',this)">Page 1</div>
+                                        <div class="fmt-chip" data-fmt="of" onclick="setFmt('of',this)">1 of N</div>
+                                        <div class="fmt-chip" data-fmt="pageof" onclick="setFmt('pageof',this)">Page 1 of N</div>
+                                        <div class="fmt-chip" data-fmt="dash" onclick="setFmt('dash',this)">- 1 -</div>
+                                        <div class="fmt-chip" data-fmt="roman" onclick="setFmt('roman',this)">i, ii, iii</div>
+                                        <div class="fmt-chip" data-fmt="alpha" onclick="setFmt('alpha',this)">A, B, C</div>
                                     </div>
+                                </div>
 
-                                    <div class="options-row" style="margin-top:10px;">
+                                <!-- Style Options -->
+                                <div class="options-panel glass-light">
+                                    <h4><i class="fas fa-palette"></i> Style</h4>
+                                    <div class="opt-grid">
                                         <div class="option-field">
                                             <label>Font Size</label>
-                                            <select>
-                                                <option>10px</option>
-                                                <option selected>12px</option>
-                                                <option>14px</option>
-                                                <option>16px</option>
-                                                <option>18px</option>
+                                            <select id="optSize" onchange="updatePreview()">
+                                                <option value="8">8pt (Small)</option>
+                                                <option value="10" selected>10pt (Default)</option>
+                                                <option value="12">12pt</option>
+                                                <option value="14">14pt (Large)</option>
+                                                <option value="16">16pt</option>
                                             </select>
                                         </div>
                                         <div class="option-field">
-                                            <label>Start From Page</label>
-                                            <input type="number" value="1" min="1">
+                                            <label>Font</label>
+                                            <select id="optFont" onchange="updatePreview()">
+                                                <option value="Helvetica">Helvetica</option>
+                                                <option value="TimesRoman">Times Roman</option>
+                                                <option value="Courier">Courier</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="options-row" style="margin-top:10px;">
+                                    <div class="opt-grid">
                                         <div class="option-field">
                                             <label>Color</label>
-                                            <div class="color-pick">
-                                                <input type="color" value="#333333">
-                                                <span style="font-size:13px;">Text Color</span>
+                                            <div class="color-row">
+                                                <input type="color" id="optColor" value="#333333" onchange="updatePreview()">
+                                                <span style="font-size:12px;color:var(--text-light);" id="colorLabel">#333333</span>
                                             </div>
                                         </div>
                                         <div class="option-field">
-                                            <label>Font</label>
-                                            <select>
-                                                <option>Helvetica</option>
-                                                <option>Times New Roman</option>
-                                                <option>Courier</option>
-                                                <option>Arial</option>
+                                            <label>Start From Page</label>
+                                            <input type="number" id="optStart" value="1" min="1" onchange="updatePreview()">
+                                        </div>
+                                    </div>
+                                    <div class="opt-grid">
+                                        <div class="option-field">
+                                            <label>Start Number</label>
+                                            <input type="number" id="optStartNum" value="1" min="1" onchange="updatePreview()">
+                                        </div>
+                                        <div class="option-field">
+                                            <label>Apply To</label>
+                                            <select id="optApply" onchange="updatePreview()">
+                                                <option value="all">All Pages</option>
+                                                <option value="odd">Odd Pages Only</option>
+                                                <option value="even">Even Pages Only</option>
+                                                <option value="skip-first">Skip First Page</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="opt-grid">
+                                        <div class="option-field">
+                                            <label>Margin from Edge</label>
+                                            <select id="optMargin" onchange="updatePreview()">
+                                                <option value="20">Small (20pt)</option>
+                                                <option value="30" selected>Normal (30pt)</option>
+                                                <option value="40">Large (40pt)</option>
+                                                <option value="50">Extra Large (50pt)</option>
+                                            </select>
+                                        </div>
+                                        <div class="option-field">
+                                            <label>Bold</label>
+                                            <select id="optBold" onchange="updatePreview()">
+                                                <option value="no">Normal</option>
+                                                <option value="yes">Bold</option>
                                             </select>
                                         </div>
                                     </div>
@@ -216,45 +226,58 @@
                             </div>
 
                             <!-- Right: Preview -->
-                            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                                <h4 style="margin-bottom:15px;font-size:14px;color:var(--text-medium);"><i class="fas fa-eye"></i> Preview</h4>
-                                <div class="preview-page">
-                                    <div class="preview-number bottom-center" id="previewNumber">1</div>
+                            <div style="flex-shrink:0;">
+                                <h4 style="font-size:14px;margin-bottom:8px;text-align:center;">
+                                    <i class="fas fa-eye" style="color:#2563eb"></i> Preview
+                                </h4>
+                                <div class="preview-page" id="prevPage">
+                                    <div class="preview-num" id="prevNum" style="bottom:10px;left:50%;transform:translateX(-50%);color:#333;">1</div>
                                 </div>
-                                <div class="preview-label">Page 1 of 12</div>
+                                <div class="preview-label">Page 1 of <span id="prevTotal">12</span></div>
                             </div>
                         </div>
 
-                        <button class="action-btn" onclick="startProcess()">
+                        <button class="action-btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb);margin-top:15px;" onclick="addPageNumbers()">
                             <i class="fas fa-list-ol"></i> Add Page Numbers
                         </button>
                     </div>
                 </div>
 
-                <div id="processingSection" data-section style="display:none;">
+                <!-- STEP 3: PROCESSING -->
+                <div id="s3" style="display:none;">
                     <div class="processing-area">
                         <div class="spinner"></div>
-                        <h3>Adding page numbers...</h3>
-                        <p>Applying numbers to all pages</p>
-                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                        <span class="progress-text" id="progressText">0%</span>
+                        <h3 id="pt">Adding page numbers...</h3>
+                        <p id="ps">Processing pages</p>
+                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#3b82f6,#2563eb);"></div></div>
+                        <span class="progress-text" id="pp">0%</span>
                     </div>
                 </div>
 
-                <div id="resultSection" data-section style="display:none;">
+                <!-- STEP 4: RESULT -->
+                <div id="s4" style="display:none;">
                     <div class="result-area">
                         <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
                         <h2>Page Numbers Added! 📄</h2>
                         <p>All pages now have numbers</p>
-                        <div class="result-info glass-light">
-                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>document_numbered.pdf</span></div>
-                            <div class="info-item"><i class="fas fa-list-ol"></i> <span>12 Pages Numbered</span></div>
+
+                        <div class="srow">
+                            <div class="sbox"><h4 id="rPages">0</h4><p>Pages</p></div>
+                            <div class="sbox"><h4 id="rNumbered">0</h4><p>Numbered</p></div>
+                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
                         </div>
-                        <button class="download-btn" onclick="alert('Download!')">
+
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#2563eb"></i> <span id="rfn">numbered.pdf</span></div>
+                        </div>
+
+                        <button class="download-btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb);" onclick="doDownload()">
                             <i class="fas fa-download"></i> Download PDF
                         </button>
+
                         <div class="result-actions">
-                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Add to Another</button>
+                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Add to Another</button>
+                            <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-sliders-h"></i> Change Options</button>
                         </div>
                     </div>
                 </div>
@@ -262,8 +285,6 @@
             </div>
         </div>
     </section>
-
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
 
     <section class="related-tools">
         <div class="container">
@@ -272,9 +293,20 @@
                 <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
                 <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
                 <a href="organize-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-th-large"></i></div><h4>Organize</h4></a>
-                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
-                <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-sync-alt"></i></div><h4>Rotate PDF</h4></a>
-                <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+                <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-sync-alt"></i></div><h4>Rotate</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Add Page Numbers</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your PDF.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Customize</h4><p>Set position, format, font.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get numbered PDF.</p></div>
             </div>
         </div>
     </section>
@@ -283,53 +315,331 @@
         <div class="container">
             <div class="section-header"><h2>FAQ</h2></div>
             <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>Can I skip the first page?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Yes! Set "Start From Page" to 2 to skip numbering on the title/cover page.</p></div>
-                </div>
-                <div class="faq-item glass" onclick="toggleFaq(this)">
-                    <div class="faq-question"><h4>Can I use Roman numerals?</h4><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer"><p>Yes! Select the "i, ii, iii" format to use Roman numeral page numbers.</p></div>
-                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I skip the first page?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Set "Start From Page" to 2 or select "Skip First Page" to skip numbering on cover/title pages.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I use Roman numerals?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Select the "i, ii, iii" format to use Roman numeral page numbers.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I change the starting number?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Set "Start Number" to any value. Useful if your document starts at page 5, for example.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Everything runs in your browser. No files uploaded.</p></div></div>
             </div>
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-simple">
-                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-                <p>© 2025 PDFTools. All rights reserved.</p>
-                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
-            </div>
-        </div>
-    </footer>
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
 
     <script src="js/tool-page.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
     <script>
-        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) {
-            document.getElementById('fileName').textContent = files[0].name;
-            showSection('optionsSection');
+    // ==========================================
+    // ADD PAGE NUMBERS - COMPLETE WORKING CODE
+    // pdf-lib.js (draw text on pages)
+    // ==========================================
+
+    var N = {
+        rawBytes: null, name: 'document',
+        pages: 0, pos: 'bc',
+        fmt: 'num', blob: null
+    };
+
+    // File input
+    document.getElementById('fi').addEventListener('change', function() {
+        if (this.files && this.files[0]) onFile(this.files[0]);
+    });
+
+    // Color display
+    document.getElementById('optColor').addEventListener('input', function() {
+        document.getElementById('colorLabel').textContent = this.value;
+    });
+
+    // Drag drop
+    var dropBox = document.getElementById('dropBox');
+    dropBox.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = '#2563eb'; this.style.background = 'rgba(59,130,246,0.05)'; });
+    dropBox.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(59,130,246,0.3)'; this.style.background = ''; });
+    dropBox.addEventListener('drop', function(e) {
+        e.preventDefault(); this.style.borderColor = 'rgba(59,130,246,0.3)'; this.style.background = '';
+        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
+    });
+
+    // ===== ON FILE =====
+    async function onFile(file) {
+        hideE();
+        if (!file.name.toLowerCase().endsWith('.pdf')) { showE('Please select a PDF!'); return; }
+        N.name = file.name.replace(/\.pdf$/i, '');
+
+        try {
+            var ab = await readF(file);
+            N.rawBytes = new Uint8Array(ab);
+            var pdfDoc = await PDFLib.PDFDocument.load(N.rawBytes.slice(0), { ignoreEncryption: true });
+            N.pages = pdfDoc.getPageCount();
+
+            document.getElementById('fn').textContent = file.name;
+            document.getElementById('fs').textContent = szF(file.size);
+            document.getElementById('fp').textContent = N.pages;
+            document.getElementById('prevTotal').textContent = N.pages;
+
+            updatePreview();
+            goTo('s2');
+        } catch(e) {
+            console.error(e);
+            showE('Cannot read PDF: ' + e.message);
+        }
+    }
+
+    function readF(f) {
+        return new Promise(function(ok, fail) {
+            var r = new FileReader();
+            r.onload = function() { ok(r.result); };
+            r.onerror = function() { fail(new Error('Read failed')); };
+            r.readAsArrayBuffer(f);
         });
+    }
 
-        function setPosition(pos, el) {
-            document.querySelectorAll('.position-cell').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            const preview = document.getElementById('previewNumber');
-            preview.className = 'preview-number ' + pos;
+    // ===== POSITION =====
+    function setPos(pos, el) {
+        N.pos = pos;
+        document.querySelectorAll('.pos-cell').forEach(function(c) { c.classList.remove('on'); });
+        el.classList.add('on');
+        updatePreview();
+    }
+
+    // ===== FORMAT =====
+    function setFmt(fmt, el) {
+        N.fmt = fmt;
+        document.querySelectorAll('.fmt-chip').forEach(function(c) { c.classList.remove('on'); });
+        el.classList.add('on');
+        updatePreview();
+    }
+
+    // ===== FORMAT NUMBER =====
+    function formatNumber(pageNum, totalPages) {
+        switch (N.fmt) {
+            case 'num': return '' + pageNum;
+            case 'page': return 'Page ' + pageNum;
+            case 'of': return pageNum + ' of ' + totalPages;
+            case 'pageof': return 'Page ' + pageNum + ' of ' + totalPages;
+            case 'dash': return '- ' + pageNum + ' -';
+            case 'roman': return toRoman(pageNum);
+            case 'alpha': return toAlpha(pageNum);
+            default: return '' + pageNum;
         }
+    }
 
-        function setFormat(el) {
-            document.querySelectorAll('.format-chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
+    function toRoman(num) {
+        var vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+        var syms = ['m','cm','d','cd','c','xc','l','xl','x','ix','v','iv','i'];
+        var result = '';
+        for (var i = 0; i < vals.length; i++) {
+            while (num >= vals[i]) { result += syms[i]; num -= vals[i]; }
         }
+        return result;
+    }
 
-        function startProcess() {
-            showSection('processingSection');
-            simulateProcess(function() { showSection('resultSection'); });
+    function toAlpha(num) {
+        var result = '';
+        while (num > 0) {
+            num--;
+            result = String.fromCharCode(65 + (num % 26)) + result;
+            num = Math.floor(num / 26);
         }
+        return result;
+    }
 
-        function resetTool() { showSection('uploadSection'); }
+    // ===== LIVE PREVIEW =====
+    function updatePreview() {
+        var el = document.getElementById('prevNum');
+        var color = document.getElementById('optColor').value;
+        var size = parseInt(document.getElementById('optSize').value);
+        var startNum = parseInt(document.getElementById('optStartNum').value) || 1;
+        var bold = document.getElementById('optBold').value === 'yes';
+
+        var text = formatNumber(startNum, N.pages || 12);
+        el.textContent = text;
+        el.style.color = color;
+        el.style.fontSize = (size * 0.8) + 'px';
+        el.style.fontWeight = bold ? '800' : '600';
+
+        // Position
+        var margin = '10px';
+        el.style.top = ''; el.style.bottom = '';
+        el.style.left = ''; el.style.right = '';
+        el.style.transform = '';
+
+        switch (N.pos) {
+            case 'tl': el.style.top = margin; el.style.left = margin; break;
+            case 'tc': el.style.top = margin; el.style.left = '50%'; el.style.transform = 'translateX(-50%)'; break;
+            case 'tr': el.style.top = margin; el.style.right = margin; break;
+            case 'bl': el.style.bottom = margin; el.style.left = margin; break;
+            case 'bc': el.style.bottom = margin; el.style.left = '50%'; el.style.transform = 'translateX(-50%)'; break;
+            case 'br': el.style.bottom = margin; el.style.right = margin; break;
+        }
+    }
+
+    // ==========================================
+    // ✅ ADD PAGE NUMBERS TO PDF
+    // ==========================================
+    async function addPageNumbers() {
+        hideE();
+        goTo('s3');
+
+        try {
+            prog(10, 'Loading PDF...', 'Preparing document');
+
+            var pdfDoc = await PDFLib.PDFDocument.load(N.rawBytes.slice(0), { ignoreEncryption: true });
+            var pages = pdfDoc.getPages();
+            var totalPages = pages.length;
+
+            var fontSize = parseInt(document.getElementById('optSize').value);
+            var fontName = document.getElementById('optFont').value;
+            var colorHex = document.getElementById('optColor').value;
+            var startPage = parseInt(document.getElementById('optStart').value) || 1;
+            var startNum = parseInt(document.getElementById('optStartNum').value) || 1;
+            var applyTo = document.getElementById('optApply').value;
+            var margin = parseInt(document.getElementById('optMargin').value);
+            var isBold = document.getElementById('optBold').value === 'yes';
+
+            var color = hexRgb01(colorHex);
+
+            // Embed font
+            var font;
+            if (fontName === 'TimesRoman') {
+                font = isBold
+                    ? await pdfDoc.embedFont(PDFLib.StandardFonts.TimesRomanBold)
+                    : await pdfDoc.embedFont(PDFLib.StandardFonts.TimesRoman);
+            } else if (fontName === 'Courier') {
+                font = isBold
+                    ? await pdfDoc.embedFont(PDFLib.StandardFonts.CourierBold)
+                    : await pdfDoc.embedFont(PDFLib.StandardFonts.Courier);
+            } else {
+                font = isBold
+                    ? await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold)
+                    : await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+            }
+
+            prog(25, 'Adding numbers...', 'Processing pages');
+
+            var numberedCount = 0;
+            var currentNum = startNum;
+
+            for (var i = 0; i < totalPages; i++) {
+                var pageNum = i + 1;
+
+                prog(25 + Math.round((i / totalPages) * 65), 'Page ' + pageNum + '/' + totalPages, 'Adding number');
+
+                // Check if this page should be numbered
+                if (pageNum < startPage) continue;
+
+                var shouldNumber = true;
+                if (applyTo === 'odd' && pageNum % 2 === 0) shouldNumber = false;
+                if (applyTo === 'even' && pageNum % 2 !== 0) shouldNumber = false;
+                if (applyTo === 'skip-first' && pageNum === 1) shouldNumber = false;
+
+                if (!shouldNumber) {
+                    currentNum++;
+                    continue;
+                }
+
+                var page = pages[i];
+                var { width, height } = page.getSize();
+
+                // Format the number text
+                var numText = formatNumber(currentNum, totalPages);
+                var textWidth = font.widthOfTextAtSize(numText, fontSize);
+
+                // Calculate position
+                var x, y;
+                var isTop = N.pos.startsWith('t');
+                var isLeft = N.pos.endsWith('l');
+                var isCenter = N.pos.endsWith('c');
+                var isRight = N.pos.endsWith('r');
+
+                if (isLeft) x = margin;
+                else if (isCenter) x = (width - textWidth) / 2;
+                else x = width - textWidth - margin;
+
+                if (isTop) y = height - margin;
+                else y = margin;
+
+                // Draw text
+                page.drawText(numText, {
+                    x: x,
+                    y: y,
+                    size: fontSize,
+                    font: font,
+                    color: PDFLib.rgb(color.r, color.g, color.b)
+                });
+
+                numberedCount++;
+                currentNum++;
+            }
+
+            prog(92, 'Saving...', 'Generating PDF');
+
+            var savedBytes = await pdfDoc.save();
+            N.blob = new Blob([savedBytes], { type: 'application/pdf' });
+
+            prog(100, 'Done!', 'Page numbers added');
+
+            document.getElementById('rPages').textContent = totalPages;
+            document.getElementById('rNumbered').textContent = numberedCount;
+            document.getElementById('rSz').textContent = szF(N.blob.size);
+            document.getElementById('rfn').textContent = N.name + '_numbered.pdf';
+
+            setTimeout(function() { goTo('s4'); }, 400);
+
+        } catch(e) {
+            console.error(e);
+            goTo('s2');
+            showE('Failed: ' + e.message);
+        }
+    }
+
+    // ===== HELPERS =====
+    function hexRgb01(hex) {
+        hex = hex.replace('#', '');
+        return {
+            r: parseInt(hex.substring(0, 2), 16) / 255,
+            g: parseInt(hex.substring(2, 4), 16) / 255,
+            b: parseInt(hex.substring(4, 6), 16) / 255
+        };
+    }
+
+    function doDownload() {
+        if (!N.blob) { alert('No file.'); return; }
+        var url = URL.createObjectURL(N.blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = N.name + '_numbered.pdf';
+        a.style.display = 'none';
+        document.body.appendChild(a); a.click();
+        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    }
+
+    function doReset() {
+        N.rawBytes = null; N.name = 'document';
+        N.pages = 0; N.pos = 'bc'; N.fmt = 'num';
+        N.blob = null;
+        hideE();
+        document.getElementById('fi').value = '';
+        document.querySelectorAll('.pos-cell').forEach(function(c) { c.classList.remove('on'); });
+        document.querySelector('[data-pos="bc"]').classList.add('on');
+        document.querySelectorAll('.fmt-chip').forEach(function(c) { c.classList.remove('on'); });
+        document.querySelector('[data-fmt="num"]').classList.add('on');
+        goTo('s1');
+    }
+
+    function goTo(id) {
+        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
+        document.getElementById(id).style.display = 'block';
+    }
+    function prog(p, t, s) {
+        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
+        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
+    }
+    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
+    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
+    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
+
+    console.log('Page Numbers tool loaded');
+    console.log('Library: pdf-lib.js');
     </script>
+
 </body>
 </html>
