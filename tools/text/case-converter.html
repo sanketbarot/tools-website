@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Converter - Change Text Case Online | PDFTools</title>
+    <meta name="description" content="Free online case converter. Convert text to uppercase, lowercase, title case, camelCase, snake_case and more.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/tool-page.css">
+    <style>
+        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .cc h2 i{color:#8b5cf6}
+        .text-box{width:100%;min-height:180px;padding:16px;border:2px solid rgba(139,92,246,0.2);border-radius:14px;background:rgba(255,255,255,0.7);font-size:15px;line-height:1.8;color:var(--text-dark);outline:none;font-family:inherit;resize:vertical;box-sizing:border-box;transition:border-color .2s}
+        .text-box:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,0.1)}
+        .text-stats{display:flex;gap:15px;margin:8px 0;font-size:12px;color:var(--text-light);font-weight:600}
+        .text-stats span{display:flex;align-items:center;gap:4px}
+        .text-stats i{color:#8b5cf6;font-size:11px}
+        .text-actions{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+        .ta-btn{padding:7px 13px;border:1px solid rgba(139,92,246,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:4px}
+        .ta-btn:hover{border-color:#8b5cf6;color:#8b5cf6;background:rgba(139,92,246,0.08)}
+        .ta-btn i{font-size:11px}
+
+        /* Conversion buttons */
+        .conv-section{margin-top:12px}
+        .conv-label{font-size:12px;font-weight:700;color:var(--text-medium);margin:14px 0 8px;display:flex;align-items:center;gap:6px}
+        .conv-label i{color:#8b5cf6;font-size:12px}
+        .conv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px}
+        .conv-btn{padding:14px 10px;background:rgba(255,255,255,0.4);border:2px solid rgba(255,255,255,0.5);border-radius:12px;text-align:center;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:var(--text-medium)}
+        .conv-btn:hover{border-color:#8b5cf6;color:#8b5cf6;transform:translateY(-2px);box-shadow:0 5px 15px rgba(139,92,246,0.12)}
+        .conv-btn:active{transform:translateY(0)}
+        .conv-btn .cb-preview{font-size:14px;font-weight:800;color:#8b5cf6;margin-bottom:4px;display:block}
+        .conv-btn .cb-name{font-size:10px;color:var(--text-light)}
+
+        /* Preview */
+        .preview-card{padding:18px;margin-top:15px;background:linear-gradient(135deg,rgba(139,92,246,0.06),rgba(236,72,153,0.04));border:1px solid rgba(139,92,246,0.15);border-radius:14px}
+        .preview-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+        .preview-title{display:flex;align-items:center;gap:8px}
+        .preview-title .pt-badge{font-size:13px;font-weight:700;color:#8b5cf6}
+        .preview-title .pt-desc{font-size:11px;color:var(--text-light)}
+        .preview-text{background:rgba(255,255,255,0.6);padding:14px;border-radius:10px;font-size:14px;line-height:1.7;color:var(--text-dark);max-height:200px;overflow-y:auto;white-space:pre-wrap;word-wrap:break-word;font-family:monospace}
+        .preview-text::-webkit-scrollbar{width:5px}
+        .preview-text::-webkit-scrollbar-thumb{background:rgba(139,92,246,0.25);border-radius:3px}
+
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+
+        @media(max-width:768px){.conv-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(max-width:480px){.conv-grid{grid-template-columns:repeat(2,1fr)}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+            <i class="fas fa-chevron-right"></i><span>Case Converter</span>
+        </div>
+        <div class="tool-title">
+            <div class="tool-title-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);"><i class="fas fa-text-height"></i></div>
+            <div><h1>Case Converter</h1><p>Convert text to any case format — upper, lower, title, camel, snake & more!</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="tool-area">
+    <div class="container">
+
+        <!-- Input -->
+        <div class="cc">
+            <h2><i class="fas fa-keyboard"></i> Enter Your Text</h2>
+            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+            <textarea class="text-box" id="textInput" placeholder="Type or paste your text here to convert..."></textarea>
+
+            <div class="text-stats">
+                <span><i class="fas fa-font"></i> <span id="wordCount">0</span> words</span>
+                <span><i class="fas fa-text-width"></i> <span id="charCount">0</span> characters</span>
+            </div>
+
+            <div class="text-actions">
+                <button class="ta-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
+                <button class="ta-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample</button>
+                <button class="ta-btn" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
+                <button class="ta-btn" onclick="downloadText()"><i class="fas fa-download"></i> Download</button>
+                <button class="ta-btn" onclick="clearText()"><i class="fas fa-trash"></i> Clear</button>
+            </div>
+        </div>
+
+        <!-- Conversion Buttons -->
+        <div class="cc">
+            <h2><i class="fas fa-magic"></i> Convert To</h2>
+
+            <div class="conv-section">
+                <div class="conv-label"><i class="fas fa-text-height"></i> Basic Cases</div>
+                <div class="conv-grid">
+                    <div class="conv-btn" onclick="toUpperCase()"><span class="cb-preview">UPPER</span><span class="cb-name">UPPER CASE</span></div>
+                    <div class="conv-btn" onclick="toLowerCase()"><span class="cb-preview">lower</span><span class="cb-name">lower case</span></div>
+                    <div class="conv-btn" onclick="toTitleCase()"><span class="cb-preview">Title Case</span><span class="cb-name">Title Case</span></div>
+                    <div class="conv-btn" onclick="toSentenceCase()"><span class="cb-preview">Sentence</span><span class="cb-name">Sentence case</span></div>
+                    <div class="conv-btn" onclick="toCapitalizeWords()"><span class="cb-preview">Capitalize</span><span class="cb-name">Capitalize Words</span></div>
+                </div>
+            </div>
+
+            <div class="conv-section">
+                <div class="conv-label"><i class="fas fa-code"></i> Developer Cases</div>
+                <div class="conv-grid">
+                    <div class="conv-btn" onclick="toCamelCase()"><span class="cb-preview">camelCase</span><span class="cb-name">camelCase</span></div>
+                    <div class="conv-btn" onclick="toPascalCase()"><span class="cb-preview">PascalCase</span><span class="cb-name">PascalCase</span></div>
+                    <div class="conv-btn" onclick="toSnakeCase()"><span class="cb-preview">snake_case</span><span class="cb-name">snake_case</span></div>
+                    <div class="conv-btn" onclick="toKebabCase()"><span class="cb-preview">kebab-case</span><span class="cb-name">kebab-case</span></div>
+                    <div class="conv-btn" onclick="toConstantCase()"><span class="cb-preview">CONSTANT</span><span class="cb-name">CONSTANT_CASE</span></div>
+                    <div class="conv-btn" onclick="toDotCase()"><span class="cb-preview">dot.case</span><span class="cb-name">dot.case</span></div>
+                    <div class="conv-btn" onclick="toSlashCase()"><span class="cb-preview">path/case</span><span class="cb-name">path/case</span></div>
+                </div>
+            </div>
+
+            <div class="conv-section">
+                <div class="conv-label"><i class="fas fa-random"></i> Fun & Utility</div>
+                <div class="conv-grid">
+                    <div class="conv-btn" onclick="toAlternatingCase()"><span class="cb-preview">aLtErNaTe</span><span class="cb-name">aLtErNaTiNg</span></div>
+                    <div class="conv-btn" onclick="toInverseCase()"><span class="cb-preview">iNVERSE</span><span class="cb-name">Inverse Case</span></div>
+                    <div class="conv-btn" onclick="reverseText()"><span class="cb-preview">esreveR</span><span class="cb-name">Reverse Text</span></div>
+                    <div class="conv-btn" onclick="reverseWords()"><span class="cb-preview">Words ↔</span><span class="cb-name">Reverse Words</span></div>
+                    <div class="conv-btn" onclick="removeExtraSpaces()"><span class="cb-preview">Clean</span><span class="cb-name">Remove Spaces</span></div>
+                    <div class="conv-btn" onclick="removeLineBreaks()"><span class="cb-preview">No Lines</span><span class="cb-name">Remove Breaks</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview -->
+        <div id="previewArea" style="display:none;">
+            <div class="preview-card">
+                <div class="preview-header">
+                    <div class="preview-title">
+                        <i class="fas fa-check-circle" style="color:#22c55e;font-size:16px;"></i>
+                        <div>
+                            <div class="pt-badge" id="convTitle">-</div>
+                            <div class="pt-desc" id="convDesc">-</div>
+                        </div>
+                    </div>
+                    <button class="ta-btn" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="preview-text" id="outputPreview"></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How It Works</h2></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Enter Text</h4><p>Type or paste text.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-magic"></i><h4>Choose Case</h4><p>Click conversion button.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy/Download</h4><p>Copy or download result.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is Title Case?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Title Case capitalizes the first letter of each word. Example: "hello world" → "Hello World".</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is camelCase?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>camelCase joins words with no spaces, first word lowercase, rest capitalized. Used in JavaScript. Example: "hello world" → "helloWorld".</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is snake_case?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>snake_case separates words with underscores, all lowercase. Used in Python/databases. Example: "hello world" → "hello_world".</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is kebab-case?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>kebab-case separates words with hyphens, all lowercase. Used in URLs/CSS. Example: "hello world" → "hello-world".</p></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>&copy; 2025 PDFTools.</p>
+            <div class="footer-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../privacy.html">Privacy</a>
+                <a href="../../terms.html">Terms</a>
+                <a href="../../about.html">About</a>
+                <a href="../../contact.html">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../js/tool-page.js"></script>
+<script src="../../js/case-converter.js"></script>
+</body>
+</html>

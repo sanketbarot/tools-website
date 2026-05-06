@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator - Loan EMI Calculator | PDFTools</title>
+    <meta name="description" content="Free EMI calculator. Calculate monthly loan EMI, total interest and amortization schedule.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/tool-page.css">
+    <style>
+        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .cc h2 i{color:#14b8a6}
+        .ig{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
+        .ifl{display:flex;flex-direction:column;gap:5px}
+        .ifl label{font-size:12px;font-weight:600;color:var(--text-medium);display:flex;align-items:center;gap:5px}
+        .ifl label i{color:#14b8a6;font-size:13px}
+        .ifl input,.ifl select{width:100%;padding:13px 15px;border:2px solid rgba(20,184,166,0.2);border-radius:11px;background:rgba(255,255,255,0.6);font-size:16px;font-weight:600;color:var(--text-dark);outline:none;box-sizing:border-box;transition:border-color .2s}
+        .ifl input:focus,.ifl select:focus{border-color:#14b8a6}
+        .quick-amt{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+        .qa-btn{padding:6px 12px;border:1px solid rgba(20,184,166,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);transition:all .15s}
+        .qa-btn:hover{border-color:#14b8a6;color:#14b8a6;background:rgba(20,184,166,0.08)}
+        .cbtn{width:100%;padding:16px;background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
+        .cbtn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(20,184,166,0.35)}
+        .emi-big{text-align:center;padding:20px}
+        .emi-val{font-size:48px;font-weight:800;background:linear-gradient(135deg,#14b8a6,#0d9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px}
+        .emi-lbl{font-size:14px;color:var(--text-light);font-weight:600}
+        .sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
+        .sum-box{padding:16px 12px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;text-align:center}
+        .sum-box h4{font-size:18px;font-weight:800;margin-bottom:3px}
+        .sum-box p{font-size:11px;color:var(--text-light)}
+        .sum-box.principal h4{color:#6366f1}
+        .sum-box.interest h4{color:#ec4899}
+        .sum-box.total h4{color:#14b8a6}
+        .pie-wrap{display:flex;align-items:center;gap:20px;justify-content:center;margin:15px 0;flex-wrap:wrap}
+        .pie{width:120px;height:120px;border-radius:50%;position:relative}
+        .pie-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:70px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-medium);text-align:center}
+        .pie-legend{display:flex;flex-direction:column;gap:8px}
+        .pie-leg{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
+        .pie-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+        .yr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:14px 0}
+        .yr-card{padding:14px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px}
+        .yr-num{font-size:13px;font-weight:700;color:#14b8a6;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(20,184,166,0.15)}
+        .yr-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;color:var(--text-medium)}
+        .yr-row strong{color:var(--text-dark)}
+        .sch-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}
+        .sch-table th{background:rgba(20,184,166,0.1);padding:8px 10px;text-align:left;font-weight:700;color:#0d9488;border-bottom:2px solid rgba(20,184,166,0.2);position:sticky;top:0}
+        .sch-table td{padding:6px 10px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--text-medium)}
+        .sch-table tr:hover td{background:rgba(20,184,166,0.03)}
+        .sch-wrap{max-height:350px;overflow-y:auto;border-radius:10px;border:1px solid rgba(255,255,255,0.5)}
+        .sch-wrap::-webkit-scrollbar{width:5px}
+        .sch-wrap::-webkit-scrollbar-thumb{background:rgba(20,184,166,0.25);border-radius:3px}
+        .toggle-btn{padding:10px 20px;border:2px solid rgba(20,184,166,0.25);border-radius:50px;background:transparent;color:#0d9488;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin:10px auto;display:block}
+        .toggle-btn:hover{background:#14b8a6;color:#fff}
+        .shr{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+        .shr button{padding:8px 16px;border:2px solid rgba(20,184,166,0.25);border-radius:50px;background:transparent;color:#0d9488;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .shr button:hover{background:#14b8a6;color:#fff;border-color:#14b8a6}
+        .info-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0}
+        .info-item{display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.4);border-radius:10px}
+        .info-item i{color:#14b8a6;font-size:16px;width:20px}
+        .info-item .ii-data h4{font-size:15px;font-weight:700;color:var(--text-dark)}
+        .info-item .ii-data p{font-size:10px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+        @media(max-width:768px){.ig{grid-template-columns:1fr}.sum-grid{grid-template-columns:1fr}.info-row{grid-template-columns:1fr}.yr-grid{grid-template-columns:1fr 1fr}.emi-val{font-size:38px}}
+        @media(max-width:480px){.yr-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+            <i class="fas fa-chevron-right"></i><span>EMI Calculator</span>
+        </div>
+        <div class="tool-title">
+            <div class="tool-title-icon" style="background:linear-gradient(135deg,#14b8a6,#0d9488);"><i class="fas fa-money-bill-wave"></i></div>
+            <div><h1>EMI Calculator</h1><p>Calculate monthly EMI, total interest & amortization schedule!</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="tool-area">
+    <div class="container">
+
+        <!-- INPUT -->
+        <div class="cc">
+            <h2><i class="fas fa-rupee-sign"></i> Loan Details</h2>
+            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+            <div class="ifl">
+                <label><i class="fas fa-money-bill"></i> Loan Amount (₹)</label>
+                <input type="number" id="loanAmount" value="500000" min="1000">
+                <div class="quick-amt">
+                    <span class="qa-btn" onclick="setAmount(100000)">₹1L</span>
+                    <span class="qa-btn" onclick="setAmount(500000)">₹5L</span>
+                    <span class="qa-btn" onclick="setAmount(1000000)">₹10L</span>
+                    <span class="qa-btn" onclick="setAmount(2500000)">₹25L</span>
+                    <span class="qa-btn" onclick="setAmount(5000000)">₹50L</span>
+                    <span class="qa-btn" onclick="setAmount(10000000)">₹1Cr</span>
+                </div>
+            </div>
+
+            <div class="ig">
+                <div class="ifl">
+                    <label><i class="fas fa-percentage"></i> Interest Rate (% p.a.)</label>
+                    <input type="number" id="interestRate" value="8.5" min="0.1" max="50" step="0.1">
+                </div>
+                <div class="ifl">
+                    <label><i class="fas fa-calendar"></i> Loan Tenure</label>
+                    <div style="display:flex;gap:8px;">
+                        <input type="number" id="loanTenure" value="5" min="1" max="30" style="flex:1;">
+                        <select id="tenureType" style="width:100px;">
+                            <option value="years">Years</option>
+                            <option value="months">Months</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="cbtn" onclick="calculateEMI()"><i class="fas fa-calculator"></i> Calculate EMI</button>
+        </div>
+
+        <!-- RESULT -->
+        <div id="resultArea" style="display:none;">
+
+            <!-- EMI Amount -->
+            <div class="cc">
+                <div class="emi-big">
+                    <div class="emi-val" id="rEmi">₹0</div>
+                    <div class="emi-lbl">Monthly EMI</div>
+                </div>
+
+                <div class="sum-grid">
+                    <div class="sum-box principal"><h4 id="rPrincipal">₹0</h4><p>Principal Amount</p></div>
+                    <div class="sum-box interest"><h4 id="rInterest">₹0</h4><p>Total Interest</p></div>
+                    <div class="sum-box total"><h4 id="rTotal">₹0</h4><p>Total Payment</p></div>
+                </div>
+
+                <!-- Pie Chart -->
+                <div class="pie-wrap">
+                    <div class="pie" id="pieChart" style="background:conic-gradient(#6366f1 0% 50%,#ec4899 50% 100%);">
+                        <div class="pie-center">EMI<br>Split</div>
+                    </div>
+                    <div class="pie-legend">
+                        <div class="pie-leg"><div class="pie-dot" style="background:#6366f1;"></div><span id="piePrincipal">50% Principal</span></div>
+                        <div class="pie-leg"><div class="pie-dot" style="background:#ec4899;"></div><span id="pieInterest">50% Interest</span></div>
+                    </div>
+                </div>
+
+                <!-- Quick Info -->
+                <div class="info-row">
+                    <div class="info-item"><i class="fas fa-calendar-alt"></i><div class="ii-data"><h4 id="rMonths">0</h4><p>Total Months</p></div></div>
+                    <div class="info-item"><i class="fas fa-percentage"></i><div class="ii-data"><h4 id="rRate">0%</h4><p>Interest Rate</p></div></div>
+                    <div class="info-item"><i class="fas fa-rupee-sign"></i><div class="ii-data"><h4 id="rEmi2">₹0</h4><p>Monthly EMI</p></div></div>
+                </div>
+            </div>
+
+            <!-- Year Summary -->
+            <div class="cc">
+                <h2><i class="fas fa-chart-bar"></i> Year-wise Breakdown</h2>
+                <div class="yr-grid" id="yearSummary"></div>
+            </div>
+
+            <!-- Monthly Schedule -->
+            <div class="cc">
+                <h2><i class="fas fa-table"></i> Amortization Schedule</h2>
+                <button class="toggle-btn" id="toggleBtn" onclick="toggleSchedule()">Show Monthly Schedule</button>
+                <div id="scheduleWrap" style="display:none;">
+                    <div class="sch-wrap">
+                        <table class="sch-table">
+                            <thead><tr><th>Month</th><th>EMI</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+                            <tbody id="scheduleBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Share -->
+            <div class="cc" style="text-align:center;">
+                <h2 style="justify-content:center;"><i class="fas fa-share-alt"></i> Share</h2>
+                <div class="shr">
+                    <button onclick="copyEMI()"><i class="fas fa-copy"></i> Copy</button>
+                    <button onclick="shareEMI('whatsapp')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button onclick="shareEMI('twitter')"><i class="fab fa-twitter"></i> Twitter</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How It Works</h2></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-money-bill"></i><h4>Loan Amount</h4><p>Enter loan amount.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-percentage"></i><h4>Rate & Tenure</h4><p>Set interest & period.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-calculator"></i><h4>Get EMI</h4><p>See monthly payment.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is EMI?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>EMI (Equated Monthly Installment) is the fixed amount you pay every month to repay your loan. It includes both principal and interest.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How is EMI calculated?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>EMI = [P × R × (1+R)^N] / [(1+R)^N - 1], where P = Principal, R = Monthly rate, N = Number of months.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How to reduce EMI?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>You can reduce EMI by: 1) Increasing tenure, 2) Making partial prepayments, 3) Negotiating lower interest rate.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>&copy; 2025 PDFTools.</p>
+            <div class="footer-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../privacy.html">Privacy</a>
+                <a href="../../terms.html">Terms</a>
+                <a href="../../about.html">About</a>
+                <a href="../../contact.html">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../js/tool-page.js"></script>
+<script src="../../js/emi-calculator.js"></script>
+</body>
+</html>

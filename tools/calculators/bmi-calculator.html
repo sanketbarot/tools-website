@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator - Body Mass Index | PDFTools</title>
+    <meta name="description" content="Free BMI calculator. Calculate Body Mass Index, ideal weight, body fat and daily calories.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/tool-page.css">
+    <style>
+        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .cc h2 i{color:#22c55e}
+        .unit-row{display:flex;gap:8px;margin-bottom:14px}
+        .unit-btn{flex:1;padding:12px;border:2px solid rgba(255,255,255,0.4);border-radius:10px;background:rgba(255,255,255,0.3);text-align:center;cursor:pointer;font-weight:600;font-size:13px;transition:all .2s}
+        .unit-btn:hover{border-color:#22c55e}
+        .unit-btn.on{border-color:#22c55e;background:rgba(34,197,94,0.08);color:#16a34a}
+        .ig{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
+        .ifl{display:flex;flex-direction:column;gap:5px}
+        .ifl label{font-size:12px;font-weight:600;color:var(--text-medium);display:flex;align-items:center;gap:5px}
+        .ifl label i{color:#22c55e;font-size:13px}
+        .ifl input,.ifl select{width:100%;padding:13px 15px;border:2px solid rgba(34,197,94,0.2);border-radius:11px;background:rgba(255,255,255,0.6);font-size:16px;font-weight:600;color:var(--text-dark);outline:none;box-sizing:border-box;transition:border-color .2s}
+        .ifl input:focus,.ifl select:focus{border-color:#22c55e}
+        .cbtn{width:100%;padding:16px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
+        .cbtn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(34,197,94,0.35)}
+        .bmi-res{text-align:center;padding:25px}
+        .bmi-big{font-size:65px;font-weight:800;line-height:1.1;margin-bottom:5px}
+        .bmi-cat{font-size:18px;font-weight:700;margin-bottom:8px}
+        .bmi-adv{font-size:13px;color:var(--text-medium);max-width:500px;margin:0 auto;line-height:1.6}
+        .gauge{margin:20px auto;max-width:400px;position:relative;height:30px}
+        .gauge-bar{height:12px;border-radius:6px;background:linear-gradient(90deg,#3b82f6 0%,#22c55e 25%,#22c55e 45%,#f59e0b 60%,#ef4444 80%,#991b1b 100%)}
+        .gauge-needle{position:absolute;top:-4px;width:4px;height:20px;background:#1e293b;border-radius:2px;transform:translateX(-50%);transition:left .8s}
+        .gauge-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);margin-top:4px}
+        .inf-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:15px 0}
+        .inf-box{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px}
+        .inf-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0}
+        .inf-data h4{font-size:17px;font-weight:800;color:var(--text-dark);margin-bottom:2px}
+        .inf-data p{font-size:11px;color:var(--text-light)}
+        .bmi-tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:12px}
+        .bmi-tbl th{background:rgba(34,197,94,0.1);padding:10px 12px;text-align:left;font-weight:700;color:#16a34a;border-bottom:2px solid rgba(34,197,94,0.2)}
+        .bmi-tbl td{padding:8px 12px;border-bottom:1px solid rgba(0,0,0,0.05);color:var(--text-medium)}
+        .bmi-tbl tr:hover td{background:rgba(34,197,94,0.04)}
+        .bmi-tbl .hl{background:rgba(34,197,94,0.08);font-weight:600}
+        .shr{display:flex;gap:8px;justify-content:center;margin-top:15px;flex-wrap:wrap}
+        .shr button{padding:8px 16px;border:2px solid rgba(34,197,94,0.25);border-radius:50px;background:transparent;color:#16a34a;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .shr button:hover{background:#22c55e;color:#fff;border-color:#22c55e}
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+        @media(max-width:768px){.ig{grid-template-columns:1fr}.inf-grid{grid-template-columns:1fr}.bmi-big{font-size:50px}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+            <i class="fas fa-chevron-right"></i><span>BMI Calculator</span>
+        </div>
+        <div class="tool-title">
+            <div class="tool-title-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a);"><i class="fas fa-weight"></i></div>
+            <div><h1>BMI Calculator</h1><p>Calculate Body Mass Index, ideal weight & daily calories!</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="tool-area">
+    <div class="container">
+
+        <!-- INPUT -->
+        <div class="cc">
+            <h2><i class="fas fa-ruler-combined"></i> Enter Your Details</h2>
+            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+            <!-- Unit toggle -->
+            <div class="unit-row">
+                <div class="unit-btn on" onclick="setUnit(true,this)"><i class="fas fa-globe-asia"></i> Metric (kg/cm)</div>
+                <div class="unit-btn" onclick="setUnit(false,this)"><i class="fas fa-flag-usa"></i> Imperial (lbs/ft)</div>
+            </div>
+
+            <!-- Metric -->
+            <div id="metricBox">
+                <div class="ig">
+                    <div class="ifl"><label><i class="fas fa-ruler-vertical"></i> Height (cm)</label><input type="number" id="heightCm" value="170" min="50" max="300"></div>
+                    <div class="ifl"><label><i class="fas fa-weight-hanging"></i> Weight (kg)</label><input type="number" id="weightKg" value="70" min="10" max="500"></div>
+                </div>
+            </div>
+
+            <!-- Imperial -->
+            <div id="imperialBox" style="display:none;">
+                <div class="ig">
+                    <div class="ifl"><label><i class="fas fa-ruler-vertical"></i> Height (feet)</label><input type="number" id="heightFt" value="5" min="1" max="8"></div>
+                    <div class="ifl"><label><i class="fas fa-ruler"></i> Inches</label><input type="number" id="heightIn" value="7" min="0" max="11"></div>
+                </div>
+                <div class="ifl" style="margin-top:10px;"><label><i class="fas fa-weight-hanging"></i> Weight (lbs)</label><input type="number" id="weightLbs" value="154" min="20" max="1000"></div>
+            </div>
+
+            <!-- Age & Gender -->
+            <div class="ig" style="margin-top:12px;">
+                <div class="ifl"><label><i class="fas fa-user"></i> Age</label><input type="number" id="ageInput" value="25" min="2" max="120"></div>
+                <div class="ifl"><label><i class="fas fa-venus-mars"></i> Gender</label>
+                    <select id="genderInput"><option value="male">Male</option><option value="female">Female</option></select>
+                </div>
+            </div>
+
+            <button class="cbtn" onclick="calculateBMI()"><i class="fas fa-calculator"></i> Calculate BMI</button>
+        </div>
+
+        <!-- RESULT -->
+        <div id="resultArea" style="display:none;">
+
+            <div class="cc">
+                <div class="bmi-res">
+                    <div class="bmi-big" id="bmiValue">0</div>
+                    <div class="bmi-cat" id="bmiCat">-</div>
+                    <p class="bmi-adv" id="bmiAdvice"></p>
+                    <div class="gauge">
+                        <div class="gauge-bar"><div class="gauge-needle" id="gaugeNeedle" style="left:50%;"></div></div>
+                        <div class="gauge-lbl"><span>Under</span><span>Normal</span><span>Over</span><span>Obese</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cc">
+                <h2><i class="fas fa-chart-bar"></i> Health Details</h2>
+                <div class="inf-grid">
+                    <div class="inf-box"><div class="inf-ic" style="background:linear-gradient(135deg,#22c55e,#16a34a);"><i class="fas fa-weight"></i></div><div class="inf-data"><h4 id="rRange">-</h4><p>Healthy Weight Range</p></div></div>
+                    <div class="inf-box"><div class="inf-ic" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"><i class="fas fa-bullseye"></i></div><div class="inf-data"><h4 id="rIdeal">-</h4><p>Ideal Weight</p></div></div>
+                    <div class="inf-box"><div class="inf-ic" style="background:linear-gradient(135deg,#f97316,#ea580c);"><i class="fas fa-balance-scale"></i></div><div class="inf-data"><h4 id="rDiff">-</h4><p>Weight Difference</p></div></div>
+                    <div class="inf-box"><div class="inf-ic" style="background:linear-gradient(135deg,#a855f7,#9333ea);"><i class="fas fa-percentage"></i></div><div class="inf-data"><h4 id="rFat">-</h4><p>Est. Body Fat</p></div></div>
+                    <div class="inf-box"><div class="inf-ic" style="background:linear-gradient(135deg,#ec4899,#db2777);"><i class="fas fa-fire"></i></div><div class="inf-data"><h4 id="rCalories">-</h4><p>Daily Calories (BMR)</p></div></div>
+                    <div class="inf-box"><div class="inf-ic" style="background:linear-gradient(135deg,#06b6d4,#0891b2);"><i class="fas fa-tint"></i></div><div class="inf-data"><h4 id="rWater">-</h4><p>Daily Water</p></div></div>
+                    <div class="inf-box"><div class="inf-ic" style="background:linear-gradient(135deg,#475569,#334155);"><i class="fas fa-chart-line"></i></div><div class="inf-data"><h4 id="rPrime">-</h4><p>BMI Prime</p></div></div>
+                    <div class="inf-box"><div class="inf-ic" style="background:linear-gradient(135deg,#eab308,#ca8a04);"><i class="fas fa-cube"></i></div><div class="inf-data"><h4 id="rPonderal">-</h4><p>Ponderal Index</p></div></div>
+                </div>
+            </div>
+
+            <div class="cc">
+                <h2><i class="fas fa-table"></i> BMI Categories</h2>
+                <table class="bmi-tbl">
+                    <tr><th>BMI</th><th>Category</th><th>Status</th></tr>
+                    <tr><td>&lt; 16</td><td>Severely Underweight</td><td>⚠️</td></tr>
+                    <tr><td>16 - 18.4</td><td>Underweight</td><td>🟠</td></tr>
+                    <tr class="hl"><td>18.5 - 24.9</td><td>Normal</td><td>✅</td></tr>
+                    <tr><td>25 - 29.9</td><td>Overweight</td><td>🟡</td></tr>
+                    <tr><td>30 - 34.9</td><td>Obese I</td><td>🔴</td></tr>
+                    <tr><td>35 - 39.9</td><td>Obese II</td><td>🔴</td></tr>
+                    <tr><td>≥ 40</td><td>Obese III</td><td>🚨</td></tr>
+                </table>
+            </div>
+
+            <div class="cc" style="text-align:center;">
+                <h2 style="justify-content:center;"><i class="fas fa-share-alt"></i> Share</h2>
+                <div class="shr">
+                    <button onclick="copyBMI()"><i class="fas fa-copy"></i> Copy</button>
+                    <button onclick="shareBMI('whatsapp')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button onclick="shareBMI('twitter')"><i class="fab fa-twitter"></i> Twitter</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How It Works</h2></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-ruler-combined"></i><h4>Enter</h4><p>Height, weight, age.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-calculator"></i><h4>Calculate</h4><p>Click button.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-heartbeat"></i><h4>Results</h4><p>Get health insights.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is BMI?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>BMI (Body Mass Index) = weight(kg) ÷ height(m)². It indicates if your weight is healthy for your height.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is a healthy BMI?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>18.5 to 24.9 is considered normal/healthy BMI range.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is BMI accurate?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>BMI is a screening tool. It doesn't account for muscle mass. Consult a doctor for full assessment.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>&copy; 2025 PDFTools.</p>
+            <div class="footer-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../privacy.html">Privacy</a>
+                <a href="../../terms.html">Terms</a>
+                <a href="../../about.html">About</a>
+                <a href="../../contact.html">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../js/tool-page.js"></script>
+<script src="../../js/bmi-calculator.js"></script>
+</body>
+</html>

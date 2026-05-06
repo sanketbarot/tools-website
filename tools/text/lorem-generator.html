@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator - Placeholder Text | PDFTools</title>
+    <meta name="description" content="Free Lorem Ipsum generator. Generate placeholder text in paragraphs, sentences, words or lists. Copy or download instantly.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/tool-page.css">
+    <style>
+        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .cc h2 i{color:#475569}
+
+        .type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+        .type-btn{padding:16px 10px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:12px;text-align:center;cursor:pointer;transition:all .15s;font-size:11px;font-weight:600;color:var(--text-medium)}
+        .type-btn:hover{border-color:#475569;transform:translateY(-2px)}
+        .type-btn.on{border-color:#475569;background:rgba(71,85,105,0.08);color:#475569}
+        .type-btn i{font-size:20px;display:block;margin-bottom:5px;color:#475569}
+
+        .count-row{display:flex;gap:12px;align-items:end;margin:14px 0}
+        .count-field{flex:1}
+        .count-field label{display:block;font-size:12px;font-weight:600;color:var(--text-medium);margin-bottom:5px}
+        .count-field input{width:100%;padding:14px 16px;border:2px solid rgba(71,85,105,0.2);border-radius:12px;background:rgba(255,255,255,0.6);font-size:18px;font-weight:700;color:var(--text-dark);outline:none;box-sizing:border-box;transition:border-color .2s}
+        .count-field input:focus{border-color:#475569}
+        .quick-counts{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+        .qc-btn{padding:5px 11px;border:1px solid rgba(71,85,105,0.2);border-radius:18px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);transition:all .15s}
+        .qc-btn:hover{border-color:#475569;color:#475569}
+
+        .opts-row{display:flex;gap:18px;margin:12px 0;flex-wrap:wrap}
+        .opt-check{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-medium);cursor:pointer}
+        .opt-check input{width:16px;height:16px;accent-color:#475569;cursor:pointer}
+
+        .gen-btn{width:100%;padding:16px;background:linear-gradient(135deg,#475569,#334155);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
+        .gen-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(71,85,105,0.35)}
+
+        /* Stats */
+        .stat-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+        .stat-pill{padding:8px 16px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:50px;font-size:12px;font-weight:600;color:var(--text-medium);display:flex;align-items:center;gap:5px}
+        .stat-pill strong{color:#475569}
+
+        /* Output */
+        .output-box{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:22px;max-height:400px;overflow-y:auto;font-size:14px;line-height:1.9;color:#334155;white-space:pre-wrap;word-wrap:break-word;font-family:'Georgia',serif}
+        .output-box::-webkit-scrollbar{width:5px}
+        .output-box::-webkit-scrollbar-thumb{background:rgba(71,85,105,0.2);border-radius:3px}
+
+        .output-actions{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+        .oa-btn{padding:7px 14px;border:1px solid rgba(71,85,105,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:12px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:5px}
+        .oa-btn:hover{border-color:#475569;color:#475569;background:rgba(71,85,105,0.06)}
+        .oa-btn i{font-size:12px}
+
+        /* HTML Preview */
+        .html-section{margin-top:14px}
+        .html-tabs{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid rgba(71,85,105,0.2);margin-bottom:10px}
+        .html-tab{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;background:rgba(255,255,255,0.4);color:var(--text-medium);transition:all .15s}
+        .html-tab:hover{background:rgba(71,85,105,0.05)}
+        .html-tab.on{background:#475569;color:#fff}
+        .html-preview{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;max-height:250px;overflow-y:auto;font-size:14px;line-height:1.8;color:#334155}
+        .html-code{background:#1e293b;color:#a5f3fc;border-radius:12px;padding:16px;max-height:250px;overflow-y:auto;font-size:12px;line-height:1.7;font-family:monospace;white-space:pre-wrap;word-wrap:break-word}
+        .html-code::-webkit-scrollbar{width:5px}
+        .html-code::-webkit-scrollbar-thumb{background:rgba(165,243,252,0.3);border-radius:3px}
+
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+
+        @media(max-width:768px){.type-grid{grid-template-columns:repeat(2,1fr)}.count-row{flex-direction:column}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+            <i class="fas fa-chevron-right"></i><span>Lorem Ipsum Generator</span>
+        </div>
+        <div class="tool-title">
+            <div class="tool-title-icon" style="background:linear-gradient(135deg,#475569,#334155);"><i class="fas fa-paragraph"></i></div>
+            <div><h1>Lorem Ipsum Generator</h1><p>Generate placeholder text for your designs, websites & documents!</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="tool-area">
+    <div class="container">
+
+        <!-- Options -->
+        <div class="cc">
+            <h2><i class="fas fa-cog"></i> Generator Settings</h2>
+            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+            <!-- Type -->
+            <div class="type-grid">
+                <div class="type-btn on" data-type="paragraphs" onclick="setType('paragraphs',this)">
+                    <i class="fas fa-align-left"></i> Paragraphs
+                </div>
+                <div class="type-btn" data-type="sentences" onclick="setType('sentences',this)">
+                    <i class="fas fa-align-justify"></i> Sentences
+                </div>
+                <div class="type-btn" data-type="words" onclick="setType('words',this)">
+                    <i class="fas fa-font"></i> Words
+                </div>
+                <div class="type-btn" data-type="list" onclick="setType('list',this)">
+                    <i class="fas fa-list-ol"></i> List Items
+                </div>
+            </div>
+
+            <!-- Count -->
+            <div class="count-row">
+                <div class="count-field">
+                    <label id="countLabel">Number of Paragraphs</label>
+                    <input type="number" id="countInput" value="5" min="1" max="100">
+                    <div class="quick-counts">
+                        <span class="qc-btn" onclick="setCount(1)">1</span>
+                        <span class="qc-btn" onclick="setCount(3)">3</span>
+                        <span class="qc-btn" onclick="setCount(5)">5</span>
+                        <span class="qc-btn" onclick="setCount(10)">10</span>
+                        <span class="qc-btn" onclick="setCount(20)">20</span>
+                        <span class="qc-btn" onclick="setCount(50)">50</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options -->
+            <div class="opts-row">
+                <label class="opt-check">
+                    <input type="checkbox" id="startLorem" checked>
+                    Start with "Lorem ipsum..."
+                </label>
+                <label class="opt-check">
+                    <input type="checkbox" id="includeHtml">
+                    Include HTML tags
+                </label>
+            </div>
+
+            <button class="gen-btn" onclick="generateLorem()">
+                <i class="fas fa-magic"></i> Generate Lorem Ipsum
+            </button>
+        </div>
+
+        <!-- Result -->
+        <div id="resultArea" style="display:none;">
+
+            <!-- Stats -->
+            <div class="stat-row">
+                <div class="stat-pill"><i class="fas fa-font" style="color:#475569;"></i> <strong id="sWords">0</strong> words</div>
+                <div class="stat-pill"><i class="fas fa-text-width" style="color:#475569;"></i> <strong id="sChars">0</strong> chars</div>
+                <div class="stat-pill"><i class="fas fa-align-left" style="color:#475569;"></i> <strong id="sSentences">0</strong> sentences</div>
+                <div class="stat-pill"><i class="fas fa-paragraph" style="color:#475569;"></i> <strong id="sParas">0</strong> paragraphs</div>
+            </div>
+
+            <!-- Output -->
+            <div class="cc">
+                <h2><i class="fas fa-file-alt"></i> Generated Text</h2>
+
+                <div class="output-actions">
+                    <button class="oa-btn" onclick="copyText()"><i class="fas fa-copy"></i> Copy Text</button>
+                    <button class="oa-btn" onclick="downloadText()"><i class="fas fa-download"></i> Download TXT</button>
+                    <button class="oa-btn" onclick="generateLorem()"><i class="fas fa-sync-alt"></i> Regenerate</button>
+                </div>
+
+                <div class="output-box" id="outputText"></div>
+            </div>
+
+            <!-- HTML Section -->
+            <div class="cc html-section" id="htmlSection" style="display:none;">
+                <h2><i class="fas fa-code"></i> HTML Output</h2>
+
+                <div class="output-actions">
+                    <button class="oa-btn" onclick="copyHTML()"><i class="fas fa-copy"></i> Copy HTML</button>
+                    <button class="oa-btn" onclick="downloadHTML()"><i class="fas fa-download"></i> Download HTML</button>
+                </div>
+
+                <div style="margin-bottom:10px;">
+                    <strong style="font-size:12px;color:var(--text-medium);">Preview:</strong>
+                    <div class="html-preview" id="htmlPreview"></div>
+                </div>
+
+                <div>
+                    <strong style="font-size:12px;color:var(--text-medium);">Code:</strong>
+                    <div class="html-code" id="htmlCodeBlock"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How It Works</h2></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-list-alt"></i><h4>Choose Type</h4><p>Paragraphs, sentences, words or list.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-hashtag"></i><h4>Set Count</h4><p>How many to generate.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy/Download</h4><p>Copy text or download file.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question"><h4>What is Lorem Ipsum?</h4><i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Lorem Ipsum is dummy placeholder text used in design and typesetting since the 1500s. It helps designers focus on layout without being distracted by readable content.</p></div>
+            </div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question"><h4>Where does Lorem Ipsum come from?</h4><i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>It originates from "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. The standard Lorem Ipsum passage has been used since the 1500s.</p></div>
+            </div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question"><h4>Why use Lorem Ipsum?</h4><i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>It provides a natural-looking distribution of letters and words, making it ideal for mockups, wireframes, web design, and print layouts where real content isn't available yet.</p></div>
+            </div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question"><h4>Can I get HTML formatted output?</h4><i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer"><p>Yes! Check the "Include HTML tags" option to get the text wrapped in proper HTML paragraph or list tags, ready to paste into your website code.</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>&copy; 2025 PDFTools.</p>
+            <div class="footer-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../privacy.html">Privacy</a>
+                <a href="../../terms.html">Terms</a>
+                <a href="../../about.html">About</a>
+                <a href="../../contact.html">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../js/tool-page.js"></script>
+<script src="../../js/lorem-generator.js"></script>
+</body>
+</html>

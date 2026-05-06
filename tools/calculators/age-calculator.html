@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator - Calculate Exact Age | PDFTools</title>
+    <meta name="description" content="Free age calculator. Calculate exact age in years, months, days, hours, minutes, seconds. Zodiac sign, next birthday & more!">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/tool-page.css">
+    <style>
+        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .calc-card h2 i{color:#f97316;font-size:17px}
+        .date-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+        .date-field label{display:block;font-size:12px;font-weight:600;color:var(--text-medium);margin-bottom:5px}
+        .date-field label i{color:#f97316;margin-right:4px}
+        .date-field input{width:100%;padding:14px 16px;border:2px solid rgba(249,115,22,0.2);border-radius:12px;background:rgba(255,255,255,0.6);font-size:16px;font-weight:600;color:var(--text-dark);outline:none;box-sizing:border-box;transition:border-color .2s}
+        .date-field input:focus{border-color:#f97316}
+        .calc-btn{width:100%;padding:16px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
+        .calc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(249,115,22,0.35)}
+        .age-result{text-align:center;padding:22px}
+        .age-big{font-size:62px;font-weight:800;background:linear-gradient(135deg,#f97316,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:5px}
+        .age-label{font-size:16px;color:var(--text-medium);font-weight:600;margin-bottom:18px}
+        .age-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+        .age-box{padding:16px 10px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:14px;text-align:center;transition:transform .2s}
+        .age-box:hover{transform:translateY(-3px)}
+        .age-box .ab-num{font-size:26px;font-weight:800;color:#f97316;display:block;margin-bottom:3px}
+        .age-box .ab-label{font-size:11px;color:var(--text-light);font-weight:600}
+        .detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+        .detail-item{display:flex;align-items:center;gap:12px;padding:13px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px}
+        .detail-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+        .detail-info h4{font-size:17px;font-weight:800;color:var(--text-dark);margin-bottom:2px}
+        .detail-info p{font-size:11px;color:var(--text-light)}
+        .next-bday{margin-top:16px;padding:18px;background:linear-gradient(135deg,rgba(249,115,22,0.06),rgba(236,72,153,0.06));border:1px solid rgba(249,115,22,0.15);border-radius:14px;text-align:center}
+        .next-bday h3{font-size:15px;font-weight:700;color:#f97316;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px}
+        .next-bday .nb-big{font-size:22px;font-weight:800;color:#ea580c;margin-bottom:4px}
+        .next-bday p{font-size:12px;color:var(--text-light)}
+        .zodiac-row{display:flex;gap:14px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+        .zodiac-card{padding:14px 18px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;text-align:center;min-width:110px}
+        .zodiac-card .z-icon{font-size:26px;display:block;margin-bottom:4px}
+        .zodiac-card h5{font-size:13px;font-weight:700;margin-bottom:2px}
+        .zodiac-card p{font-size:10px;color:var(--text-light)}
+        .born-on{margin-top:14px;padding:13px;background:rgba(255,255,255,0.4);border-radius:12px;text-align:center;font-size:14px;color:var(--text-medium)}
+        .born-on span{font-weight:700;color:#f97316}
+        .fun-facts{margin-top:14px}
+        .fun-fact{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,0.35);border-radius:10px;margin-bottom:7px;font-size:13px;color:var(--text-medium)}
+        .fun-fact i{color:#f97316;font-size:15px;width:18px;flex-shrink:0}
+        .share-row{display:flex;gap:8px;justify-content:center;margin-top:15px;flex-wrap:wrap}
+        .share-btn{padding:8px 16px;border:2px solid rgba(249,115,22,0.25);border-radius:50px;background:transparent;color:#ea580c;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .share-btn:hover{background:#f97316;color:#fff;border-color:#f97316}
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+        @media(max-width:768px){.date-row{grid-template-columns:1fr}.age-grid{gap:8px}.age-box .ab-num{font-size:22px}.detail-grid{grid-template-columns:1fr}.age-big{font-size:48px}}
+        @media(max-width:480px){.zodiac-row{flex-direction:column;align-items:center}}
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar glass">
+        <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Age Calculator</span>
+            </div>
+            <div class="tool-title">
+                <div class="tool-title-icon" style="background:linear-gradient(135deg,#f97316,#ea580c);">
+                    <i class="fas fa-birthday-cake"></i>
+                </div>
+                <div>
+                    <h1>Age Calculator</h1>
+                    <p>Calculate exact age in years, months, days, hours, minutes & seconds!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOOL -->
+    <section class="tool-area">
+        <div class="container">
+
+            <!-- INPUT -->
+            <div class="calc-card">
+                <h2><i class="fas fa-calendar-alt"></i> Enter Your Details</h2>
+                <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                <div class="date-row">
+                    <div class="date-field">
+                        <label><i class="fas fa-baby"></i> Date of Birth</label>
+                        <input type="date" id="dobInput">
+                    </div>
+                    <div class="date-field">
+                        <label><i class="fas fa-calendar-day"></i> Age at Date (optional)</label>
+                        <input type="date" id="todayInput">
+                    </div>
+                </div>
+
+                <button class="calc-btn" onclick="calculateAge()">
+                    <i class="fas fa-calculator"></i> Calculate Age
+                </button>
+            </div>
+
+            <!-- RESULT -->
+            <div id="resultArea" style="display:none;">
+
+                <!-- Big Age -->
+                <div class="calc-card">
+                    <div class="age-result">
+                        <div class="age-big" id="ageBig">0</div>
+                        <div class="age-label">Years Old</div>
+                        <div class="age-grid">
+                            <div class="age-box"><span class="ab-num" id="rYears">0</span><span class="ab-label">Years</span></div>
+                            <div class="age-box"><span class="ab-num" id="rMonths">0</span><span class="ab-label">Months</span></div>
+                            <div class="age-box"><span class="ab-num" id="rDays">0</span><span class="ab-label">Days</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed -->
+                <div class="calc-card">
+                    <h2><i class="fas fa-clock"></i> Detailed Breakdown</h2>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"><i class="fas fa-calendar"></i></div>
+                            <div class="detail-info"><h4 id="totalMonths">0</h4><p>Total Months</p></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a);"><i class="fas fa-calendar-week"></i></div>
+                            <div class="detail-info"><h4 id="totalWeeks">0</h4><p>Total Weeks</p></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background:linear-gradient(135deg,#f97316,#ea580c);"><i class="fas fa-sun"></i></div>
+                            <div class="detail-info"><h4 id="totalDays">0</h4><p>Total Days</p></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background:linear-gradient(135deg,#ec4899,#db2777);"><i class="fas fa-hourglass-half"></i></div>
+                            <div class="detail-info"><h4 id="totalHours">0</h4><p>Total Hours</p></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2);"><i class="fas fa-stopwatch"></i></div>
+                            <div class="detail-info"><h4 id="totalMinutes">0</h4><p>Total Minutes</p></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea);"><i class="fas fa-bolt"></i></div>
+                            <div class="detail-info"><h4 id="totalSeconds">0</h4><p>Total Seconds (Live!)</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Birthday -->
+                <div class="calc-card">
+                    <div class="next-bday">
+                        <h3><i class="fas fa-gift"></i> Next Birthday</h3>
+                        <div class="nb-big" id="nbCountdown">0 days</div>
+                        <p id="nbDate">...</p>
+                        <p id="nbDay" style="font-weight:600;color:#f97316;margin-top:4px;"></p>
+                    </div>
+                </div>
+
+                <!-- Zodiac & Facts -->
+                <div class="calc-card">
+                    <h2><i class="fas fa-star"></i> Fun Facts</h2>
+
+                    <div class="born-on">
+                        You were born on a <span id="bornDay">Monday</span>
+                    </div>
+
+                    <div class="zodiac-row">
+                        <div class="zodiac-card">
+                            <span class="z-icon" id="zodiacIcon">♈</span>
+                            <h5 id="zodiacName">Aries</h5>
+                            <p>Zodiac Sign</p>
+                        </div>
+                        <div class="zodiac-card">
+                            <span class="z-icon" id="chineseIcon">🐉</span>
+                            <h5 id="chineseName">Dragon</h5>
+                            <p>Chinese Zodiac</p>
+                        </div>
+                        <div class="zodiac-card">
+                            <span class="z-icon" id="birthstone">💎</span>
+                            <h5 id="birthstoneName">Diamond</h5>
+                            <p>Birthstone</p>
+                        </div>
+                    </div>
+
+                    <div class="fun-facts" id="funFacts"></div>
+                </div>
+
+                <!-- Share -->
+                <div class="calc-card" style="text-align:center;">
+                    <h2 style="justify-content:center;"><i class="fas fa-share-alt"></i> Share</h2>
+                    <div class="share-row">
+                        <button class="share-btn" onclick="copyResult()"><i class="fas fa-copy"></i> Copy</button>
+                        <button class="share-btn" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                        <button class="share-btn" onclick="shareTwitter()"><i class="fab fa-twitter"></i> Twitter</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- HOW TO -->
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How It Works</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-calendar-alt"></i><h4>Enter DOB</h4><p>Your date of birth.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-calculator"></i><h4>Calculate</h4><p>Click the button.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-birthday-cake"></i><h4>Result</h4><p>See your exact age!</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>How accurate is this?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Accurate to the second, accounting for leap years and varying month lengths.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I calculate age at a specific date?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! Fill in the "Age at Date" field to calculate age at any date.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Does it handle leap years?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes, all calculations properly handle leap years.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>&copy; 2025 PDFTools.</p>
+                <div class="footer-links">
+                    <a href="../../index.html">Home</a>
+                    <a href="../../privacy.html">Privacy</a>
+                    <a href="../../terms.html">Terms</a>
+                    <a href="../../about.html">About</a>
+                    <a href="../../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="../../js/tool-page.js"></script>
+    <script src="../../js/age-calculator.js"></script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Counter - Count Words & Characters | PDFTools</title>
+    <meta name="description" content="Free word counter tool. Count words, characters, sentences, paragraphs. Get reading time, readability score and word frequency.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/tool-page.css">
+    <style>
+        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .cc h2 i{color:#06b6d4}
+        .text-box{width:100%;min-height:220px;padding:18px;border:2px solid rgba(6,182,212,0.2);border-radius:14px;background:rgba(255,255,255,0.7);font-size:15px;line-height:1.8;color:var(--text-dark);outline:none;font-family:inherit;resize:vertical;box-sizing:border-box;transition:border-color .2s}
+        .text-box:focus{border-color:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,0.1)}
+        .text-box::placeholder{color:#94a3b8}
+        .text-actions{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+        .ta-btn{padding:7px 14px;border:1px solid rgba(6,182,212,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:12px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:5px}
+        .ta-btn:hover{border-color:#06b6d4;color:#06b6d4;background:rgba(6,182,212,0.08)}
+        .ta-btn i{font-size:12px}
+
+        /* Stats grid */
+        .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+        .stat-card{padding:18px 14px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:14px;text-align:center;transition:transform .15s}
+        .stat-card:hover{transform:translateY(-3px)}
+        .stat-card .sc-num{font-size:30px;font-weight:800;margin-bottom:3px;background:linear-gradient(135deg,#06b6d4,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .stat-card .sc-label{font-size:11px;color:var(--text-light);font-weight:600}
+        .stat-card.main{background:linear-gradient(135deg,rgba(6,182,212,0.08),rgba(6,182,212,0.03));border-color:rgba(6,182,212,0.2)}
+        .stat-card.main .sc-num{font-size:38px}
+
+        /* Detail grid */
+        .detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+        .detail-item{display:flex;align-items:center;gap:12px;padding:13px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px}
+        .detail-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+        .detail-data h4{font-size:16px;font-weight:800;color:var(--text-dark);margin-bottom:1px}
+        .detail-data p{font-size:10px;color:var(--text-light)}
+
+        /* Readability */
+        .read-card{text-align:center;padding:18px}
+        .read-score{font-size:48px;font-weight:800;margin-bottom:3px}
+        .read-label{font-size:16px;font-weight:700;margin-bottom:10px}
+        .read-bar-wrap{max-width:350px;margin:0 auto;height:10px;background:rgba(0,0,0,0.06);border-radius:5px;overflow:hidden}
+        .read-bar{height:100%;border-radius:5px;transition:width .5s,background .5s}
+        .read-scale{display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);margin-top:4px;max-width:350px;margin-left:auto;margin-right:auto}
+
+        /* Top words */
+        .tw-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,0.35);border-radius:10px;margin-bottom:6px;transition:background .15s}
+        .tw-item:hover{background:rgba(6,182,212,0.06)}
+        .tw-rank{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+        .tw-info{flex:1;min-width:0}
+        .tw-word{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:3px}
+        .tw-bar-wrap{height:5px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+        .tw-bar{height:100%;background:linear-gradient(90deg,#06b6d4,#0891b2);border-radius:3px;transition:width .5s}
+        .tw-count{font-size:14px;font-weight:800;color:#06b6d4;min-width:30px;text-align:right}
+
+        /* Share */
+        .shr{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+        .shr button{padding:8px 16px;border:2px solid rgba(6,182,212,0.25);border-radius:50px;background:transparent;color:#0891b2;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .shr button:hover{background:#06b6d4;color:#fff;border-color:#06b6d4}
+
+        @media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr)}.detail-grid{grid-template-columns:1fr}.stat-card.main .sc-num{font-size:32px}}
+        @media(max-width:480px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+            <i class="fas fa-chevron-right"></i><span>Word Counter</span>
+        </div>
+        <div class="tool-title">
+            <div class="tool-title-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2);"><i class="fas fa-font"></i></div>
+            <div><h1>Word Counter</h1><p>Count words, characters, sentences & get readability analysis in real-time!</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="tool-area">
+    <div class="container">
+
+        <!-- Main Stats (always visible) -->
+        <div class="stats-grid">
+            <div class="stat-card main"><div class="sc-num" id="rWords">0</div><div class="sc-label">Words</div></div>
+            <div class="stat-card main"><div class="sc-num" id="rChars">0</div><div class="sc-label">Characters</div></div>
+            <div class="stat-card main"><div class="sc-num" id="rSentences">0</div><div class="sc-label">Sentences</div></div>
+        </div>
+
+        <!-- Text Input -->
+        <div class="cc">
+            <h2><i class="fas fa-keyboard"></i> Type or Paste Your Text</h2>
+            <textarea class="text-box" id="textInput" placeholder="Start typing or paste your text here... Word count updates in real-time as you type."></textarea>
+            <div class="text-actions">
+                <button class="ta-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
+                <button class="ta-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample Text</button>
+                <button class="ta-btn" onclick="clearText()"><i class="fas fa-trash"></i> Clear</button>
+                <button class="ta-btn" onclick="copyStats()"><i class="fas fa-copy"></i> Copy Stats</button>
+            </div>
+        </div>
+
+        <!-- More Stats -->
+        <div class="cc">
+            <h2><i class="fas fa-chart-bar"></i> Detailed Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="sc-num" id="rCharsNoSpace">0</div><div class="sc-label">Chars (no spaces)</div></div>
+                <div class="stat-card"><div class="sc-num" id="rParagraphs">0</div><div class="sc-label">Paragraphs</div></div>
+                <div class="stat-card"><div class="sc-num" id="rLines">0</div><div class="sc-label">Lines</div></div>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"><i class="fas fa-book-open"></i></div>
+                    <div class="detail-data"><h4 id="rReadTime">0 sec</h4><p>Reading Time (200 wpm)</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a);"><i class="fas fa-microphone"></i></div>
+                    <div class="detail-data"><h4 id="rSpeakTime">0 sec</h4><p>Speaking Time (150 wpm)</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#f97316,#ea580c);"><i class="fas fa-text-width"></i></div>
+                    <div class="detail-data"><h4 id="rAvgWord">0 chars</h4><p>Avg Word Length</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea);"><i class="fas fa-align-left"></i></div>
+                    <div class="detail-data"><h4 id="rAvgSent">0 words</h4><p>Avg Sentence Length</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#ec4899,#db2777);"><i class="fas fa-music"></i></div>
+                    <div class="detail-data"><h4 id="rSyllables">0</h4><p>Syllables</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#475569,#334155);"><i class="fas fa-trophy"></i></div>
+                    <div class="detail-data"><h4 id="rLongest">-</h4><p>Longest Word</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Readability -->
+        <div class="cc">
+            <h2><i class="fas fa-glasses"></i> Readability Score</h2>
+            <div class="read-card">
+                <div class="read-score" id="rReadScore">0</div>
+                <div class="read-label" id="rReadLabel">-</div>
+                <div class="read-bar-wrap"><div class="read-bar" id="readBar" style="width:0%;background:#94a3b8;"></div></div>
+                <div class="read-scale"><span>Hard</span><span>Standard</span><span>Easy</span></div>
+            </div>
+            <p style="font-size:11px;color:var(--text-light);text-align:center;margin-top:10px;">Based on Flesch-Kincaid readability formula. Higher score = easier to read.</p>
+        </div>
+
+        <!-- Top Words -->
+        <div class="cc">
+            <h2><i class="fas fa-chart-pie"></i> Word Frequency (Top 10)</h2>
+            <div id="topWords">
+                <p style="color:var(--text-light);font-size:12px;text-align:center;">Start typing to see word frequency</p>
+            </div>
+        </div>
+
+        <!-- Share -->
+        <div class="cc" style="text-align:center;">
+            <h2 style="justify-content:center;"><i class="fas fa-share-alt"></i> Share</h2>
+            <div class="shr">
+                <button onclick="copyStats()"><i class="fas fa-copy"></i> Copy Stats</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How It Works</h2></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Type/Paste</h4><p>Enter your text.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-magic"></i><h4>Auto Count</h4><p>Real-time analysis.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-chart-bar"></i><h4>View Stats</h4><p>Words, reading time & more.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How does word counting work?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Words are counted by splitting text on whitespace (spaces, tabs, newlines). Numbers and hyphenated words count as single words.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is reading time?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Reading time is based on average reading speed of 200 words per minute. Speaking time uses 150 wpm.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is Flesch-Kincaid score?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>It measures text readability on a 0-100 scale. Higher = easier. Based on average sentence length and syllable count per word.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Does it work with other languages?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Word and character counting works for all languages. Readability and syllable counting are optimized for English.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>&copy; 2025 PDFTools.</p>
+            <div class="footer-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../privacy.html">Privacy</a>
+                <a href="../../terms.html">Terms</a>
+                <a href="../../about.html">About</a>
+                <a href="../../contact.html">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../js/tool-page.js"></script>
+<script src="../../js/word-counter.js"></script>
+</body>
+</html>

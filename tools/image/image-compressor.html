@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor - Reduce Image Size | PDFTools</title>
+    <meta name="description" content="Free image compressor. Reduce JPG, PNG, WEBP image file size while maintaining quality. Batch compress multiple images.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/tool-page.css">
+    <style>
+        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .cc h2 i{color:#f43f5e}
+        .opt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+        .opt-field label{display:block;font-size:12px;font-weight:600;color:var(--text-medium);margin-bottom:5px}
+        .opt-field select,.opt-field input{width:100%;padding:10px 14px;border:2px solid rgba(244,63,94,0.15);border-radius:10px;background:rgba(255,255,255,0.6);font-size:14px;font-weight:600;outline:none;box-sizing:border-box}
+        .opt-field select:focus,.opt-field input:focus{border-color:#f43f5e}
+        .slider-wrap{margin:14px 0}
+        .slider-wrap label{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--text-medium);margin-bottom:6px}
+        .slider-wrap input[type=range]{width:100%;height:8px;-webkit-appearance:none;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);border-radius:4px;outline:none}
+        .slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:#fff;border:3px solid #f43f5e;border-radius:50%;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.15)}
+
+        .fl-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:10px;margin-bottom:8px}
+        .fl-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#f43f5e,#e11d48);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0}
+        .fl-info{flex:1;min-width:0}
+        .fl-info h4{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+        .fl-info span{font-size:11px;color:var(--text-light)}
+        .fl-remove{width:30px;height:30px;border:none;border-radius:50%;background:rgba(239,68,68,0.1);color:#ef4444;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+        .fl-remove:hover{background:#ef4444;color:#fff}
+
+        .comp-btn{width:100%;padding:16px;background:linear-gradient(135deg,#f43f5e,#e11d48);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
+        .comp-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(244,63,94,0.35)}
+
+        /* Stats */
+        .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+        .stat-box{padding:16px 10px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:12px;text-align:center}
+        .stat-box h4{font-size:22px;font-weight:800;margin-bottom:2px}
+        .stat-box p{font-size:10px;color:var(--text-light)}
+        .stat-box.saved h4{color:#22c55e}
+
+        .sbar-wrap{max-width:450px;margin:12px auto}
+        .sbar-track{height:14px;background:rgba(0,0,0,0.06);border-radius:7px;overflow:hidden}
+        .sbar-fill{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:7px;transition:width .8s;display:flex;align-items:center;justify-content:center}
+        .sbar-text{font-size:10px;font-weight:700;color:#fff}
+        .sbar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-light);margin-top:4px}
+
+        /* Result cards */
+        .res-grid{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+        .res-card{display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;transition:all .15s}
+        .res-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+        .res-preview{width:60px;height:60px;border-radius:10px;overflow:hidden;background:#f1f5f9;flex-shrink:0}
+        .res-preview img{width:100%;height:100%;object-fit:cover}
+        .res-preview i{font-size:24px;color:var(--text-light);display:flex;align-items:center;justify-content:center;height:100%}
+        .res-info{flex:1;min-width:0}
+        .res-info h4{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+        .res-sizes{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:3px}
+        .rs-orig{color:#ef4444;text-decoration:line-through;font-weight:600}
+        .rs-comp{color:#22c55e;font-weight:700}
+        .res-sizes i{font-size:10px;color:var(--text-light)}
+        .res-saved{font-size:12px;font-weight:600;margin-bottom:2px}
+        .res-dims{font-size:10px;color:var(--text-light)}
+        .res-dl{width:38px;height:38px;border:none;border-radius:50%;background:rgba(34,197,94,0.1);color:#22c55e;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+        .res-dl:hover{background:#22c55e;color:#fff}
+
+        .dl-all-btn{width:100%;padding:16px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
+        .dl-all-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(34,197,94,0.35)}
+
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+
+        @media(max-width:768px){.opt-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+            <i class="fas fa-chevron-right"></i><span>Image Compressor</span>
+        </div>
+        <div class="tool-title">
+            <div class="tool-title-icon" style="background:linear-gradient(135deg,#f43f5e,#e11d48);"><i class="fas fa-compress"></i></div>
+            <div><h1>Image Compressor</h1><p>Reduce image file size while keeping quality. Batch compress JPG, PNG & WEBP!</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="tool-area">
+    <div class="container">
+
+        <!-- STEP 1: UPLOAD -->
+        <div id="s1">
+            <div class="cc">
+                <div style="padding:40px 20px;text-align:center;border:3px dashed rgba(244,63,94,0.25);border-radius:16px;" id="dropArea">
+                    <i class="fas fa-images" style="font-size:45px;color:#f43f5e;margin-bottom:12px;display:block;"></i>
+                    <h3 style="font-size:18px;margin-bottom:6px;">Upload Images to Compress</h3>
+                    <p style="font-size:13px;color:var(--text-light);margin-bottom:18px;">Drop images here or click to browse</p>
+                    <button class="comp-btn" style="max-width:250px;margin:0 auto;" id="pickBtn" type="button">
+                        <i class="fas fa-plus"></i> Select Images
+                    </button>
+                    <input type="file" id="fi" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple style="display:none">
+                    <div style="margin-top:15px;font-size:12px;color:var(--text-light);">
+                        Accepted: <span style="background:rgba(244,63,94,0.1);color:#f43f5e;padding:2px 8px;border-radius:10px;font-weight:600;">JPG</span>
+                        <span style="background:rgba(244,63,94,0.1);color:#f43f5e;padding:2px 8px;border-radius:10px;font-weight:600;">PNG</span>
+                        <span style="background:rgba(244,63,94,0.1);color:#f43f5e;padding:2px 8px;border-radius:10px;font-weight:600;">WEBP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: OPTIONS -->
+        <div id="s2" style="display:none;">
+            <div class="cc">
+                <h2><i class="fas fa-images"></i> Selected Images (<span id="fileCount">0</span>)</h2>
+                <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <span style="font-size:12px;color:var(--text-light);">Total: <strong id="totalSize">0 KB</strong></span>
+                    <div style="display:flex;gap:6px;">
+                        <button style="padding:6px 12px;border:1px solid rgba(244,63,94,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);" onclick="document.getElementById('fi').click()"><i class="fas fa-plus"></i> Add</button>
+                        <button style="padding:6px 12px;border:1px solid rgba(239,68,68,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:#ef4444;" onclick="clearAll()"><i class="fas fa-trash"></i> Clear</button>
+                    </div>
+                </div>
+
+                <div id="fileList" style="max-height:250px;overflow-y:auto;"></div>
+            </div>
+
+            <div class="cc">
+                <h2><i class="fas fa-sliders-h"></i> Compression Settings</h2>
+
+                <!-- Quality slider -->
+                <div class="slider-wrap">
+                    <label>
+                        <span>Quality</span>
+                        <span id="qualityVal">75%</span>
+                    </label>
+                    <input type="range" id="qualitySlider" min="10" max="100" value="75">
+                    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);">
+                        <span>Smallest File</span>
+                        <span>Best Quality</span>
+                    </div>
+                </div>
+
+                <div class="opt-grid">
+                    <div class="opt-field">
+                        <label>Output Format</label>
+                        <select id="outputFormat">
+                            <option value="jpeg">JPEG (.jpg)</option>
+                            <option value="png">PNG (.png)</option>
+                            <option value="webp">WEBP (.webp)</option>
+                        </select>
+                    </div>
+                    <div class="opt-field">
+                        <label>Max Width (px)</label>
+                        <input type="number" id="maxWidth" value="0" min="0" placeholder="0 = No resize">
+                    </div>
+                    <div class="opt-field">
+                        <label>Max Width Info</label>
+                        <select onchange="document.getElementById('maxWidth').value=this.value">
+                            <option value="0">No Resize</option>
+                            <option value="800">800px (Web)</option>
+                            <option value="1200">1200px (Blog)</option>
+                            <option value="1920">1920px (HD)</option>
+                            <option value="3840">3840px (4K)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="comp-btn" onclick="compressImages()">
+                    <i class="fas fa-compress"></i> Compress Images
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 3: PROCESSING -->
+        <div id="s3" style="display:none;">
+            <div class="cc">
+                <div style="text-align:center;padding:30px;">
+                    <div class="spinner" style="margin:0 auto 20px;width:50px;height:50px;border:4px solid rgba(244,63,94,0.15);border-top-color:#f43f5e;border-radius:50%;animation:spin .9s linear infinite;"></div>
+                    <h3 id="pt" style="margin-bottom:5px;">Compressing...</h3>
+                    <p id="ps" style="color:var(--text-light);font-size:13px;margin-bottom:15px;">Processing images</p>
+                    <div style="max-width:350px;margin:0 auto;">
+                        <div style="height:8px;background:rgba(244,63,94,0.1);border-radius:4px;overflow:hidden;">
+                            <div id="pb" style="height:100%;width:0%;background:linear-gradient(90deg,#f43f5e,#e11d48);border-radius:4px;transition:width .3s;"></div>
+                        </div>
+                        <span id="pp" style="font-size:13px;font-weight:600;color:#f43f5e;margin-top:6px;display:block;">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: RESULTS -->
+        <div id="s4" style="display:none;">
+            <div class="cc">
+                <h2 style="justify-content:center;"><i class="fas fa-check-circle" style="color:#22c55e;"></i> Compression Complete!</h2>
+
+                <div class="stat-grid">
+                    <div class="stat-box"><h4 id="rCount" style="color:#f43f5e;">0</h4><p>Images</p></div>
+                    <div class="stat-box"><h4 id="rOrigSize" style="color:#ef4444;">0</h4><p>Original</p></div>
+                    <div class="stat-box"><h4 id="rCompSize" style="color:#22c55e;">0</h4><p>Compressed</p></div>
+                    <div class="stat-box saved"><h4 id="rSaved">0%</h4><p>Saved</p></div>
+                </div>
+
+                <div class="sbar-wrap">
+                    <div class="sbar-track">
+                        <div class="sbar-fill" id="savingsBar" style="width:0%;">
+                            <span class="sbar-text" id="savingsText">0%</span>
+                        </div>
+                    </div>
+                    <div class="sbar-label"><span>Compressed</span><span>Original</span></div>
+                </div>
+            </div>
+
+            <div class="cc">
+                <h2><i class="fas fa-images"></i> Compressed Files</h2>
+                <div class="res-grid" id="resultGrid"></div>
+                <button class="dl-all-btn" onclick="downloadAll()">
+                    <i class="fas fa-download"></i> Download All
+                </button>
+            </div>
+
+            <div class="cc" style="text-align:center;">
+                <button style="padding:12px 24px;border:2px solid rgba(244,63,94,0.25);border-radius:50px;background:transparent;color:#f43f5e;font-size:14px;font-weight:600;cursor:pointer;" onclick="clearAll()">
+                    <i class="fas fa-redo"></i> Compress More
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How It Works</h2></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-images"></i><h4>Upload</h4><p>Select one or multiple images.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-sliders-h"></i><h4>Settings</h4><p>Set quality & resize.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get compressed images.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Does compression reduce quality?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>At 75% quality, the difference is barely noticeable. Lower quality = smaller file but more visible compression artifacts.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Which format is best?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>JPEG: Best for photos. PNG: Best for graphics with transparency. WEBP: Best balance of size and quality (modern browsers).</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. All compression happens in your browser. Images never leave your device.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>&copy; 2025 PDFTools.</p>
+            <div class="footer-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../privacy.html">Privacy</a>
+                <a href="../../terms.html">Terms</a>
+                <a href="../../about.html">About</a>
+                <a href="../../contact.html">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../js/tool-page.js"></script>
+<script src="../../js/image-compressor.js"></script>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</body>
+</html>

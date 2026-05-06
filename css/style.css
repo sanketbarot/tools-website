@@ -807,3 +807,135 @@ body::before {
     .hero-stats { gap: 12px; }
     .hero-stat strong { font-size: 16px; }
 }
+
+.ndrop {
+    position: relative;
+    display: inline-block;
+}
+.ndrop-btn {
+    background: none;
+    border: none;
+    color: #475569;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px 4px;
+    font-family: inherit;
+    transition: color 0.2s;
+}
+.ndrop-btn:hover {
+    color: #6366f1;
+}
+.ndrop-arrow {
+    font-size: 9px;
+    margin-left: 2px;
+    transition: transform 0.25s;
+}
+.ndrop.show .ndrop-arrow {
+    transform: rotate(180deg);
+}
+
+/* Dropdown menu - HIDDEN by default */
+.ndrop-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    padding: 8px;
+    z-index: 9999;
+    min-width: 230px;
+}
+
+/* SHOW when parent has .show class */
+.ndrop.show .ndrop-menu {
+    display: block;
+}
+
+/* Arrow pointer */
+.ndrop-menu::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+    border-left: 1px solid #e2e8f0;
+}
+
+/* Menu links */
+.ndrop-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+.ndrop-menu a:hover {
+    background: #f0f4ff;
+    color: #6366f1;
+    transform: translateX(3px);
+}
+.ndrop-menu a i {
+    width: 20px;
+    font-size: 14px;
+    color: #94a3b8;
+    text-align: center;
+}
+.ndrop-menu a:hover i {
+    color: #6366f1;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .ndrop {
+        width: 100%;
+        display: block;
+    }
+    .ndrop-btn {
+        font-size: 17px;
+        padding: 10px 0;
+        justify-content: center;
+        width: 100%;
+    }
+    .ndrop-menu {
+        position: static;
+        transform: none;
+        box-shadow: none;
+        border: 1px solid #ede9fe;
+        background: #faf8ff;
+        border-radius: 12px;
+        padding: 6px;
+        margin-top: 5px;
+        min-width: auto;
+        width: 100%;
+        max-width: 260px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .ndrop-menu::before {
+        display: none;
+    }
+    .ndrop-menu a {
+        font-size: 14px;
+        justify-content: flex-start;
+    }
+    .ndrop-menu a:hover {
+        transform: none;
+    }
+}
