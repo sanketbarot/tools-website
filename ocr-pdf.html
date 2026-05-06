@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR PDF - Extract Text from Scanned PDFs | PDFTools</title>
+    <meta name="description" content="OCR technology to extract text from scanned PDF documents. Convert image-based PDFs to searchable text.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .lang-chip {
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.3);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .lang-chip:hover { border-color: var(--primary); }
+        .lang-chip.selected {
+            background: rgba(99,102,241,0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .lang-chip .flag {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .ocr-output {
+            padding: 20px;
+        }
+        .ocr-text-preview {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+        .ocr-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .ocr-stat {
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 10px;
+            text-align: center;
+        }
+        .ocr-stat h4 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .ocr-stat p {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 480px) {
+            .language-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>OCR PDF</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-purple"><i class="fas fa-eye"></i></div>
+                <div>
+                    <h1>OCR PDF</h1>
+                    <p>Extract text from scanned PDFs using AI-powered OCR. Make your PDFs searchable and editable.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <div id="uploadSection" data-section>
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-zone-content">
+                            <div class="upload-icon"><i class="fas fa-eye"></i></div>
+                            <h2>Upload Scanned PDF</h2>
+                            <p>We'll extract text using AI-powered OCR technology</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-plus"></i> Select PDF File
+                            </button>
+                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                            <div class="upload-hints">
+                                <span><i class="fas fa-robot"></i> AI Powered</span>
+                                <span><i class="fas fa-globe"></i> 50+ Languages</span>
+                                <span><i class="fas fa-infinity"></i> Free</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="optionsSection" data-section style="display:none;">
+                    <div class="files-area">
+                        <div class="files-header">
+                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">scanned.pdf</span></h3>
+                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+                        </div>
+
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-globe"></i> Document Language</h4>
+                            <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">Select the language(s) in your document for best accuracy:</p>
+                            <div class="language-grid">
+                                <div class="lang-chip selected" onclick="toggleLang(this)"><span class="flag">🇬🇧</span>English</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇮🇳</span>Hindi</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇮🇳</span>Gujarati</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇪🇸</span>Spanish</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇫🇷</span>French</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇩🇪</span>German</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇨🇳</span>Chinese</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇯🇵</span>Japanese</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇸🇦</span>Arabic</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇵🇹</span>Portuguese</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇷🇺</span>Russian</div>
+                                <div class="lang-chip" onclick="toggleLang(this)"><span class="flag">🇰🇷</span>Korean</div>
+                            </div>
+                        </div>
+
+                        <div class="options-panel glass-light" style="margin-top:15px;">
+                            <h4><i class="fas fa-cog"></i> OCR Options</h4>
+                            <div class="options-row">
+                                <div class="option-field">
+                                    <label>Output Type</label>
+                                    <select>
+                                        <option>Searchable PDF (PDF + text layer)</option>
+                                        <option>Text Only (.txt)</option>
+                                        <option>Word Document (.docx)</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Accuracy Mode</label>
+                                    <select>
+                                        <option>Balanced (Recommended)</option>
+                                        <option>High Accuracy (Slower)</option>
+                                        <option>Fast (Lower Accuracy)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn" onclick="startProcess()">
+                            <i class="fas fa-eye"></i> Run OCR
+                        </button>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Running OCR...</h3>
+                        <p>AI is analyzing and extracting text from your document</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area" style="text-align:left;max-width:100%;">
+                        <div style="text-align:center;">
+                            <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                            <h2>OCR Complete! 🔍</h2>
+                            <p style="color:var(--text-medium);">Text has been extracted from your scanned PDF</p>
+                        </div>
+
+                        <div class="ocr-output">
+                            <div class="ocr-stats">
+                                <div class="ocr-stat">
+                                    <h4>2,847</h4>
+                                    <p>Words Found</p>
+                                </div>
+                                <div class="ocr-stat">
+                                    <h4>12</h4>
+                                    <p>Pages Scanned</p>
+                                </div>
+                                <div class="ocr-stat">
+                                    <h4>98.5%</h4>
+                                    <p>Accuracy</p>
+                                </div>
+                                <div class="ocr-stat">
+                                    <h4>English</h4>
+                                    <p>Language</p>
+                                </div>
+                            </div>
+
+                            <h4 style="margin-bottom:10px;"><i class="fas fa-file-alt" style="color:var(--primary)"></i> Extracted Text Preview:</h4>
+                            <div class="ocr-text-preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+
+[This is sample extracted text. In production, actual OCR text would appear here.]</div>
+
+                            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+                                <button class="btn-sm btn-primary-sm" onclick="copyText()"><i class="fas fa-copy"></i> Copy Text</button>
+                                <button class="btn-sm btn-primary-sm"><i class="fas fa-file-word"></i> Save as Word</button>
+                                <button class="btn-sm btn-primary-sm"><i class="fas fa-file-alt"></i> Save as TXT</button>
+                            </div>
+
+                            <div style="text-align:center;">
+                                <button class="download-btn" onclick="alert('Download!')">
+                                    <i class="fas fa-download"></i> Download Searchable PDF
+                                </button>
+                                <div class="result-actions" style="margin-top:15px;">
+                                    <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> OCR Another</button>
+                                    <button class="btn-outline"><i class="fas fa-language"></i> Translate Text</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="scan-to-pdf.html" class="related-card glass"><div class="related-icon icon-pink"><i class="fas fa-camera"></i></div><h4>Scan to PDF</h4></a>
+                <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
+                <a href="translate-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-language"></i></div><h4>Translate PDF</h4></a>
+                <a href="ai-summarizer.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-robot"></i></div><h4>AI Summarizer</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How OCR Works</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Upload your scanned PDF document.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-robot"></i><h4>AI Analysis</h4><p>Our AI reads and extracts text from images.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get a searchable PDF or editable text file.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>What is OCR?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>OCR (Optical Character Recognition) is technology that converts images of text into actual editable and searchable text. It reads characters from scanned documents.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Which languages are supported?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>We support 50+ languages including English, Hindi, Gujarati, Spanish, French, German, Chinese, Japanese, Arabic, and many more.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>How accurate is the OCR?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Our AI-powered OCR achieves 95-99% accuracy on clear documents. Accuracy depends on image quality, font, and language.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) {
+            document.getElementById('fileName').textContent = files[0].name;
+            showSection('optionsSection');
+        });
+
+        function toggleLang(el) {
+            el.classList.toggle('selected');
+        }
+
+        function copyText() {
+            var text = document.querySelector('.ocr-text-preview').textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Text copied to clipboard!');
+            });
+        }
+
+        function startProcess() {
+            showSection('processingSection');
+            simulateProcess(function() { showSection('resultSection'); }, 250);
+        }
+
+        function resetTool() { showSection('uploadSection'); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare PDF - Find Differences Between PDFs | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="blob blob-1 blob-cyan"></div>
+        <div class="blob blob-2 blob-blue"></div>
+        <div class="blob blob-3 blob-purple"></div>
+    </div>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Compare PDF</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-cyan"><i class="fas fa-columns"></i></div>
+                <div><h1>Compare PDF</h1><p>Find differences between two PDF files side by side.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+                <div id="uploadSection" data-section>
+                    <div style="padding:20px;">
+                        <h3 style="text-align:center;margin-bottom:20px;"><i class="fas fa-columns"></i> Upload Two PDFs to Compare</h3>
+                        <div class="compare-container">
+                            <div class="compare-side" id="side1" onclick="document.getElementById('file1').click()">
+                                <i class="fas fa-file-pdf" id="side1Icon"></i>
+                                <h4 id="side1Title">Original PDF</h4>
+                                <p id="side1Text">Click to upload</p>
+                                <input type="file" id="file1" accept=".pdf" hidden>
+                            </div>
+                            <div class="compare-side" id="side2" onclick="document.getElementById('file2').click()">
+                                <i class="fas fa-file-pdf" id="side2Icon"></i>
+                                <h4 id="side2Title">Modified PDF</h4>
+                                <p id="side2Text">Click to upload</p>
+                                <input type="file" id="file2" accept=".pdf" hidden>
+                            </div>
+                        </div>
+                        <div style="text-align:center;margin-top:20px;">
+                            <button class="action-btn" id="compareBtn" onclick="startProcess()" style="max-width:400px;margin:0 auto;opacity:0.5;pointer-events:none;">
+                                <i class="fas fa-search"></i> Compare PDFs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Comparing PDFs...</h3>
+                        <p>Analyzing differences between documents</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>Comparison Complete!</h2>
+                        <p>Found <strong style="color:var(--danger);">15 differences</strong> between the two documents</p>
+                        <div class="result-info glass-light">
+                            <div class="info-item"><i class="fas fa-plus-circle" style="color:var(--success)"></i> <span>8 Additions</span></div>
+                            <div class="info-item"><i class="fas fa-minus-circle" style="color:var(--danger)"></i> <span>5 Deletions</span></div>
+                            <div class="info-item"><i class="fas fa-edit" style="color:var(--warning)"></i> <span>2 Modifications</span></div>
+                        </div>
+                        <button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download Comparison Report</button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Compare Again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="ocr-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-eye"></i></div><h4>OCR PDF</h4></a>
+                <a href="redact-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-eraser"></i></div><h4>Redact PDF</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        let file1Ready = false, file2Ready = false;
+
+        document.getElementById('file1').addEventListener('change', e => {
+            if (e.target.files[0]) {
+                document.getElementById('side1Icon').className = 'fas fa-check-circle';
+                document.getElementById('side1Icon').style.color = 'var(--success)';
+                document.getElementById('side1Title').textContent = e.target.files[0].name;
+                document.getElementById('side1Text').textContent = formatSize(e.target.files[0].size);
+                file1Ready = true;
+                checkReady();
+            }
+        });
+
+        document.getElementById('file2').addEventListener('change', e => {
+            if (e.target.files[0]) {
+                document.getElementById('side2Icon').className = 'fas fa-check-circle';
+                document.getElementById('side2Icon').style.color = 'var(--success)';
+                document.getElementById('side2Title').textContent = e.target.files[0].name;
+                document.getElementById('side2Text').textContent = formatSize(e.target.files[0].size);
+                file2Ready = true;
+                checkReady();
+            }
+        });
+
+        function checkReady() {
+            const btn = document.getElementById('compareBtn');
+            if (file1Ready && file2Ready) {
+                btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
+            }
+        }
+
+        function startProcess() {
+            showSection('processingSection');
+            simulateProcess(() => showSection('resultSection'));
+        }
+
+        function resetTool() {
+            file1Ready = false; file2Ready = false;
+            showSection('uploadSection');
+            location.reload();
+        }
+    </script>
+</body>
+</html>

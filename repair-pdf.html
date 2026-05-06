@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repair PDF - Fix Corrupted PDF Files Free | PDFTools</title>
+    <meta name="description" content="Fix and repair corrupted or damaged PDF files. Recover text, images and pages from broken PDFs.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .repair-status {
+            padding: 25px;
+        }
+        .status-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(10px);
+        }
+        .status-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .status-icon.checking {
+            background: rgba(245,158,11,0.15);
+            color: var(--warning);
+            animation: pulse 1s infinite;
+        }
+        .status-icon.success {
+            background: rgba(34,197,94,0.15);
+            color: var(--success);
+        }
+        .status-icon.error {
+            background: rgba(239,68,68,0.15);
+            color: var(--danger);
+        }
+        .status-icon.fixed {
+            background: rgba(99,102,241,0.15);
+            color: var(--primary);
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .status-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .status-info p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .status-badge {
+            margin-left: auto;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-ok { background: rgba(34,197,94,0.15); color: var(--success); }
+        .badge-fixed { background: rgba(99,102,241,0.15); color: var(--primary); }
+        .badge-warn { background: rgba(245,158,11,0.15); color: var(--warning); }
+        .badge-fail { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+        .repair-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .summary-card {
+            text-align: center;
+            padding: 20px 15px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .summary-card i {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .summary-card h3 {
+            font-size: 22px;
+            font-weight: 800;
+        }
+        .summary-card p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .repair-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Repair PDF</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-orange"><i class="fas fa-tools"></i></div>
+                <div>
+                    <h1>Repair PDF</h1>
+                    <p>Fix corrupted or damaged PDF files. Recover content from broken documents.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <div id="uploadSection" data-section>
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-zone-content">
+                            <div class="upload-icon"><i class="fas fa-tools"></i></div>
+                            <h2>Upload Corrupted PDF</h2>
+                            <p>We'll try to repair and recover your document</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-plus"></i> Select Damaged PDF
+                            </button>
+                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                            <div class="upload-hints">
+                                <span><i class="fas fa-magic"></i> Auto-Repair</span>
+                                <span><i class="fas fa-undo"></i> Recovery Mode</span>
+                                <span><i class="fas fa-infinity"></i> Free</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Repair Process with Status -->
+                <div id="repairSection" data-section style="display:none;">
+                    <div class="repair-status">
+                        <div class="files-header">
+                            <h3><i class="fas fa-file-pdf" style="color:var(--danger)"></i> <span id="fileName">corrupted.pdf</span></h3>
+                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Cancel</button>
+                        </div>
+
+                        <h4 style="margin:20px 0 10px;font-size:16px;"><i class="fas fa-stethoscope" style="color:var(--primary)"></i> Diagnostic Report</h4>
+
+                        <div class="status-list" id="statusList">
+                            <div class="status-item">
+                                <div class="status-icon checking"><i class="fas fa-spinner fa-spin"></i></div>
+                                <div class="status-info"><h4>File Structure</h4><p>Checking PDF header and cross-reference table...</p></div>
+                                <span class="status-badge badge-warn">Checking...</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-icon checking"><i class="fas fa-spinner fa-spin"></i></div>
+                                <div class="status-info"><h4>Page Objects</h4><p>Validating page tree and content streams...</p></div>
+                                <span class="status-badge badge-warn">Pending</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-icon checking"><i class="fas fa-spinner fa-spin"></i></div>
+                                <div class="status-info"><h4>Fonts & Images</h4><p>Checking embedded resources...</p></div>
+                                <span class="status-badge badge-warn">Pending</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-icon checking"><i class="fas fa-spinner fa-spin"></i></div>
+                                <div class="status-info"><h4>Metadata</h4><p>Validating document metadata...</p></div>
+                                <span class="status-badge badge-warn">Pending</span>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar" style="margin:20px 0;"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText" style="text-align:center;display:block;">Analyzing...</span>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>PDF Repaired Successfully! 🔧</h2>
+                        <p>We recovered your document with minimal data loss</p>
+
+                        <div class="repair-summary">
+                            <div class="summary-card">
+                                <i class="fas fa-check-circle" style="color:var(--success)"></i>
+                                <h3>3</h3>
+                                <p>Issues Fixed</p>
+                            </div>
+                            <div class="summary-card">
+                                <i class="fas fa-file-alt" style="color:var(--primary)"></i>
+                                <h3>12</h3>
+                                <p>Pages Recovered</p>
+                            </div>
+                            <div class="summary-card">
+                                <i class="fas fa-image" style="color:var(--accent)"></i>
+                                <h3>8</h3>
+                                <p>Images Recovered</p>
+                            </div>
+                        </div>
+
+                        <!-- Final Status -->
+                        <div class="status-list" style="max-width:500px;margin:0 auto 25px;">
+                            <div class="status-item">
+                                <div class="status-icon fixed"><i class="fas fa-wrench"></i></div>
+                                <div class="status-info"><h4>File Structure</h4><p>Cross-reference table rebuilt</p></div>
+                                <span class="status-badge badge-fixed">Fixed</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-icon success"><i class="fas fa-check"></i></div>
+                                <div class="status-info"><h4>Page Objects</h4><p>All 12 pages recovered</p></div>
+                                <span class="status-badge badge-ok">OK</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-icon fixed"><i class="fas fa-wrench"></i></div>
+                                <div class="status-info"><h4>Fonts</h4><p>2 missing fonts substituted</p></div>
+                                <span class="status-badge badge-fixed">Fixed</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-icon success"><i class="fas fa-check"></i></div>
+                                <div class="status-info"><h4>Metadata</h4><p>Document info restored</p></div>
+                                <span class="status-badge badge-ok">OK</span>
+                            </div>
+                        </div>
+
+                        <button class="download-btn" onclick="alert('Download started!')">
+                            <i class="fas fa-download"></i> Download Repaired PDF
+                        </button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Repair Another</button>
+                            <button class="btn-outline"><i class="fas fa-share-alt"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="pdf-to-pdfa.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-archive"></i></div><h4>PDF to PDF/A</h4></a>
+                <a href="unlock-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-lock-open"></i></div><h4>Unlock PDF</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="ocr-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-eye"></i></div><h4>OCR PDF</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Repair a PDF</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Upload your corrupted or damaged PDF file.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-stethoscope"></i><h4>Diagnose</h4><p>We automatically scan and identify all issues.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download your fixed and recovered PDF.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>What types of corruption can be fixed?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>We can fix broken cross-references, corrupted page trees, damaged content streams, missing fonts, and invalid metadata.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Will all content be recovered?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>In most cases, we can recover 90-100% of the content. Severely damaged files may have some data loss.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) {
+            document.getElementById('fileName').textContent = files[0].name;
+            showSection('repairSection');
+            startRepair();
+        });
+
+        function startRepair() {
+            const items = document.querySelectorAll('#statusList .status-item');
+            const statuses = [
+                { icon: 'fa-wrench', iconClass: 'fixed', badge: 'Fixed', badgeClass: 'badge-fixed', text: 'Rebuilt cross-reference table' },
+                { icon: 'fa-check', iconClass: 'success', badge: 'OK', badgeClass: 'badge-ok', text: 'All 12 pages valid' },
+                { icon: 'fa-wrench', iconClass: 'fixed', badge: 'Fixed', badgeClass: 'badge-fixed', text: '2 fonts substituted' },
+                { icon: 'fa-check', iconClass: 'success', badge: 'OK', badgeClass: 'badge-ok', text: 'Metadata restored' }
+            ];
+
+            let progress = 0;
+            let idx = 0;
+
+            const timer = setInterval(function() {
+                progress += 5;
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressText').textContent = progress + '%';
+
+                if (progress % 25 === 0 && idx < items.length) {
+                    const item = items[idx];
+                    const status = statuses[idx];
+                    item.querySelector('.status-icon').className = 'status-icon ' + status.iconClass;
+                    item.querySelector('.status-icon i').className = 'fas ' + status.icon;
+                    item.querySelector('.status-info p').textContent = status.text;
+                    item.querySelector('.status-badge').className = 'status-badge ' + status.badgeClass;
+                    item.querySelector('.status-badge').textContent = status.badge;
+                    idx++;
+                }
+
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    setTimeout(function() {
+                        showSection('resultSection');
+                    }, 500);
+                }
+            }, 150);
+        }
+
+        function resetTool() {
+            showSection('uploadSection');
+        }
+    </script>
+</body>
+</html>

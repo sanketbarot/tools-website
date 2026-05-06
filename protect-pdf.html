@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protect PDF - Add Password to PDF Free | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="blob blob-1 blob-red"></div>
+        <div class="blob blob-2 blob-purple"></div>
+        <div class="blob blob-3 blob-pink"></div>
+    </div>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Protect PDF</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-red"><i class="fas fa-shield-alt"></i></div>
+                <div><h1>Protect PDF</h1><p>Add password encryption to secure your PDF documents.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+                <div id="uploadSection" data-section>
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-zone-content">
+                            <div class="upload-icon"><i class="fas fa-lock"></i></div>
+                            <h2>Upload PDF to Protect</h2>
+                            <p>Your PDF will be encrypted with a password</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF</button>
+                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="optionsSection" data-section style="display:none;">
+                    <div class="files-area">
+                        <div class="files-header">
+                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span></h3>
+                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+                        </div>
+
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-key"></i> Password Settings</h4>
+                            <div class="options-row">
+                                <div class="option-field">
+                                    <label>Set Password</label>
+                                    <div class="password-input-wrap" style="position:relative;">
+                                        <input type="password" id="pdfPassword" placeholder="Enter strong password" style="padding-right:45px;">
+                                        <button class="password-toggle" onclick="togglePassword('pdfPassword', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-light);cursor:pointer;font-size:16px;">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="option-field">
+                                    <label>Confirm Password</label>
+                                    <input type="password" id="confirmPassword" placeholder="Confirm password">
+                                </div>
+                            </div>
+                            <div class="options-row" style="margin-top:15px;">
+                                <div class="option-field">
+                                    <label>Encryption Level</label>
+                                    <select>
+                                        <option>128-bit AES (Recommended)</option>
+                                        <option>256-bit AES (Strongest)</option>
+                                        <option>128-bit RC4</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Permissions</label>
+                                    <select>
+                                        <option>No Permissions (Fully Locked)</option>
+                                        <option>Allow Printing Only</option>
+                                        <option>Allow Printing & Copying</option>
+                                        <option>Allow All Except Editing</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn" onclick="startProcess()" style="background:linear-gradient(135deg, #ef4444, #dc2626);">
+                            <i class="fas fa-shield-alt"></i> Protect PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Encrypting your PDF...</h3>
+                        <p>Adding password protection</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>PDF Protected! 🔒</h2>
+                        <p>Your PDF is now password-encrypted</p>
+                        <button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download Protected PDF</button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Protect Another</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="unlock-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-lock-open"></i></div><h4>Unlock PDF</h4></a>
+                <a href="sign-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-signature"></i></div><h4>Sign PDF</h4></a>
+                <a href="redact-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-eraser"></i></div><h4>Redact PDF</h4></a>
+                <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        setupDropZone('dropZone', 'fileInput', ['.pdf'], files => {
+            document.getElementById('fileName').textContent = files[0].name;
+            showSection('optionsSection');
+        });
+
+        function togglePassword(id, btn) {
+            const input = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text'; icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password'; icon.className = 'fas fa-eye';
+            }
+        }
+
+        function startProcess() {
+            const pass = document.getElementById('pdfPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            if (!pass) { alert('Please enter a password!'); return; }
+            if (pass !== confirm) { alert('Passwords do not match!'); return; }
+            showSection('processingSection');
+            simulateProcess(() => showSection('resultSection'));
+        }
+
+        function resetTool() { showSection('uploadSection'); }
+    </script>
+</body>
+</html>

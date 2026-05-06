@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split PDF - Extract & Separate PDF Pages Free | PDFTools</title>
+    <meta name="description" content="Split PDF into multiple files or extract specific pages. Free online tool, no signup required.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="blob blob-1 blob-blue"></div>
+        <div class="blob blob-2 blob-purple"></div>
+        <div class="blob blob-3 blob-cyan"></div>
+    </div>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Split PDF</span>
+            </div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-blue"><i class="fas fa-cut"></i></div>
+                <div>
+                    <h1>Split PDF</h1>
+                    <p>Extract pages or split your PDF into multiple separate files easily.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense - Banner Ad</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <div id="uploadSection" data-section>
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-zone-content">
+                            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <h2>Upload PDF to Split</h2>
+                            <p>Drop your PDF file here or click to browse</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-plus"></i> Select PDF File
+                            </button>
+                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                            <div class="upload-hints">
+                                <span><i class="fas fa-lock"></i> Secure</span>
+                                <span><i class="fas fa-infinity"></i> Free</span>
+                                <span><i class="fas fa-file-pdf"></i> Max 100MB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="optionsSection" data-section style="display:none;">
+                    <div class="files-area">
+                        <div class="files-header">
+                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span></h3>
+                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+                        </div>
+
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-cog"></i> Split Options</h4>
+                            <div class="radio-group" style="margin-bottom:15px;">
+                                <div class="radio-option selected" onclick="setSplitMode('range')">
+                                    <input type="radio" name="splitMode" value="range" checked>
+                                    <i class="fas fa-file-alt"></i> Extract by Range
+                                </div>
+                                <div class="radio-option" onclick="setSplitMode('each')">
+                                    <input type="radio" name="splitMode" value="each">
+                                    <i class="fas fa-copy"></i> Split Every Page
+                                </div>
+                                <div class="radio-option" onclick="setSplitMode('custom')">
+                                    <input type="radio" name="splitMode" value="custom">
+                                    <i class="fas fa-th"></i> Custom Pages
+                                </div>
+                            </div>
+                            <div class="options-row" id="rangeOptions">
+                                <div class="option-field">
+                                    <label>From Page</label>
+                                    <input type="number" id="fromPage" value="1" min="1">
+                                </div>
+                                <div class="option-field">
+                                    <label>To Page</label>
+                                    <input type="number" id="toPage" value="5" min="1">
+                                </div>
+                            </div>
+                            <div id="customOptions" style="display:none;margin-top:10px;">
+                                <div class="option-field">
+                                    <label>Enter page numbers (e.g., 1,3,5-8,12)</label>
+                                    <input type="text" id="customPages" placeholder="1,3,5-8,12">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn" onclick="startProcess()">
+                            <i class="fas fa-cut"></i> Split PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Splitting your PDF...</h3>
+                        <p>Please wait a moment</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>PDF Split Successfully!</h2>
+                        <p>Your split files are ready to download</p>
+                        <div class="result-info glass-light">
+                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>3 Files Created</span></div>
+                            <div class="info-item"><i class="fas fa-weight-hanging"></i> <span>1.2 MB Total</span></div>
+                        </div>
+                        <button class="download-btn" onclick="alert('Download started!')">
+                            <i class="fas fa-download"></i> Download Split Files
+                        </button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Split Another</button>
+                            <button class="btn-outline"><i class="fas fa-share-alt"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense - Ad</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
+                <a href="organize-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-th-large"></i></div><h4>Organize PDF</h4></a>
+                <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-sync-alt"></i></div><h4>Rotate PDF</h4></a>
+                <a href="page-numbers.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-list-ol"></i></div><h4>Page Numbers</h4></a>
+                <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Split PDF</h2><p>3 easy steps</p></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload PDF</h4><p>Select the PDF file you want to split.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Choose Method</h4><p>Select split by range, every page, or custom pages.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download your split PDF files instantly.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I extract specific pages from a PDF?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! Use the "Custom Pages" option to select specific page numbers like 1,3,5-8,12.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Is splitting PDF free?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Absolutely! Our PDF splitter is 100% free with no limitations.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        // Split PDF specific
+        setupDropZone('dropZone', 'fileInput', ['.pdf', 'application/pdf'], files => {
+            document.getElementById('fileName').textContent = files[0].name;
+            showSection('optionsSection');
+        });
+
+        function setSplitMode(mode) {
+            document.getElementById('rangeOptions').style.display = mode === 'range' ? 'grid' : 'none';
+            document.getElementById('customOptions').style.display = mode === 'custom' ? 'block' : 'none';
+        }
+
+        function startProcess() {
+            showSection('processingSection');
+            simulateProcess(() => showSection('resultSection'));
+        }
+
+        function resetTool() { showSection('uploadSection'); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watermark PDF - Add Text or Image Watermark | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+</head>
+<body>
+    <nav class="navbar glass"><a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a><div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div><div class="nav-links" id="navLinks"><a href="index.html"><i class="fas fa-home"></i> Home</a><a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a><a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a></div></nav>
+
+    <section class="tool-header"><div class="container"><div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Watermark PDF</span></div><div class="tool-title"><div class="tool-title-icon icon-cyan"><i class="fas fa-tint"></i></div><div><h1>Watermark PDF</h1><p>Add text or image watermark to protect your PDF documents.</p></div></div></div></section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area"><div class="container"><div class="tool-wrapper glass">
+        <div id="uploadSection" data-section><div class="upload-zone" id="dropZone"><div class="upload-zone-content"><div class="upload-icon"><i class="fas fa-tint"></i></div><h2>Upload PDF to Watermark</h2><p>Add text or image watermark for protection</p><button class="upload-btn" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF</button><input type="file" id="fileInput" accept=".pdf" hidden></div></div></div>
+
+        <div id="optionsSection" data-section style="display:none;"><div class="files-area"><div class="files-header"><h3><i class="fas fa-file-pdf"></i> <span id="fileName"></span></h3><button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i></button></div>
+            <div class="options-panel glass-light">
+                <h4><i class="fas fa-tint"></i> Watermark Settings</h4>
+                <div class="radio-group" style="margin-bottom:15px;">
+                    <div class="radio-option selected"><i class="fas fa-text-height"></i> Text Watermark</div>
+                    <div class="radio-option"><i class="fas fa-image"></i> Image Watermark</div>
+                </div>
+                <div class="options-row">
+                    <div class="option-field"><label>Watermark Text</label><input type="text" placeholder="CONFIDENTIAL" value="CONFIDENTIAL" id="wmText"></div>
+                    <div class="option-field"><label>Font Size</label><select><option>36px</option><option>48px</option><option>60px</option><option>72px</option><option>96px</option></select></div>
+                </div>
+                <div class="options-row" style="margin-top:10px;">
+                    <div class="option-field"><label>Color & Opacity</label>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="color" value="#ff0000" style="width:40px;height:35px;border:none;border-radius:8px;">
+                            <div class="range-group" style="flex:1;">
+                                <input type="range" min="5" max="100" value="30">
+                                <span class="range-value">30%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option-field"><label>Rotation</label><select><option>-45° (Diagonal)</option><option>0° (Horizontal)</option><option>45°</option><option>90° (Vertical)</option></select></div>
+                </div>
+                <div class="options-row" style="margin-top:10px;">
+                    <div class="option-field"><label>Position</label><select><option>Center (Diagonal)</option><option>Top Left</option><option>Top Right</option><option>Bottom Left</option><option>Bottom Right</option><option>Tile (Repeat)</option></select></div>
+                    <div class="option-field"><label>Apply To</label><select><option>All Pages</option><option>First Page Only</option><option>Last Page Only</option><option>Even Pages</option><option>Odd Pages</option></select></div>
+                </div>
+            </div>
+            <button class="action-btn" onclick="startProcess()"><i class="fas fa-tint"></i> Add Watermark</button>
+        </div></div>
+
+        <div id="processingSection" data-section style="display:none;"><div class="processing-area"><div class="spinner"></div><h3>Adding watermark...</h3><p>Applying to all pages</p><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><span class="progress-text" id="progressText">0%</span></div></div>
+
+        <div id="resultSection" data-section style="display:none;"><div class="result-area"><div class="result-icon success"><i class="fas fa-check-circle"></i></div><h2>Watermark Added! 💧</h2><p>Your PDF is now watermarked</p><button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download PDF</button><div class="result-actions"><button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Add Another</button></div></div></div>
+    </div></div></section>
+
+    <section class="related-tools"><div class="container"><div class="section-header"><h2>Related Tools</h2></div><div class="related-grid">
+        <a href="protect-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-shield-alt"></i></div><h4>Protect PDF</h4></a>
+        <a href="sign-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-signature"></i></div><h4>Sign PDF</h4></a>
+        <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+        <a href="redact-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-eraser"></i></div><h4>Redact PDF</h4></a>
+    </div></div></section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) { document.getElementById('fileName').textContent = files[0].name; showSection('optionsSection'); });
+        function startProcess() { showSection('processingSection'); simulateProcess(function() { showSection('resultSection'); }); }
+        function resetTool() { showSection('uploadSection'); }
+
+        // Range slider value display
+        document.querySelector('input[type="range"]')?.addEventListener('input', function() {
+            this.nextElementSibling.textContent = this.value + '%';
+        });
+    </script>
+</body>
+</html>

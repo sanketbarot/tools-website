@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPG to PDF - Convert Images to PDF Free | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="blob blob-1 blob-red"></div>
+        <div class="blob blob-2 blob-orange"></div>
+        <div class="blob blob-3 blob-pink"></div>
+    </div>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>JPG to PDF</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-red"><i class="fas fa-image"></i></div>
+                <div><h1>JPG to PDF</h1><p>Convert multiple images (JPG, PNG, WEBP) into a single PDF document.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+                <div id="uploadSection" data-section>
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-zone-content">
+                            <div class="upload-icon"><i class="fas fa-images"></i></div>
+                            <h2>Upload Images</h2>
+                            <p>Drop images here or click to browse</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select Images</button>
+                            <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                            <div class="accepted-formats">
+                                Accepted: <span>JPG</span> <span>PNG</span> <span>WEBP</span> <span>GIF</span> <span>BMP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="optionsSection" data-section style="display:none;">
+                    <div class="files-area">
+                        <div class="files-header">
+                            <h3><i class="fas fa-images"></i> Selected Images (<span id="imageCount">0</span>)</h3>
+                            <div class="files-actions">
+                                <button class="btn-sm btn-primary-sm" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Add More</button>
+                                <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-trash"></i> Clear All</button>
+                            </div>
+                        </div>
+
+                        <div class="image-preview-grid" id="imagePreview"></div>
+
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-cog"></i> PDF Options</h4>
+                            <div class="options-row">
+                                <div class="option-field">
+                                    <label>Page Size</label>
+                                    <select id="pageSize">
+                                        <option>Fit to Image</option>
+                                        <option>A4</option>
+                                        <option>Letter</option>
+                                        <option>Legal</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Orientation</label>
+                                    <select>
+                                        <option>Auto Detect</option>
+                                        <option>Portrait</option>
+                                        <option>Landscape</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Margin</label>
+                                    <select>
+                                        <option>No Margin</option>
+                                        <option>Small</option>
+                                        <option>Medium</option>
+                                        <option>Large</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn" onclick="startProcess()"><i class="fas fa-file-pdf"></i> Convert to PDF</button>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Creating PDF from images...</h3>
+                        <p>Arranging and converting your images</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>PDF Created Successfully!</h2>
+                        <p>All images have been combined into a PDF</p>
+                        <div class="result-info glass-light">
+                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>images.pdf</span></div>
+                            <div class="info-item"><i class="fas fa-copy"></i> <span id="pageCount">5 Pages</span></div>
+                        </div>
+                        <button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download PDF</button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Convert More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="pdf-to-jpg.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-file-image"></i></div><h4>PDF to JPG</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
+                <a href="scan-to-pdf.html" class="related-card glass"><div class="related-icon icon-pink"><i class="fas fa-camera"></i></div><h4>Scan to PDF</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Convert Images to PDF</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-images"></i><h4>Upload Images</h4><p>Select multiple JPG, PNG or other images.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-sort"></i><h4>Arrange & Set</h4><p>Reorder images and set page size options.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download PDF</h4><p>Download your image-to-PDF document.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        let images = [];
+
+        setupDropZone('dropZone', 'fileInput', ['image/'], files => {
+            files.forEach(f => images.push(f));
+            showSection('optionsSection');
+            renderImages();
+        });
+
+        function renderImages() {
+            const grid = document.getElementById('imagePreview');
+            grid.innerHTML = '';
+            document.getElementById('imageCount').textContent = images.length;
+
+            images.forEach((img, i) => {
+                const div = document.createElement('div');
+                div.className = 'image-preview-item';
+                const url = URL.createObjectURL(img);
+                div.innerHTML = `
+                    <img src="${url}" alt="${img.name}">
+                    <button class="remove-img" onclick="removeImage(${i})"><i class="fas fa-times"></i></button>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function removeImage(i) {
+            images.splice(i, 1);
+            if (images.length === 0) { resetTool(); return; }
+            renderImages();
+        }
+
+        function startProcess() {
+            showSection('processingSection');
+            simulateProcess(() => {
+                document.getElementById('pageCount').textContent = images.length + ' Pages';
+                showSection('resultSection');
+            });
+        }
+
+        function resetTool() { images = []; showSection('uploadSection'); }
+    </script>
+</body>
+</html>

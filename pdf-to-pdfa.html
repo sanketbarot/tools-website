@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to PDF/A - Convert to Archival Format | PDFTools</title>
+    <meta name="description" content="Convert standard PDF to PDF/A archival format for long-term document preservation.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>PDF to PDF/A</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-dark"><i class="fas fa-archive"></i></div>
+                <div>
+                    <h1>PDF to PDF/A</h1>
+                    <p>Convert your PDF to ISO-standard PDF/A format for long-term archival and compliance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense - Banner Ad</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <div id="uploadSection" data-section>
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-zone-content">
+                            <div class="upload-icon"><i class="fas fa-archive"></i></div>
+                            <h2>Upload PDF to Convert</h2>
+                            <p>Convert to PDF/A archival format for long-term preservation</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-plus"></i> Select PDF File
+                            </button>
+                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                            <div class="upload-hints">
+                                <span><i class="fas fa-certificate"></i> ISO Compliant</span>
+                                <span><i class="fas fa-lock"></i> Secure</span>
+                                <span><i class="fas fa-infinity"></i> Free</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="optionsSection" data-section style="display:none;">
+                    <div class="files-area">
+                        <div class="files-header">
+                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span></h3>
+                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+                        </div>
+
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-cog"></i> PDF/A Compliance Level</h4>
+                            <div class="radio-group" style="margin-bottom:15px;">
+                                <div class="radio-option selected">
+                                    <input type="radio" name="pdfa" value="1b" checked>
+                                    <div>
+                                        <strong>PDF/A-1b</strong>
+                                        <small style="display:block;font-size:11px;color:var(--text-light);">Basic compliance — Most compatible</small>
+                                    </div>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="pdfa" value="2b">
+                                    <div>
+                                        <strong>PDF/A-2b</strong>
+                                        <small style="display:block;font-size:11px;color:var(--text-light);">Extended — Supports JPEG2000, layers</small>
+                                    </div>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="pdfa" value="3b">
+                                    <div>
+                                        <strong>PDF/A-3b</strong>
+                                        <small style="display:block;font-size:11px;color:var(--text-light);">Latest — Supports embedded files</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="options-row">
+                                <div class="option-field">
+                                    <label>Font Embedding</label>
+                                    <select>
+                                        <option>Embed All Fonts (Required)</option>
+                                        <option>Subset Fonts Only</option>
+                                    </select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Color Space</label>
+                                    <select>
+                                        <option>sRGB (Default)</option>
+                                        <option>CMYK</option>
+                                        <option>Grayscale</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info Box -->
+                        <div style="padding:15px 20px;background:rgba(99,102,241,0.08);border-radius:12px;margin-bottom:20px;border-left:4px solid var(--primary);">
+                            <p style="font-size:13px;color:var(--text-medium);"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:8px;"></i>
+                            <strong>PDF/A</strong> is an ISO standard for long-term archiving. All fonts are embedded, external links are removed, and the document is self-contained for future readability.</p>
+                        </div>
+
+                        <button class="action-btn" onclick="startProcess()">
+                            <i class="fas fa-archive"></i> Convert to PDF/A
+                        </button>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Converting to PDF/A...</h3>
+                        <p>Embedding fonts and validating compliance</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>PDF/A Conversion Complete! 📄</h2>
+                        <p>Your document is now ISO PDF/A-1b compliant</p>
+                        <div class="result-info glass-light">
+                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>document_pdfa.pdf</span></div>
+                            <div class="info-item"><i class="fas fa-certificate"></i> <span>PDF/A-1b Compliant</span></div>
+                            <div class="info-item"><i class="fas fa-check" style="color:var(--success)"></i> <span>Validated ✓</span></div>
+                        </div>
+                        <button class="download-btn" onclick="alert('Download started!')">
+                            <i class="fas fa-download"></i> Download PDF/A
+                        </button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Convert Another</button>
+                            <button class="btn-outline"><i class="fas fa-share-alt"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
+                <a href="repair-pdf.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-tools"></i></div><h4>Repair PDF</h4></a>
+                <a href="protect-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-shield-alt"></i></div><h4>Protect PDF</h4></a>
+                <a href="ocr-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-eye"></i></div><h4>OCR PDF</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Convert PDF to PDF/A</h2></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload PDF</h4><p>Select the PDF you want to make archival.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-list-alt"></i><h4>Choose Level</h4><p>Select PDF/A-1b, 2b, or 3b compliance level.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download your validated PDF/A document.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>What is PDF/A?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>PDF/A is an ISO-standardized version of PDF designed for long-term archival. It embeds all fonts, removes external dependencies, and ensures the document will be readable decades from now.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Which PDF/A version should I choose?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>PDF/A-1b is the most widely accepted and compatible. Use PDF/A-2b for documents with transparency or JPEG2000 images. PDF/A-3b allows embedded attachments.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Is PDF/A required for legal documents?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Many government agencies, courts, and regulatory bodies require PDF/A format for official document submissions and long-term record keeping.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) {
+            document.getElementById('fileName').textContent = files[0].name;
+            showSection('optionsSection');
+        });
+
+        function startProcess() {
+            showSection('processingSection');
+            simulateProcess(function() {
+                showSection('resultSection');
+            });
+        }
+
+        function resetTool() {
+            showSection('uploadSection');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan to PDF - Convert Scanned Images to PDF | PDFTools</title>
+    <meta name="description" content="Convert scanned documents and camera photos into clean PDF files with auto-enhancement.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .scan-options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .scan-option {
+            padding: 15px;
+            background: rgba(255,255,255,0.3);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .scan-option:hover { border-color: var(--primary); }
+        .scan-option.active {
+            border-color: var(--primary);
+            background: rgba(99,102,241,0.1);
+        }
+        .scan-option i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--primary);
+            display: block;
+        }
+        .scan-option h5 { font-size: 13px; margin-bottom: 3px; }
+        .scan-option p { font-size: 11px; color: var(--text-light); }
+
+        .camera-area {
+            text-align: center;
+            padding: 30px;
+        }
+        .camera-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        .camera-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(236,72,153,0.4);
+        }
+
+        @media (max-width: 480px) {
+            .scan-options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Scan to PDF</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-pink"><i class="fas fa-camera"></i></div>
+                <div>
+                    <h1>Scan to PDF</h1>
+                    <p>Convert photos of documents into clean, professional PDF files with auto-enhancement.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <div id="uploadSection" data-section>
+                    <div style="padding:40px 25px;text-align:center;">
+                        <div class="upload-icon" style="font-size:50px;margin-bottom:15px;"><i class="fas fa-camera"></i></div>
+                        <h2 style="font-size:24px;margin-bottom:8px;">Scan Documents</h2>
+                        <p style="color:var(--text-light);margin-bottom:30px;">Take a photo or upload scanned images</p>
+
+                        <!-- Camera Button (Mobile) -->
+                        <div class="camera-area">
+                            <button class="camera-btn" onclick="document.getElementById('cameraInput').click()">
+                                <i class="fas fa-camera"></i> Open Camera
+                            </button>
+                            <input type="file" id="cameraInput" accept="image/*" capture="environment" multiple hidden>
+                            <p style="font-size:13px;color:var(--text-light);margin:10px 0 25px;">or</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-images"></i> Upload Scanned Images
+                            </button>
+                            <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                        </div>
+
+                        <div class="accepted-formats" style="margin-top:15px;">
+                            Accepted: <span>JPG</span> <span>PNG</span> <span>WEBP</span> <span>HEIC</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="optionsSection" data-section style="display:none;">
+                    <div class="files-area">
+                        <div class="files-header">
+                            <h3><i class="fas fa-images"></i> Scanned Pages (<span id="scanCount">0</span>)</h3>
+                            <div class="files-actions">
+                                <button class="btn-sm btn-primary-sm" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Add More</button>
+                                <button class="btn-sm btn-primary-sm" onclick="document.getElementById('cameraInput').click()"><i class="fas fa-camera"></i> Take Photo</button>
+                                <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-trash"></i> Clear</button>
+                            </div>
+                        </div>
+
+                        <div class="image-preview-grid" id="scanPreview"></div>
+
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-magic"></i> Enhancement Options</h4>
+                            <div class="scan-options-grid">
+                                <div class="scan-option active" onclick="selectScanOption(this)">
+                                    <i class="fas fa-magic"></i>
+                                    <h5>Auto Enhance</h5>
+                                    <p>Auto contrast, brightness & sharpening</p>
+                                </div>
+                                <div class="scan-option" onclick="selectScanOption(this)">
+                                    <i class="fas fa-adjust"></i>
+                                    <h5>Black & White</h5>
+                                    <p>Convert to clean B&W document</p>
+                                </div>
+                                <div class="scan-option" onclick="selectScanOption(this)">
+                                    <i class="fas fa-palette"></i>
+                                    <h5>Color</h5>
+                                    <p>Keep original colors</p>
+                                </div>
+                                <div class="scan-option" onclick="selectScanOption(this)">
+                                    <i class="fas fa-tint"></i>
+                                    <h5>Grayscale</h5>
+                                    <p>Convert to grayscale</p>
+                                </div>
+                            </div>
+
+                            <div class="options-row">
+                                <div class="option-field">
+                                    <label>Page Size</label>
+                                    <select><option>A4</option><option>Letter</option><option>Legal</option><option>Fit to Image</option></select>
+                                </div>
+                                <div class="option-field">
+                                    <label>Auto-Crop & Straighten</label>
+                                    <select><option>Yes (Recommended)</option><option>No</option></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn" onclick="startProcess()">
+                            <i class="fas fa-file-pdf"></i> Create PDF from Scans
+                        </button>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Creating PDF...</h3>
+                        <p>Enhancing, cropping and converting your scans</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>Scanned PDF Created! 📸</h2>
+                        <p>Your document scan is ready</p>
+                        <div class="result-info glass-light">
+                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>scanned_document.pdf</span></div>
+                            <div class="info-item"><i class="fas fa-copy"></i> <span id="pageCount">3 Pages</span></div>
+                        </div>
+                        <button class="download-btn" onclick="alert('Download!')">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Scan More</button>
+                            <button class="btn-outline"><i class="fas fa-eye"></i> Run OCR</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="ocr-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-eye"></i></div><h4>OCR PDF</h4></a>
+                <a href="jpg-to-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-image"></i></div><h4>JPG to PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="organize-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-th-large"></i></div><h4>Organize</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I use my phone camera?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! On mobile, click "Open Camera" to take photos of documents directly. We auto-enhance and straighten them.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Will text be searchable?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>The PDF created from scans contains images. For searchable text, use our OCR PDF tool after creating the scan.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        let scans = [];
+
+        // Both camera and file input
+        ['fileInput', 'cameraInput'].forEach(function(id) {
+            document.getElementById(id).addEventListener('change', function(e) {
+                var files = Array.from(e.target.files);
+                files.forEach(function(f) { scans.push(f); });
+                showSection('optionsSection');
+                renderScans();
+                e.target.value = '';
+            });
+        });
+
+        function renderScans() {
+            var grid = document.getElementById('scanPreview');
+            grid.innerHTML = '';
+            document.getElementById('scanCount').textContent = scans.length;
+
+            scans.forEach(function(img, i) {
+                var div = document.createElement('div');
+                div.className = 'image-preview-item';
+                var url = URL.createObjectURL(img);
+                div.innerHTML = '<img src="' + url + '" alt="Scan ' + (i+1) + '"><button class="remove-img" onclick="removeScan(' + i + ')"><i class="fas fa-times"></i></button>';
+                grid.appendChild(div);
+            });
+        }
+
+        function removeScan(i) {
+            scans.splice(i, 1);
+            if (scans.length === 0) { resetTool(); return; }
+            renderScans();
+        }
+
+        function selectScanOption(el) {
+            document.querySelectorAll('.scan-option').forEach(function(o) { o.classList.remove('active'); });
+            el.classList.add('active');
+        }
+
+        function startProcess() {
+            document.getElementById('pageCount').textContent = scans.length + ' Pages';
+            showSection('processingSection');
+            simulateProcess(function() { showSection('resultSection'); });
+        }
+
+        function resetTool() {
+            scans = [];
+            showSection('uploadSection');
+        }
+    </script>
+</body>
+</html>

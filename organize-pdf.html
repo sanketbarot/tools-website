@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organize PDF - Rearrange, Delete & Manage Pages | PDFTools</title>
+    <meta name="description" content="Organize your PDF pages with drag & drop. Rearrange, delete, duplicate and rotate individual pages.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        .page-thumb {
+            background: rgba(255,255,255,0.5);
+            border: 2px solid rgba(255,255,255,0.6);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        .page-thumb:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(99,102,241,0.2);
+        }
+        .page-thumb.dragging {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+        .page-thumb.drag-over {
+            border-color: var(--accent);
+            background: rgba(236,72,153,0.05);
+        }
+        .page-thumb-img {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-thumb-img::after {
+            content: '';
+            position: absolute;
+            top: 8px; left: 8px; right: 8px;
+            height: 3px;
+            background: repeating-linear-gradient(90deg, #cbd5e1 0px, #cbd5e1 20px, transparent 20px, transparent 25px);
+            border-radius: 2px;
+        }
+        .page-thumb-img::before {
+            content: '';
+            position: absolute;
+            top: 18px; left: 8px; right: 8px; bottom: 30px;
+            background: repeating-linear-gradient(180deg, #e2e8f0 0px, #e2e8f0 2px, transparent 2px, transparent 8px);
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+        .page-number {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-medium);
+        }
+        .page-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            gap: 3px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .page-thumb:hover .page-actions {
+            opacity: 1;
+        }
+        .page-action-btn {
+            width: 26px;
+            height: 26px;
+            border: none;
+            border-radius: 50%;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .page-action-btn.rotate-btn {
+            background: rgba(99,102,241,0.15);
+            color: var(--primary);
+        }
+        .page-action-btn.copy-btn {
+            background: rgba(34,197,94,0.15);
+            color: var(--success);
+        }
+        .page-action-btn.delete-btn {
+            background: rgba(239,68,68,0.15);
+            color: var(--danger);
+        }
+        .page-action-btn:hover {
+            transform: scale(1.2);
+        }
+        .page-action-btn.delete-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+        .organize-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .organize-toolbar .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .organize-toolbar .right {
+            display: flex;
+            gap: 8px;
+        }
+        .toolbar-action {
+            padding: 7px 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.4);
+            color: var(--text-medium);
+        }
+        .toolbar-action:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .select-info {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .page-checkbox {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid rgba(99,102,241,0.3);
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.2s;
+            font-size: 11px;
+            color: transparent;
+        }
+        .page-checkbox:hover {
+            border-color: var(--primary);
+        }
+        .page-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .page-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                padding: 15px;
+            }
+            .organize-toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        @media (max-width: 480px) {
+            .page-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Organize PDF</span>
+            </div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-teal"><i class="fas fa-th-large"></i></div>
+                <div>
+                    <h1>Organize PDF</h1>
+                    <p>Rearrange, delete, duplicate or rotate individual PDF pages with drag & drop.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense - Banner Ad</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <!-- Upload -->
+                <div id="uploadSection" data-section>
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-zone-content">
+                            <div class="upload-icon"><i class="fas fa-th-large"></i></div>
+                            <h2>Upload PDF to Organize</h2>
+                            <p>Drag & drop pages to rearrange, delete or duplicate</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-plus"></i> Select PDF File
+                            </button>
+                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                            <div class="upload-hints">
+                                <span><i class="fas fa-arrows-alt"></i> Drag & Drop</span>
+                                <span><i class="fas fa-trash"></i> Delete Pages</span>
+                                <span><i class="fas fa-copy"></i> Duplicate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editor -->
+                <div id="editorSection" data-section style="display:none;">
+
+                    <!-- Toolbar -->
+                    <div class="organize-toolbar">
+                        <div class="left">
+                            <span class="select-info"><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span> — <span id="totalPages">8</span> Pages</span>
+                        </div>
+                        <div class="right">
+                            <button class="toolbar-action" onclick="selectAll()"><i class="fas fa-check-double"></i> Select All</button>
+                            <button class="toolbar-action" onclick="deleteSelected()"><i class="fas fa-trash"></i> Delete Selected</button>
+                            <button class="toolbar-action" onclick="reversePages()"><i class="fas fa-exchange-alt"></i> Reverse Order</button>
+                            <button class="toolbar-action" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Add PDF</button>
+                        </div>
+                    </div>
+
+                    <!-- Page Grid -->
+                    <div class="page-grid" id="pageGrid"></div>
+
+                    <div style="padding:0 20px 20px;">
+                        <button class="action-btn" onclick="startProcess()">
+                            <i class="fas fa-save"></i> Save Organized PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Processing -->
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Organizing your PDF...</h3>
+                        <p>Applying page changes</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>PDF Organized Successfully!</h2>
+                        <p>Pages have been rearranged and saved</p>
+                        <div class="result-info glass-light">
+                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>organized.pdf</span></div>
+                            <div class="info-item"><i class="fas fa-copy"></i> <span id="finalPages">8 Pages</span></div>
+                        </div>
+                        <button class="download-btn" onclick="alert('Download started!')">
+                            <i class="fas fa-download"></i> Download Organized PDF
+                        </button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Organize Another</button>
+                            <button class="btn-outline"><i class="fas fa-share-alt"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2><p>Tools that work great with Organize PDF</p></div>
+            <div class="related-grid">
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="split-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-cut"></i></div><h4>Split PDF</h4></a>
+                <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-sync-alt"></i></div><h4>Rotate PDF</h4></a>
+                <a href="page-numbers.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-list-ol"></i></div><h4>Page Numbers</h4></a>
+                <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-section">
+        <div class="container">
+            <div class="section-header"><h2>How to Organize PDF Pages</h2><p>Simple drag & drop interface</p></div>
+            <div class="steps-row">
+                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload PDF</h4><p>Select the PDF file you want to organize.</p></div>
+                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-arrows-alt"></i><h4>Drag & Drop</h4><p>Drag pages to reorder. Use buttons to rotate, delete or duplicate.</p></div>
+                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Save & Download</h4><p>Click save and download your organized PDF.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>Frequently Asked Questions</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I rearrange pages by dragging?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! Simply click and drag any page thumbnail to a new position. The page order updates instantly.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I delete specific pages?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! Hover over any page and click the red × button to remove it. You can also select multiple pages and delete them at once.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I add pages from another PDF?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! Click "Add PDF" in the toolbar to insert pages from another PDF document.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        let pages = [];
+        let dragIdx = null;
+
+        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) {
+            document.getElementById('fileName').textContent = files[0].name;
+            // Simulate pages
+            const count = Math.floor(Math.random() * 8) + 4;
+            pages = [];
+            for (let i = 1; i <= count; i++) {
+                pages.push({ id: i, num: i, rotation: 0, selected: false });
+            }
+            document.getElementById('totalPages').textContent = count;
+            showSection('editorSection');
+            renderPages();
+        });
+
+        function renderPages() {
+            const grid = document.getElementById('pageGrid');
+            grid.innerHTML = '';
+
+            pages.forEach((page, idx) => {
+                const div = document.createElement('div');
+                div.className = 'page-thumb';
+                div.draggable = true;
+                div.dataset.idx = idx;
+
+                div.innerHTML = `
+                    <div class="page-checkbox ${page.selected ? 'checked' : ''}" onclick="event.stopPropagation();toggleSelect(${idx})">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="page-actions">
+                        <button class="page-action-btn rotate-btn" onclick="event.stopPropagation();rotatePage(${idx})" title="Rotate 90°">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button class="page-action-btn copy-btn" onclick="event.stopPropagation();duplicatePage(${idx})" title="Duplicate">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="page-action-btn delete-btn" onclick="event.stopPropagation();deletePage(${idx})" title="Delete">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="page-thumb-img" style="transform:rotate(${page.rotation}deg)">
+                        ${page.num}
+                    </div>
+                    <div class="page-number">Page ${page.num}</div>
+                `;
+
+                // Drag events
+                div.addEventListener('dragstart', function(e) {
+                    dragIdx = idx;
+                    this.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                div.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                    dragIdx = null;
+                    document.querySelectorAll('.page-thumb').forEach(p => p.classList.remove('drag-over'));
+                });
+                div.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('drag-over');
+                });
+                div.addEventListener('dragleave', function() {
+                    this.classList.remove('drag-over');
+                });
+                div.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    const dropIdx = parseInt(this.dataset.idx);
+                    if (dragIdx !== null && dragIdx !== dropIdx) {
+                        const item = pages.splice(dragIdx, 1)[0];
+                        pages.splice(dropIdx, 0, item);
+                        renderPages();
+                    }
+                });
+
+                grid.appendChild(div);
+            });
+
+            document.getElementById('totalPages').textContent = pages.length;
+        }
+
+        function toggleSelect(idx) {
+            pages[idx].selected = !pages[idx].selected;
+            renderPages();
+        }
+
+        function selectAll() {
+            const allSelected = pages.every(p => p.selected);
+            pages.forEach(p => p.selected = !allSelected);
+            renderPages();
+        }
+
+        function rotatePage(idx) {
+            pages[idx].rotation = (pages[idx].rotation + 90) % 360;
+            renderPages();
+        }
+
+        function duplicatePage(idx) {
+            const copy = { ...pages[idx], id: Date.now(), selected: false };
+            pages.splice(idx + 1, 0, copy);
+            renderPages();
+        }
+
+        function deletePage(idx) {
+            if (pages.length <= 1) { alert('Cannot delete the last page!'); return; }
+            pages.splice(idx, 1);
+            renderPages();
+        }
+
+        function deleteSelected() {
+            const remaining = pages.filter(p => !p.selected);
+            if (remaining.length === 0) { alert('Cannot delete all pages!'); return; }
+            pages = remaining;
+            renderPages();
+        }
+
+        function reversePages() {
+            pages.reverse();
+            renderPages();
+        }
+
+        function startProcess() {
+            document.getElementById('finalPages').textContent = pages.length + ' Pages';
+            showSection('processingSection');
+            simulateProcess(function() {
+                showSection('resultSection');
+            });
+        }
+
+        function resetTool() {
+            pages = [];
+            showSection('uploadSection');
+        }
+    </script>
+</body>
+</html> 

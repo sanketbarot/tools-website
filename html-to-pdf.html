@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to PDF - Convert Web Pages to PDF | PDFTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="blob blob-1 blob-purple"></div>
+        <div class="blob blob-2 blob-blue"></div>
+        <div class="blob blob-3 blob-cyan"></div>
+    </div>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>HTML to PDF</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-indigo"><i class="fas fa-code"></i></div>
+                <div><h1>HTML to PDF</h1><p>Convert any web page into a downloadable PDF document.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+                <div id="uploadSection" data-section>
+                    <div style="padding:50px 25px;text-align:center;">
+                        <div style="font-size:50px;margin-bottom:20px;">
+                            <i class="fas fa-globe" style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i>
+                        </div>
+                        <h2 style="font-size:24px;margin-bottom:8px;">Enter Web Page URL</h2>
+                        <p style="color:var(--text-light);margin-bottom:30px;">Paste any website URL to convert to PDF</p>
+                        <div class="url-input-group" style="margin:0;padding:0;max-width:600px;margin:0 auto;">
+                            <input type="url" id="urlInput" placeholder="https://example.com" style="border-radius:12px;">
+                            <button onclick="startProcess()" style="border-radius:12px;"><i class="fas fa-exchange-alt"></i> Convert</button>
+                        </div>
+                        <div style="margin-top:25px;">
+                            <div class="options-panel glass-light" style="max-width:600px;margin:20px auto 0;text-align:left;">
+                                <h4><i class="fas fa-cog"></i> Options</h4>
+                                <div class="options-row">
+                                    <div class="option-field"><label>Page Size</label><select><option>A4</option><option>Letter</option><option>Legal</option></select></div>
+                                    <div class="option-field"><label>Orientation</label><select><option>Portrait</option><option>Landscape</option></select></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size:12px;color:var(--text-light);margin-top:15px;"><i class="fas fa-info-circle"></i> Or upload HTML file directly</p>
+                        <button class="upload-btn" onclick="document.getElementById('fileInput').click()" style="margin-top:10px;font-size:14px;padding:10px 25px;">
+                            <i class="fas fa-upload"></i> Upload HTML File
+                        </button>
+                        <input type="file" id="fileInput" accept=".html,.htm" hidden>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Converting web page...</h3>
+                        <p>Rendering page and generating PDF</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>Web Page Converted!</h2>
+                        <p>Your PDF is ready to download</p>
+                        <button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download PDF</button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Convert Another</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        function startProcess() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) { alert('Please enter a URL!'); return; }
+            showSection('processingSection');
+            simulateProcess(() => showSection('resultSection'));
+        }
+        function resetTool() { showSection('uploadSection'); document.getElementById('urlInput').value = ''; }
+    </script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Page Numbers to PDF Free | PDFTools</title>
+    <meta name="description" content="Add page numbers to your PDF documents. Customize position, format, font and style.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 280px;
+        }
+        .position-cell {
+            padding: 12px 8px;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.2);
+        }
+        .position-cell:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .position-cell.active {
+            background: rgba(99,102,241,0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .preview-page {
+            width: 200px;
+            height: 280px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .preview-page::before {
+            content: '';
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 40px;
+            background: repeating-linear-gradient(180deg, #f1f5f9 0px, #f1f5f9 2px, transparent 2px, transparent 10px);
+        }
+        .preview-number {
+            position: absolute;
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--primary);
+        }
+        .preview-number.bottom-center { bottom: 12px; left: 50%; transform: translateX(-50%); }
+        .preview-number.bottom-left { bottom: 12px; left: 15px; }
+        .preview-number.bottom-right { bottom: 12px; right: 15px; }
+        .preview-number.top-center { top: 12px; left: 50%; transform: translateX(-50%); }
+        .preview-number.top-left { top: 12px; left: 15px; }
+        .preview-number.top-right { top: 12px; right: 15px; }
+
+        .preview-label {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 10px;
+        }
+
+        .number-format-preview {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .format-chip {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.4);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .format-chip:hover, .format-chip.active {
+            border-color: var(--primary);
+            background: rgba(99,102,241,0.1);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <section class="tool-header">
+        <div class="container">
+            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Page Numbers</span></div>
+            <div class="tool-title">
+                <div class="tool-title-icon icon-blue"><i class="fas fa-list-ol"></i></div>
+                <div>
+                    <h1>Add Page Numbers</h1>
+                    <p>Add customizable page numbers to any position in your PDF document.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="tool-area">
+        <div class="container">
+            <div class="tool-wrapper glass">
+
+                <div id="uploadSection" data-section>
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-zone-content">
+                            <div class="upload-icon"><i class="fas fa-list-ol"></i></div>
+                            <h2>Upload PDF</h2>
+                            <p>Add page numbers with custom position, format and style</p>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-plus"></i> Select PDF File
+                            </button>
+                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                            <div class="upload-hints">
+                                <span><i class="fas fa-map-marker-alt"></i> Custom Position</span>
+                                <span><i class="fas fa-font"></i> Custom Font</span>
+                                <span><i class="fas fa-infinity"></i> Free</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="optionsSection" data-section style="display:none;">
+                    <div class="files-area">
+                        <div class="files-header">
+                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span></h3>
+                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 0 20px;">
+
+                            <!-- Left: Options -->
+                            <div>
+                                <div class="options-panel glass-light" style="margin-bottom:15px;">
+                                    <h4><i class="fas fa-map-marker-alt"></i> Position</h4>
+                                    <div class="position-grid">
+                                        <div class="position-cell" onclick="setPosition('top-left', this)">Top Left</div>
+                                        <div class="position-cell" onclick="setPosition('top-center', this)">Top Center</div>
+                                        <div class="position-cell" onclick="setPosition('top-right', this)">Top Right</div>
+                                        <div class="position-cell" onclick="setPosition('bottom-left', this)">Bottom Left</div>
+                                        <div class="position-cell active" onclick="setPosition('bottom-center', this)">Bottom Center</div>
+                                        <div class="position-cell" onclick="setPosition('bottom-right', this)">Bottom Right</div>
+                                    </div>
+                                </div>
+
+                                <div class="options-panel glass-light">
+                                    <h4><i class="fas fa-text-height"></i> Number Format</h4>
+                                    <div class="number-format-preview">
+                                        <div class="format-chip active" onclick="setFormat(this)">1, 2, 3</div>
+                                        <div class="format-chip" onclick="setFormat(this)">Page 1</div>
+                                        <div class="format-chip" onclick="setFormat(this)">1 of N</div>
+                                        <div class="format-chip" onclick="setFormat(this)">i, ii, iii</div>
+                                        <div class="format-chip" onclick="setFormat(this)">- 1 -</div>
+                                    </div>
+
+                                    <div class="options-row" style="margin-top:10px;">
+                                        <div class="option-field">
+                                            <label>Font Size</label>
+                                            <select>
+                                                <option>10px</option>
+                                                <option selected>12px</option>
+                                                <option>14px</option>
+                                                <option>16px</option>
+                                                <option>18px</option>
+                                            </select>
+                                        </div>
+                                        <div class="option-field">
+                                            <label>Start From Page</label>
+                                            <input type="number" value="1" min="1">
+                                        </div>
+                                    </div>
+                                    <div class="options-row" style="margin-top:10px;">
+                                        <div class="option-field">
+                                            <label>Color</label>
+                                            <div class="color-pick">
+                                                <input type="color" value="#333333">
+                                                <span style="font-size:13px;">Text Color</span>
+                                            </div>
+                                        </div>
+                                        <div class="option-field">
+                                            <label>Font</label>
+                                            <select>
+                                                <option>Helvetica</option>
+                                                <option>Times New Roman</option>
+                                                <option>Courier</option>
+                                                <option>Arial</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Preview -->
+                            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                                <h4 style="margin-bottom:15px;font-size:14px;color:var(--text-medium);"><i class="fas fa-eye"></i> Preview</h4>
+                                <div class="preview-page">
+                                    <div class="preview-number bottom-center" id="previewNumber">1</div>
+                                </div>
+                                <div class="preview-label">Page 1 of 12</div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn" onclick="startProcess()">
+                            <i class="fas fa-list-ol"></i> Add Page Numbers
+                        </button>
+                    </div>
+                </div>
+
+                <div id="processingSection" data-section style="display:none;">
+                    <div class="processing-area">
+                        <div class="spinner"></div>
+                        <h3>Adding page numbers...</h3>
+                        <p>Applying numbers to all pages</p>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <div id="resultSection" data-section style="display:none;">
+                    <div class="result-area">
+                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                        <h2>Page Numbers Added! 📄</h2>
+                        <p>All pages now have numbers</p>
+                        <div class="result-info glass-light">
+                            <div class="info-item"><i class="fas fa-file-pdf"></i> <span>document_numbered.pdf</span></div>
+                            <div class="info-item"><i class="fas fa-list-ol"></i> <span>12 Pages Numbered</span></div>
+                        </div>
+                        <button class="download-btn" onclick="alert('Download!')">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Add to Another</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
+
+    <section class="related-tools">
+        <div class="container">
+            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="related-grid">
+                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+                <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
+                <a href="organize-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-th-large"></i></div><h4>Organize</h4></a>
+                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+                <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-sync-alt"></i></div><h4>Rotate PDF</h4></a>
+                <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header"><h2>FAQ</h2></div>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I skip the first page?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! Set "Start From Page" to 2 to skip numbering on the title/cover page.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I use Roman numerals?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! Select the "i, ii, iii" format to use Roman numeral page numbers.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+        setupDropZone('dropZone', 'fileInput', ['.pdf'], function(files) {
+            document.getElementById('fileName').textContent = files[0].name;
+            showSection('optionsSection');
+        });
+
+        function setPosition(pos, el) {
+            document.querySelectorAll('.position-cell').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            const preview = document.getElementById('previewNumber');
+            preview.className = 'preview-number ' + pos;
+        }
+
+        function setFormat(el) {
+            document.querySelectorAll('.format-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function startProcess() {
+            showSection('processingSection');
+            simulateProcess(function() { showSection('resultSection'); });
+        }
+
+        function resetTool() { showSection('uploadSection'); }
+    </script>
+</body>
+</html>
