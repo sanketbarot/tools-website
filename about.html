@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | PDFTools - Free Online PDF Tools</title>
+    <meta name="description" content="Learn about PDFTools - Free online PDF tools built for everyone. Fast, secure, and 100% browser-based.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .page-wrap { max-width: 900px; margin: 0 auto; padding: 25px 20px 60px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 20px; transition: color 0.2s; }
+        .back-btn:hover { color: var(--primary-dark); }
+
+        /* Hero */
+        .about-hero { text-align: center; padding: 40px 20px 30px; }
+        .hero-logo { width: 85px; height: 85px; border-radius: 22px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 36px; color: #fff; box-shadow: 0 12px 35px rgba(99,102,241,0.3); }
+        .about-hero h1 { font-size: 36px; font-weight: 800; margin-bottom: 12px; }
+        .about-hero h1 span { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .about-hero .tagline { font-size: 16px; color: var(--text-medium); max-width: 580px; margin: 0 auto 25px; line-height: 1.7; }
+        .hero-badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .hero-badge-item { padding: 8px 18px; border-radius: 50px; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.15); font-size: 13px; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+
+        /* Cards */
+        .card { background: rgba(255,255,255,0.5); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.55); border-radius: 16px; padding: 30px; margin-top: 22px; }
+        .card h2 { font-size: 21px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 9px; }
+        .card h2 i { color: var(--primary); font-size: 19px; }
+        .card p { font-size: 14px; color: var(--text-medium); line-height: 1.8; margin-bottom: 10px; }
+
+        /* Mission grid */
+        .mission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+        .mission-item { padding: 22px 16px; border-radius: 14px; text-align: center; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); transition: transform 0.2s, box-shadow 0.2s; }
+        .mission-item:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(31,38,135,0.1); }
+        .mission-item .m-icon { font-size: 30px; margin-bottom: 12px; display: block; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .mission-item h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .mission-item p { font-size: 12px; color: var(--text-light); line-height: 1.5; margin: 0; }
+
+        /* Stats */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 18px; }
+        .stat-box { text-align: center; padding: 22px 10px; background: rgba(255,255,255,0.4); border-radius: 14px; border: 1px solid rgba(255,255,255,0.5); }
+        .stat-box h3 { font-size: 30px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-box p { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+        /* Team */
+        .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
+        .team-card { padding: 22px; border-radius: 14px; text-align: center; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); transition: transform 0.2s, box-shadow 0.2s; }
+        .team-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(31,38,135,0.1); }
+        .team-avatar { width: 62px; height: 62px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; margin: 0 auto 12px; }
+        .team-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .team-card p { font-size: 12px; color: var(--text-light); margin: 0; }
+
+        /* Technologies */
+        .tech-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        .tech-chip { padding: 7px 14px; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.15); border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 5px; }
+
+        /* Story timeline */
+        .timeline { margin-top: 18px; position: relative; }
+        .timeline::before { content: ''; position: absolute; left: 18px; top: 0; bottom: 0; width: 2px; background: linear-gradient(135deg, var(--primary), var(--accent)); opacity: 0.3; }
+        .tl-item { display: flex; gap: 18px; padding: 0 0 22px 0; position: relative; }
+        .tl-dot { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; flex-shrink: 0; z-index: 1; }
+        .tl-content { padding-top: 6px; }
+        .tl-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+        .tl-content p { font-size: 12px; color: var(--text-light); margin: 0; }
+        .tl-year { font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 3px; }
+
+        /* CTA */
+        .cta-box { text-align: center; padding: 35px; background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(236,72,153,0.06)); border: 1px solid rgba(99,102,241,0.15); border-radius: 16px; margin-top: 22px; }
+        .cta-box h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+        .cta-box p { font-size: 14px; color: var(--text-medium); margin-bottom: 20px; }
+        .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .cta-primary { padding: 13px 28px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; border-radius: 50px; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; }
+        .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(99,102,241,0.35); }
+        .cta-secondary { padding: 13px 28px; border: 2px solid rgba(99,102,241,0.3); background: transparent; color: var(--primary); border-radius: 50px; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .cta-secondary:hover { background: var(--primary); color: white; }
+
+        @media (max-width: 768px) {
+            .mission-grid, .team-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .about-hero h1 { font-size: 28px; }
+        }
+        @media (max-width: 480px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+        <!-- HERO -->
+        <div class="about-hero">
+            <div class="hero-logo"><i class="fas fa-file-pdf"></i></div>
+            <h1>About <span>PDFTools</span></h1>
+            <p class="tagline">We build free, fast, and private online PDF tools for everyone. No signup, no uploads, no limits — everything runs in your browser.</p>
+            <div class="hero-badges">
+                <span class="hero-badge-item"><i class="fas fa-lock"></i> 100% Private</span>
+                <span class="hero-badge-item"><i class="fas fa-bolt"></i> Lightning Fast</span>
+                <span class="hero-badge-item"><i class="fas fa-heart"></i> Free Forever</span>
+                <span class="hero-badge-item"><i class="fas fa-laptop"></i> Browser Based</span>
+            </div>
+        </div>
+
+        <!-- MISSION -->
+        <div class="card">
+            <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
+            <p>PDFTools was created with one simple goal: <strong>make professional PDF tools accessible to everyone for free</strong>. Whether you're a student, professional, or business owner — you deserve great tools without paying hundreds of dollars for software.</p>
+            <p>Every tool on PDFTools runs 100% in your web browser using JavaScript. Your files <strong>never leave your device</strong> and are <strong>never uploaded to any server</strong>. What you do with your documents is your business — not ours.</p>
+
+            <div class="mission-grid">
+                <div class="mission-item">
+                    <span class="m-icon"><i class="fas fa-lock"></i></span>
+                    <h3>Privacy First</h3>
+                    <p>Files never leave your device. Zero server uploads. Your data stays yours.</p>
+                </div>
+                <div class="mission-item">
+                    <span class="m-icon"><i class="fas fa-bolt"></i></span>
+                    <h3>Speed Matters</h3>
+                    <p>Browser-based processing means instant results. No waiting for uploads or servers.</p>
+                </div>
+                <div class="mission-item">
+                    <span class="m-icon"><i class="fas fa-universal-access"></i></span>
+                    <h3>Accessible to All</h3>
+                    <p>Free for everyone. No account needed. Works on any device, any browser.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="card">
+            <h2><i class="fas fa-chart-bar"></i> PDFTools by the Numbers</h2>
+            <div class="stats-row">
+                <div class="stat-box"><h3>30+</h3><p>Free PDF Tools</p></div>
+                <div class="stat-box"><h3>1M+</h3><p>Files Processed</p></div>
+                <div class="stat-box"><h3>500K+</h3><p>Happy Users</p></div>
+                <div class="stat-box"><h3>100%</h3><p>Free & Private</p></div>
+            </div>
+        </div>
+
+        <!-- OUR STORY -->
+        <div class="card">
+            <h2><i class="fas fa-book-open"></i> Our Story</h2>
+            <p>PDFTools started as a personal project to solve a common frustration — why should simple PDF tasks require expensive software or sketchy websites that upload your private documents to unknown servers?</p>
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-dot"><i class="fas fa-lightbulb"></i></div>
+                    <div class="tl-content">
+                        <div class="tl-year">2023</div>
+                        <h4>The Idea</h4>
+                        <p>Started building browser-based PDF tools that respect user privacy.</p>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-dot"><i class="fas fa-code"></i></div>
+                    <div class="tl-content">
+                        <div class="tl-year">2024</div>
+                        <h4>First 10 Tools</h4>
+                        <p>Launched Merge, Split, Compress, and Convert tools. First 10,000 users.</p>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-dot"><i class="fas fa-robot"></i></div>
+                    <div class="tl-content">
+                        <div class="tl-year">2024</div>
+                        <h4>AI Tools Added</h4>
+                        <p>Launched OCR, AI Summarizer, and Translate PDF with AI capabilities.</p>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-dot"><i class="fas fa-star"></i></div>
+                    <div class="tl-content">
+                        <div class="tl-year">2025</div>
+                        <h4>30+ Tools & Growing</h4>
+                        <p>Now offering 30+ tools serving 500,000+ users worldwide. Still free!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TECHNOLOGY -->
+        <div class="card">
+            <h2><i class="fas fa-code"></i> Technology We Use</h2>
+            <p>PDFTools is built with modern open-source web technologies. Everything runs in your browser — no backend servers, no cloud processing, no privacy risks.</p>
+            <div class="tech-grid">
+                <span class="tech-chip"><i class="fab fa-js-square"></i> JavaScript ES6+</span>
+                <span class="tech-chip"><i class="fab fa-html5"></i> HTML5</span>
+                <span class="tech-chip"><i class="fab fa-css3-alt"></i> CSS3</span>
+                <span class="tech-chip"><i class="fas fa-file-pdf"></i> pdf-lib.js</span>
+                <span class="tech-chip"><i class="fas fa-file-pdf"></i> PDF.js (Mozilla)</span>
+                <span class="tech-chip"><i class="fas fa-eye"></i> Tesseract.js</span>
+                <span class="tech-chip"><i class="fas fa-file-word"></i> jsPDF</span>
+                <span class="tech-chip"><i class="fas fa-image"></i> html2canvas</span>
+                <span class="tech-chip"><i class="fas fa-file-archive"></i> JSZip</span>
+                <span class="tech-chip"><i class="fas fa-language"></i> MyMemory API</span>
+                <span class="tech-chip"><i class="fas fa-brain"></i> Custom NLP AI</span>
+            </div>
+        </div>
+
+        <!-- TEAM -->
+        <div class="card">
+            <h2><i class="fas fa-users"></i> Our Team</h2>
+            <p>PDFTools is built by a small team passionate about web development, privacy, and making great tools accessible to everyone.</p>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">👨‍💻</div>
+                    <h4>Lead Developer</h4>
+                    <p>Full-stack developer & PDF tools architect</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777);">👩‍🎨</div>
+                    <h4>UI/UX Designer</h4>
+                    <p>Glassmorphism design & user experience</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);">👨‍🔬</div>
+                    <h4>AI Engineer</h4>
+                    <p>OCR, summarization & translation features</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHY CHOOSE US -->
+        <div class="card">
+            <h2><i class="fas fa-trophy"></i> Why Choose PDFTools?</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:14px;background:rgba(255,255,255,0.4);border-radius:12px;">
+                    <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:14px;"><i class="fas fa-check"></i></div>
+                    <div><h4 style="font-size:13px;margin-bottom:3px;">No File Size Limits</h4><p style="font-size:12px;color:var(--text-light);margin:0;">Browser memory is your only limit</p></div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:14px;background:rgba(255,255,255,0.4);border-radius:12px;">
+                    <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:14px;"><i class="fas fa-shield-alt"></i></div>
+                    <div><h4 style="font-size:13px;margin-bottom:3px;">No Account Required</h4><p style="font-size:12px;color:var(--text-light);margin:0;">Use all tools without signing up</p></div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:14px;background:rgba(255,255,255,0.4);border-radius:12px;">
+                    <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f97316,#ea580c);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:14px;"><i class="fas fa-mobile-alt"></i></div>
+                    <div><h4 style="font-size:13px;margin-bottom:3px;">Mobile Friendly</h4><p style="font-size:12px;color:var(--text-light);margin:0;">Works on phones, tablets & desktops</p></div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:14px;background:rgba(255,255,255,0.4);border-radius:12px;">
+                    <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#a855f7,#9333ea);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:14px;"><i class="fas fa-wifi"></i></div>
+                    <div><h4 style="font-size:13px;margin-bottom:3px;">Works Offline</h4><p style="font-size:12px;color:var(--text-light);margin:0;">Most tools work without internet</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-box">
+            <h2>Ready to Try PDFTools?</h2>
+            <p>Join 500,000+ users who trust PDFTools for their document needs. Free forever.</p>
+            <div class="cta-btns">
+                <a href="index.html#tools" class="cta-primary"><i class="fas fa-th"></i> Explore All Tools</a>
+                <a href="contact.html" class="cta-secondary"><i class="fas fa-envelope"></i> Contact Us</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="about.html">About</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+</body>
+</html>

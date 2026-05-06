@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | PDFTools</title>
+    <meta name="description" content="Get in touch with PDFTools team. We'd love to hear your feedback, questions or suggestions.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .page-wrap { max-width: 900px; margin: 0 auto; padding: 25px 20px 60px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 20px; transition: color 0.2s; }
+        .back-btn:hover { color: var(--primary-dark); }
+
+        /* Hero */
+        .contact-hero { text-align: center; padding: 40px 20px 30px; }
+        .hero-icon { width: 80px; height: 80px; border-radius: 22px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 34px; color: #fff; box-shadow: 0 12px 35px rgba(99,102,241,0.3); }
+        .contact-hero h1 { font-size: 34px; font-weight: 800; margin-bottom: 10px; }
+        .contact-hero h1 span { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .contact-hero p { font-size: 15px; color: var(--text-medium); max-width: 500px; margin: 0 auto; line-height: 1.7; }
+
+        /* Card */
+        .card { background: rgba(255,255,255,0.5); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.55); border-radius: 16px; padding: 30px; margin-top: 22px; }
+        .card h2 { font-size: 20px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 9px; }
+        .card h2 i { color: var(--primary); }
+
+        /* Contact Grid */
+        .contact-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 22px; margin-top: 22px; }
+
+        /* Info Cards */
+        .info-cards { display: flex; flex-direction: column; gap: 12px; }
+        .info-card { display: flex; align-items: center; gap: 14px; padding: 18px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.55); border-radius: 14px; text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; }
+        .info-card:hover { transform: translateX(4px); box-shadow: 0 6px 20px rgba(31,38,135,0.1); }
+        .info-card .ic-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px; color: #fff; flex-shrink: 0; }
+        .info-card .ic-text h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+        .info-card .ic-text p, .info-card .ic-text a { font-size: 13px; color: var(--text-medium); margin: 0; text-decoration: none; }
+        .info-card .ic-text a:hover { color: var(--primary); }
+
+        /* Social */
+        .social-section { margin-top: 15px; padding: 18px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); border-radius: 14px; }
+        .social-section h4 { font-size: 13px; font-weight: 700; color: var(--text-medium); margin-bottom: 12px; }
+        .social-icons { display: flex; gap: 8px; flex-wrap: wrap; }
+        .social-icon { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .social-icon:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+        .si-fb { background: #1877f2; }
+        .si-tw { background: #1da1f2; }
+        .si-ig { background: linear-gradient(135deg,#f58529,#dd2a7b,#8134af); }
+        .si-yt { background: #ff0000; }
+        .si-gh { background: #333; }
+        .si-li { background: #0a66c2; }
+
+        /* FAQ quick */
+        .quick-links { margin-top: 15px; }
+        .quick-link { display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); border-radius: 10px; text-decoration: none; color: var(--text-dark); font-size: 13px; font-weight: 600; margin-bottom: 8px; transition: transform 0.2s, color 0.2s; }
+        .quick-link:hover { transform: translateX(4px); color: var(--primary); }
+        .quick-link i { color: var(--primary); width: 16px; }
+
+        /* Form */
+        .contact-form { display: flex; flex-direction: column; gap: 14px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-medium); }
+        .form-group label .req { color: var(--danger); }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%; padding: 11px 14px;
+            border: 2px solid rgba(99,102,241,0.15);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.5);
+            font-size: 13px; color: var(--text-dark);
+            outline: none; font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+        }
+        .form-group textarea { min-height: 130px; resize: vertical; }
+
+        .char-count { font-size: 11px; color: var(--text-light); text-align: right; margin-top: 3px; }
+
+        .submit-btn { padding: 14px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(99,102,241,0.35); }
+        .submit-btn.loading { opacity: 0.7; pointer-events: none; }
+
+        .success-msg { display: none; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 12px; padding: 18px; text-align: center; color: #16a34a; font-size: 14px; font-weight: 600; }
+        .success-msg i { font-size: 28px; display: block; margin-bottom: 8px; }
+        .error-msg { display: none; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 12px 15px; color: var(--danger); font-size: 13px; }
+
+        /* FAQ */
+        .faq-card { background: rgba(255,255,255,0.5); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.55); border-radius: 16px; padding: 28px; margin-top: 22px; }
+        .faq-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 9px; }
+        .faq-card h2 i { color: var(--primary); }
+
+        /* Map placeholder */
+        .map-box { background: rgba(99,102,241,0.04); border: 2px dashed rgba(99,102,241,0.2); border-radius: 14px; padding: 30px; text-align: center; margin-top: 22px; }
+        .map-box i { font-size: 35px; color: var(--primary); margin-bottom: 10px; display: block; opacity: 0.6; }
+        .map-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+        .map-box p { font-size: 13px; color: var(--text-light); }
+
+        @media (max-width: 768px) {
+            .contact-layout { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .contact-hero h1 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+        <!-- HERO -->
+        <div class="contact-hero">
+            <div class="hero-icon"><i class="fas fa-envelope"></i></div>
+            <h1>Contact <span>Us</span></h1>
+            <p>Have a question, feedback, or just want to say hello? We'd love to hear from you. We usually reply within 24-48 hours.</p>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <div class="contact-layout">
+
+            <!-- LEFT: Info -->
+            <div>
+                <div class="info-cards">
+                    <div class="info-card">
+                        <div class="ic-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"><i class="fas fa-envelope"></i></div>
+                        <div class="ic-text">
+                            <h4>General Inquiries</h4>
+                            <a href="mailto:contact@pdftools.com">contact@pdftools.com</a>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="ic-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a);"><i class="fas fa-headset"></i></div>
+                        <div class="ic-text">
+                            <h4>Support</h4>
+                            <a href="mailto:support@pdftools.com">support@pdftools.com</a>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="ic-icon" style="background:linear-gradient(135deg,#f97316,#ea580c);"><i class="fas fa-bug"></i></div>
+                        <div class="ic-text">
+                            <h4>Report a Bug</h4>
+                            <a href="mailto:bugs@pdftools.com">bugs@pdftools.com</a>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="ic-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea);"><i class="fas fa-handshake"></i></div>
+                        <div class="ic-text">
+                            <h4>Partnership</h4>
+                            <a href="mailto:partner@pdftools.com">partner@pdftools.com</a>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="ic-icon" style="background:linear-gradient(135deg,#475569,#334155);"><i class="fas fa-clock"></i></div>
+                        <div class="ic-text">
+                            <h4>Response Time</h4>
+                            <p>24-48 hours on weekdays</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social -->
+                <div class="social-section">
+                    <h4><i class="fas fa-share-alt" style="color:var(--primary);margin-right:6px;"></i> Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon si-fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon si-tw" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon si-ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon si-yt" title="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon si-gh" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-icon si-li" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="quick-links">
+                    <a href="privacy.html" class="quick-link"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                    <a href="terms.html" class="quick-link"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                    <a href="about.html" class="quick-link"><i class="fas fa-info-circle"></i> About PDFTools</a>
+                    <a href="index.html#tools" class="quick-link"><i class="fas fa-th"></i> All PDF Tools</a>
+                </div>
+            </div>
+
+            <!-- RIGHT: Contact Form -->
+            <div class="card">
+                <h2><i class="fas fa-paper-plane"></i> Send a Message</h2>
+
+                <div class="success-msg" id="successMsg">
+                    <i class="fas fa-check-circle"></i>
+                    Message Sent Successfully! 🎉<br>
+                    <span style="font-size:13px;font-weight:400;color:#16a34a;">We'll get back to you within 24-48 hours.</span>
+                </div>
+
+                <div class="error-msg" id="errorMsg">
+                    <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+                </div>
+
+                <div id="formWrap">
+                    <div class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Your Name <span class="req">*</span></label>
+                                <input type="text" id="cfName" placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label>Your Email <span class="req">*</span></label>
+                                <input type="email" id="cfEmail" placeholder="john@example.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Subject <span class="req">*</span></label>
+                            <select id="cfSubject">
+                                <option value="">-- Select a topic --</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="support">Technical Support</option>
+                                <option value="bug">Bug Report</option>
+                                <option value="feature">Feature Request</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="partnership">Partnership / Business</option>
+                                <option value="advertising">Advertising</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Message <span class="req">*</span></label>
+                            <textarea id="cfMessage" placeholder="Tell us how we can help you..." oninput="updateCharCount()"></textarea>
+                            <div class="char-count"><span id="charCount">0</span>/1000 characters</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Your Website (optional)</label>
+                            <input type="url" id="cfWebsite" placeholder="https://yourwebsite.com">
+                        </div>
+
+                        <button class="submit-btn" id="submitBtn" onclick="submitContact()">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq-card">
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Is PDFTools completely free?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! All tools are free to use without any signup or payment. We sustain the service through non-intrusive Google Ads.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Are my files safe when using PDFTools?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Absolutely! All processing happens 100% in your browser. Files never leave your device or get uploaded to any server. Your privacy is guaranteed.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>A tool is not working. What should I do?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Please try refreshing the page, using a modern browser (Chrome/Firefox recommended), and checking if the file type is supported. If the issue persists, please contact us with details about the problem.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Can I request a new PDF tool?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Yes! We love hearing feature requests. Use the contact form above and select "Feature Request" as the subject. We consider all suggestions!</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>Do you offer an API?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>Not currently. All tools run client-side in the browser. If you're interested in API access, please contact us with your use case.</p></div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question"><h4>How can I advertise on PDFTools?</h4><i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer"><p>For advertising inquiries, please email us at partner@pdftools.com or use the contact form with "Partnership" selected.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="about.html">About</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/tool-page.js"></script>
+    <script>
+    // Character count
+    function updateCharCount() {
+        var msg = document.getElementById('cfMessage').value;
+        document.getElementById('charCount').textContent = msg.length;
+        if (msg.length > 1000) {
+            document.getElementById('cfMessage').value = msg.substring(0, 1000);
+            document.getElementById('charCount').textContent = 1000;
+        }
+    }
+
+    // Show error
+    function showErr(msg) {
+        var el = document.getElementById('errorMsg');
+        document.getElementById('errorText').textContent = msg;
+        el.style.display = 'block';
+        setTimeout(function() { el.style.display = 'none'; }, 5000);
+    }
+
+    // Submit contact form
+    function submitContact() {
+        var name    = document.getElementById('cfName').value.trim();
+        var email   = document.getElementById('cfEmail').value.trim();
+        var subject = document.getElementById('cfSubject').value;
+        var message = document.getElementById('cfMessage').value.trim();
+
+        // Validate
+        if (!name)    { showErr('Please enter your name.'); return; }
+        if (!email || email.indexOf('@') === -1) { showErr('Please enter a valid email address.'); return; }
+        if (!subject) { showErr('Please select a subject.'); return; }
+        if (message.length < 10) { showErr('Please write a message (at least 10 characters).'); return; }
+
+        // Button loading state
+        var btn = document.getElementById('submitBtn');
+        btn.classList.add('loading');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+        // Simulate sending (in production - connect to backend/email service)
+        setTimeout(function() {
+            // Hide form, show success
+            document.getElementById('formWrap').style.display = 'none';
+            document.getElementById('successMsg').style.display = 'block';
+
+            // Optional: open mailto as fallback
+            var subjectMap = {
+                'general': 'General Inquiry',
+                'support': 'Technical Support',
+                'bug': 'Bug Report',
+                'feature': 'Feature Request',
+                'feedback': 'Feedback',
+                'partnership': 'Partnership',
+                'advertising': 'Advertising',
+                'other': 'Other'
+            };
+            var subjectText = subjectMap[subject] || subject;
+            var body = 'Name: ' + name + '\nEmail: ' + email + '\n\n' + message;
+            var mailtoLink = 'mailto:contact@pdftools.com?subject=' + encodeURIComponent('[PDFTools] ' + subjectText) + '&body=' + encodeURIComponent(body);
+
+            // Open email client
+            window.location.href = mailtoLink;
+        }, 1500);
+    }
+    </script>
+</body>
+</html>
