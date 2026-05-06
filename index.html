@@ -7,18 +7,84 @@
     <meta name="description" content="Free online PDF tools to merge, split, compress, convert, edit PDFs. Fast, secure & no signup needed!">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208"
-     crossorigin="anonymous"></script>
+
+    <!-- ✅ Override: Remove blob animation + fix scroll -->
+    <style>
+        /* KILL blob animations - causes scroll lag */
+        .bg-animation,
+        .blob, .blob-1, .blob-2, .blob-3, .blob-4, .blob-5 {
+            display: none !important;
+            animation: none !important;
+        }
+
+        /* Simple clean background - NO animation */
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #fce4f0 50%, #e8f4f8 100%) !important;
+            background-attachment: fixed !important;
+        }
+
+        /* Subtle static gradient overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(99,102,241,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236,72,153,0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ✅ Hero compact - less padding */
+        .hero {
+            padding: 50px 20px 30px !important;
+        }
+        .hero h1 {
+            font-size: 38px !important;
+        }
+        .hero p {
+            font-size: 16px !important;
+            margin-bottom: 20px !important;
+        }
+        .hero-badge {
+            margin-bottom: 15px !important;
+        }
+        .hero-stats {
+            margin-top: 15px !important;
+        }
+
+        /* ✅ Tools section - no top gap */
+        .tools-section {
+            padding-top: 20px !important;
+        }
+
+        /* ✅ Smooth scroll performance */
+        * {
+            scroll-behavior: smooth;
+        }
+        .tool-card {
+            will-change: auto !important;
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        }
+
+        /* ✅ Disable heavy animations on scroll */
+        .animate-in {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+        }
+
+        /* ✅ Remove Ad space gap between hero and tools */
+        .ad-top-space {
+            margin: 10px auto !important;
+            padding: 10px !important;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Animated Background Blobs -->
-    <div class="bg-animation">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-  
-    </div>
+    <!-- ❌ REMOVED: Animated Background Blobs (causes scroll lag) -->
 
     <!-- ========== NAVBAR ========== -->
     <nav class="navbar glass">
@@ -33,406 +99,280 @@
         </div>
         <div class="nav-links" id="navLinks">
             <a href="#tools"><i class="fas fa-th"></i> All Tools</a>
-            <a href="#features"><i class="fas fa-star"></i> Features</a>
-            <a href="#"><i class="fas fa-crown"></i> Pricing</a>
-            <a href="#"><i class="fas fa-code"></i> API</a>
+            
             <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
         </div>
     </nav>
 
-    <!-- ========== HERO SECTION ========== -->
+    <!-- ========== HERO (Compact) ========== -->
     <section class="hero">
         <div class="hero-content">
             <div class="hero-badge glass-light">
                 <i class="fas fa-bolt"></i> #1 Free PDF Tools Online
             </div>
             <h1>Every PDF Tool You'll <span class="gradient-text">Ever Need</span></h1>
-            <p>Free online tools to merge, split, compress, convert, edit & sign PDFs. Simple, fast & 100% secure!</p>
+            <p>Free online tools to merge, split, compress, convert, edit & sign PDFs.</p>
             <div class="hero-search glass">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search tools... (e.g., merge, compress, convert)" onkeyup="searchTools()">
-                <button class="search-btn">Search</button>
+                <input type="text" id="searchInput" placeholder="Search tools... (e.g., merge, compress)" onkeyup="searchTools()">
+                <button class="search-btn" onclick="searchTools()">Search</button>
             </div>
             <div class="hero-stats">
-                <div class="hero-stat">
-                    <strong>30+</strong>
-                    <span>Tools</span>
-                </div>
+                <div class="hero-stat"><strong>30+</strong><span>Tools</span></div>
                 <div class="hero-stat-divider"></div>
-                <div class="hero-stat">
-                    <strong>1M+</strong>
-                    <span>Files Processed</span>
-                </div>
+                <div class="hero-stat"><strong>1M+</strong><span>Files Processed</span></div>
                 <div class="hero-stat-divider"></div>
-                <div class="hero-stat">
-                    <strong>100%</strong>
-                    <span>Free</span>
-                </div>
+                <div class="hero-stat"><strong>100%</strong><span>Free</span></div>
             </div>
         </div>
     </section>
 
-    <!-- ========== AD SPACE ========== -->
-    <div class="container" style="margin:25px auto;">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-8473875587893208"
-         data-ad-slot="YOUR_TOP_BANNER_SLOT"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</div>
-
-    <!-- ========== TOOLS SECTION ========== -->
+    <!-- ========== TOOLS SECTION (Immediately after hero) ========== -->
     <section class="tools-section" id="tools">
         <div class="container">
             <div class="section-header">
                 <h2>All PDF Tools</h2>
-                <p>Choose any tool to get started — <strong>no signup needed!</strong></p>
+                <p>Choose any tool — <strong>no signup needed!</strong></p>
             </div>
 
             <!-- Category Tabs -->
             <div class="category-tabs">
-                <button class="tab active" onclick="filterTools('all', this)">
-                    <i class="fas fa-fire"></i> All Tools
-                </button>
-                <button class="tab" onclick="filterTools('organize', this)">
-                    <i class="fas fa-layer-group"></i> Organize
-                </button>
-                <button class="tab" onclick="filterTools('convert', this)">
-                    <i class="fas fa-exchange-alt"></i> Convert
-                </button>
-                <button class="tab" onclick="filterTools('edit', this)">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="tab" onclick="filterTools('security', this)">
-                    <i class="fas fa-lock"></i> Security
-                </button>
-                <button class="tab" onclick="filterTools('ai', this)">
-                    <i class="fas fa-robot"></i> AI Tools
-                </button>
+                <button class="tab active" onclick="filterTools('all', this)"><i class="fas fa-fire"></i> All</button>
+                <button class="tab" onclick="filterTools('organize', this)"><i class="fas fa-layer-group"></i> Organize</button>
+                <button class="tab" onclick="filterTools('convert', this)"><i class="fas fa-exchange-alt"></i> Convert</button>
+                <button class="tab" onclick="filterTools('edit', this)"><i class="fas fa-edit"></i> Edit</button>
+                <button class="tab" onclick="filterTools('security', this)"><i class="fas fa-lock"></i> Security</button>
+                <button class="tab" onclick="filterTools('ai', this)"><i class="fas fa-robot"></i> AI</button>
+            </div>
+
+            <!-- ✅ No results message -->
+            <div id="noResults" style="display:none;text-align:center;padding:40px;color:#94a3b8;">
+                <i class="fas fa-search" style="font-size:40px;margin-bottom:10px;display:block;opacity:0.3;"></i>
+                <p style="font-size:16px;font-weight:600;">No tools found</p>
+                <p style="font-size:13px;">Try a different search term</p>
             </div>
 
             <!-- Tools Grid -->
             <div class="tools-grid" id="toolsGrid">
 
-                <!-- 1. Merge PDF -->
-                <a href="merge-pdf.html" class="tool-card glass" data-category="organize" data-name="merge pdf combine">
-                    <div class="tool-icon icon-red">
-                        <i class="fas fa-object-group"></i>
-                    </div>
+                <a href="merge-pdf.html" class="tool-card glass" data-category="organize" data-name="merge pdf combine multiple">
+                    <div class="tool-icon icon-red"><i class="fas fa-object-group"></i></div>
                     <h3>Merge PDF</h3>
-                    <p>Combine multiple PDFs into a single file in seconds.</p>
+                    <p>Combine multiple PDFs into one file.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 2. Split PDF -->
-                <a href="split-pdf.html" class="tool-card glass" data-category="organize" data-name="split pdf extract pages">
-                    <div class="tool-icon icon-blue">
-                        <i class="fas fa-cut"></i>
-                    </div>
+                <a href="split-pdf.html" class="tool-card glass" data-category="organize" data-name="split pdf extract separate pages">
+                    <div class="tool-icon icon-blue"><i class="fas fa-cut"></i></div>
                     <h3>Split PDF</h3>
-                    <p>Extract pages or split PDF into multiple files easily.</p>
+                    <p>Extract or split PDF into multiple files.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 3. Compress PDF -->
-                <a href="compress-pdf.html" class="tool-card glass" data-category="organize" data-name="compress pdf reduce size">
+                <a href="compress-pdf.html" class="tool-card glass" data-category="organize" data-name="compress pdf reduce size smaller">
                     <span class="badge badge-popular">Popular</span>
-                    <div class="tool-icon icon-green">
-                        <i class="fas fa-compress-arrows-alt"></i>
-                    </div>
+                    <div class="tool-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div>
                     <h3>Compress PDF</h3>
-                    <p>Reduce PDF file size without losing quality.</p>
+                    <p>Reduce PDF size without quality loss.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 4. PDF to Word -->
-                <a href="pdf-to-word.html" class="tool-card glass" data-category="convert" data-name="pdf to word doc convert">
-                    <div class="tool-icon icon-blue">
-                        <i class="fas fa-file-word"></i>
-                    </div>
+                <a href="pdf-to-word.html" class="tool-card glass" data-category="convert" data-name="pdf to word doc docx convert">
+                    <div class="tool-icon icon-blue"><i class="fas fa-file-word"></i></div>
                     <h3>PDF to Word</h3>
-                    <p>Convert PDF files into editable Word documents.</p>
+                    <p>Convert PDF to editable Word docs.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 5. PDF to PowerPoint -->
-                <a href="pdf-to-ppt.html" class="tool-card glass" data-category="convert" data-name="pdf to powerpoint ppt slides">
-                    <div class="tool-icon icon-orange">
-                        <i class="fas fa-file-powerpoint"></i>
-                    </div>
+                <a href="pdf-to-ppt.html" class="tool-card glass" data-category="convert" data-name="pdf to powerpoint ppt slides presentation">
+                    <div class="tool-icon icon-orange"><i class="fas fa-file-powerpoint"></i></div>
                     <h3>PDF to PowerPoint</h3>
-                    <p>Turn PDFs into fully editable PPT slides.</p>
+                    <p>Turn PDFs into editable PPT slides.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 6. PDF to Excel -->
-                <a href="pdf-to-excel.html" class="tool-card glass" data-category="convert" data-name="pdf to excel spreadsheet data">
-                    <div class="tool-icon icon-green">
-                        <i class="fas fa-file-excel"></i>
-                    </div>
+                <a href="pdf-to-excel.html" class="tool-card glass" data-category="convert" data-name="pdf to excel spreadsheet xlsx data table">
+                    <div class="tool-icon icon-green"><i class="fas fa-file-excel"></i></div>
                     <h3>PDF to Excel</h3>
-                    <p>Extract data from PDF into Excel sheets.</p>
+                    <p>Extract PDF data into Excel sheets.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 7. Word to PDF -->
-                <a href="word-to-pdf.html" class="tool-card glass" data-category="convert" data-name="word doc to pdf convert">
-                    <div class="tool-icon icon-indigo">
-                        <i class="fas fa-file-word"></i>
-                    </div>
+                <a href="word-to-pdf.html" class="tool-card glass" data-category="convert" data-name="word doc docx to pdf convert">
+                    <div class="tool-icon icon-indigo"><i class="fas fa-file-word"></i></div>
                     <h3>Word to PDF</h3>
-                    <p>Convert Word documents into high-quality PDFs.</p>
+                    <p>Convert Word docs to PDF instantly.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 8. PowerPoint to PDF -->
-                <a href="ppt-to-pdf.html" class="tool-card glass" data-category="convert" data-name="powerpoint ppt to pdf convert">
-                    <div class="tool-icon icon-pink">
-                        <i class="fas fa-file-powerpoint"></i>
-                    </div>
-                    <h3>PowerPoint to PDF</h3>
-                    <p>Convert PPT files into easy-to-share PDFs.</p>
+                <a href="ppt-to-pdf.html" class="tool-card glass" data-category="convert" data-name="powerpoint ppt pptx to pdf convert presentation">
+                    <div class="tool-icon icon-pink"><i class="fas fa-file-powerpoint"></i></div>
+                    <h3>PPT to PDF</h3>
+                    <p>Convert presentations to PDF.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 9. Excel to PDF -->
-                <a href="excel-to-pdf.html" class="tool-card glass" data-category="convert" data-name="excel spreadsheet to pdf">
-                    <div class="tool-icon icon-teal">
-                        <i class="fas fa-file-excel"></i>
-                    </div>
+                <a href="excel-to-pdf.html" class="tool-card glass" data-category="convert" data-name="excel xlsx spreadsheet to pdf convert">
+                    <div class="tool-icon icon-teal"><i class="fas fa-file-excel"></i></div>
                     <h3>Excel to PDF</h3>
-                    <p>Transform Excel sheets into PDF format.</p>
+                    <p>Transform Excel sheets to PDF.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 10. Edit PDF -->
-                <a href="edit-pdf.html" class="tool-card glass" data-category="edit" data-name="edit pdf modify text images">
+                <a href="edit-pdf.html" class="tool-card glass" data-category="edit" data-name="edit pdf modify text draw annotate">
                     <span class="badge badge-popular">Popular</span>
-                    <div class="tool-icon icon-purple">
-                        <i class="fas fa-pen-fancy"></i>
-                    </div>
+                    <div class="tool-icon icon-purple"><i class="fas fa-pen-fancy"></i></div>
                     <h3>Edit PDF</h3>
-                    <p>Modify text, images, and elements inside your PDF.</p>
+                    <p>Add text, draw, shapes & annotations.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 11. PDF to JPG -->
-                <a href="pdf-to-jpg.html" class="tool-card glass" data-category="convert" data-name="pdf to jpg image convert">
-                    <div class="tool-icon icon-orange">
-                        <i class="fas fa-file-image"></i>
-                    </div>
+                <a href="pdf-to-jpg.html" class="tool-card glass" data-category="convert" data-name="pdf to jpg png image convert">
+                    <div class="tool-icon icon-orange"><i class="fas fa-file-image"></i></div>
                     <h3>PDF to JPG</h3>
-                    <p>Convert PDF pages into high-quality images.</p>
+                    <p>Convert PDF pages to images.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 12. JPG to PDF -->
-                <a href="jpg-to-pdf.html" class="tool-card glass" data-category="convert" data-name="jpg image to pdf convert">
-                    <div class="tool-icon icon-red">
-                        <i class="fas fa-image"></i>
-                    </div>
+                <a href="jpg-to-pdf.html" class="tool-card glass" data-category="convert" data-name="jpg png image to pdf convert">
+                    <div class="tool-icon icon-red"><i class="fas fa-image"></i></div>
                     <h3>JPG to PDF</h3>
-                    <p>Convert images into a single PDF file.</p>
+                    <p>Convert images to PDF file.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 13. Sign PDF -->
-                <a href="sign-pdf.html" class="tool-card glass" data-category="edit" data-name="sign pdf digital signature">
-                    <div class="tool-icon icon-dark">
-                        <i class="fas fa-signature"></i>
-                    </div>
+                <a href="sign-pdf.html" class="tool-card glass" data-category="edit" data-name="sign pdf digital signature draw type">
+                    <div class="tool-icon icon-dark"><i class="fas fa-signature"></i></div>
                     <h3>Sign PDF</h3>
-                    <p>Add digital signatures to your PDF documents.</p>
+                    <p>Add digital signatures to PDFs.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 14. Watermark -->
-                <a href="watermark.html" class="tool-card glass" data-category="edit" data-name="watermark text image protect">
-                    <div class="tool-icon icon-cyan">
-                        <i class="fas fa-tint"></i>
-                    </div>
+                <a href="watermark.html" class="tool-card glass" data-category="edit" data-name="watermark pdf text image protect stamp">
+                    <div class="tool-icon icon-cyan"><i class="fas fa-tint"></i></div>
                     <h3>Watermark</h3>
-                    <p>Add text or image watermark to protect your PDF.</p>
+                    <p>Add watermark to protect PDF.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 15. Rotate PDF -->
-                <a href="rotate-pdf.html" class="tool-card glass" data-category="organize" data-name="rotate pdf pages orientation">
-                    <div class="tool-icon icon-purple">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
+                <a href="rotate-pdf.html" class="tool-card glass" data-category="organize" data-name="rotate pdf pages orientation turn">
+                    <div class="tool-icon icon-purple"><i class="fas fa-sync-alt"></i></div>
                     <h3>Rotate PDF</h3>
-                    <p>Rotate PDF pages to the correct orientation.</p>
+                    <p>Rotate pages to correct orientation.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 16. HTML to PDF -->
-                <a href="html-to-pdf.html" class="tool-card glass" data-category="convert" data-name="html web page to pdf">
-                    <div class="tool-icon icon-indigo">
-                        <i class="fas fa-code"></i>
-                    </div>
+                <a href="html-to-pdf.html" class="tool-card glass" data-category="convert" data-name="html web page website to pdf convert">
+                    <div class="tool-icon icon-indigo"><i class="fas fa-code"></i></div>
                     <h3>HTML to PDF</h3>
-                    <p>Convert web pages into downloadable PDF files.</p>
+                    <p>Convert web pages to PDF files.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 17. Unlock PDF -->
-                <a href="unlock-pdf.html" class="tool-card glass" data-category="security" data-name="unlock pdf remove password">
-                    <div class="tool-icon icon-green">
-                        <i class="fas fa-lock-open"></i>
-                    </div>
+                <a href="unlock-pdf.html" class="tool-card glass" data-category="security" data-name="unlock pdf remove password protection open">
+                    <div class="tool-icon icon-green"><i class="fas fa-lock-open"></i></div>
                     <h3>Unlock PDF</h3>
-                    <p>Remove password protection from PDF files.</p>
+                    <p>Remove password protection.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 18. Protect PDF -->
-                <a href="protect-pdf.html" class="tool-card glass" data-category="security" data-name="protect pdf password encrypt secure">
-                    <div class="tool-icon icon-red">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
+                <a href="protect-pdf.html" class="tool-card glass" data-category="security" data-name="protect pdf password encrypt secure lock">
+                    <div class="tool-icon icon-red"><i class="fas fa-shield-alt"></i></div>
                     <h3>Protect PDF</h3>
-                    <p>Secure your PDF with password encryption.</p>
+                    <p>Add password to secure PDF.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 19. Organize PDF -->
-                <a href="organize-pdf.html" class="tool-card glass" data-category="organize" data-name="organize pdf rearrange delete pages">
-                    <div class="tool-icon icon-teal">
-                        <i class="fas fa-th-large"></i>
-                    </div>
+                <a href="organize-pdf.html" class="tool-card glass" data-category="organize" data-name="organize pdf rearrange delete duplicate reorder pages">
+                    <div class="tool-icon icon-teal"><i class="fas fa-th-large"></i></div>
                     <h3>Organize PDF</h3>
-                    <p>Rearrange, delete, or manage PDF pages easily.</p>
+                    <p>Rearrange, delete & manage pages.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 20. PDF to PDF/A -->
-                <a href="pdf-to-pdfa.html" class="tool-card glass" data-category="convert" data-name="pdf to pdfa archival format">
-                    <div class="tool-icon icon-dark">
-                        <i class="fas fa-archive"></i>
-                    </div>
+                <a href="pdf-to-pdfa.html" class="tool-card glass" data-category="convert" data-name="pdf to pdfa archival format iso">
+                    <div class="tool-icon icon-dark"><i class="fas fa-archive"></i></div>
                     <h3>PDF to PDF/A</h3>
-                    <p>Convert PDF to long-term archival format (PDF/A).</p>
+                    <p>Convert to archival format.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 21. Repair PDF -->
-                <a href="repair-pdf.html" class="tool-card glass" data-category="edit" data-name="repair pdf fix corrupted damaged">
-                    <div class="tool-icon icon-orange">
-                        <i class="fas fa-tools"></i>
-                    </div>
+                <a href="repair-pdf.html" class="tool-card glass" data-category="edit" data-name="repair pdf fix corrupted damaged broken recover">
+                    <div class="tool-icon icon-orange"><i class="fas fa-tools"></i></div>
                     <h3>Repair PDF</h3>
-                    <p>Fix corrupted or damaged PDF files.</p>
+                    <p>Fix corrupted PDF files.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 22. Page Numbers -->
-                <a href="page-numbers.html" class="tool-card glass" data-category="edit" data-name="page numbers add insert">
-                    <div class="tool-icon icon-blue">
-                        <i class="fas fa-list-ol"></i>
-                    </div>
+                <a href="page-numbers.html" class="tool-card glass" data-category="edit" data-name="page numbers add insert footer header">
+                    <div class="tool-icon icon-blue"><i class="fas fa-list-ol"></i></div>
                     <h3>Page Numbers</h3>
-                    <p>Add page numbers to your PDF quickly.</p>
+                    <p>Add page numbers to PDF.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 23. Scan to PDF -->
-                <a href="scan-to-pdf.html" class="tool-card glass" data-category="convert" data-name="scan document to pdf camera">
-                    <div class="tool-icon icon-pink">
-                        <i class="fas fa-camera"></i>
-                    </div>
+                <a href="scan-to-pdf.html" class="tool-card glass" data-category="convert" data-name="scan document camera photo to pdf">
+                    <div class="tool-icon icon-pink"><i class="fas fa-camera"></i></div>
                     <h3>Scan to PDF</h3>
-                    <p>Scan documents and save them as PDFs.</p>
+                    <p>Scan documents to PDF.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 24. OCR PDF -->
-                <a href="ocr-pdf.html" class="tool-card glass" data-category="ai" data-name="ocr pdf text extract scanned">
+                <a href="ocr-pdf.html" class="tool-card glass" data-category="ai" data-name="ocr pdf text extract scanned image recognition">
                     <span class="badge badge-ai">AI</span>
-                    <div class="tool-icon icon-purple">
-                        <i class="fas fa-eye"></i>
-                    </div>
+                    <div class="tool-icon icon-purple"><i class="fas fa-eye"></i></div>
                     <h3>OCR PDF</h3>
-                    <p>Extract text from scanned PDFs using OCR.</p>
+                    <p>Extract text from scanned PDFs.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 25. Compare PDF -->
-                <a href="compare-pdf.html" class="tool-card glass" data-category="edit" data-name="compare pdf find differences">
-                    <div class="tool-icon icon-cyan">
-                        <i class="fas fa-columns"></i>
-                    </div>
+                <a href="compare-pdf.html" class="tool-card glass" data-category="edit" data-name="compare pdf find differences diff two files">
+                    <div class="tool-icon icon-cyan"><i class="fas fa-columns"></i></div>
                     <h3>Compare PDF</h3>
-                    <p>Find differences between two PDF files.</p>
+                    <p>Find differences between PDFs.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 26. Redact PDF -->
-                <a href="redact-pdf.html" class="tool-card glass" data-category="security" data-name="redact pdf remove sensitive information">
-                    <div class="tool-icon icon-dark">
-                        <i class="fas fa-eraser"></i>
-                    </div>
+                <a href="redact-pdf.html" class="tool-card glass" data-category="security" data-name="redact pdf remove sensitive information blackout">
+                    <div class="tool-icon icon-dark"><i class="fas fa-eraser"></i></div>
                     <h3>Redact PDF</h3>
-                    <p>Permanently remove sensitive information.</p>
+                    <p>Remove sensitive information.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 27. Crop PDF -->
-                <a href="crop-pdf.html" class="tool-card glass" data-category="edit" data-name="crop pdf trim margins area">
-                    <div class="tool-icon icon-teal">
-                        <i class="fas fa-crop-alt"></i>
-                    </div>
+                <a href="crop-pdf.html" class="tool-card glass" data-category="edit" data-name="crop pdf trim margins resize area">
+                    <div class="tool-icon icon-teal"><i class="fas fa-crop-alt"></i></div>
                     <h3>Crop PDF</h3>
-                    <p>Trim margins or select specific areas in PDF.</p>
+                    <p>Trim margins in your PDF.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 28. PDF Forms -->
-                <a href="pdf-forms.html" class="tool-card glass" data-category="edit" data-name="pdf forms fill interactive create">
-                    <div class="tool-icon icon-indigo">
-                        <i class="fas fa-wpforms"></i>
-                    </div>
+                <a href="pdf-forms.html" class="tool-card glass" data-category="edit" data-name="pdf forms fill create interactive fillable">
+                    <div class="tool-icon icon-indigo"><i class="fas fa-wpforms"></i></div>
                     <h3>PDF Forms</h3>
-                    <p>Create and fill interactive PDF forms.</p>
+                    <p>Fill & create PDF forms.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 29. AI Summarizer -->
-                <a href="ai-summarizer.html" class="tool-card glass" data-category="ai" data-name="ai summarizer summary generate">
+                <a href="ai-summarizer.html" class="tool-card glass" data-category="ai" data-name="ai summarizer summary generate key points">
                     <span class="badge badge-ai">AI</span>
-                    <div class="tool-icon icon-purple">
-                        <i class="fas fa-robot"></i>
-                    </div>
+                    <div class="tool-icon icon-purple"><i class="fas fa-robot"></i></div>
                     <h3>AI Summarizer</h3>
-                    <p>Generate quick summaries from PDF content.</p>
+                    <p>Generate PDF summaries with AI.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
-                <!-- 30. Translate PDF -->
-                <a href="translate-pdf.html" class="tool-card glass" data-category="ai" data-name="translate pdf language convert">
+                <a href="translate-pdf.html" class="tool-card glass" data-category="ai" data-name="translate pdf language convert hindi gujarati spanish french">
                     <span class="badge badge-new">New</span>
-                    <div class="tool-icon icon-blue">
-                        <i class="fas fa-language"></i>
-                    </div>
+                    <div class="tool-icon icon-blue"><i class="fas fa-language"></i></div>
                     <h3>Translate PDF</h3>
-                    <p>Translate PDF content into different languages.</p>
+                    <p>Translate PDF to any language.</p>
                     <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
 
             </div>
         </div>
     </section>
-
-    <!-- ========== AD SPACE ========== -->
-    <div class="container">
-        <div class="ad-space glass-light">
-            <i class="fas fa-ad"></i> Google AdSense - Middle Banner Ad (728x90)
-        </div>
-    </div>
 
     <!-- ========== HOW IT WORKS ========== -->
     <section class="how-it-works">
@@ -446,21 +386,21 @@
                     <div class="step-number">1</div>
                     <div class="step-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <h3>Upload File</h3>
-                    <p>Select or drag & drop your PDF file from your device.</p>
+                    <p>Select or drag & drop your PDF file.</p>
                 </div>
                 <div class="step-connector"><i class="fas fa-chevron-right"></i></div>
                 <div class="step-card glass">
                     <div class="step-number">2</div>
                     <div class="step-icon"><i class="fas fa-cog"></i></div>
                     <h3>Choose Options</h3>
-                    <p>Select the tool and customize your settings.</p>
+                    <p>Select the tool and customize settings.</p>
                 </div>
                 <div class="step-connector"><i class="fas fa-chevron-right"></i></div>
                 <div class="step-card glass">
                     <div class="step-number">3</div>
                     <div class="step-icon"><i class="fas fa-download"></i></div>
                     <h3>Download</h3>
-                    <p>Process and download your file instantly.</p>
+                    <p>Process and download instantly.</p>
                 </div>
             </div>
         </div>
@@ -477,22 +417,22 @@
                 <div class="feature-card glass">
                     <div class="feature-icon"><i class="fas fa-bolt"></i></div>
                     <h3>Lightning Fast</h3>
-                    <p>Process your PDF files in seconds with our optimized cloud servers.</p>
+                    <p>Process PDF files in seconds.</p>
                 </div>
                 <div class="feature-card glass">
                     <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
                     <h3>100% Secure</h3>
-                    <p>All files are encrypted with 256-bit SSL and automatically deleted after 2 hours.</p>
+                    <p>Files encrypted & auto-deleted.</p>
                 </div>
                 <div class="feature-card glass">
                     <div class="feature-icon"><i class="fas fa-cloud"></i></div>
-                    <h3>Cloud Based</h3>
-                    <p>No software installation needed. Works on any device, any browser.</p>
+                    <h3>Browser Based</h3>
+                    <p>No installation needed.</p>
                 </div>
                 <div class="feature-card glass">
                     <div class="feature-icon"><i class="fas fa-infinity"></i></div>
                     <h3>Free to Use</h3>
-                    <p>Access all basic tools for free. No hidden charges or watermarks.</p>
+                    <p>No hidden charges.</p>
                 </div>
             </div>
         </div>
@@ -504,26 +444,22 @@
             <div class="stats-grid glass">
                 <div class="stat-item">
                     <i class="fas fa-tools"></i>
-                    <h3 class="counter" data-target="30">0</h3>
-                    <span>+</span>
+                    <h3>30+</h3>
                     <p>PDF Tools</p>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-file-alt"></i>
-                    <h3 class="counter" data-target="1000000">0</h3>
-                    <span>+</span>
+                    <h3>1M+</h3>
                     <p>Files Processed</p>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-users"></i>
-                    <h3 class="counter" data-target="500000">0</h3>
-                    <span>+</span>
+                    <h3>500K+</h3>
                     <p>Happy Users</p>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-server"></i>
-                    <h3>99.9</h3>
-                    <span>%</span>
+                    <h3>99.9%</h3>
                     <p>Uptime</p>
                 </div>
             </div>
@@ -535,17 +471,13 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <div class="footer-logo">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>PDF</span>Tools
-                    </div>
-                    <p>Free online PDF tools to make your document workflow simple and efficient. No signup required.</p>
+                    <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+                    <p>Free online PDF tools. No signup required.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
                         <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
                 <div class="footer-col">
@@ -553,30 +485,27 @@
                     <a href="merge-pdf.html"><i class="fas fa-chevron-right"></i> Merge PDF</a>
                     <a href="compress-pdf.html"><i class="fas fa-chevron-right"></i> Compress PDF</a>
                     <a href="pdf-to-word.html"><i class="fas fa-chevron-right"></i> PDF to Word</a>
-                    <a href="jpg-to-pdf.html"><i class="fas fa-chevron-right"></i> JPG to PDF</a>
                     <a href="edit-pdf.html"><i class="fas fa-chevron-right"></i> Edit PDF</a>
                     <a href="sign-pdf.html"><i class="fas fa-chevron-right"></i> Sign PDF</a>
                 </div>
                 <div class="footer-col">
-                    <h4>Convert PDF</h4>
+                    <h4>Convert</h4>
                     <a href="pdf-to-word.html"><i class="fas fa-chevron-right"></i> PDF to Word</a>
                     <a href="pdf-to-excel.html"><i class="fas fa-chevron-right"></i> PDF to Excel</a>
-                    <a href="pdf-to-ppt.html"><i class="fas fa-chevron-right"></i> PDF to PPT</a>
                     <a href="pdf-to-jpg.html"><i class="fas fa-chevron-right"></i> PDF to JPG</a>
                     <a href="word-to-pdf.html"><i class="fas fa-chevron-right"></i> Word to PDF</a>
-                    <a href="html-to-pdf.html"><i class="fas fa-chevron-right"></i> HTML to PDF</a>
+                    <a href="jpg-to-pdf.html"><i class="fas fa-chevron-right"></i> JPG to PDF</a>
                 </div>
                 <div class="footer-col">
                     <h4>Company</h4>
                     <a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a>
                     <a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a>
                     <a href="privacy.html"><i class="fas fa-chevron-right"></i> Privacy Policy</a>
-                    <a href="terms.html"><i class="fas fa-chevron-right"></i> Terms of Service</a>
-                    <a href="disclaimer.html"><i class="fas fa-chevron-right"></i> Disclaimer</a>
+                    <a href="terms.html"><i class="fas fa-chevron-right"></i> Terms</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© 2025 PDFTools. All rights reserved. Made with ❤️</p>
+                <p>© 2025 PDFTools. All rights reserved.</p>
                 <div class="footer-bottom-links">
                     <a href="privacy.html">Privacy</a>
                     <a href="terms.html">Terms</a>
@@ -586,6 +515,116 @@
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <!-- ✅ FIXED JavaScript - Search + Filter + No heavy animations -->
+    <script>
+    // ==========================================
+    // HOMEPAGE JS - FIXED & FAST
+    // ==========================================
+
+    // ===== MOBILE MENU =====
+    function toggleMenu() {
+        var nav = document.getElementById('navLinks');
+        var ham = document.getElementById('hamburger');
+        nav.classList.toggle('active');
+        ham.classList.toggle('active');
+        document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+    }
+
+    // Close menu on link click
+    document.querySelectorAll('.nav-links a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.getElementById('navLinks').classList.remove('active');
+            document.getElementById('hamburger').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // ===== SEARCH TOOLS =====
+    function searchTools() {
+        var query = document.getElementById('searchInput').value.toLowerCase().trim();
+        var cards = document.querySelectorAll('.tool-card');
+        var found = 0;
+
+        // Reset all tabs
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        if (query === '') {
+            document.querySelector('.tab').classList.add('active');
+        }
+
+        cards.forEach(function(card) {
+            var name = (card.getAttribute('data-name') || '').toLowerCase();
+            var title = card.querySelector('h3').textContent.toLowerCase();
+            var desc = card.querySelector('p').textContent.toLowerCase();
+
+            if (name.indexOf(query) !== -1 || title.indexOf(query) !== -1 || desc.indexOf(query) !== -1 || query === '') {
+                card.style.display = '';
+                found++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show/hide no results message
+        var noResults = document.getElementById('noResults');
+        if (noResults) {
+            noResults.style.display = (found === 0 && query !== '') ? 'block' : 'none';
+        }
+    }
+
+    // ===== FILTER BY CATEGORY =====
+    function filterTools(category, btn) {
+        var cards = document.querySelectorAll('.tool-card');
+
+        // Update active tab
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        btn.classList.add('active');
+
+        // Clear search
+        document.getElementById('searchInput').value = '';
+
+        // Hide no results
+        var noResults = document.getElementById('noResults');
+        if (noResults) noResults.style.display = 'none';
+
+        // Filter
+        cards.forEach(function(card) {
+            if (category === 'all' || card.getAttribute('data-category') === category) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // ===== NAVBAR SCROLL EFFECT =====
+    var lastScroll = 0;
+    window.addEventListener('scroll', function() {
+        var navbar = document.querySelector('.navbar');
+        if (!navbar) return;
+        if (window.pageYOffset > 80) {
+            navbar.style.background = 'rgba(255, 255, 255, 0.85)';
+            navbar.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
+        } else {
+            navbar.style.background = 'rgba(255, 255, 255, 0.25)';
+            navbar.style.boxShadow = '0 4px 20px rgba(0,0,0,0.04)';
+        }
+    }, { passive: true });
+
+    // ===== KEYBOARD SHORTCUT =====
+    document.addEventListener('keydown', function(e) {
+        if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            document.getElementById('searchInput').focus();
+        }
+        if (e.key === 'Escape') {
+            document.getElementById('navLinks').classList.remove('active');
+            document.getElementById('hamburger').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    console.log('PDFTools Homepage loaded');
+    </script>
+
 </body>
 </html>
