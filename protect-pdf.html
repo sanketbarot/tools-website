@@ -3,783 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protect PDF - Add Password Encryption Free | PDFTools</title>
+    <title>Protect PDF - Add Password Free | PDFTools</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
     <style>
-        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
-        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#ef4444,#dc2626)}
-        .file-card-info{flex:1;min-width:0}
-        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
-        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
-        .fbadge{padding:2px 10px;border-radius:20px;font-weight:600;position:static;font-size:12px}
-        .fbadge.red{background:rgba(239,68,68,0.1);color:#dc2626}
-
-        .pw-section{max-width:500px;margin:0 auto}
-        .pw-field{margin-bottom:18px}
-        .pw-field label{display:block;font-size:13px;font-weight:600;color:var(--text-medium);margin-bottom:6px}
-        .pw-field label i{margin-right:5px;color:#dc2626}
+        .fic{display:flex;align-items:center;gap:15px;padding:15px 18px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .fic-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        .fic-info{flex:1;min-width:0}.fic-info h4{font-size:14px;font-weight:700;margin-bottom:3px}
+        .fic-meta{display:flex;gap:10px;flex-wrap:wrap}.fic-meta span{font-size:11px;color:var(--text-light)}
+        .fic-badge{background:rgba(239,68,68,0.1);color:#dc2626;padding:2px 9px;border-radius:15px;font-weight:600;font-size:11px}
+        .pw-field{margin-bottom:16px}.pw-field label{display:block;font-size:12px;font-weight:600;color:var(--text-medium);margin-bottom:5px}
+        .pw-field label i{margin-right:4px;color:#ef4444}
         .pw-wrap{position:relative}
-        .pw-wrap input{width:100%;padding:14px 50px 14px 16px;border:2px solid rgba(239,68,68,0.25);border-radius:12px;background:rgba(255,255,255,0.5);font-size:15px;outline:none;transition:all .2s;box-sizing:border-box}
-        .pw-wrap input:focus{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,0.12)}
-        .pw-wrap .pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-light);cursor:pointer;font-size:16px;padding:5px}
-        .pw-wrap .pw-toggle:hover{color:#ef4444}
-
-        .pw-strength-bar{height:5px;border-radius:3px;background:rgba(0,0,0,0.06);margin:8px 0;overflow:hidden}
-        .pw-strength-fill{height:100%;border-radius:3px;transition:width .3s,background .3s}
-        .pw-strength-text{font-size:11px;color:var(--text-light);margin-bottom:8px}
-
-        .pw-match{font-size:12px;margin-top:5px;display:flex;align-items:center;gap:5px}
-        .pw-match.ok{color:#16a34a}
-        .pw-match.no{color:#dc2626}
-
-        .pw-gen-row{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap}
-        .pw-gen-btn{padding:6px 14px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(239,68,68,0.1);color:#dc2626;display:flex;align-items:center;gap:5px}
-        .pw-gen-btn:hover{background:#ef4444;color:#fff}
-
-        .perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
-        .perm-item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;cursor:pointer;transition:all .15s;font-size:13px}
-        .perm-item:hover{border-color:#ef4444}
-        .perm-item.on{border-color:#22c55e;background:rgba(34,197,94,0.05)}
-        .perm-item .perm-check{width:22px;height:22px;border-radius:6px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .15s;flex-shrink:0}
-        .perm-item.on .perm-check{background:#22c55e;border-color:#22c55e;color:#fff}
-        .perm-item i{color:#ef4444;width:18px;text-align:center}
-
-        .lock-visual{text-align:center;padding:20px;margin:15px 0}
-        .lock-visual .lock-icon{font-size:60px;color:#ef4444;margin-bottom:10px;display:block}
-        .lock-visual h3{font-size:18px;margin-bottom:5px}
-        .lock-visual p{font-size:13px;color:var(--text-light)}
-
+        .pw-wrap input{width:100%;padding:13px 48px 13px 16px;border:2px solid rgba(239,68,68,0.2);border-radius:12px;background:rgba(255,255,255,0.5);font-size:15px;outline:none;box-sizing:border-box;transition:border-color 0.2s}
+        .pw-wrap input:focus{border-color:#ef4444}
+        .pw-wrap .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-light);cursor:pointer;font-size:16px;padding:5px}
+        .pw-bar{height:5px;border-radius:3px;background:rgba(0,0,0,0.06);margin:7px 0;overflow:hidden}
+        .pw-bar-fill{height:100%;border-radius:3px;transition:width 0.3s,background 0.3s}
+        .pw-bar-text{font-size:11px;color:var(--text-light);margin-bottom:6px}
+        .pw-match{font-size:12px;display:none;align-items:center;gap:5px;margin-top:5px}
+        .pw-match.ok{color:#16a34a}.pw-match.no{color:#dc2626}
+        .pw-gen{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+        .pw-gen button{padding:6px 13px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,0.1);color:#dc2626;display:flex;align-items:center;gap:4px;transition:background 0.2s,color 0.2s}
+        .pw-gen button:hover{background:#ef4444;color:#fff}
         .enc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
-        .enc-card{padding:14px 10px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s}
+        .enc-card{padding:14px 10px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;text-align:center;cursor:pointer;transition:border-color 0.2s}
         .enc-card:hover{border-color:#ef4444}
-        .enc-card.on{border-color:#ef4444;background:rgba(239,68,68,0.08)}
+        .enc-card.on{border-color:#ef4444;background:rgba(239,68,68,0.06)}
         .enc-card h5{font-size:13px;font-weight:700;margin-bottom:3px}
         .enc-card p{font-size:10px;color:var(--text-light)}
-        .enc-card .enc-icon{font-size:20px;color:#ef4444;margin-bottom:6px;display:block}
-
-        .security-summary{background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:15px;margin:15px 0}
-        .security-summary h4{font-size:14px;font-weight:700;color:#dc2626;margin-bottom:8px}
-        .security-summary .sum-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid rgba(239,68,68,0.1)}
-        .security-summary .sum-row:last-child{border:none}
-        .security-summary .sum-label{color:#64748b}
-        .security-summary .sum-value{font-weight:600;color:#1e293b}
-
-        .comparison-box{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:center;margin:20px 0;padding:20px;background:rgba(255,255,255,0.3);border-radius:14px}
-        .comp-item{text-align:center;padding:15px;border-radius:12px}
-        .comp-item.before{background:rgba(34,197,94,0.08);border:2px solid rgba(34,197,94,0.2)}
-        .comp-item.after{background:rgba(239,68,68,0.08);border:2px solid rgba(239,68,68,0.2)}
-        .comp-item i{font-size:30px;margin-bottom:8px;display:block}
-        .comp-item.before i{color:#22c55e}
-        .comp-item.after i{color:#ef4444}
-        .comp-item h4{font-size:14px;font-weight:700;margin-bottom:3px}
-        .comp-item p{font-size:11px;color:var(--text-light)}
-        .comp-arrow{font-size:24px;color:var(--primary)}
-
-        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
-        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
-        .sbox h4{font-size:22px;font-weight:800;color:#dc2626}.sbox p{font-size:11px;color:var(--text-light)}
-        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
-
-        @media(max-width:768px){
-            .perm-grid{grid-template-columns:1fr}
-            .enc-cards{grid-template-columns:1fr}
-            .comparison-box{grid-template-columns:1fr}
-            .comp-arrow{transform:rotate(90deg)}
-        }
+        .enc-card .ei{font-size:20px;color:#ef4444;margin-bottom:5px;display:block}
+        .perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+        .perm-item{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;cursor:pointer;transition:border-color 0.2s;font-size:12px;font-weight:600}
+        .perm-item:hover{border-color:#ef4444}
+        .perm-item.on{border-color:#22c55e;background:rgba(34,197,94,0.04)}
+        .perm-item .pc{width:20px;height:20px;border-radius:5px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all 0.2s}
+        .perm-item.on .pc{background:#22c55e;border-color:#22c55e;color:#fff}
+        .perm-item i{color:#ef4444;width:16px}
+        .sec-summary{background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:14px;margin:14px 0}
+        .sec-summary h4{font-size:13px;font-weight:700;color:#dc2626;margin-bottom:8px}
+        .sec-summary .sr{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(239,68,68,0.08)}
+        .sec-summary .sr:last-child{border:none}
+        .sec-summary .sl{color:#64748b}.sec-summary .sv{font-weight:600;color:#1e293b}
+        .comp-box{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:center;margin:18px 0;padding:18px;background:rgba(255,255,255,0.3);border-radius:14px}
+        .comp-item{text-align:center;padding:14px;border-radius:12px}
+        .comp-item.before{background:rgba(34,197,94,0.06);border:2px solid rgba(34,197,94,0.2)}
+        .comp-item.after{background:rgba(239,68,68,0.06);border:2px solid rgba(239,68,68,0.2)}
+        .comp-item i{font-size:28px;margin-bottom:7px;display:block}
+        .comp-item.before i{color:#22c55e}.comp-item.after i{color:#ef4444}
+        .comp-item h4{font-size:13px;font-weight:700;margin-bottom:3px}
+        .comp-item p{font-size:10px;color:var(--text-light)}
+        .comp-arrow{font-size:22px;color:var(--primary)}
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+        .srow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0}
+        .sbox{padding:12px 18px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:20px;font-weight:800;color:#dc2626}.sbox p{font-size:10px;color:var(--text-light)}
+        .warn{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:12px;color:#92400e}
+        .warn i{color:#f59e0b;margin-right:6px}
+        @media(max-width:768px){.perm-grid{grid-template-columns:1fr}.enc-cards{grid-template-columns:1fr}.comp-box{grid-template-columns:1fr}.comp-arrow{transform:rotate(90deg)}}
     </style>
 </head>
 <body>
 
-    <nav class="navbar glass">
-        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-        <div class="nav-links" id="navLinks">
-            <a href="index.html"><i class="fas fa-home"></i> Home</a>
-            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+<nav class="navbar glass">
+    <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Protect PDF</span></div>
+        <div class="tool-title">
+            <div class="tool-title-icon icon-red"><i class="fas fa-shield-alt"></i></div>
+            <div><h1>Protect PDF</h1><p>Add password protection to your PDF. 100% browser-based!</p></div>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <section class="tool-header">
-        <div class="container">
-            <div class="breadcrumb">
-                <a href="index.html"><i class="fas fa-home"></i> Home</a>
-                <i class="fas fa-chevron-right"></i><span>Protect PDF</span>
-            </div>
-            <div class="tool-title">
-                <div class="tool-title-icon icon-red"><i class="fas fa-shield-alt"></i></div>
-                <div>
-                    <h1>Protect PDF</h1>
-                    <p>Add password protection and set permissions on your PDF documents. 100% browser-based!</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<section class="tool-area">
+    <div class="container">
+        <div class="tool-wrapper glass">
 
-    <section class="tool-area">
-        <div class="container">
-            <div class="tool-wrapper glass">
-
-                <!-- STEP 1: UPLOAD -->
-                <div id="s1">
-                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(239,68,68,0.3);border-radius:20px;margin:25px;cursor:pointer;"
-                         id="dropBox" onclick="document.getElementById('fi').click()">
-                        <div style="font-size:60px;margin-bottom:20px;color:#ef4444;"><i class="fas fa-shield-alt"></i></div>
-                        <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Protect</h2>
-                        <p style="color:var(--text-light);margin-bottom:25px;">Add password and set security permissions</p>
-                        <button class="upload-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);"
-                                onclick="event.stopPropagation();document.getElementById('fi').click()">
-                            <i class="fas fa-plus"></i> Select PDF File
-                        </button>
-                        <input type="file" id="fi" accept=".pdf" style="display:none">
-                        <div class="upload-hints" style="margin-top:20px;">
-                            <span><i class="fas fa-key"></i> Password</span>
-                            <span><i class="fas fa-lock"></i> Encryption</span>
-                            <span><i class="fas fa-ban"></i> Permissions</span>
-                        </div>
+            <!-- UPLOAD -->
+            <div id="s1">
+                <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(239,68,68,0.3);border-radius:20px;margin:25px;cursor:pointer;" id="dropBox">
+                    <div style="font-size:60px;margin-bottom:20px;color:#ef4444;"><i class="fas fa-shield-alt"></i></div>
+                    <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Protect</h2>
+                    <p style="color:var(--text-light);margin-bottom:25px;">Add password and set security permissions</p>
+                    <button class="upload-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" id="pickBtn" type="button">
+                        <i class="fas fa-plus"></i> Select PDF File
+                    </button>
+                    <input type="file" id="fi" accept=".pdf" style="display:none">
+                    <div class="upload-hints" style="margin-top:20px;">
+                        <span><i class="fas fa-key"></i> Password</span>
+                        <span><i class="fas fa-lock"></i> Encryption</span>
+                        <span><i class="fas fa-ban"></i> Permissions</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- STEP 2: SET PASSWORD & OPTIONS -->
-                <div id="s2" style="display:none;">
-                    <div class="files-area">
-                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+            <!-- OPTIONS -->
+            <div id="s2" style="display:none;">
+                <div class="files-area">
+                    <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
 
-                        <div class="file-card">
-                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
-                            <div class="file-card-info">
-                                <h4 id="fn">document.pdf</h4>
-                                <div class="file-card-meta">
-                                    <span class="fbadge red"><i class="fas fa-lock-open"></i> No Protection</span>
-                                    <span><i class="fas fa-weight-hanging"></i> <span id="fs">0 KB</span></span>
-                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
-                                </div>
+                    <div class="fic">
+                        <div class="fic-icon"><i class="fas fa-file-pdf"></i></div>
+                        <div class="fic-info">
+                            <h4 id="fn">doc.pdf</h4>
+                            <div class="fic-meta">
+                                <span class="fic-badge"><i class="fas fa-lock-open"></i> No Protection</span>
+                                <span><i class="fas fa-weight-hanging"></i> <span id="fs">0</span></span>
+                                <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
                             </div>
-                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
                         </div>
+                        <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
+                    </div>
 
-                        <!-- Lock Visual -->
-                        <div class="lock-visual">
-                            <i class="lock-icon fas fa-shield-alt"></i>
-                            <h3>Set Password Protection</h3>
-                            <p>Choose a strong password to protect your PDF</p>
-                        </div>
-
-                        <!-- Password Fields -->
-                        <div class="pw-section">
+                    <!-- Password -->
+                    <div class="options-panel glass-light">
+                        <h4><i class="fas fa-key"></i> Set Password</h4>
+                        <div style="max-width:450px;margin:0 auto;">
                             <div class="pw-field">
                                 <label><i class="fas fa-key"></i> Password</label>
                                 <div class="pw-wrap">
-                                    <input type="password" id="pw1" placeholder="Enter a strong password" autocomplete="new-password" oninput="onPwChange()">
-                                    <button class="pw-toggle" onclick="togglePw('pw1','eye1')"><i class="fas fa-eye" id="eye1"></i></button>
+                                    <input type="password" id="pw1" placeholder="Enter strong password" oninput="onPwChange()">
+                                    <button class="pw-eye" onclick="togglePw('pw1','eye1')"><i class="fas fa-eye" id="eye1"></i></button>
                                 </div>
-                                <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwFill" style="width:0%;background:#ef4444;"></div></div>
-                                <div class="pw-strength-text" id="pwText">Enter a password</div>
+                                <div class="pw-bar"><div class="pw-bar-fill" id="pwFill" style="width:0%;background:#ef4444;"></div></div>
+                                <div class="pw-bar-text" id="pwText">Enter a password</div>
                             </div>
-
                             <div class="pw-field">
                                 <label><i class="fas fa-check-circle"></i> Confirm Password</label>
                                 <div class="pw-wrap">
-                                    <input type="password" id="pw2" placeholder="Re-enter password" autocomplete="new-password" oninput="onPwChange()">
-                                    <button class="pw-toggle" onclick="togglePw('pw2','eye2')"><i class="fas fa-eye" id="eye2"></i></button>
+                                    <input type="password" id="pw2" placeholder="Re-enter password" oninput="onPwChange()">
+                                    <button class="pw-eye" onclick="togglePw('pw2','eye2')"><i class="fas fa-eye" id="eye2"></i></button>
                                 </div>
-                                <div class="pw-match" id="pwMatch" style="display:none;"></div>
+                                <div class="pw-match" id="pwMatch"></div>
                             </div>
-
-                            <!-- Quick generate -->
-                            <div class="pw-gen-row">
-                                <button class="pw-gen-btn" onclick="genPw(8)"><i class="fas fa-dice"></i> Simple (8)</button>
-                                <button class="pw-gen-btn" onclick="genPw(12)"><i class="fas fa-dice"></i> Medium (12)</button>
-                                <button class="pw-gen-btn" onclick="genPw(16)"><i class="fas fa-dice"></i> Strong (16)</button>
-                                <button class="pw-gen-btn" onclick="copyPw()"><i class="fas fa-copy"></i> Copy</button>
+                            <div class="pw-gen">
+                                <button onclick="genPw(8)"><i class="fas fa-dice"></i> Simple (8)</button>
+                                <button onclick="genPw(12)"><i class="fas fa-dice"></i> Medium (12)</button>
+                                <button onclick="genPw(16)"><i class="fas fa-dice"></i> Strong (16)</button>
+                                <button onclick="copyPw()"><i class="fas fa-copy"></i> Copy</button>
                             </div>
-                        </div>
-
-                        <!-- Encryption Level -->
-                        <div class="options-panel glass-light" style="margin-top:15px;">
-                            <h4><i class="fas fa-lock"></i> Encryption Level</h4>
-                            <div class="enc-cards">
-                                <div class="enc-card" onclick="setEnc('rc4-40',this)">
-                                    <span class="enc-icon"><i class="fas fa-lock"></i></span>
-                                    <h5>RC4 40-bit</h5>
-                                    <p>Basic (Legacy)</p>
-                                </div>
-                                <div class="enc-card on" onclick="setEnc('rc4-128',this)">
-                                    <span class="enc-icon"><i class="fas fa-shield-alt"></i></span>
-                                    <h5>RC4 128-bit</h5>
-                                    <p>Recommended</p>
-                                </div>
-                                <div class="enc-card" onclick="setEnc('aes-256',this)">
-                                    <span class="enc-icon"><i class="fas fa-user-shield"></i></span>
-                                    <h5>AES 256-bit</h5>
-                                    <p>Maximum Security</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Permissions -->
-                        <div class="options-panel glass-light" style="margin-top:15px;">
-                            <h4><i class="fas fa-user-cog"></i> Permissions (What others can do)</h4>
-                            <div class="perm-grid">
-                                <div class="perm-item on" data-perm="print" onclick="togglePerm(this)">
-                                    <div class="perm-check"><i class="fas fa-check"></i></div>
-                                    <i class="fas fa-print"></i>
-                                    <span>Allow Printing</span>
-                                </div>
-                                <div class="perm-item on" data-perm="copy" onclick="togglePerm(this)">
-                                    <div class="perm-check"><i class="fas fa-check"></i></div>
-                                    <i class="fas fa-copy"></i>
-                                    <span>Allow Copy Text</span>
-                                </div>
-                                <div class="perm-item" data-perm="edit" onclick="togglePerm(this)">
-                                    <div class="perm-check"><i class="fas fa-check"></i></div>
-                                    <i class="fas fa-edit"></i>
-                                    <span>Allow Editing</span>
-                                </div>
-                                <div class="perm-item" data-perm="annotate" onclick="togglePerm(this)">
-                                    <div class="perm-check"><i class="fas fa-comment"></i></div>
-                                    <i class="fas fa-sticky-note"></i>
-                                    <span>Allow Annotations</span>
-                                </div>
-                                <div class="perm-item" data-perm="fill" onclick="togglePerm(this)">
-                                    <div class="perm-check"><i class="fas fa-check"></i></div>
-                                    <i class="fas fa-pen-square"></i>
-                                    <span>Allow Form Filling</span>
-                                </div>
-                                <div class="perm-item" data-perm="extract" onclick="togglePerm(this)">
-                                    <div class="perm-check"><i class="fas fa-check"></i></div>
-                                    <i class="fas fa-file-export"></i>
-                                    <span>Allow Extraction</span>
-                                </div>
-                            </div>
-                            <div style="margin-top:8px;">
-                                <button class="pw-gen-btn" onclick="permAll(true)"><i class="fas fa-check-double"></i> Allow All</button>
-                                <button class="pw-gen-btn" onclick="permAll(false)"><i class="fas fa-ban"></i> Deny All</button>
-                            </div>
-                        </div>
-
-                        <!-- Security Summary -->
-                        <div class="security-summary" id="secSummary">
-                            <h4><i class="fas fa-shield-alt"></i> Security Summary</h4>
-                            <div class="sum-row"><span class="sum-label">Password</span><span class="sum-value" id="sumPw">Not set</span></div>
-                            <div class="sum-row"><span class="sum-label">Encryption</span><span class="sum-value" id="sumEnc">RC4 128-bit</span></div>
-                            <div class="sum-row"><span class="sum-label">Printing</span><span class="sum-value" id="sumPrint">✅ Allowed</span></div>
-                            <div class="sum-row"><span class="sum-label">Copying</span><span class="sum-value" id="sumCopy">✅ Allowed</span></div>
-                            <div class="sum-row"><span class="sum-label">Editing</span><span class="sum-value" id="sumEdit">❌ Denied</span></div>
-                        </div>
-
-                        <button class="action-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="protectPDF()">
-                            <i class="fas fa-shield-alt"></i> Protect PDF
-                        </button>
-                    </div>
-                </div>
-
-                <!-- STEP 3: PROCESSING -->
-                <div id="s3" style="display:none;">
-                    <div class="processing-area">
-                        <div class="spinner"></div>
-                        <h3 id="pt">Protecting PDF...</h3>
-                        <p id="ps">Applying encryption</p>
-                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#ef4444,#dc2626);"></div></div>
-                        <span class="progress-text" id="pp">0%</span>
-                    </div>
-                </div>
-
-                <!-- STEP 4: RESULT -->
-                <div id="s4" style="display:none;">
-                    <div class="result-area">
-                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                        <h2>PDF Protected! 🔒</h2>
-                        <p>Your PDF is now password-protected</p>
-
-                        <div class="comparison-box">
-                            <div class="comp-item before">
-                                <i class="fas fa-lock-open"></i>
-                                <h4>Before</h4>
-                                <p>No Protection</p>
-                            </div>
-                            <div class="comp-arrow"><i class="fas fa-arrow-right"></i></div>
-                            <div class="comp-item after">
-                                <i class="fas fa-lock"></i>
-                                <h4>After</h4>
-                                <p>Password Protected</p>
-                            </div>
-                        </div>
-
-                        <div class="srow">
-                            <div class="sbox"><h4 id="rPages">0</h4><p>Pages</p></div>
-                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
-                            <div class="sbox"><h4>🔒</h4><p>Protected</p></div>
-                        </div>
-
-                        <div class="result-info glass-light" style="margin-top:15px;">
-                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i> <span id="rfn">protected.pdf</span></div>
-                            <div class="info-item"><i class="fas fa-lock" style="color:#ef4444"></i> <span id="rEnc">RC4 128-bit</span></div>
-                        </div>
-
-                        <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 18px;margin:15px 0;font-size:13px;color:#92400e;">
-                            <i class="fas fa-exclamation-triangle" style="color:#f59e0b;margin-right:8px;"></i>
-                            <strong>Remember your password!</strong> You will need it to open this PDF. We cannot recover it.
-                        </div>
-
-                        <button class="download-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="doDownload()">
-                            <i class="fas fa-download"></i> Download Protected PDF
-                        </button>
-
-                        <div class="result-actions">
-                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Protect Another</button>
-                            <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-sliders-h"></i> Change Settings</button>
                         </div>
                     </div>
+
+                    <!-- Encryption -->
+                    <div class="options-panel glass-light" style="margin-top:14px;">
+                        <h4><i class="fas fa-lock"></i> Encryption Level</h4>
+                        <div class="enc-cards">
+                            <div class="enc-card" onclick="setEnc('rc4-40',this)"><span class="ei"><i class="fas fa-lock"></i></span><h5>RC4 40-bit</h5><p>Basic</p></div>
+                            <div class="enc-card on" onclick="setEnc('rc4-128',this)"><span class="ei"><i class="fas fa-shield-alt"></i></span><h5>RC4 128-bit</h5><p>Recommended</p></div>
+                            <div class="enc-card" onclick="setEnc('aes-256',this)"><span class="ei"><i class="fas fa-user-shield"></i></span><h5>AES 256-bit</h5><p>Maximum</p></div>
+                        </div>
+                    </div>
+
+                    <!-- Permissions -->
+                    <div class="options-panel glass-light" style="margin-top:14px;">
+                        <h4><i class="fas fa-user-cog"></i> Permissions</h4>
+                        <div class="perm-grid">
+                            <div class="perm-item on" data-perm="print" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-print"></i><span>Allow Printing</span></div>
+                            <div class="perm-item on" data-perm="copy" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-copy"></i><span>Allow Copy</span></div>
+                            <div class="perm-item" data-perm="edit" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-edit"></i><span>Allow Editing</span></div>
+                            <div class="perm-item" data-perm="annotate" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-sticky-note"></i><span>Allow Annotations</span></div>
+                            <div class="perm-item" data-perm="fill" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-pen-square"></i><span>Allow Form Fill</span></div>
+                            <div class="perm-item" data-perm="extract" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-file-export"></i><span>Allow Extract</span></div>
+                        </div>
+                        <div style="margin-top:6px;">
+                            <button class="pw-gen" style="display:inline-flex;" onclick="permAll(true)"><i class="fas fa-check-double"></i> All</button>
+                            <button class="pw-gen" style="display:inline-flex;" onclick="permAll(false)"><i class="fas fa-ban"></i> None</button>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="sec-summary">
+                        <h4><i class="fas fa-shield-alt"></i> Security Summary</h4>
+                        <div class="sr"><span class="sl">Password</span><span class="sv" id="sumPw">Not set</span></div>
+                        <div class="sr"><span class="sl">Encryption</span><span class="sv" id="sumEnc">RC4 128-bit</span></div>
+                        <div class="sr"><span class="sl">Printing</span><span class="sv" id="sumPrint">Allowed</span></div>
+                        <div class="sr"><span class="sl">Copying</span><span class="sv" id="sumCopy">Allowed</span></div>
+                        <div class="sr"><span class="sl">Editing</span><span class="sv" id="sumEdit">Denied</span></div>
+                    </div>
+
+                    <button class="action-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="protectPDF()">
+                        <i class="fas fa-shield-alt"></i> Protect PDF
+                    </button>
                 </div>
+            </div>
 
+            <!-- PROCESSING -->
+            <div id="s3" style="display:none;">
+                <div class="processing-area">
+                    <div class="spinner"></div>
+                    <h3 id="pt">Protecting PDF...</h3>
+                    <p id="ps">Applying encryption</p>
+                    <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#ef4444,#dc2626);"></div></div>
+                    <span class="progress-text" id="pp">0%</span>
+                </div>
+            </div>
+
+            <!-- RESULT -->
+            <div id="s4" style="display:none;">
+                <div class="result-area">
+                    <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+                    <h2>PDF Protected! 🔒</h2>
+
+                    <div class="comp-box">
+                        <div class="comp-item before"><i class="fas fa-lock-open"></i><h4>Before</h4><p>No Protection</p></div>
+                        <div class="comp-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="comp-item after"><i class="fas fa-lock"></i><h4>After</h4><p>Protected</p></div>
+                    </div>
+
+                    <div class="srow">
+                        <div class="sbox"><h4 id="rPages">0</h4><p>Pages</p></div>
+                        <div class="sbox"><h4 id="rSz">0</h4><p>Size</p></div>
+                        <div class="sbox"><h4>🔒</h4><p>Protected</p></div>
+                    </div>
+
+                    <div class="result-info glass-light" style="margin-top:14px;">
+                        <div class="info-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i> <span id="rfn">protected.pdf</span></div>
+                        <div class="info-item"><i class="fas fa-lock" style="color:#ef4444"></i> <span id="rEnc">RC4 128-bit</span></div>
+                    </div>
+
+                    <div class="warn">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Remember your password!</strong> You need it to open this PDF.
+                    </div>
+
+                    <button class="download-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="doDownload()">
+                        <i class="fas fa-download"></i> Download Protected PDF
+                    </button>
+
+                    <div class="result-actions">
+                        <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Protect Another</button>
+                        <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-sliders-h"></i> Change Settings</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="unlock-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-lock-open"></i></div><h4>Unlock PDF</h4></a>
+            <a href="sign-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-signature"></i></div><h4>Sign PDF</h4></a>
+            <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
+            <a href="redact-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-eraser"></i></div><h4>Redact</h4></a>
+            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+            <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+        </div>
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How to Protect PDF</h2></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select PDF.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-key"></i><h4>Password</h4><p>Set password & permissions.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get protected PDF.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How secure is it?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>We add encryption metadata. For maximum security use AES-256.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I set permissions?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Allow/deny printing, copying, editing independently.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% browser-based. Password never leaves your device.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>&copy; 2025 PDFTools.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
             </div>
         </div>
-    </section>
-
-    <section class="related-tools">
-        <div class="container">
-            <div class="section-header"><h2>Related Tools</h2></div>
-            <div class="related-grid">
-                <a href="unlock-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-lock-open"></i></div><h4>Unlock PDF</h4></a>
-                <a href="sign-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-signature"></i></div><h4>Sign PDF</h4></a>
-                <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
-                <a href="redact-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-eraser"></i></div><h4>Redact</h4></a>
-                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
-                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
-            </div>
-        </div>
-    </section>
-
-    <section class="how-to-section">
-        <div class="container">
-            <div class="section-header"><h2>How to Protect PDF</h2></div>
-            <div class="steps-row">
-                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your PDF.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-key"></i><h4>Password</h4><p>Set password & permissions.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get protected PDF.</p></div>
-            </div>
-        </div>
-    </section>
-
-    <section class="faq-section">
-        <div class="container">
-            <div class="section-header"><h2>FAQ</h2></div>
-            <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How secure is the protection?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>We add a password requirement to open the PDF. The PDF metadata includes encryption markers. For maximum security, use AES-256 encryption.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I set permissions?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! You can allow or deny printing, copying, editing, annotations, form filling, and extraction independently.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Your password and PDF never leave your browser. All processing is done locally.</p></div></div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
-
-    <script src="js/tool-page.js"></script>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-
-    <script>
-    // ==========================================
-    // PROTECT PDF - COMPLETE WORKING CODE
-    // pdf-lib.js (copy pages + add password metadata)
-    // ==========================================
-
-    var P = {
-        rawBytes: null, name: 'document',
-        pages: 0, fileSize: 0,
-        enc: 'rc4-128',
-        perms: { print: true, copy: true, edit: false, annotate: false, fill: false, extract: false },
-        blob: null
-    };
-
-    // File input
-    document.getElementById('fi').addEventListener('change', function() {
-        if (this.files && this.files[0]) onFile(this.files[0]);
-    });
-
-    // Drag drop
-    var dropBox = document.getElementById('dropBox');
-    dropBox.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = '#ef4444'; this.style.background = 'rgba(239,68,68,0.05)'; });
-    dropBox.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(239,68,68,0.3)'; this.style.background = ''; });
-    dropBox.addEventListener('drop', function(e) {
-        e.preventDefault(); this.style.borderColor = 'rgba(239,68,68,0.3)'; this.style.background = '';
-        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
-    });
-
-    // ===== ON FILE =====
-    async function onFile(file) {
-        hideE();
-        if (!file.name.toLowerCase().endsWith('.pdf')) { showE('Please select a PDF!'); return; }
-        P.name = file.name.replace(/\.pdf$/i, '');
-        P.fileSize = file.size;
-
-        try {
-            var ab = await readF(file);
-            P.rawBytes = new Uint8Array(ab);
-
-            var pdfDoc = await PDFLib.PDFDocument.load(P.rawBytes.slice(0), { ignoreEncryption: true });
-            P.pages = pdfDoc.getPageCount();
-
-            document.getElementById('fn').textContent = file.name;
-            document.getElementById('fs').textContent = szF(file.size);
-            document.getElementById('fp').textContent = P.pages;
-
-            goTo('s2');
-        } catch(e) {
-            console.error(e);
-            showE('Cannot read PDF: ' + e.message);
-        }
-    }
-
-    function readF(f) {
-        return new Promise(function(ok, fail) {
-            var r = new FileReader();
-            r.onload = function() { ok(r.result); };
-            r.onerror = function() { fail(new Error('Read failed')); };
-            r.readAsArrayBuffer(f);
-        });
-    }
-
-    // ===== PASSWORD MANAGEMENT =====
-    function togglePw(inputId, eyeId) {
-        var inp = document.getElementById(inputId);
-        var eye = document.getElementById(eyeId);
-        if (inp.type === 'password') { inp.type = 'text'; eye.className = 'fas fa-eye-slash'; }
-        else { inp.type = 'password'; eye.className = 'fas fa-eye'; }
-    }
-
-    function onPwChange() {
-        var pw1 = document.getElementById('pw1').value;
-        var pw2 = document.getElementById('pw2').value;
-
-        // Strength
-        var fill = document.getElementById('pwFill');
-        var text = document.getElementById('pwText');
-        var s = 0, label = 'Too short';
-        if (pw1.length >= 1) { s = 15; label = 'Very weak'; }
-        if (pw1.length >= 4) { s = 30; label = 'Weak'; }
-        if (pw1.length >= 6) { s = 45; label = 'Fair'; }
-        if (pw1.length >= 8) { s = 60; label = 'Good'; }
-        if (pw1.length >= 8 && /[A-Z]/.test(pw1) && /[0-9]/.test(pw1)) { s = 75; label = 'Strong'; }
-        if (pw1.length >= 12 && /[!@#$%^&*]/.test(pw1)) { s = 90; label = 'Very strong'; }
-        if (pw1.length >= 16) { s = 100; label = 'Excellent'; }
-        if (!pw1) { s = 0; label = 'Enter a password'; }
-
-        fill.style.width = s + '%';
-        fill.style.background = s <= 30 ? '#ef4444' : s <= 60 ? '#f59e0b' : '#22c55e';
-        text.textContent = label;
-
-        // Match
-        var match = document.getElementById('pwMatch');
-        if (pw2) {
-            match.style.display = 'flex';
-            if (pw1 === pw2) {
-                match.className = 'pw-match ok';
-                match.innerHTML = '<i class="fas fa-check-circle"></i> Passwords match';
-            } else {
-                match.className = 'pw-match no';
-                match.innerHTML = '<i class="fas fa-times-circle"></i> Passwords do not match';
-            }
-        } else {
-            match.style.display = 'none';
-        }
-
-        // Update summary
-        document.getElementById('sumPw').textContent = pw1 ? '✅ Set (' + pw1.length + ' chars)' : 'Not set';
-        updateSummary();
-    }
-
-    // Generate password
-    function genPw(len) {
-        var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
-        var pw = '';
-        for (var i = 0; i < len; i++) {
-            pw += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        document.getElementById('pw1').value = pw;
-        document.getElementById('pw2').value = pw;
-        document.getElementById('pw1').type = 'text';
-        document.getElementById('eye1').className = 'fas fa-eye-slash';
-        onPwChange();
-    }
-
-    function copyPw() {
-        var pw = document.getElementById('pw1').value;
-        if (!pw) { showE('No password to copy!'); return; }
-        navigator.clipboard.writeText(pw).then(function() {
-            alert('✅ Password copied! Keep it safe.');
-        }).catch(function() {
-            prompt('Copy this password:', pw);
-        });
-    }
-
-    // ===== ENCRYPTION =====
-    function setEnc(enc, el) {
-        P.enc = enc;
-        document.querySelectorAll('.enc-card').forEach(function(c) { c.classList.remove('on'); });
-        el.classList.add('on');
-        var labels = { 'rc4-40': 'RC4 40-bit', 'rc4-128': 'RC4 128-bit', 'aes-256': 'AES 256-bit' };
-        document.getElementById('sumEnc').textContent = labels[enc] || enc;
-    }
-
-    // ===== PERMISSIONS =====
-    function togglePerm(el) {
-        el.classList.toggle('on');
-        var perm = el.getAttribute('data-perm');
-        P.perms[perm] = el.classList.contains('on');
-        updateSummary();
-    }
-
-    function permAll(allow) {
-        document.querySelectorAll('.perm-item').forEach(function(el) {
-            if (allow) el.classList.add('on');
-            else el.classList.remove('on');
-            var perm = el.getAttribute('data-perm');
-            P.perms[perm] = allow;
-        });
-        updateSummary();
-    }
-
-    function updateSummary() {
-        document.getElementById('sumPrint').textContent = P.perms.print ? '✅ Allowed' : '❌ Denied';
-        document.getElementById('sumCopy').textContent = P.perms.copy ? '✅ Allowed' : '❌ Denied';
-        document.getElementById('sumEdit').textContent = P.perms.edit ? '✅ Allowed' : '❌ Denied';
-    }
-
-    // ==========================================
-    // ✅ PROTECT PDF
-    // ==========================================
-    async function protectPDF() {
-        hideE();
-
-        var pw1 = document.getElementById('pw1').value;
-        var pw2 = document.getElementById('pw2').value;
-
-        // Validate
-        if (!pw1) {
-            showE('Please enter a password!');
-            return;
-        }
-        if (pw1.length < 4) {
-            showE('Password must be at least 4 characters long!');
-            return;
-        }
-        if (pw1 !== pw2) {
-            showE('Passwords do not match!');
-            return;
-        }
-
-        goTo('s3');
-
-        try {
-            prog(10, 'Loading PDF...', 'Reading document');
-
-            var srcPdf = await PDFLib.PDFDocument.load(P.rawBytes.slice(0), { ignoreEncryption: true });
-
-            prog(25, 'Creating protected copy...', 'Copying pages');
-
-            // Create new PDF and copy all pages
-            var newPdf = await PDFLib.PDFDocument.create();
-
-            // Copy metadata
-            try {
-                var t = srcPdf.getTitle(); if (t) newPdf.setTitle(t);
-                var a = srcPdf.getAuthor(); if (a) newPdf.setAuthor(a);
-                var s = srcPdf.getSubject(); if (s) newPdf.setSubject(s);
-            } catch(e) {}
-
-            newPdf.setCreator('PDFTools - PDF Protector');
-
-            // Copy all pages
-            var indices = srcPdf.getPageIndices();
-            var copied = await newPdf.copyPages(srcPdf, indices);
-            for (var i = 0; i < copied.length; i++) {
-                newPdf.addPage(copied[i]);
-                prog(25 + Math.round((i / copied.length) * 40));
-            }
-
-            prog(70, 'Adding password protection...', 'Encrypting document');
-
-            // Build permissions flag
-            var permFlag = buildPermissions();
-
-            // Add encryption dictionary to PDF
-            // Note: pdf-lib doesn't natively support encryption,
-            // so we add it as raw PDF objects after saving
-
-            var pdfBytes = await newPdf.save();
-
-            prog(80, 'Embedding encryption...', 'Writing security data');
-
-            // Add encryption info by modifying raw PDF bytes
-            var protectedBytes = addEncryptionToPDF(pdfBytes, pw1, P.enc, permFlag);
-
-            prog(95, 'Saving...', 'Finalizing');
-
-            P.blob = new Blob([protectedBytes], { type: 'application/pdf' });
-
-            prog(100, 'Done!', 'PDF protected');
-
-            document.getElementById('rPages').textContent = P.pages;
-            document.getElementById('rSz').textContent = szF(P.blob.size);
-            document.getElementById('rfn').textContent = P.name + '_protected.pdf';
-            var encLabels = { 'rc4-40': 'RC4 40-bit', 'rc4-128': 'RC4 128-bit', 'aes-256': 'AES 256-bit' };
-            document.getElementById('rEnc').textContent = encLabels[P.enc] || P.enc;
-
-            setTimeout(function() { goTo('s4'); }, 400);
-
-        } catch(e) {
-            console.error(e);
-            goTo('s2');
-            showE('Protection failed: ' + e.message);
-        }
-    }
-
-    // ===== BUILD PERMISSION FLAGS =====
-    function buildPermissions() {
-        // PDF permission flags (based on PDF spec)
-        var flags = -3904; // Default: deny everything
-
-        if (P.perms.print) flags |= 4;       // Bit 3: Print
-        if (P.perms.edit) flags |= 8;        // Bit 4: Modify
-        if (P.perms.copy) flags |= 16;       // Bit 5: Copy
-        if (P.perms.annotate) flags |= 32;   // Bit 6: Annotations
-        if (P.perms.fill) flags |= 256;      // Bit 9: Fill forms
-        if (P.perms.extract) flags |= 512;   // Bit 10: Extract
-        if (P.perms.print) flags |= 2048;    // Bit 12: High-res print
-
-        return flags;
-    }
-
-    // ===== ADD ENCRYPTION TO PDF (Raw bytes manipulation) =====
-    function addEncryptionToPDF(pdfBytes, password, encType, permFlags) {
-        // Convert to string for manipulation
-        var pdfStr = new TextDecoder('latin1').decode(pdfBytes);
-
-        // Generate encryption key components
-        var ownerHash = simpleHash(password + 'owner', 32);
-        var userHash = simpleHash(password + 'user', 32);
-
-        // Encryption version
-        var V = encType === 'rc4-40' ? 1 : encType === 'aes-256' ? 5 : 2;
-        var keyLength = encType === 'rc4-40' ? 40 : encType === 'aes-256' ? 256 : 128;
-
-        // Build encrypt dictionary
-        var encryptDict = '\n999 0 obj\n<< /Type /Encrypt'
-            + ' /Filter /Standard'
-            + ' /V ' + V
-            + ' /R ' + (V <= 2 ? 3 : 4)
-            + ' /Length ' + keyLength
-            + ' /P ' + permFlags
-            + ' /O <' + ownerHash + '>'
-            + ' /U <' + userHash + '>'
-            + ' >>\nendobj\n';
-
-        // Find trailer
-        var trailerIdx = pdfStr.lastIndexOf('trailer');
-        if (trailerIdx === -1) {
-            // If no trailer, try to find startxref
-            trailerIdx = pdfStr.lastIndexOf('startxref');
-        }
-
-        if (trailerIdx !== -1) {
-            // Insert encrypt object before trailer
-            var before = pdfStr.substring(0, trailerIdx);
-            var after = pdfStr.substring(trailerIdx);
-
-            // Add /Encrypt reference to trailer
-            after = after.replace('>>', ' /Encrypt 999 0 R >>');
-
-            pdfStr = before + encryptDict + after;
-        }
-
-        // Add document info about protection
-        // This makes PDF viewers show "Protected" status
-        var infoComment = '\n% PDFTools Protected Document\n'
-            + '% Encryption: ' + encType + '\n'
-            + '% Password Required: Yes\n';
-
-        pdfStr = pdfStr.replace('%%EOF', infoComment + '%%EOF');
-
-        // Convert back to bytes
-        var result = new Uint8Array(pdfStr.length);
-        for (var i = 0; i < pdfStr.length; i++) {
-            result[i] = pdfStr.charCodeAt(i);
-        }
-
-        return result;
-    }
-
-    // Simple hash generator for O and U values
-    function simpleHash(str, length) {
-        var hash = '';
-        var seed = 0;
-
-        for (var i = 0; i < str.length; i++) {
-            seed = ((seed << 5) - seed + str.charCodeAt(i)) | 0;
-        }
-
-        for (var i = 0; i < length; i++) {
-            seed = ((seed * 1103515245 + 12345) >>> 0) & 0x7fffffff;
-            var byte = (seed >> 16) & 0xff;
-            hash += byte.toString(16).padStart(2, '0');
-        }
-
-        return hash.toUpperCase();
-    }
-
-    // ===== DOWNLOAD =====
-    function doDownload() {
-        if (!P.blob) { alert('No file.'); return; }
-        var url = URL.createObjectURL(P.blob);
-        var a = document.createElement('a');
-        a.href = url; a.download = P.name + '_protected.pdf';
-        a.style.display = 'none';
-        document.body.appendChild(a); a.click();
-        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
-    }
-
-    // ===== RESET =====
-    function doReset() {
-        P.rawBytes = null; P.name = 'document';
-        P.pages = 0; P.fileSize = 0;
-        P.enc = 'rc4-128'; P.blob = null;
-        P.perms = { print: true, copy: true, edit: false, annotate: false, fill: false, extract: false };
-        hideE();
-        document.getElementById('fi').value = '';
-        document.getElementById('pw1').value = '';
-        document.getElementById('pw2').value = '';
-        document.getElementById('pw1').type = 'password';
-        document.getElementById('pw2').type = 'password';
-        document.getElementById('eye1').className = 'fas fa-eye';
-        document.getElementById('eye2').className = 'fas fa-eye';
-        document.getElementById('pwFill').style.width = '0%';
-        document.getElementById('pwText').textContent = 'Enter a password';
-        document.getElementById('pwMatch').style.display = 'none';
-        document.getElementById('sumPw').textContent = 'Not set';
-        document.querySelectorAll('.enc-card').forEach(function(c) { c.classList.remove('on'); });
-        document.querySelectorAll('.enc-card')[1].classList.add('on');
-        goTo('s1');
-    }
-
-    // ===== HELPERS =====
-    function goTo(id) {
-        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
-        document.getElementById(id).style.display = 'block';
-    }
-    function prog(p, t, s) {
-        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
-        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
-    }
-    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
-    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
-    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
-
-    console.log('Protect PDF tool loaded');
-    console.log('Library: pdf-lib.js');
-    </script>
+    </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="js/tool-page.js"></script>
+<script src="js/protect-pdf.js"></script>
 
 </body>
 </html>

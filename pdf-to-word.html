@@ -4,157 +4,367 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF to Word - Convert PDF to DOCX Free | PDFTools</title>
+    <meta name="description" content="Convert PDF to editable Word documents for free. Works 100% in your browser.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        .fic{display:flex;align-items:center;gap:15px;padding:15px 18px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
+        .fic-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        .fic-info{flex:1;min-width:0}
+        .fic-info h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+        .fic-meta{display:flex;gap:10px;flex-wrap:wrap}
+        .fic-meta span{font-size:11px;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .fic-badge{background:rgba(59,130,246,0.1);color:#2563eb;padding:2px 9px;border-radius:15px;font-weight:600;font-size:11px}
+        .fmt-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+        .fmt-card{padding:16px 12px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:12px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s}
+        .fmt-card:hover{border-color:var(--primary)}
+        .fmt-card.on{border-color:var(--primary);background:rgba(99,102,241,0.07)}
+        .fmt-card i{font-size:26px;margin-bottom:7px;display:block}
+        .fmt-docx i{color:#2563eb}
+        .fmt-txt i{color:#64748b}
+        .fmt-html i{color:#f97316}
+        .fmt-card h5{font-size:13px;font-weight:700;margin-bottom:2px}
+        .fmt-card p{font-size:10px;color:var(--text-light)}
+        .prev-box{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;max-height:300px;overflow-y:auto;font-size:13px;line-height:1.8;color:#333;margin:14px 0;white-space:pre-wrap;word-wrap:break-word}
+        .prev-box::-webkit-scrollbar{width:5px}
+        .prev-box::-webkit-scrollbar-thumb{background:rgba(99,102,241,0.25);border-radius:3px}
+        .srow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0}
+        .sbox{padding:12px 18px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
+        .sbox h4{font-size:20px;font-weight:800;color:var(--primary)}
+        .sbox p{font-size:10px;color:var(--text-light)}
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+        @media(max-width:600px){.fmt-row{grid-template-columns:1fr}}
+    </style>
 </head>
 <body>
-    <div class="bg-animation">
-        <div class="blob blob-1 blob-blue"></div>
-        <div class="blob blob-2 blob-purple"></div>
-        <div class="blob blob-3 blob-pink"></div>
-    </div>
 
+    <!-- NAVBAR -->
     <nav class="navbar glass">
-        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <a href="index.html" class="logo">
+            <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+        </a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </div>
         <div class="nav-links" id="navLinks">
             <a href="index.html"><i class="fas fa-home"></i> Home</a>
             <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
             <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
         </div>
     </nav>
 
+    <!-- TOOL HEADER -->
     <section class="tool-header">
         <div class="container">
-            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>PDF to Word</span></div>
+            <div class="breadcrumb">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>PDF to Word</span>
+            </div>
             <div class="tool-title">
-                <div class="tool-title-icon icon-blue"><i class="fas fa-file-word"></i></div>
-                <div><h1>PDF to Word</h1><p>Convert PDF files into fully editable Word documents (.docx) for free.</p></div>
+                <div class="tool-title-icon icon-blue">
+                    <i class="fas fa-file-word"></i>
+                </div>
+                <div>
+                    <h1>PDF to Word</h1>
+                    <p>Convert PDF to editable Word documents. 100% in your browser!</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
-
+    <!-- TOOL AREA -->
     <section class="tool-area">
         <div class="container">
             <div class="tool-wrapper glass">
-                <div id="uploadSection" data-section>
-                    <div class="upload-zone" id="dropZone">
+
+                <!-- STEP 1: UPLOAD -->
+                <div id="s1">
+                    <div class="upload-zone" id="dropArea">
                         <div class="upload-zone-content">
-                            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div class="upload-icon">
+                                <i class="fas fa-file-word"></i>
+                            </div>
                             <h2>Upload PDF to Convert</h2>
-                            <p>Your PDF will be converted to an editable Word document</p>
-                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF File</button>
-                            <input type="file" id="fileInput" accept=".pdf" hidden>
+                            <p>Drop PDF here or click to browse</p>
+                            <button class="upload-btn" id="pickBtn" type="button">
+                                <i class="fas fa-plus"></i> Select PDF File
+                            </button>
+                            <input type="file" id="fileInput" accept=".pdf,application/pdf" style="display:none">
                             <div class="upload-hints">
-                                <span><i class="fas fa-lock"></i> Secure</span>
-                                <span><i class="fas fa-magic"></i> OCR Support</span>
-                                <span><i class="fas fa-file-word"></i> .DOCX Output</span>
+                                <span><i class="fas fa-lock"></i> Private</span>
+                                <span><i class="fas fa-laptop"></i> Browser Only</span>
+                                <span><i class="fas fa-file-word"></i> DOCX / TXT / HTML</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="optionsSection" data-section style="display:none;">
+                <!-- STEP 2: OPTIONS -->
+                <div id="s2" style="display:none;">
                     <div class="files-area">
-                        <div class="files-header">
-                            <h3><i class="fas fa-file-pdf"></i> <span id="fileName">document.pdf</span></h3>
-                            <button class="btn-sm btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i> Remove</button>
+
+                        <!-- Error message -->
+                        <div class="emsg" id="errBox">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span id="errTxt"></span>
                         </div>
-                        <div class="options-panel glass-light">
-                            <h4><i class="fas fa-cog"></i> Conversion Options</h4>
-                            <div class="options-row">
-                                <div class="option-field">
-                                    <label>Output Format</label>
-                                    <select><option>.docx (Word)</option><option>.doc (Legacy)</option><option>.rtf (Rich Text)</option></select>
+
+                        <!-- File info -->
+                        <div class="fic">
+                            <div class="fic-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="fic-info">
+                                <h4 id="fName">document.pdf</h4>
+                                <div class="fic-meta">
+                                    <span class="fic-badge" id="fSize">0 KB</span>
+                                    <span><i class="fas fa-copy"></i> <span id="fPages">0</span> pages</span>
                                 </div>
-                                <div class="option-field">
-                                    <label>OCR Language</label>
-                                    <select><option>English</option><option>Hindi</option><option>Gujarati</option><option>Spanish</option><option>French</option><option>German</option></select>
+                            </div>
+                            <button class="btn-sm btn-danger-sm" onclick="resetAll()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <!-- Format selection -->
+                        <div class="options-panel glass-light">
+                            <h4><i class="fas fa-cog"></i> Output Format</h4>
+                            <div class="fmt-row">
+                                <div class="fmt-card fmt-docx on" data-f="docx" onclick="pickFormat(this)">
+                                    <i class="fas fa-file-word"></i>
+                                    <h5>.DOCX</h5>
+                                    <p>Word Document</p>
+                                </div>
+                                <div class="fmt-card fmt-txt" data-f="txt" onclick="pickFormat(this)">
+                                    <i class="fas fa-file-alt"></i>
+                                    <h5>.TXT</h5>
+                                    <p>Plain Text</p>
+                                </div>
+                                <div class="fmt-card fmt-html" data-f="html" onclick="pickFormat(this)">
+                                    <i class="fas fa-code"></i>
+                                    <h5>.HTML</h5>
+                                    <p>Web Page</p>
                                 </div>
                             </div>
                         </div>
-                        <button class="action-btn" onclick="startProcess()"><i class="fas fa-exchange-alt"></i> Convert to Word</button>
+
+                        <!-- Convert button -->
+                        <button class="action-btn" onclick="startConvert()">
+                            <i class="fas fa-exchange-alt"></i> Convert to Word
+                        </button>
                     </div>
                 </div>
 
-                <div id="processingSection" data-section style="display:none;">
+                <!-- STEP 3: PROCESSING -->
+                <div id="s3" style="display:none;">
                     <div class="processing-area">
                         <div class="spinner"></div>
-                        <h3>Converting PDF to Word...</h3>
-                        <p>Extracting text, images and formatting</p>
-                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                        <span class="progress-text" id="progressText">0%</span>
+                        <h3 id="pTitle">Extracting text...</h3>
+                        <p id="pSub">Reading PDF pages</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="pBar"></div>
+                        </div>
+                        <span class="progress-text" id="pPct">0%</span>
                     </div>
                 </div>
 
-                <div id="resultSection" data-section style="display:none;">
+                <!-- STEP 4: RESULT -->
+                <div id="s4" style="display:none;">
                     <div class="result-area">
-                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                        <h2>Converted Successfully!</h2>
-                        <p>Your Word document is ready</p>
-                        <div class="result-info glass-light">
-                            <div class="info-item"><i class="fas fa-file-word"></i> <span>document.docx</span></div>
-                            <div class="info-item"><i class="fas fa-weight-hanging"></i> <span>1.8 MB</span></div>
+                        <div class="result-icon success">
+                            <i class="fas fa-check-circle"></i>
                         </div>
-                        <button class="download-btn" onclick="alert('Download!')"><i class="fas fa-download"></i> Download Word File</button>
+                        <h2>Converted Successfully! 📄</h2>
+                        <p>Your document is ready to download</p>
+
+                        <!-- Stats -->
+                        <div class="srow">
+                            <div class="sbox"><h4 id="rPg">0</h4><p>Pages</p></div>
+                            <div class="sbox"><h4 id="rWd">0</h4><p>Words</p></div>
+                            <div class="sbox"><h4 id="rCh">0</h4><p>Characters</p></div>
+                        </div>
+
+                        <!-- Text preview -->
+                        <div style="text-align:left;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                <h4 style="font-size:14px;">
+                                    <i class="fas fa-eye" style="color:var(--primary);"></i> Text Preview
+                                </h4>
+                                <button class="btn-sm btn-primary-sm" onclick="copyTxt()">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <div class="prev-box" id="prevBox">No text extracted.</div>
+                        </div>
+
+                        <!-- File info -->
+                        <div class="result-info glass-light" style="margin-top:15px;">
+                            <div class="info-item">
+                                <i class="fas fa-file-word" style="color:#2563eb;"></i>
+                                <span id="outName">document.docx</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-weight-hanging"></i>
+                                <span id="outSize">0 KB</span>
+                            </div>
+                        </div>
+
+                        <!-- Download button -->
+                        <button class="download-btn" onclick="dlFile()">
+                            <i class="fas fa-download"></i> Download File
+                        </button>
+
+                        <!-- Actions -->
                         <div class="result-actions">
-                            <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Convert Another</button>
+                            <button class="btn-outline" onclick="resetAll()">
+                                <i class="fas fa-redo"></i> Convert Another
+                            </button>
+                            <button class="btn-outline" onclick="goBack()">
+                                <i class="fas fa-sliders-h"></i> Change Format
+                            </button>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <div class="container"><div class="ad-space glass-light"><i class="fas fa-ad"></i> Google AdSense</div></div>
-
+    <!-- RELATED TOOLS -->
     <section class="related-tools">
         <div class="container">
-            <div class="section-header"><h2>Related Tools</h2></div>
+            <div class="section-header">
+                <h2>Related Tools</h2>
+            </div>
             <div class="related-grid">
-                <a href="word-to-pdf.html" class="related-card glass"><div class="related-icon icon-indigo"><i class="fas fa-file-word"></i></div><h4>Word to PDF</h4></a>
-                <a href="pdf-to-excel.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-file-excel"></i></div><h4>PDF to Excel</h4></a>
-                <a href="pdf-to-ppt.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-file-powerpoint"></i></div><h4>PDF to PPT</h4></a>
-                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
-                <a href="ocr-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-eye"></i></div><h4>OCR PDF</h4></a>
-                <a href="pdf-to-jpg.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-file-image"></i></div><h4>PDF to JPG</h4></a>
+                <a href="word-to-pdf.html" class="related-card glass">
+                    <div class="related-icon icon-indigo"><i class="fas fa-file-word"></i></div>
+                    <h4>Word to PDF</h4>
+                </a>
+                <a href="pdf-to-excel.html" class="related-card glass">
+                    <div class="related-icon icon-green"><i class="fas fa-file-excel"></i></div>
+                    <h4>PDF to Excel</h4>
+                </a>
+                <a href="pdf-to-ppt.html" class="related-card glass">
+                    <div class="related-icon icon-orange"><i class="fas fa-file-powerpoint"></i></div>
+                    <h4>PDF to PPT</h4>
+                </a>
+                <a href="edit-pdf.html" class="related-card glass">
+                    <div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div>
+                    <h4>Edit PDF</h4>
+                </a>
+                <a href="ocr-pdf.html" class="related-card glass">
+                    <div class="related-icon icon-purple"><i class="fas fa-eye"></i></div>
+                    <h4>OCR PDF</h4>
+                </a>
+                <a href="compress-pdf.html" class="related-card glass">
+                    <div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div>
+                    <h4>Compress</h4>
+                </a>
             </div>
         </div>
     </section>
 
+    <!-- HOW TO -->
     <section class="how-to-section">
         <div class="container">
-            <div class="section-header"><h2>How to Convert PDF to Word</h2></div>
+            <div class="section-header">
+                <h2>How to Convert PDF to Word</h2>
+            </div>
             <div class="steps-row">
-                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload PDF</h4><p>Select the PDF you want to convert.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Set Options</h4><p>Choose output format and OCR language.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download your editable Word document.</p></div>
+                <div class="step-box glass">
+                    <div class="step-num">1</div>
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h4>Upload</h4>
+                    <p>Select your PDF file.</p>
+                </div>
+                <div class="step-box glass">
+                    <div class="step-num">2</div>
+                    <i class="fas fa-cog"></i>
+                    <h4>Format</h4>
+                    <p>Choose DOCX, TXT, or HTML.</p>
+                </div>
+                <div class="step-box glass">
+                    <div class="step-num">3</div>
+                    <i class="fas fa-download"></i>
+                    <h4>Download</h4>
+                    <p>Get your editable document.</p>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- FAQ -->
     <section class="faq-section">
         <div class="container">
             <div class="section-header"><h2>FAQ</h2></div>
             <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Will formatting be preserved?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! We preserve text, images, tables and most formatting during conversion.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I convert scanned PDFs?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Our OCR technology can extract text from scanned documents.</p></div></div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h4>Will formatting be preserved?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Text is extracted with paragraphs and page breaks. The DOCX output is formatted and editable in Word. Complex layouts may be simplified.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h4>Can I convert scanned PDFs?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>This tool works with text-based PDFs. For scanned/image PDFs, use our OCR tool first to extract the text.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h4>Is it secure?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>100% secure. Everything runs in your browser using JavaScript. No files are uploaded to any server.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h4>What output formats are available?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can download as .DOCX (Word), .TXT (plain text), or .HTML (web page). DOCX preserves formatting best.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-logo">
+                    <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+                </div>
+                <p>&copy; 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="about.html">About</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
+    <!-- SCRIPTS (order matters!) -->
+    <!-- 1. PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- 2. Common tool page JS -->
     <script src="js/tool-page.js"></script>
-    <script>
-        setupDropZone('dropZone', 'fileInput', ['.pdf'], files => {
-            document.getElementById('fileName').textContent = files[0].name;
-            showSection('optionsSection');
-        });
-        function startProcess() { showSection('processingSection'); simulateProcess(() => showSection('resultSection')); }
-        function resetTool() { showSection('uploadSection'); }
-    </script>
+    <!-- 3. PDF to Word JS (separate file - prevents XML/HTML conflicts) -->
+    <script src="js/pdf-to-word.js"></script>
+
 </body>
 </html>
