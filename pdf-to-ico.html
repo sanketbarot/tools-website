@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF to ICO - Convert PDF to Icon Online Free | PDFTools</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
     <meta name="description" content="Convert the first page of a PDF into ICO favicon files online for free. Fast, secure and works in your browser.">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
 
-    <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <!-- JSZip -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
-        /* ── Layout ── */
+        /* ════════════════════════════════════════
+           PREVIEW LAYOUT
+        ════════════════════════════════════════ */
         .image-preview-wrap {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -36,10 +37,12 @@
             font-size: 14px;
             font-weight: 700;
             margin-bottom: 12px;
-            color: var(--text-dark);
+            color: var(--text-dark, #1e293b);
         }
 
-        /* Checkerboard background for transparency preview */
+        /* ════════════════════════════════════════
+           CHECKERBOARD PREVIEW BOX
+        ════════════════════════════════════════ */
         .img-preview-box {
             min-height: 220px;
             display: flex;
@@ -66,7 +69,9 @@
             border-radius: 8px;
         }
 
-        /* ICO size strip */
+        /* ════════════════════════════════════════
+           ICO SIZE STRIP
+        ════════════════════════════════════════ */
         .ico-sizes {
             display: flex;
             justify-content: center;
@@ -75,7 +80,10 @@
             margin-top: 16px;
         }
 
-        .ico-size-box { width: 78px; text-align: center; }
+        .ico-size-box {
+            width: 78px;
+            text-align: center;
+        }
 
         .ico-size-preview {
             margin: 0 auto 8px;
@@ -102,21 +110,23 @@
 
         .ico-size-label {
             font-size: 11px;
-            color: var(--text-light);
+            color: var(--text-light, #64748b);
             font-weight: 600;
         }
 
         .option-hint {
             margin-top: 6px;
             font-size: 11px;
-            color: var(--text-light);
+            color: var(--text-light, #64748b);
         }
 
-        /* Result stats */
+        /* ════════════════════════════════════════
+           RESULT STATS
+        ════════════════════════════════════════ */
         .result-stats {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 20px;
             flex-wrap: wrap;
             margin: 20px 0;
         }
@@ -127,29 +137,41 @@
             border: 1px solid rgba(255,255,255,0.5);
             border-radius: 12px;
             padding: 14px 18px;
-            min-width: 120px;
+            min-width: 110px;
         }
 
         .result-stat strong {
             display: block;
             font-size: 22px;
-            color: var(--primary);
+            color: var(--primary, #6366f1);
+            line-height: 1;
+            margin-bottom: 4px;
         }
 
-        .result-stat small { color: var(--text-light); font-size: 11px; }
+        .result-stat small {
+            color: var(--text-light, #64748b);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
 
+        /* ════════════════════════════════════════
+           FORMAT BADGE
+        ════════════════════════════════════════ */
         .format-badge {
             display: inline-block;
             background: rgba(34,197,94,0.12);
             color: #15803d;
-            padding: 5px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 700;
-            margin-top: 10px;
+            margin: 10px 0 16px;
         }
 
-        /* Result preview box */
+        /* ════════════════════════════════════════
+           ICO RESULT PREVIEW BOX
+        ════════════════════════════════════════ */
         .ico-preview-box {
             width: 128px;
             height: 128px;
@@ -175,47 +197,206 @@
             image-rendering: pixelated;
         }
 
-        /* Error box */
+        /* ════════════════════════════════════════
+           ERROR MESSAGE
+        ════════════════════════════════════════ */
         .error-message {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.3);
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.25);
             border-radius: 10px;
-            padding: 14px 18px;
+            padding: 13px 18px;
             color: #dc2626;
             font-size: 14px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             display: none;
             align-items: center;
             gap: 8px;
+            font-weight: 500;
         }
 
-        /* Drag-over highlight */
-        .upload-zone.dragover {
-            border-color: var(--primary, #6366f1) !important;
-            background: rgba(99,102,241,0.07) !important;
-        }
-
-        /* Loading spinner inside preview */
+        /* ════════════════════════════════════════
+           LOADING SPINNER IN PREVIEW
+        ════════════════════════════════════════ */
         .preview-loading {
-            color: var(--text-light);
+            color: var(--text-light, #94a3b8);
             font-size: 13px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
+        /* ════════════════════════════════════════
+           DRAG OVER
+        ════════════════════════════════════════ */
+        .upload-zone.dragover {
+            border-color: var(--primary, #6366f1) !important;
+            background: rgba(99,102,241,0.07) !important;
+        }
+
+        /* ════════════════════════════════════════
+           RELATED ICON COLORS
+        ════════════════════════════════════════ */
+        .icon-blue   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .icon-dark   { background: linear-gradient(135deg, #374151, #1f2937); }
+        .icon-red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .icon-green  { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .icon-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
+        .icon-purple { background: linear-gradient(135deg, #a855f7, #9333ea); }
+
+        /* ════════════════════════════════════════
+           FAQ — ACCORDION
+        ════════════════════════════════════════ */
+        .faq-section { padding: 50px 0; }
+
+        .faq-list {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .faq-item:hover {
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+            transform: translateY(-1px);
+        }
+
+        .faq-item.open {
+            background: rgba(255,255,255,0.85);
+            border-color: rgba(99,102,241,0.2);
+            box-shadow: 0 6px 25px rgba(99,102,241,0.1);
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            gap: 14px;
+        }
+
+        .faq-question h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark, #1e293b);
+            margin: 0;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .faq-item.open .faq-question h4 {
+            color: var(--primary, #6366f1);
+        }
+
+        .faq-question i {
+            font-size: 13px;
+            color: var(--text-light, #94a3b8);
+            transition: transform 0.35s ease, color 0.3s ease;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+            color: var(--primary, #6366f1);
+        }
+
+        /* Smooth animation */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        .faq-answer-inner {
+            padding: 0 22px 20px;
+        }
+
+        .faq-item.open .faq-answer-inner {
+            border-top: 1px solid rgba(99,102,241,0.1);
+            padding-top: 16px;
+            margin: 0 22px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .faq-answer-inner p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-light, #64748b);
+            margin: 0;
+        }
+
+        .faq-answer-inner p strong {
+            color: var(--text-dark, #1e293b);
+        }
+
+        /* FAQ Number Badge */
+        .faq-num {
+            width: 28px;
+            height: 28px;
+            background: rgba(99,102,241,0.1);
+            color: var(--primary, #6366f1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.open .faq-num {
+            background: var(--primary, #6366f1);
+            color: #fff;
+        }
+
+        /* ════════════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════════════ */
         @media (max-width: 768px) {
             .image-preview-wrap { grid-template-columns: 1fr; }
             .ico-sizes { gap: 10px; }
             .ico-size-box { width: 68px; }
+            .result-stats { gap: 12px; }
+
+            .faq-question { padding: 16px 18px; }
+            .faq-question h4 { font-size: 14px; }
+            .faq-answer-inner { padding: 0 18px 18px; }
+            .faq-item.open .faq-answer-inner { margin: 0 18px; }
+            .faq-answer-inner p { font-size: 13px; }
+            .faq-num { width: 24px; height: 24px; font-size: 11px; }
+        }
+
+        @media (max-width: 480px) {
+            .ico-size-box { width: 58px; }
+            .faq-question { padding: 14px; }
+            .faq-question h4 { font-size: 13px; }
+            .faq-item { border-radius: 10px; margin-bottom: 8px; }
         }
     </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════
-     NAVBAR
-═══════════════════════════════════════════════ -->
+<!-- NAVBAR -->
 <nav class="navbar glass">
     <a href="index.html" class="logo">
         <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
@@ -230,9 +411,7 @@
     </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════
-     HEADER
-═══════════════════════════════════════════════ -->
+<!-- HEADER -->
 <section class="tool-header">
     <div class="container">
         <div class="breadcrumb">
@@ -241,7 +420,9 @@
             <span>PDF to ICO</span>
         </div>
         <div class="tool-title">
-            <div class="tool-title-icon icon-red"><i class="fas fa-file-image"></i></div>
+            <div class="tool-title-icon icon-red">
+                <i class="fas fa-file-image"></i>
+            </div>
             <div>
                 <h1>PDF to ICO</h1>
                 <p>Convert the first page of your PDF into favicon ICO files. Free, fast &amp; browser-based!</p>
@@ -250,14 +431,12 @@
     </div>
 </section>
 
-<!-- AD -->
+<!-- AD TOP -->
 <div class="adsense-wrapper">
     <div class="adsense-unit" data-slot="topBanner" data-format="auto"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MAIN TOOL
-═══════════════════════════════════════════════ -->
+<!-- MAIN TOOL -->
 <section class="tool-area">
     <div class="container">
         <div class="tool-wrapper glass">
@@ -267,7 +446,9 @@
                 <div class="upload-zone" id="dropZone"
                      onclick="document.getElementById('fileInput').click()">
                     <div class="upload-zone-content">
-                        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
                         <h2>Drop PDF file here</h2>
                         <p>or click to browse from your device</p>
                         <button class="upload-btn"
@@ -275,14 +456,17 @@
                                          document.getElementById('fileInput').click()">
                             <i class="fas fa-plus"></i> Select PDF
                         </button>
-                        <input type="file" id="fileInput" accept=".pdf,application/pdf" hidden>
+                        <input type="file" id="fileInput"
+                               accept=".pdf,application/pdf" hidden>
                         <div class="upload-hints">
                             <span><i class="fas fa-lock"></i> 100% Private</span>
                             <span><i class="fas fa-laptop"></i> Browser Only</span>
                             <span><i class="fas fa-icons"></i> Real ICO File</span>
                         </div>
-                        <p style="margin-top:15px;font-size:12px;color:var(--text-light);">
-                            <i class="fas fa-shield-alt"></i> Your PDF never leaves your device!
+                        <p style="margin-top:15px;font-size:12px;
+                                  color:var(--text-light);">
+                            <i class="fas fa-shield-alt"></i>
+                            Your PDF never leaves your device!
                         </p>
                     </div>
                 </div>
@@ -292,13 +476,13 @@
             <div id="optionsSection" data-section style="display:none;">
                 <div class="files-area">
 
-                    <!-- Error banner -->
+                    <!-- Error -->
                     <div class="error-message" id="errorMsg">
                         <i class="fas fa-exclamation-triangle"></i>
                         <span id="errorText">Something went wrong.</span>
                     </div>
 
-                    <!-- File header -->
+                    <!-- File Header -->
                     <div class="files-header">
                         <h3>
                             <i class="fas fa-file-pdf"></i>
@@ -314,52 +498,58 @@
                     <!-- Previews -->
                     <div class="image-preview-wrap">
 
-                        <!-- Original PDF page -->
+                        <!-- PDF Preview -->
                         <div class="preview-card">
                             <h4>PDF First Page Preview</h4>
-                            <div class="img-preview-box" id="originalBox">
+                            <div class="img-preview-box">
                                 <div class="preview-loading" id="originalLoading">
-                                    <i class="fas fa-spinner fa-spin"></i> Rendering PDF...
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    Rendering PDF...
                                 </div>
-                                <img id="originalPreview" alt="PDF Preview" style="display:none;">
+                                <img id="originalPreview"
+                                     alt="PDF Preview"
+                                     style="display:none;">
                             </div>
                         </div>
 
-                        <!-- ICO sizes -->
+                        <!-- ICO Preview -->
                         <div class="preview-card">
                             <h4>ICO Preview</h4>
                             <div class="img-preview-box" style="min-height:80px;">
                                 <img id="icoMainPreview" alt="ICO Preview">
                             </div>
-
                             <div class="ico-sizes">
                                 <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:16px;height:16px;">
+                                    <div class="ico-size-preview"
+                                         style="width:16px;height:16px;">
                                         <img id="preview16" alt="16x16">
                                     </div>
                                     <div class="ico-size-label">16×16</div>
                                 </div>
                                 <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:32px;height:32px;">
+                                    <div class="ico-size-preview"
+                                         style="width:32px;height:32px;">
                                         <img id="preview32" alt="32x32">
                                     </div>
                                     <div class="ico-size-label">32×32</div>
                                 </div>
                                 <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:48px;height:48px;">
+                                    <div class="ico-size-preview"
+                                         style="width:48px;height:48px;">
                                         <img id="preview48" alt="48x48">
                                     </div>
                                     <div class="ico-size-label">48×48</div>
                                 </div>
                                 <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:64px;height:64px;">
+                                    <div class="ico-size-preview"
+                                         style="width:64px;height:64px;">
                                         <img id="preview64" alt="64x64">
                                     </div>
                                     <div class="ico-size-label">64×64</div>
                                 </div>
                             </div>
                         </div>
-                    </div><!-- /.image-preview-wrap -->
+                    </div>
 
                     <!-- Settings -->
                     <div class="options-panel glass-light">
@@ -406,7 +596,7 @@
                     </button>
 
                 </div>
-            </div><!-- /#optionsSection -->
+            </div>
 
             <!-- ── PROCESSING ── -->
             <div id="processingSection" data-section style="display:none;">
@@ -471,20 +661,18 @@
                         </button>
                     </div>
                 </div>
-            </div><!-- /#resultSection -->
+            </div>
 
-        </div><!-- /.tool-wrapper -->
+        </div>
     </div>
 </section>
 
-<!-- AD -->
+<!-- AD MIDDLE -->
 <div class="adsense-wrapper">
     <div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     RELATED TOOLS
-═══════════════════════════════════════════════ -->
+<!-- RELATED TOOLS -->
 <section class="related-tools">
     <div class="container">
         <div class="section-header">
@@ -492,19 +680,35 @@
             <p>Tools that work great with PDF to ICO</p>
         </div>
         <div class="related-grid">
-            <a href="jpg-to-ico.html"   class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-image"></i></div><h4>JPG to ICO</h4></a>
-            <a href="pdf-to-jpg.html"   class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-file-image"></i></div><h4>PDF to JPG</h4></a>
-            <a href="jpg-to-pdf.html"   class="related-card glass"><div class="related-icon icon-red"   ><i class="fas fa-image"></i></div><h4>JPG to PDF</h4></a>
-            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green" ><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
-            <a href="color-picker.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-palette"></i></div><h4>Color Picker</h4></a>
-            <a href="qr-generator.html" class="related-card glass"><div class="related-icon icon-dark"  ><i class="fas fa-qrcode"></i></div><h4>QR Generator</h4></a>
+            <a href="jpg-to-ico.html"   class="related-card glass">
+                <div class="related-icon icon-orange"><i class="fas fa-image"></i></div>
+                <h4>JPG to ICO</h4>
+            </a>
+            <a href="pdf-to-jpg.html"   class="related-card glass">
+                <div class="related-icon icon-orange"><i class="fas fa-file-image"></i></div>
+                <h4>PDF to JPG</h4>
+            </a>
+            <a href="jpg-to-pdf.html"   class="related-card glass">
+                <div class="related-icon icon-red"><i class="fas fa-image"></i></div>
+                <h4>JPG to PDF</h4>
+            </a>
+            <a href="compress-pdf.html" class="related-card glass">
+                <div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div>
+                <h4>Compress PDF</h4>
+            </a>
+            <a href="color-picker.html" class="related-card glass">
+                <div class="related-icon icon-orange"><i class="fas fa-palette"></i></div>
+                <h4>Color Picker</h4>
+            </a>
+            <a href="qr-generator.html" class="related-card glass">
+                <div class="related-icon icon-dark"><i class="fas fa-qrcode"></i></div>
+                <h4>QR Generator</h4>
+            </a>
         </div>
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     HOW TO
-═══════════════════════════════════════════════ -->
+<!-- HOW TO -->
 <section class="how-to-section">
     <div class="container">
         <div class="section-header">
@@ -534,57 +738,86 @@
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     FAQ
-═══════════════════════════════════════════════ -->
+<!-- FAQ — ACCORDION -->
 <section class="faq-section">
     <div class="container">
-        <div class="section-header"><h2>Frequently Asked Questions</h2></div>
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+        </div>
         <div class="faq-list">
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
+                    <span class="faq-num">1</span>
                     <h4>Which page of the PDF is converted?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>The tool always converts the <strong>first page</strong> of the PDF into the favicon icon.
-                       This is ideal for PDF covers, logos, or title pages.</p>
+                    <div class="faq-answer-inner">
+                        <p>The tool always converts the <strong>first page</strong> of the PDF
+                        into the favicon icon. This is ideal for PDF covers,
+                        logos, or title pages.</p>
+                    </div>
                 </div>
             </div>
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
+                    <span class="faq-num">2</span>
                     <h4>Should I download all sizes?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>Yes! The <strong>"All Sizes (ZIP Pack)"</strong> option is best if you want to
-                       use the icon on websites, apps, and multiple devices. It includes
-                       16×16, 32×32, 48×48, 64×64 and 128×128.</p>
+                    <div class="faq-answer-inner">
+                        <p>Yes! The <strong>"All Sizes (ZIP Pack)"</strong> option is best if
+                        you want to use the icon on websites, apps, and multiple devices.
+                        It includes 16×16, 32×32, 48×48, 64×64 and 128×128.</p>
+                    </div>
                 </div>
             </div>
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
+                    <span class="faq-num">3</span>
                     <h4>What background should I choose?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>White background works best for most PDF documents. Use Transparent
-                       if your PDF has a logo on a white/light background that you want
-                       to blend with browser themes.</p>
+                    <div class="faq-answer-inner">
+                        <p><strong>White</strong> background works best for most PDF documents.
+                        Use <strong>Transparent</strong> if your PDF has a logo on a
+                        light background that you want to blend with browser themes.</p>
+                    </div>
                 </div>
             </div>
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
-                    <h4>Is my PDF safe?</h4>
+                    <span class="faq-num">4</span>
+                    <h4>Is my PDF safe and private?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>Yes. Everything happens entirely in your browser using JavaScript.
-                       Your PDF file is <strong>never uploaded</strong> to any server.</p>
+                    <div class="faq-answer-inner">
+                        <p>Yes! Everything happens entirely in your browser using JavaScript.
+                        Your PDF file is <strong>never uploaded</strong> to any server —
+                        complete privacy guaranteed.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">5</span>
+                    <h4>What is the difference between Contain and Cover?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p><strong>Contain</strong> fits the entire PDF page inside the icon
+                        without cropping. <strong>Cover</strong> fills the icon area
+                        completely, which may crop parts of the page edges.</p>
+                    </div>
                 </div>
             </div>
 
@@ -592,13 +825,13 @@
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════════════ -->
+<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-simple">
-            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <div class="footer-logo">
+                <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+            </div>
             <p>© 2025 PDFTools. All rights reserved.</p>
             <div class="footer-links">
                 <a href="index.html">Home</a>
@@ -610,7 +843,7 @@
     </div>
 </footer>
 
-<!-- Hidden off-screen canvases -->
+<!-- Hidden canvases -->
 <canvas id="canvas16"  width="16"  height="16"  style="display:none;"></canvas>
 <canvas id="canvas32"  width="32"  height="32"  style="display:none;"></canvas>
 <canvas id="canvas48"  width="48"  height="48"  style="display:none;"></canvas>
@@ -630,7 +863,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 /* ════════════════════════════════════════════════════════
    STATE
 ════════════════════════════════════════════════════════ */
-let pdfData          = null;   // Uint8Array of the loaded PDF
+let pdfData          = null;
 let selectedFileName = 'favicon';
 let outputBlob       = null;
 let outputIsZip      = false;
@@ -638,26 +871,42 @@ let outputIsZip      = false;
 /* ════════════════════════════════════════════════════════
    HELPERS
 ════════════════════════════════════════════════════════ */
+
+/* FAQ Accordion — one open at a time */
+function toggleFaq(clickedItem) {
+    const isOpen = clickedItem.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('open'));
+    if (!isOpen) clickedItem.classList.add('open');
+}
+
+/* Mobile menu guard */
+if (typeof toggleMobileMenu === 'undefined') {
+    window.toggleMobileMenu = function () {
+        document.getElementById('navLinks').classList.toggle('open');
+    };
+}
+
 function showSection(id) {
     document.querySelectorAll('[data-section]')
             .forEach(s => s.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block';
 }
 
 function updateProgress(pct, title, sub) {
     const fill = document.getElementById('progressFill');
     const txt  = document.getElementById('progressText');
-    if (fill) fill.style.width = pct + '%';
-    if (txt)  txt.textContent  = pct + '%';
-    const t = document.getElementById('processTitle');
-    const s = document.getElementById('processSubtitle');
-    if (t) t.textContent = title;
-    if (s) s.textContent = sub;
+    const t    = document.getElementById('processTitle');
+    const s    = document.getElementById('processSubtitle');
+    if (fill)     fill.style.width = pct + '%';
+    if (txt)      txt.textContent  = pct + '%';
+    if (t && title) t.textContent  = title;
+    if (s && sub)   s.textContent  = sub;
 }
 
 function formatSize(bytes) {
-    if (bytes < 1024)        return bytes + ' B';
-    if (bytes < 1048576)     return (bytes / 1024).toFixed(1) + ' KB';
+    if (bytes < 1024)    return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / 1048576).toFixed(2) + ' MB';
 }
 
@@ -668,17 +917,8 @@ function showError(msg) {
     setTimeout(() => el.style.display = 'none', 6000);
 }
 
-function toggleFaq(el) { el.classList.toggle('open'); }
-
-/* Mobile menu guard */
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function () {
-        document.getElementById('navLinks').classList.toggle('open');
-    };
-}
-
 /* ════════════════════════════════════════════════════════
-   DRAG & DROP  +  FILE INPUT
+   DRAG & DROP + FILE INPUT
 ════════════════════════════════════════════════════════ */
 const dropZone  = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -710,7 +950,6 @@ function handleFile(file) {
     selectedFileName = file.name.replace(/\.[^/.]+$/, '');
     document.getElementById('fileName').textContent = file.name;
 
-    // Show options section with loading state
     document.getElementById('originalPreview').style.display = 'none';
     document.getElementById('originalLoading').style.display = 'flex';
     showSection('optionsSection');
@@ -720,14 +959,12 @@ function handleFile(file) {
         try {
             pdfData = new Uint8Array(e.target.result);
 
-            // Render original preview at 200px
             const previewUrl = await renderPdfPage(200);
             const img = document.getElementById('originalPreview');
             img.src = previewUrl;
             img.style.display = 'block';
             document.getElementById('originalLoading').style.display = 'none';
 
-            // Render size strip previews
             await refreshSizePreviews();
 
         } catch (err) {
@@ -741,44 +978,33 @@ function handleFile(file) {
 
 /* ════════════════════════════════════════════════════════
    RENDER PDF PAGE → DATA URL
-   Always creates a fresh PDF document instance to avoid
-   "transport destroyed" errors on repeated renders.
 ════════════════════════════════════════════════════════ */
 async function renderPdfPage(outputSize) {
     const fitMode = document.getElementById('fitMode').value;
     const bgMode  = document.getElementById('bgMode').value;
 
-    // Fresh load every time
     const pdf  = await pdfjsLib.getDocument({ data: pdfData.slice(0) }).promise;
     const page = await pdf.getPage(1);
-
-    // Natural viewport at scale 1
     const rawVP = page.getViewport({ scale: 1 });
 
-    // Scale so the content fills the square correctly
     let scale;
     if (fitMode === 'contain') {
         scale = outputSize / Math.max(rawVP.width, rawVP.height);
     } else {
-        // cover — fill all of outputSize
         scale = outputSize / Math.min(rawVP.width, rawVP.height);
     }
 
-    const vp = page.getViewport({ scale });
-
-    // Render into a temporary canvas
-    const tmp    = document.createElement('canvas');
-    tmp.width    = Math.round(vp.width);
-    tmp.height   = Math.round(vp.height);
+    const vp  = page.getViewport({ scale });
+    const tmp = document.createElement('canvas');
+    tmp.width  = Math.round(vp.width);
+    tmp.height = Math.round(vp.height);
     await page.render({ canvasContext: tmp.getContext('2d'), viewport: vp }).promise;
 
-    // Compose square output canvas
-    const out    = document.createElement('canvas');
-    out.width    = outputSize;
-    out.height   = outputSize;
-    const ctx    = out.getContext('2d');
+    const out = document.createElement('canvas');
+    out.width  = outputSize;
+    out.height = outputSize;
+    const ctx  = out.getContext('2d');
 
-    // Background
     if (bgMode === 'white') {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, outputSize, outputSize);
@@ -786,9 +1012,7 @@ async function renderPdfPage(outputSize) {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, outputSize, outputSize);
     }
-    // transparent → nothing to fill
 
-    // Draw centered
     const dx = (outputSize - tmp.width)  / 2;
     const dy = (outputSize - tmp.height) / 2;
     ctx.drawImage(tmp, dx, dy);
@@ -800,22 +1024,18 @@ async function renderPdfPage(outputSize) {
    REFRESH SIZE STRIP PREVIEWS
 ════════════════════════════════════════════════════════ */
 async function refreshSizePreviews() {
-    // Main ICO preview
-    const sizeVal    = document.getElementById('icoSize').value;
-    const previewSz  = sizeVal === 'all' ? 64 : parseInt(sizeVal);
-    const mainUrl    = await renderPdfPage(previewSz);
+    const sizeVal   = document.getElementById('icoSize').value;
+    const previewSz = sizeVal === 'all' ? 64 : parseInt(sizeVal);
+    const mainUrl   = await renderPdfPage(previewSz);
     document.getElementById('icoMainPreview').src = mainUrl;
 
-    // Strip
     for (const s of [16, 32, 48, 64]) {
         try {
-            const url = await renderPdfPage(s);
-            document.getElementById('preview' + s).src = url;
+            document.getElementById('preview' + s).src = await renderPdfPage(s);
         } catch (e) { /* skip */ }
     }
 }
 
-/* Called by onchange on selects */
 async function updatePreview() {
     if (!pdfData) return;
     try { await refreshSizePreviews(); }
@@ -823,41 +1043,31 @@ async function updatePreview() {
 }
 
 /* ════════════════════════════════════════════════════════
-   BUILD ICO BLOB  (PNG-in-ICO)
-
-   ICO layout:
-     Offset  0 : ICONDIR      (6 bytes)
-     Offset  6 : ICONDIRENTRY (16 bytes)
-     Offset 22 : PNG data
+   BUILD ICO BLOB (PNG-in-ICO, offset = 22)
 ════════════════════════════════════════════════════════ */
 function buildICO(pngBytes, size) {
     const DATA_OFFSET = 22;
-    const totalSize   = DATA_OFFSET + pngBytes.length;
-
-    const buf  = new ArrayBuffer(totalSize);
+    const buf  = new ArrayBuffer(DATA_OFFSET + pngBytes.length);
     const view = new DataView(buf);
     const u8   = new Uint8Array(buf);
 
-    // ICONDIR
-    view.setUint16(0, 0, true);  // reserved
-    view.setUint16(2, 1, true);  // type = ICO
-    view.setUint16(4, 1, true);  // image count = 1
+    view.setUint16(0, 0, true);
+    view.setUint16(2, 1, true);
+    view.setUint16(4, 1, true);
 
-    // ICONDIRENTRY
-    u8[6]  = size >= 256 ? 0 : size;   // width  (0 = 256)
-    u8[7]  = size >= 256 ? 0 : size;   // height (0 = 256)
-    u8[8]  = 0;                         // colour count
-    u8[9]  = 0;                         // reserved
-    view.setUint16(10, 1,               true);  // planes
-    view.setUint16(12, 32,              true);  // bits per pixel
-    view.setUint32(14, pngBytes.length, true);  // size of PNG data
-    view.setUint32(18, DATA_OFFSET,     true);  // ★ offset = 22
+    u8[6]  = size >= 256 ? 0 : size;
+    u8[7]  = size >= 256 ? 0 : size;
+    u8[8]  = 0;
+    u8[9]  = 0;
+    view.setUint16(10, 1,               true);
+    view.setUint16(12, 32,              true);
+    view.setUint32(14, pngBytes.length, true);
+    view.setUint32(18, DATA_OFFSET,     true);
 
     u8.set(pngBytes, DATA_OFFSET);
     return new Blob([buf], { type: 'image/x-icon' });
 }
 
-/* Helper: dataURL → Uint8Array */
 function dataURLtoBytes(dataURL) {
     const b64    = dataURL.split(',')[1];
     const binary = atob(b64);
@@ -881,11 +1091,11 @@ async function generateICO() {
 
         const sizeVal = document.getElementById('icoSize').value;
 
-        /* ── ZIP Pack ───────────────────────────────────────── */
+        /* ── ZIP Pack ── */
         if (sizeVal === 'all') {
-            outputIsZip     = true;
-            const zip       = new JSZip();
-            const sizes     = [16, 32, 48, 64, 128];
+            outputIsZip  = true;
+            const zip    = new JSZip();
+            const sizes  = [16, 32, 48, 64, 128];
 
             for (let i = 0; i < sizes.length; i++) {
                 const s   = sizes[i];
@@ -904,9 +1114,8 @@ async function generateICO() {
             updateProgress(85, 'Packing ZIP…', 'Almost done');
             outputBlob = await zip.generateAsync({ type: 'blob' });
 
-            // Result UI
             const previewUrl = await renderPdfPage(64);
-            document.getElementById('resultPreview').src           = previewUrl;
+            document.getElementById('resultPreview').src            = previewUrl;
             document.getElementById('resultTitle').textContent      = 'ICO Pack Created! 🎉';
             document.getElementById('resultSubtitle').textContent   = 'Your complete favicon pack is ready';
             document.getElementById('resultDimensions').textContent = '16–128px';
@@ -915,7 +1124,7 @@ async function generateICO() {
             document.getElementById('resultFileName').textContent   = selectedFileName + '_ico_pack.zip';
             document.getElementById('formatBadge').textContent      = 'ICO + PNG Multi-size Pack';
 
-        /* ── Single ICO ─────────────────────────────────────── */
+        /* ── Single ICO ── */
         } else {
             outputIsZip  = false;
             const size   = parseInt(sizeVal);
@@ -927,7 +1136,7 @@ async function generateICO() {
 
             updateProgress(80, 'Building ICO…', 'Finalizing file');
 
-            document.getElementById('resultPreview').src           = url;
+            document.getElementById('resultPreview').src            = url;
             document.getElementById('resultTitle').textContent      = 'ICO Created Successfully! 🎉';
             document.getElementById('resultSubtitle').textContent   = 'Your favicon icon is ready to download';
             document.getElementById('resultDimensions').textContent = size + '×' + size;
@@ -991,7 +1200,6 @@ function resetTool() {
     outputIsZip  = false;
     fileInput.value = '';
 
-    // Clear all previews
     ['originalPreview','icoMainPreview',
      'preview16','preview32','preview48','preview64',
      'resultPreview'].forEach(id => {
