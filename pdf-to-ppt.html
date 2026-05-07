@@ -5,659 +5,1546 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF to PowerPoint - Convert PDF to PPTX Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+    <meta name="description" content="Convert PDF pages into editable PowerPoint slides online for free. Works 100% in your browser!">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
     <style>
-        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:20px}
-        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#ef4444,#dc2626)}
-        .file-card-info{flex:1;min-width:0}
-        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
-        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
-        .file-card-meta .fbadge{background:rgba(249,115,22,0.1);color:#ea580c;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
-        .convert-preview{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:center;padding:20px;background:rgba(255,255,255,0.3);border-radius:14px;margin-bottom:20px}
-        .cv-box{text-align:center;padding:20px 15px;border-radius:12px}
-        .cv-box.from{background:rgba(239,68,68,0.08);border:2px solid rgba(239,68,68,0.2)}
-        .cv-box.to{background:rgba(249,115,22,0.08);border:2px solid rgba(249,115,22,0.2)}
-        .cv-box i{font-size:36px;margin-bottom:8px;display:block}
-        .cv-box.from i{color:#ef4444}.cv-box.to i{color:#ea580c}
-        .cv-box h4{font-size:13px;font-weight:700}.cv-box p{font-size:11px;color:var(--text-light)}
-        .cv-arrow{font-size:28px;color:var(--primary)}
-        .slide-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:15px 0}
-        .slide-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:15px;position:relative;min-height:120px}
-        .slide-card .sn{position:absolute;top:5px;right:8px;font-size:10px;color:var(--text-light);font-weight:700}
-        .slide-card .st{font-size:12px;font-weight:700;color:#ea580c;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .slide-card .sb{font-size:10px;color:#666;line-height:1.5;max-height:70px;overflow:hidden}
-        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
-        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
-        .sbox h4{font-size:22px;font-weight:800;color:#ea580c}.sbox p{font-size:11px;color:var(--text-light)}
-        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
-        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
-        @media(max-width:768px){.convert-preview{grid-template-columns:1fr}.cv-arrow{transform:rotate(90deg)}.slide-preview{grid-template-columns:1fr 1fr}.opt-grid{grid-template-columns:1fr}}
+        /* ════════════════════════════════════════
+           FILE CARD
+        ════════════════════════════════════════ */
+        .file-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 15px 18px;
+            background: rgba(255,255,255,0.45);
+            border: 1px solid rgba(255,255,255,0.55);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .file-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            flex-shrink: 0;
+            background: linear-gradient(135deg,#ef4444,#dc2626);
+        }
+
+        .file-card-info { flex: 1; min-width: 0; }
+
+        .file-card-info h4 {
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+            color: var(--text-dark, #1e293b);
+        }
+
+        .file-card-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .file-card-meta span {
+            font-size: 12px;
+            color: var(--text-light, #64748b);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fbadge {
+            background: rgba(249,115,22,0.10);
+            color: #ea580c;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px !important;
+        }
+
+        /* ════════════════════════════════════════
+           CONVERT PREVIEW
+        ════════════════════════════════════════ */
+        .convert-preview {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 14px;
+            align-items: center;
+            padding: 18px;
+            background: rgba(255,255,255,0.30);
+            border-radius: 14px;
+            margin-bottom: 20px;
+        }
+
+        .cv-box {
+            text-align: center;
+            padding: 18px 14px;
+            border-radius: 12px;
+        }
+
+        .cv-box.from {
+            background: rgba(239,68,68,0.07);
+            border: 2px solid rgba(239,68,68,0.18);
+        }
+
+        .cv-box.to {
+            background: rgba(249,115,22,0.07);
+            border: 2px solid rgba(249,115,22,0.18);
+        }
+
+        .cv-box i {
+            font-size: 34px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .cv-box.from i { color: #ef4444; }
+        .cv-box.to   i { color: #ea580c; }
+
+        .cv-box h4 {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 3px;
+            color: var(--text-dark, #1e293b);
+        }
+
+        .cv-box p {
+            font-size: 11px;
+            color: var(--text-light, #64748b);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cv-arrow {
+            font-size: 24px;
+            color: var(--primary, #6366f1);
+            text-align: center;
+        }
+
+        /* ════════════════════════════════════════
+           OPTIONS GRID
+        ════════════════════════════════════════ */
+        .opt-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 14px 0;
+        }
+
+        /* ════════════════════════════════════════
+           SLIDE PREVIEW
+        ════════════════════════════════════════ */
+        .slide-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+            gap: 12px;
+            margin: 14px 0;
+        }
+
+        .slide-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            position: relative;
+            min-height: 120px;
+            transition: all 0.2s ease;
+        }
+
+        .slide-card:hover {
+            border-color: rgba(249,115,22,0.3);
+            box-shadow: 0 4px 14px rgba(249,115,22,0.08);
+        }
+
+        .slide-card .sn {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            font-size: 10px;
+            color: var(--text-light, #94a3b8);
+            font-weight: 700;
+        }
+
+        .slide-card .st {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ea580c;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 24px;
+        }
+
+        .slide-card .sb {
+            font-size: 10px;
+            color: #64748b;
+            line-height: 1.5;
+            max-height: 65px;
+            overflow: hidden;
+        }
+
+        /* ════════════════════════════════════════
+           STATS ROW
+        ════════════════════════════════════════ */
+        .srow {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .sbox {
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.40);
+            border: 1px solid rgba(255,255,255,0.55);
+            border-radius: 12px;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .sbox h4 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ea580c;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .sbox p {
+            font-size: 11px;
+            color: var(--text-light, #64748b);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin: 0;
+        }
+
+        /* ════════════════════════════════════════
+           ERROR BOX
+        ════════════════════════════════════════ */
+        .emsg {
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #dc2626;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        /* ════════════════════════════════════════
+           ORANGE ACTION BTN
+        ════════════════════════════════════════ */
+        .action-btn-orange {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 22px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(249,115,22,0.25);
+        }
+
+        .action-btn-orange:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(249,115,22,0.35);
+        }
+
+        .action-btn-orange:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .download-btn-orange {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 18px 0;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(249,115,22,0.28);
+        }
+
+        .download-btn-orange:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(249,115,22,0.40);
+        }
+
+        /* ════════════════════════════════════════
+           UPLOAD ZONE OVERRIDE
+        ════════════════════════════════════════ */
+        .upload-zone-ppt {
+            padding: 50px 28px;
+            text-align: center;
+            border: 3px dashed rgba(249,115,22,0.30);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .upload-zone-ppt:hover,
+        .upload-zone-ppt.dragover {
+            border-color: rgba(249,115,22,0.65);
+            background: rgba(249,115,22,0.04);
+        }
+
+        .upload-zone-ppt .uico {
+            font-size: 58px;
+            color: #ea580c;
+            margin-bottom: 18px;
+            display: block;
+        }
+
+        .upload-zone-ppt h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-dark, #1e293b);
+        }
+
+        .upload-zone-ppt > p {
+            color: var(--text-light, #64748b);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .upload-btn-orange {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(249,115,22,0.28);
+        }
+
+        .upload-btn-orange:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249,115,22,0.38);
+        }
+
+        /* ════════════════════════════════════════
+           ORANGE PROGRESS
+        ════════════════════════════════════════ */
+        .progress-fill-orange {
+            height: 100%;
+            background: linear-gradient(90deg, #f97316, #ea580c);
+            border-radius: 50px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        /* ════════════════════════════════════════
+           ICON COLORS
+        ════════════════════════════════════════ */
+        .icon-red    { background: linear-gradient(135deg,#ef4444,#dc2626); }
+        .icon-blue   { background: linear-gradient(135deg,#3b82f6,#2563eb); }
+        .icon-green  { background: linear-gradient(135deg,#22c55e,#16a34a); }
+        .icon-orange { background: linear-gradient(135deg,#f97316,#ea580c); }
+        .icon-purple { background: linear-gradient(135deg,#a855f7,#9333ea); }
+        .icon-pink   { background: linear-gradient(135deg,#ec4899,#db2777); }
+
+        /* ════════════════════════════════════════
+           FAQ ACCORDION
+        ════════════════════════════════════════ */
+        .faq-section { padding: 50px 0; }
+
+        .faq-list { max-width: 750px; margin: 0 auto; }
+
+        .faq-item {
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .faq-item:hover {
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+            transform: translateY(-1px);
+        }
+
+        .faq-item.open {
+            background: rgba(255,255,255,0.85);
+            border-color: rgba(249,115,22,0.20);
+            box-shadow: 0 6px 25px rgba(249,115,22,0.10);
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            gap: 14px;
+        }
+
+        .faq-question h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark, #1e293b);
+            margin: 0;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .faq-item.open .faq-question h4 { color: #ea580c; }
+
+        .faq-question i {
+            font-size: 13px;
+            color: var(--text-light, #94a3b8);
+            transition: transform 0.35s ease, color 0.3s ease;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+            color: #ea580c;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        .faq-answer-inner { padding: 0 22px 20px; }
+
+        .faq-item.open .faq-answer-inner {
+            border-top: 1px solid rgba(249,115,22,0.10);
+            padding-top: 16px;
+            margin: 0 22px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .faq-answer-inner p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-light, #64748b);
+            margin: 0;
+        }
+
+        .faq-answer-inner p strong { color: var(--text-dark, #1e293b); }
+
+        .faq-num {
+            width: 28px;
+            height: 28px;
+            background: rgba(249,115,22,0.10);
+            color: #ea580c;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.open .faq-num {
+            background: #ea580c;
+            color: #fff;
+        }
+
+        /* ════════════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .convert-preview {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .cv-arrow { transform: rotate(90deg); }
+
+            .slide-preview {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .opt-grid { grid-template-columns: 1fr; }
+
+            .srow { gap: 10px; }
+            .sbox { min-width: 75px; padding: 12px 14px; }
+            .sbox h4 { font-size: 18px; }
+
+            .faq-question { padding: 16px 18px; gap: 10px; }
+            .faq-question h4 { font-size: 14px; }
+            .faq-answer-inner { padding: 0 18px 18px; }
+            .faq-item.open .faq-answer-inner { margin: 0 18px; }
+            .faq-answer-inner p { font-size: 13px; }
+            .faq-num { width: 24px; height: 24px; font-size: 11px; }
+        }
+
+        @media (max-width: 480px) {
+            .upload-zone-ppt { padding: 36px 16px; }
+            .upload-zone-ppt .uico { font-size: 46px; }
+            .upload-zone-ppt h2 { font-size: 18px; }
+            .slide-preview { grid-template-columns: 1fr; }
+            .faq-question { padding: 14px; }
+            .faq-question h4 { font-size: 13px; }
+            .faq-item { border-radius: 10px; margin-bottom: 8px; }
+        }
     </style>
 </head>
 <body>
 
-    <nav class="navbar glass">
-        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-        <div class="nav-links" id="navLinks">
+<!-- ═══════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════ -->
+<nav class="navbar glass">
+    <a href="index.html" class="logo">
+        <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+    </a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb">
             <a href="index.html"><i class="fas fa-home"></i> Home</a>
-            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>PDF to PowerPoint</span>
         </div>
-    </nav>
-
-    <section class="tool-header">
-        <div class="container">
-            <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>PDF to PowerPoint</span></div>
-            <div class="tool-title">
-                <div class="tool-title-icon icon-orange"><i class="fas fa-file-powerpoint"></i></div>
-                <div><h1>PDF to PowerPoint</h1><p>Convert PDF pages into editable PowerPoint slides. 100% browser-based!</p></div>
+        <div class="tool-title">
+            <div class="tool-title-icon icon-orange">
+                <i class="fas fa-file-powerpoint"></i>
+            </div>
+            <div>
+                <h1>PDF to PowerPoint</h1>
+                <p>Convert PDF pages into editable PowerPoint slides. Free &amp; 100% browser-based!</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="tool-area">
-        <div class="container">
-            <div class="tool-wrapper glass">
+<!-- AD TOP -->
+<div class="adsense-wrapper">
+    <div class="adsense-unit" data-slot="topBanner" data-format="auto"></div>
+</div>
 
-                <!-- STEP 1: UPLOAD -->
-                <div id="s1">
-                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(249,115,22,0.3);border-radius:20px;margin:25px;cursor:pointer;"
-                         id="dropBox" onclick="document.getElementById('fi').click()">
-                        <div style="font-size:60px;margin-bottom:20px;color:#ea580c;">
+<!-- ═══════════════════════════════════════
+     MAIN TOOL
+═══════════════════════════════════════ -->
+<section class="tool-area">
+    <div class="container">
+        <div class="tool-wrapper glass">
+
+            <!-- ── STEP 1: UPLOAD ── -->
+            <div id="s1" data-section>
+                <div class="upload-zone-ppt" id="dropBox"
+                     onclick="document.getElementById('fi').click()">
+                    <i class="fas fa-file-powerpoint uico"></i>
+                    <h2>Upload PDF to Convert</h2>
+                    <p>Each PDF page becomes a PowerPoint slide</p>
+                    <button class="upload-btn-orange"
+                            onclick="event.stopPropagation();
+                                     document.getElementById('fi').click()">
+                        <i class="fas fa-plus"></i> Select PDF File
+                    </button>
+                    <input type="file" id="fi" accept=".pdf,application/pdf" hidden>
+                    <div class="upload-hints" style="margin-top:20px;">
+                        <span><i class="fas fa-lock"></i> 100% Private</span>
+                        <span><i class="fas fa-laptop"></i> Browser Only</span>
+                        <span><i class="fas fa-file-powerpoint"></i> .PPTX Output</span>
+                    </div>
+                    <p style="margin-top:12px;font-size:12px;color:var(--text-light);">
+                        <i class="fas fa-shield-alt"></i>
+                        Your PDF never leaves your device!
+                    </p>
+                </div>
+            </div>
+
+            <!-- ── STEP 2: OPTIONS ── -->
+            <div id="s2" data-section style="display:none;">
+                <div class="files-area">
+
+                    <!-- Error -->
+                    <div class="emsg" id="em">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="et">Something went wrong.</span>
+                    </div>
+
+                    <!-- File Card -->
+                    <div class="file-card">
+                        <div class="file-card-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="file-card-info">
+                            <h4 id="fn">document.pdf</h4>
+                            <div class="file-card-meta">
+                                <span class="fbadge" id="fs">0 KB</span>
+                                <span>
+                                    <i class="fas fa-copy"></i>
+                                    <span id="fp">0</span> pages
+                                </span>
+                            </div>
+                        </div>
+                        <div class="files-actions">
+                            <button class="btn-danger-sm" onclick="doReset()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Convert Preview -->
+                    <div class="convert-preview">
+                        <div class="cv-box from">
+                            <i class="fas fa-file-pdf"></i>
+                            <h4>PDF</h4>
+                            <p id="pvPdf">document.pdf</p>
+                        </div>
+                        <div class="cv-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="cv-box to">
                             <i class="fas fa-file-powerpoint"></i>
-                        </div>
-                        <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Convert</h2>
-                        <p style="color:var(--text-light);margin-bottom:25px;">Each PDF page becomes a PowerPoint slide</p>
-                        <button class="upload-btn" style="background:linear-gradient(135deg,#f97316,#ea580c);"
-                                onclick="event.stopPropagation();document.getElementById('fi').click()">
-                            <i class="fas fa-plus"></i> Select PDF File
-                        </button>
-                        <input type="file" id="fi" accept=".pdf" style="display:none">
-                        <div class="upload-hints" style="margin-top:20px;">
-                            <span><i class="fas fa-lock"></i> Private</span>
-                            <span><i class="fas fa-laptop"></i> Browser Only</span>
-                            <span><i class="fas fa-file-powerpoint"></i> .PPTX Output</span>
+                            <h4>PowerPoint</h4>
+                            <p id="pvPpt">document.pptx</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- STEP 2: OPTIONS -->
-                <div id="s2" style="display:none;">
-                    <div class="files-area">
-                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
-
-                        <div class="file-card">
-                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
-                            <div class="file-card-info">
-                                <h4 id="fn">document.pdf</h4>
-                                <div class="file-card-meta">
-                                    <span class="fbadge" id="fs">0 KB</span>
-                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
-                                </div>
+                    <!-- Options -->
+                    <div class="options-panel glass-light">
+                        <h4><i class="fas fa-cog"></i> Slide Options</h4>
+                        <div class="opt-grid">
+                            <div class="option-field">
+                                <label>Slide Size</label>
+                                <select id="optSize">
+                                    <option value="wide">Widescreen (16:9)</option>
+                                    <option value="std">Standard (4:3)</option>
+                                </select>
                             </div>
-                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
-                        </div>
-
-                        <div class="convert-preview">
-                            <div class="cv-box from"><i class="fas fa-file-pdf"></i><h4>PDF</h4><p id="pvPdf">doc.pdf</p></div>
-                            <div class="cv-arrow"><i class="fas fa-arrow-right"></i></div>
-                            <div class="cv-box to"><i class="fas fa-file-powerpoint"></i><h4>PowerPoint</h4><p id="pvPpt">doc.pptx</p></div>
-                        </div>
-
-                        <div class="options-panel glass-light">
-                            <h4><i class="fas fa-cog"></i> Slide Options</h4>
-                            <div class="opt-grid">
-                                <div class="option-field">
-                                    <label>Slide Size</label>
-                                    <select id="optSize">
-                                        <option value="wide">Widescreen (16:9)</option>
-                                        <option value="std">Standard (4:3)</option>
-                                    </select>
-                                </div>
-                                <div class="option-field">
-                                    <label>Title Bar Color</label>
-                                    <select id="optColor">
-                                        <option value="1e3a5f">Dark Blue</option>
-                                        <option value="2d572c">Dark Green</option>
-                                        <option value="5b2c6f">Purple</option>
-                                        <option value="922b21">Dark Red</option>
-                                        <option value="1c1c1c">Black</option>
-                                        <option value="ea580c">Orange</option>
-                                    </select>
-                                </div>
+                            <div class="option-field">
+                                <label>Title Bar Color</label>
+                                <select id="optColor">
+                                    <option value="1e3a5f">Dark Blue</option>
+                                    <option value="2d572c">Dark Green</option>
+                                    <option value="5b2c6f">Purple</option>
+                                    <option value="922b21">Dark Red</option>
+                                    <option value="1c1c1c">Black</option>
+                                    <option value="ea580c">Orange</option>
+                                </select>
                             </div>
                         </div>
+                    </div>
 
-                        <button class="action-btn" style="background:linear-gradient(135deg,#f97316,#ea580c);" onclick="doConvert()">
-                            <i class="fas fa-exchange-alt"></i> Convert to PowerPoint
+                    <!-- Convert Button -->
+                    <button class="action-btn-orange" id="convertBtn" onclick="doConvert()">
+                        <i class="fas fa-exchange-alt"></i> Convert to PowerPoint
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- ── STEP 3: PROCESSING ── -->
+            <div id="s3" data-section style="display:none;">
+                <div class="processing-area">
+                    <div class="spinner"></div>
+                    <h3 id="pt">Converting to PowerPoint...</h3>
+                    <p id="ps">Creating slides</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill-orange" id="pb"></div>
+                    </div>
+                    <span class="progress-text" id="pp">0%</span>
+                </div>
+            </div>
+
+            <!-- ── STEP 4: RESULT ── -->
+            <div id="s4" data-section style="display:none;">
+                <div class="result-area">
+                    <div class="result-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2>Converted to PowerPoint! 🎯</h2>
+                    <p>Your presentation is ready to download</p>
+
+                    <!-- Stats -->
+                    <div class="srow">
+                        <div class="sbox">
+                            <h4 id="rSlides">0</h4>
+                            <p>Slides</p>
+                        </div>
+                        <div class="sbox">
+                            <h4 id="rWords">0</h4>
+                            <p>Words</p>
+                        </div>
+                        <div class="sbox">
+                            <h4 id="rSz">0 KB</h4>
+                            <p>File Size</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide Previews -->
+                    <div style="text-align:left;margin-bottom:8px;">
+                        <h4 style="font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;">
+                            <i class="fas fa-th-large" style="color:#ea580c;"></i>
+                            Slide Preview
+                        </h4>
+                    </div>
+                    <div class="slide-preview" id="spv"></div>
+
+                    <!-- Result Info -->
+                    <div class="result-info glass-light" style="margin-top:16px;">
+                        <div class="info-item">
+                            <i class="fas fa-file-powerpoint" style="color:#ea580c;"></i>
+                            <span id="rfn">document.pptx</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-weight-hanging"></i>
+                            <span id="rfz">0 KB</span>
+                        </div>
+                    </div>
+
+                    <button class="download-btn-orange" onclick="doDownload()">
+                        <i class="fas fa-download"></i> Download PowerPoint
+                    </button>
+
+                    <div class="result-actions">
+                        <button class="btn-outline" onclick="doReset()">
+                            <i class="fas fa-redo"></i> Convert Another
+                        </button>
+                        <button class="btn-outline" onclick="goBackOptions()">
+                            <i class="fas fa-sliders-h"></i> Change Options
                         </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- STEP 3: PROCESSING -->
-                <div id="s3" style="display:none;">
-                    <div class="processing-area">
-                        <div class="spinner"></div>
-                        <h3 id="pt">Converting to PowerPoint...</h3>
-                        <p id="ps">Creating slides</p>
-                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#f97316,#ea580c);"></div></div>
-                        <span class="progress-text" id="pp">0%</span>
+        </div>
+    </div>
+</section>
+
+<!-- AD MIDDLE -->
+<div class="adsense-wrapper">
+    <div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     RELATED TOOLS
+═══════════════════════════════════════ -->
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header">
+            <h2>Related Tools</h2>
+            <p>Tools that work great with PDF to PowerPoint</p>
+        </div>
+        <div class="related-grid">
+            <a href="ppt-to-pdf.html"   class="related-card glass">
+                <div class="related-icon icon-pink"><i class="fas fa-file-powerpoint"></i></div>
+                <h4>PPT to PDF</h4>
+            </a>
+            <a href="pdf-to-word.html"  class="related-card glass">
+                <div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div>
+                <h4>PDF to Word</h4>
+            </a>
+            <a href="pdf-to-excel.html" class="related-card glass">
+                <div class="related-icon icon-green"><i class="fas fa-file-excel"></i></div>
+                <h4>PDF to Excel</h4>
+            </a>
+            <a href="pdf-to-jpg.html"   class="related-card glass">
+                <div class="related-icon icon-orange"><i class="fas fa-file-image"></i></div>
+                <h4>PDF to JPG</h4>
+            </a>
+            <a href="compress-pdf.html" class="related-card glass">
+                <div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div>
+                <h4>Compress PDF</h4>
+            </a>
+            <a href="merge-pdf.html"    class="related-card glass">
+                <div class="related-icon icon-red"><i class="fas fa-object-group"></i></div>
+                <h4>Merge PDF</h4>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     HOW TO
+═══════════════════════════════════════ -->
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>How to Convert PDF to PowerPoint</h2>
+            <p>Simple 3-step process</p>
+        </div>
+        <div class="steps-row">
+            <div class="step-box glass">
+                <div class="step-num">1</div>
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h4>Upload PDF</h4>
+                <p>Select your PDF file from your device.</p>
+            </div>
+            <div class="step-box glass">
+                <div class="step-num">2</div>
+                <i class="fas fa-cog"></i>
+                <h4>Choose Options</h4>
+                <p>Select slide size and title bar color.</p>
+            </div>
+            <div class="step-box glass">
+                <div class="step-num">3</div>
+                <i class="fas fa-download"></i>
+                <h4>Download PPTX</h4>
+                <p>Get your editable PowerPoint presentation.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FAQ — ACCORDION
+═══════════════════════════════════════ -->
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-list">
+
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">1</span>
+                    <h4>Does each PDF page become a slide?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>Yes! Each PDF page is converted into a separate PowerPoint slide
+                        with a <strong>title bar</strong> (first line of text) and
+                        <strong>content area</strong> (remaining text).</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- STEP 4: RESULT -->
-                <div id="s4" style="display:none;">
-                    <div class="result-area">
-                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                        <h2>Converted to PowerPoint! 🎯</h2>
-
-                        <div class="srow">
-                            <div class="sbox"><h4 id="rSlides">0</h4><p>Slides</p></div>
-                            <div class="sbox"><h4 id="rWords">0</h4><p>Words</p></div>
-                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
-                        </div>
-
-                        <div style="text-align:left;">
-                            <h4 style="font-size:14px;margin-bottom:8px;">
-                                <i class="fas fa-th-large" style="color:#ea580c"></i> Slide Preview:
-                            </h4>
-                            <div class="slide-preview" id="spv"></div>
-                        </div>
-
-                        <div class="result-info glass-light" style="margin-top:15px;">
-                            <div class="info-item"><i class="fas fa-file-powerpoint" style="color:#ea580c"></i> <span id="rfn">doc.pptx</span></div>
-                        </div>
-
-                        <button class="download-btn" style="background:linear-gradient(135deg,#f97316,#ea580c);" onclick="doDownload()">
-                            <i class="fas fa-download"></i> Download PowerPoint
-                        </button>
-
-                        <div class="result-actions">
-                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Convert Another</button>
-                        </div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">2</span>
+                    <h4>Can I edit the slides after converting?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>Yes! The <strong>.PPTX</strong> file is fully editable in
+                        <strong>Microsoft PowerPoint</strong>, <strong>Google Slides</strong>,
+                        and <strong>LibreOffice Impress</strong>.</p>
                     </div>
                 </div>
+            </div>
 
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">3</span>
+                    <h4>Why is my PDF not converting?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>This tool works with <strong>text-based PDFs</strong>.
+                        If your PDF is scanned or image-based, it won't have
+                        extractable text. Try our <strong>OCR PDF</strong> tool first.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">4</span>
+                    <h4>Is my file secure and private?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>100% secure! All processing happens in your browser using JavaScript.
+                        <strong>No files are uploaded</strong> to any server —
+                        complete privacy guaranteed.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">5</span>
+                    <h4>Which slide size should I choose?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>Choose <strong>Widescreen (16:9)</strong> for modern screens and
+                        projectors. Use <strong>Standard (4:3)</strong> for older displays
+                        or when printing slides.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo">
+                <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+            </div>
+            <p>© 2025 PDFTools. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="contact.html">Contact</a>
             </div>
         </div>
-    </section>
+    </div>
+</footer>
 
-    <section class="related-tools">
-        <div class="container">
-            <div class="section-header"><h2>Related Tools</h2></div>
-            <div class="related-grid">
-                <a href="ppt-to-pdf.html" class="related-card glass"><div class="related-icon icon-pink"><i class="fas fa-file-powerpoint"></i></div><h4>PPT to PDF</h4></a>
-                <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
-                <a href="pdf-to-excel.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-file-excel"></i></div><h4>PDF to Excel</h4></a>
-                <a href="pdf-to-jpg.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-file-image"></i></div><h4>PDF to JPG</h4></a>
-                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
-                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
-            </div>
-        </div>
-    </section>
+<script src="js/tool-page.js"></script>
+<script src="js/adsense.js"></script>
 
-    <section class="how-to-section">
-        <div class="container">
-            <div class="section-header"><h2>How to Convert PDF to PowerPoint</h2></div>
-            <div class="steps-row">
-                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your PDF file.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-cog"></i><h4>Options</h4><p>Choose slide size & theme.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get your PPTX file.</p></div>
-            </div>
-        </div>
-    </section>
+<script>
+/* ════════════════════════════════════════════════════════
+   PDF.js Worker
+════════════════════════════════════════════════════════ */
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    <section class="faq-section">
-        <div class="container">
-            <div class="section-header"><h2>FAQ</h2></div>
-            <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Each PDF page becomes a slide?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Each page is converted into a separate slide with title and content.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I edit the slides?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! The PPTX is fully editable in PowerPoint, Google Slides, or LibreOffice.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Everything runs in your browser. No server upload.</p></div></div>
-            </div>
-        </div>
-    </section>
+/* ════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════ */
+let D = {
+    file:     null,
+    rawBytes: null,    // Uint8Array — never detaches
+    name:     'presentation',
+    pages:    0,
+    text:     '',
+    ptexts:   [],
+    blob:     null
+};
 
-    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+/* ════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════ */
 
-    <script src="js/tool-page.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+/* FAQ Accordion */
+function toggleFaq(clickedItem) {
+    const isOpen = clickedItem.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('open'));
+    if (!isOpen) clickedItem.classList.add('open');
+}
 
-    <script>
-    // ==========================================
-    // PDF TO POWERPOINT - FIXED VERSION
-    // Fix: ArrayBuffer detached issue
-    // ==========================================
-
-    // ===== Store raw bytes instead of ArrayBuffer =====
-    var D = {
-        file: null,
-        rawBytes: null,    // ✅ Store as Uint8Array (never detaches)
-        name: 'presentation',
-        pages: 0,
-        text: '',
-        ptexts: [],
-        blob: null
+/* Mobile menu guard */
+if (typeof toggleMobileMenu === 'undefined') {
+    window.toggleMobileMenu = function () {
+        document.getElementById('navLinks').classList.toggle('open');
     };
+}
 
-    // PDF.js init
-    window.addEventListener('load', function() {
-        try {
-            pdfjsLib.GlobalWorkerOptions.workerSrc =
-                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-            console.log('PDF.js ready');
-        } catch(e) { console.error(e); }
-    });
+function goTo(id) {
+    document.querySelectorAll('[data-section]')
+            .forEach(s => s.style.display = 'none');
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block';
+}
 
-    // File input
-    document.getElementById('fi').addEventListener('change', function() {
-        if (this.files && this.files[0]) onFile(this.files[0]);
-    });
+function prog(p, t, s) {
+    const b  = document.getElementById('pb');
+    const pt = document.getElementById('pp');
+    const tt = document.getElementById('pt');
+    const ss = document.getElementById('ps');
+    if (b)        b.style.width = p + '%';
+    if (pt)       pt.textContent = p + '%';
+    if (tt && t)  tt.textContent = t;
+    if (ss && s)  ss.textContent = s;
+}
 
-    // Drag drop
-    var dropBox = document.getElementById('dropBox');
-    dropBox.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        this.style.borderColor = '#ea580c';
-        this.style.background = 'rgba(249,115,22,0.05)';
-    });
-    dropBox.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        this.style.borderColor = 'rgba(249,115,22,0.3)';
-        this.style.background = '';
-    });
-    dropBox.addEventListener('drop', function(e) {
-        e.preventDefault();
-        this.style.borderColor = 'rgba(249,115,22,0.3)';
-        this.style.background = '';
-        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
-    });
+function showE(m) {
+    const e = document.getElementById('em');
+    const t = document.getElementById('et');
+    if (e && t) { t.textContent = m; e.style.display = 'flex'; }
+    setTimeout(hideE, 10000);
+}
 
-    // ===== ON FILE SELECT =====
-    async function onFile(file) {
-        hideE();
-        console.log('File selected:', file.name);
+function hideE() {
+    const e = document.getElementById('em');
+    if (e) e.style.display = 'none';
+}
 
-        if (!file.name.toLowerCase().endsWith('.pdf')) {
-            showE('Please select a PDF file!');
+function szF(b) {
+    if (!b || b === 0) return '0 B';
+    const k = 1024;
+    const u = ['B','KB','MB','GB'];
+    const i = Math.floor(Math.log(b) / Math.log(k));
+    return (b / Math.pow(k, i)).toFixed(1) + ' ' + u[i];
+}
+
+function X(s) {
+    return s ? s
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&apos;')
+        : '';
+}
+
+function readFileBuffer(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload  = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('File read failed'));
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+/* ════════════════════════════════════════════════════════
+   DRAG & DROP + FILE INPUT
+════════════════════════════════════════════════════════ */
+const dropBox = document.getElementById('dropBox');
+const fi      = document.getElementById('fi');
+
+dropBox.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropBox.classList.add('dragover');
+});
+dropBox.addEventListener('dragleave', () => dropBox.classList.remove('dragover'));
+dropBox.addEventListener('drop', e => {
+    e.preventDefault();
+    dropBox.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
+});
+fi.addEventListener('change', () => {
+    if (fi.files[0]) onFile(fi.files[0]);
+});
+
+/* ════════════════════════════════════════════════════════
+   ON FILE SELECT
+════════════════════════════════════════════════════════ */
+async function onFile(file) {
+    hideE();
+
+    if (!file.name.toLowerCase().endsWith('.pdf') &&
+        file.type !== 'application/pdf') {
+        showE('Please select a PDF file!');
+        return;
+    }
+
+    D.file = file;
+    D.name = file.name.replace(/\.pdf$/i, '');
+
+    try {
+        // Store as Uint8Array — never gets detached
+        const arrayBuffer = await readFileBuffer(file);
+        D.rawBytes = new Uint8Array(arrayBuffer);
+
+        // Fresh copy for PDF.js
+        const pdf    = await pdfjsLib.getDocument({ data: D.rawBytes.slice(0) }).promise;
+        D.pages      = pdf.numPages;
+
+        document.getElementById('fn').textContent   = file.name;
+        document.getElementById('fs').textContent   = szF(file.size);
+        document.getElementById('fp').textContent   = D.pages;
+        document.getElementById('pvPdf').textContent = file.name;
+        document.getElementById('pvPpt').textContent = D.name + '.pptx';
+
+        goTo('s2');
+
+    } catch(e) {
+        console.error('Load error:', e);
+        showE('Cannot read PDF: ' + e.message);
+    }
+}
+
+/* ════════════════════════════════════════════════════════
+   CONVERT
+════════════════════════════════════════════════════════ */
+async function doConvert() {
+    hideE();
+    goTo('s3');
+
+    try {
+        prog(5, 'Loading PDF...', 'Opening document');
+
+        // Always fresh copy for PDF.js
+        const freshBytes = D.rawBytes.slice(0);
+        const pdf        = await pdfjsLib.getDocument({ data: freshBytes }).promise;
+
+        D.ptexts = [];
+        D.text   = '';
+
+        // Extract text per page
+        for (let i = 1; i <= pdf.numPages; i++) {
+            prog(
+                Math.round((i / pdf.numPages) * 65),
+                `Page ${i} of ${pdf.numPages}`,
+                'Extracting text...'
+            );
+
+            const page    = await pdf.getPage(i);
+            const content = await page.getTextContent();
+
+            let pageText = '';
+            let lastY    = null;
+
+            content.items.forEach(item => {
+                if (item.str === undefined) return;
+                const y = Math.round(item.transform[5]);
+                if (lastY !== null && Math.abs(y - lastY) > 3) {
+                    pageText += '\n';
+                } else if (pageText.length > 0 && item.str.length > 0) {
+                    pageText += ' ';
+                }
+                pageText += item.str;
+                lastY = y;
+            });
+
+            D.ptexts.push(pageText.trim());
+            D.text += pageText.trim() + '\n\n';
+        }
+
+        D.text = D.text.trim();
+
+        if (D.text.length < 3) {
+            goTo('s2');
+            showE('No text found. This PDF may be scanned/image-based. Try our OCR tool first.');
             return;
         }
 
-        D.file = file;
-        D.name = file.name.replace(/\.pdf$/i, '');
+        prog(70, 'Building PowerPoint...', 'Creating slides');
+        buildPPTX();
 
-        try {
-            // ✅ FIX: Read as Uint8Array and store permanently
-            var arrayBuffer = await readFileBuffer(file);
-            D.rawBytes = new Uint8Array(arrayBuffer);
-            console.log('Stored', D.rawBytes.length, 'bytes');
+        prog(100, 'Done!', 'PowerPoint ready');
+        await new Promise(r => setTimeout(r, 400));
+        showResult();
 
-            // ✅ FIX: Always use .slice() to create fresh copy for PDF.js
-            var freshCopy = D.rawBytes.slice(0);
-            var pdf = await pdfjsLib.getDocument({ data: freshCopy }).promise;
-            D.pages = pdf.numPages;
-            console.log('Pages:', D.pages);
-
-            // Update UI
-            document.getElementById('fn').textContent = file.name;
-            document.getElementById('fs').textContent = szF(file.size);
-            document.getElementById('fp').textContent = D.pages;
-            document.getElementById('pvPdf').textContent = file.name;
-            document.getElementById('pvPpt').textContent = D.name + '.pptx';
-
-            goTo('s2');
-        } catch(e) {
-            console.error('Load error:', e);
-            showE('Cannot read PDF: ' + e.message);
-        }
+    } catch(e) {
+        console.error('Convert error:', e);
+        goTo('s2');
+        showE('Conversion failed: ' + e.message);
     }
+}
 
-    // Read file as ArrayBuffer
-    function readFileBuffer(file) {
-        return new Promise(function(resolve, reject) {
-            var reader = new FileReader();
-            reader.onload = function() { resolve(reader.result); };
-            reader.onerror = function() { reject(new Error('File read failed')); };
-            reader.readAsArrayBuffer(file);
-        });
-    }
+/* ════════════════════════════════════════════════════════
+   BUILD PPTX (Office Open XML)
+════════════════════════════════════════════════════════ */
+function buildPPTX() {
+    const sizeType = document.getElementById('optSize').value;
+    const colorHex = document.getElementById('optColor').value;
 
-    // ===== CONVERT =====
-    async function doConvert() {
-        hideE();
-        goTo('s3');
-        console.log('Starting conversion...');
+    // Slide dimensions in EMU
+    const cx = sizeType === 'wide' ? 12192000 : 9144000;
+    const cy  = 6858000;
 
-        try {
-            prog(5, 'Loading PDF...', 'Opening document');
+    const slideFiles    = [];
+    const slideRelFiles = [];
+    let   ctOverrides   = '';
+    let   presSlideIds  = '';
+    let   presRels      = '';
 
-            // ✅ FIX: Create FRESH copy of bytes for PDF.js
-            var freshBytes = D.rawBytes.slice(0);
-            console.log('Fresh bytes copy:', freshBytes.length);
+    D.ptexts.forEach((pageText, i) => {
+        const num   = i + 1;
+        const lines = pageText.split('\n').filter(l => l.trim());
+        const title = lines.length > 0 ? X(lines[0]) : 'Slide ' + num;
 
-            var pdf = await pdfjsLib.getDocument({ data: freshBytes }).promise;
-            console.log('PDF loaded, pages:', pdf.numPages);
+        let bodyXml = '';
+        const bodyLines = lines.slice(1);
 
-            D.ptexts = [];
-            D.text = '';
-
-            // Extract text from each page
-            for (var i = 1; i <= pdf.numPages; i++) {
-                prog(
-                    Math.round((i / pdf.numPages) * 65),
-                    'Page ' + i + ' / ' + pdf.numPages,
-                    'Extracting text...'
-                );
-
-                var page = await pdf.getPage(i);
-                var content = await page.getTextContent();
-
-                var pageText = '';
-                var lastY = null;
-
-                for (var j = 0; j < content.items.length; j++) {
-                    var item = content.items[j];
-                    if (item.str === undefined) continue;
-
-                    var y = Math.round(item.transform[5]);
-
-                    if (lastY !== null && Math.abs(y - lastY) > 3) {
-                        pageText += '\n';
-                    } else if (pageText.length > 0 && item.str.length > 0) {
-                        pageText += ' ';
-                    }
-
-                    pageText += item.str;
-                    lastY = y;
-                }
-
-                D.ptexts.push(pageText.trim());
-                D.text += pageText.trim() + '\n\n';
-            }
-
-            D.text = D.text.trim();
-            console.log('Text extracted, length:', D.text.length);
-
-            if (D.text.length < 3) {
-                goTo('s2');
-                showE('No text found. This PDF may be scanned/image-based. Try our OCR tool first.');
-                return;
-            }
-
-            // Build PPTX
-            prog(70, 'Building PowerPoint...', 'Creating slides');
-            buildPPTX();
-            console.log('PPTX built, size:', D.blob.size);
-
-            prog(100, 'Done!', 'PowerPoint ready');
-            setTimeout(showResult, 400);
-
-        } catch(e) {
-            console.error('Convert error:', e);
-            goTo('s2');
-            showE('Conversion failed: ' + e.message);
-        }
-    }
-
-    // ==========================================
-    // ✅ BUILD PPTX
-    // ==========================================
-    function buildPPTX() {
-        var sizeType = document.getElementById('optSize').value;
-        var colorHex = document.getElementById('optColor').value;
-
-        // Slide dimensions (EMU units)
-        var cx = sizeType === 'wide' ? 12192000 : 9144000;
-        var cy = 6858000;
-
-        var slideFiles = [];
-        var slideRelFiles = [];
-        var ctOverrides = '';
-        var presSlideIds = '';
-        var presRels = '';
-
-        for (var i = 0; i < D.ptexts.length; i++) {
-            var num = i + 1;
-            var lines = D.ptexts[i].split('\n').filter(function(l) { return l.trim(); });
-
-            var title = lines.length > 0 ? X(lines[0]) : 'Slide ' + num;
-            var bodyXml = '';
-
-            var bodyLines = lines.slice(1);
-            if (bodyLines.length === 0) {
-                bodyXml = '<a:p><a:r><a:rPr lang="en-US" sz="1800"/><a:t> </a:t></a:r></a:p>';
-            } else {
-                for (var b = 0; b < bodyLines.length; b++) {
-                    bodyXml += '<a:p><a:r><a:rPr lang="en-US" sz="1600"/>'
-                        + '<a:t>' + X(bodyLines[b]) + '</a:t></a:r></a:p>';
-                }
-            }
-
-            var slideXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-                + '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
-                + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
-                + ' xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
-                + '<p:cSld>'
-                + '<p:bg><p:bgPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:effectLst/></p:bgPr></p:bg>'
-                + '<p:spTree>'
-                + '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>'
-                + '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
-
-                // Title bar
-                + '<p:sp><p:nvSpPr><p:cNvPr id="2" name="Title"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr/></p:nvSpPr>'
-                + '<p:spPr><a:xfrm><a:off x="457200" y="274638"/><a:ext cx="'+(cx-914400)+'" cy="1143000"/></a:xfrm>'
-                + '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
-                + '<a:solidFill><a:srgbClr val="'+colorHex+'"/></a:solidFill>'
-                + '<a:ln><a:noFill/></a:ln></p:spPr>'
-                + '<p:txBody><a:bodyPr anchor="ctr"/><a:lstStyle/>'
-                + '<a:p><a:pPr algn="l"/><a:r>'
-                + '<a:rPr lang="en-US" sz="2800" b="1"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></a:rPr>'
-                + '<a:t>' + title + '</a:t></a:r></a:p>'
-                + '</p:txBody></p:sp>'
-
-                // Content
-                + '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Content"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr/></p:nvSpPr>'
-                + '<p:spPr><a:xfrm><a:off x="457200" y="1600200"/><a:ext cx="'+(cx-914400)+'" cy="'+(cy-2057400)+'"/></a:xfrm>'
-                + '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>'
-                + '<p:txBody><a:bodyPr anchor="t"/><a:lstStyle/>'
-                + bodyXml
-                + '</p:txBody></p:sp>'
-
-                // Slide number
-                + '<p:sp><p:nvSpPr><p:cNvPr id="4" name="Num"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>'
-                + '<p:spPr><a:xfrm><a:off x="'+(cx-1371600)+'" y="'+(cy-457200)+'"/><a:ext cx="914400" cy="365125"/></a:xfrm>'
-                + '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>'
-                + '<p:txBody><a:bodyPr/><a:lstStyle/>'
-                + '<a:p><a:pPr algn="r"/><a:r><a:rPr lang="en-US" sz="1000">'
-                + '<a:solidFill><a:srgbClr val="999999"/></a:solidFill></a:rPr>'
-                + '<a:t>'+num+' / '+D.ptexts.length+'</a:t></a:r></a:p>'
-                + '</p:txBody></p:sp>'
-
-                + '</p:spTree></p:cSld></p:sld>';
-
-            slideFiles.push({ n: 'ppt/slides/slide'+num+'.xml', d: slideXml });
-
-            slideRelFiles.push({
-                n: 'ppt/slides/_rels/slide'+num+'.xml.rels',
-                d: '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>'
+        if (bodyLines.length === 0) {
+            bodyXml = '<a:p><a:r><a:rPr lang="en-US" sz="1800"/><a:t> </a:t></a:r></a:p>';
+        } else {
+            bodyLines.forEach(line => {
+                bodyXml += '<a:p><a:r><a:rPr lang="en-US" sz="1600"/>'
+                    + '<a:t>' + X(line) + '</a:t></a:r></a:p>';
             });
-
-            ctOverrides += '<Override PartName="/ppt/slides/slide'+num+'.xml"'
-                + ' ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
-
-            presSlideIds += '<p:sldId id="'+(255+num)+'" r:id="rId'+num+'"/>';
-
-            presRels += '<Relationship Id="rId'+num+'"'
-                + ' Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"'
-                + ' Target="slides/slide'+num+'.xml"/>';
         }
 
-        var presXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-            + '<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
-            + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
-            + ' xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
-            + '<p:sldMasterIdLst/>'
-            + '<p:sldIdLst>'+presSlideIds+'</p:sldIdLst>'
-            + '<p:sldSz cx="'+cx+'" cy="'+cy+'"/>'
-            + '<p:notesSz cx="6858000" cy="9144000"/>'
-            + '</p:presentation>';
+        const slideXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+       xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+       xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld>
+    <p:bg>
+      <p:bgPr>
+        <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+        <a:effectLst/>
+      </p:bgPr>
+    </p:bg>
+    <p:spTree>
+      <p:nvGrpSpPr>
+        <p:cNvPr id="1" name=""/>
+        <p:cNvGrpSpPr/><p:nvPr/>
+      </p:nvGrpSpPr>
+      <p:grpSpPr>
+        <a:xfrm>
+          <a:off x="0" y="0"/>
+          <a:ext cx="0" cy="0"/>
+          <a:chOff x="0" y="0"/>
+          <a:chExt cx="0" cy="0"/>
+        </a:xfrm>
+      </p:grpSpPr>
 
-        var contentTypes = '<?xml version="1.0" encoding="UTF-8"?>'
-            + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-            + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
-            + '<Default Extension="xml" ContentType="application/xml"/>'
-            + '<Override PartName="/ppt/presentation.xml"'
-            + ' ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'
-            + ctOverrides + '</Types>';
+      <!-- Title Bar -->
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="2" name="Title"/>
+          <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="457200" y="274638"/>
+            <a:ext cx="${cx - 914400}" cy="1143000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+          <a:solidFill><a:srgbClr val="${colorHex}"/></a:solidFill>
+          <a:ln><a:noFill/></a:ln>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr anchor="ctr"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l"/>
+            <a:r>
+              <a:rPr lang="en-US" sz="2800" b="1">
+                <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+              </a:rPr>
+              <a:t>${title}</a:t>
+            </a:r>
+          </a:p>
+        </p:txBody>
+      </p:sp>
 
-        var rootRels = '<?xml version="1.0" encoding="UTF-8"?>'
-            + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-            + '<Relationship Id="rId1"'
-            + ' Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"'
-            + ' Target="ppt/presentation.xml"/></Relationships>';
+      <!-- Content -->
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="3" name="Content"/>
+          <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="457200" y="1600200"/>
+            <a:ext cx="${cx - 914400}" cy="${cy - 2057400}"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+          <a:noFill/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr anchor="t"/>
+          <a:lstStyle/>
+          ${bodyXml}
+        </p:txBody>
+      </p:sp>
 
-        var presRelsXml = '<?xml version="1.0" encoding="UTF-8"?>'
-            + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-            + presRels + '</Relationships>';
+      <!-- Slide Number -->
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="4" name="Num"/>
+          <p:cNvSpPr/><p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="${cx - 1371600}" y="${cy - 457200}"/>
+            <a:ext cx="914400" cy="365125"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+          <a:noFill/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="r"/>
+            <a:r>
+              <a:rPr lang="en-US" sz="1000">
+                <a:solidFill><a:srgbClr val="999999"/></a:solidFill>
+              </a:rPr>
+              <a:t>${num} / ${D.ptexts.length}</a:t>
+            </a:r>
+          </a:p>
+        </p:txBody>
+      </p:sp>
 
-        // All files for ZIP
-        var allFiles = [
-            { n:'[Content_Types].xml', d:contentTypes },
-            { n:'_rels/.rels', d:rootRels },
-            { n:'ppt/presentation.xml', d:presXml },
-            { n:'ppt/_rels/presentation.xml.rels', d:presRelsXml }
-        ];
+    </p:spTree>
+  </p:cSld>
+</p:sld>`;
 
-        for (var i = 0; i < slideFiles.length; i++) {
-            allFiles.push(slideFiles[i]);
-            allFiles.push(slideRelFiles[i]);
-        }
-
-        var zipBytes = makeZip(allFiles);
-        D.blob = new Blob([zipBytes], {
-            type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        slideFiles.push({ n: `ppt/slides/slide${num}.xml`, d: slideXml });
+        slideRelFiles.push({
+            n: `ppt/slides/_rels/slide${num}.xml.rels`,
+            d: '<?xml version="1.0" encoding="UTF-8"?>'
+             + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>'
         });
+
+        ctOverrides  += `<Override PartName="/ppt/slides/slide${num}.xml"`
+            + ` ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`;
+        presSlideIds += `<p:sldId id="${255 + num}" r:id="rId${num}"/>`;
+        presRels     += `<Relationship Id="rId${num}"`
+            + ` Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"`
+            + ` Target="slides/slide${num}.xml"/>`;
+    });
+
+    const presXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+                xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:sldMasterIdLst/>
+  <p:sldIdLst>${presSlideIds}</p:sldIdLst>
+  <p:sldSz cx="${cx}" cy="${cy}"/>
+  <p:notesSz cx="6858000" cy="9144000"/>
+</p:presentation>`;
+
+    const contentTypes = `<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml"  ContentType="application/xml"/>
+  <Override PartName="/ppt/presentation.xml"
+    ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>
+  ${ctOverrides}
+</Types>`;
+
+    const rootRels = `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1"
+    Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
+    Target="ppt/presentation.xml"/>
+</Relationships>`;
+
+    const presRelsXml = `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  ${presRels}
+</Relationships>`;
+
+    const allFiles = [
+        { n:'[Content_Types].xml',            d: contentTypes },
+        { n:'_rels/.rels',                    d: rootRels     },
+        { n:'ppt/presentation.xml',           d: presXml      },
+        { n:'ppt/_rels/presentation.xml.rels',d: presRelsXml  },
+        ...slideFiles,
+        ...slideRelFiles
+    ];
+
+    const zipBytes = makeZip(allFiles);
+    D.blob = new Blob([zipBytes], {
+        type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    });
+}
+
+/* ════════════════════════════════════════════════════════
+   ZIP BUILDER
+════════════════════════════════════════════════════════ */
+function makeZip(files) {
+    const locals = [], cdirs = [];
+    let off = 0;
+
+    for (const file of files) {
+        const nb = new TextEncoder().encode(file.n);
+        const db = new TextEncoder().encode(file.d);
+        const c  = crc32(db);
+
+        const lh = new Uint8Array(30 + nb.length + db.length);
+        const lv = new DataView(lh.buffer);
+        lv.setUint32(0, 0x04034b50, true);
+        lv.setUint16(4, 20, true);
+        lv.setUint32(14, c, true);
+        lv.setUint32(18, db.length, true);
+        lv.setUint32(22, db.length, true);
+        lv.setUint16(26, nb.length, true);
+        lh.set(nb, 30);
+        lh.set(db, 30 + nb.length);
+        locals.push(lh);
+
+        const cd = new Uint8Array(46 + nb.length);
+        const cv = new DataView(cd.buffer);
+        cv.setUint32(0, 0x02014b50, true);
+        cv.setUint16(4, 20, true);
+        cv.setUint16(6, 20, true);
+        cv.setUint32(16, c, true);
+        cv.setUint32(20, db.length, true);
+        cv.setUint32(24, db.length, true);
+        cv.setUint16(28, nb.length, true);
+        cv.setUint32(42, off, true);
+        cd.set(nb, 46);
+        cdirs.push(cd);
+        off += lh.length;
     }
 
-    // ===== ZIP Builder =====
-    function makeZip(files) {
-        var locals=[], cdirs=[], off=0;
-        for(var i=0;i<files.length;i++){
-            var nb=new TextEncoder().encode(files[i].n);
-            var db=new TextEncoder().encode(files[i].d);
-            var c=crc32(db);
-            var lh=new Uint8Array(30+nb.length+db.length);
-            var lv=new DataView(lh.buffer);
-            lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);
-            lv.setUint32(14,c,true);lv.setUint32(18,db.length,true);
-            lv.setUint32(22,db.length,true);lv.setUint16(26,nb.length,true);
-            lh.set(nb,30);lh.set(db,30+nb.length);locals.push(lh);
-            var cd=new Uint8Array(46+nb.length);
-            var cv=new DataView(cd.buffer);
-            cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);
-            cv.setUint32(16,c,true);cv.setUint32(20,db.length,true);cv.setUint32(24,db.length,true);
-            cv.setUint16(28,nb.length,true);cv.setUint32(42,off,true);
-            cd.set(nb,46);cdirs.push(cd);off+=lh.length;
-        }
-        var cdsz=0;for(var i=0;i<cdirs.length;i++)cdsz+=cdirs[i].length;
-        var end=new Uint8Array(22);var ev=new DataView(end.buffer);
-        ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);
-        ev.setUint16(10,files.length,true);ev.setUint32(12,cdsz,true);ev.setUint32(16,off,true);
-        var out=new Uint8Array(off+cdsz+22);var p=0;
-        for(var i=0;i<locals.length;i++){out.set(locals[i],p);p+=locals[i].length;}
-        for(var i=0;i<cdirs.length;i++){out.set(cdirs[i],p);p+=cdirs[i].length;}
-        out.set(end,p);return out;
+    const cdsz = cdirs.reduce((s, a) => s + a.length, 0);
+    const end  = new Uint8Array(22);
+    const ev   = new DataView(end.buffer);
+    ev.setUint32(0,  0x06054b50, true);
+    ev.setUint16(8,  files.length, true);
+    ev.setUint16(10, files.length, true);
+    ev.setUint32(12, cdsz, true);
+    ev.setUint32(16, off,  true);
+
+    const out = new Uint8Array(off + cdsz + 22);
+    let   p   = 0;
+    locals.forEach(l => { out.set(l, p); p += l.length; });
+    cdirs.forEach(d  => { out.set(d, p); p += d.length; });
+    out.set(end, p);
+    return out;
+}
+
+function crc32(d) {
+    const t = [];
+    for (let i = 0; i < 256; i++) {
+        let c = i;
+        for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        t[i] = c;
+    }
+    let v = 0xFFFFFFFF;
+    for (let i = 0; i < d.length; i++) v = t[(v ^ d[i]) & 0xFF] ^ (v >>> 8);
+    return (v ^ 0xFFFFFFFF) >>> 0;
+}
+
+/* ════════════════════════════════════════════════════════
+   SHOW RESULT
+════════════════════════════════════════════════════════ */
+function showResult() {
+    const wordCount = D.text.split(/\s+/).filter(x => x.length > 0).length;
+
+    document.getElementById('rSlides').textContent = D.pages;
+    document.getElementById('rWords').textContent  = wordCount.toLocaleString();
+    document.getElementById('rSz').textContent     = D.blob ? szF(D.blob.size) : '-';
+    document.getElementById('rfn').textContent     = D.name + '.pptx';
+    document.getElementById('rfz').textContent     = D.blob ? szF(D.blob.size) : '-';
+
+    /* Build slide preview cards */
+    const pv  = document.getElementById('spv');
+    pv.innerHTML = '';
+    const max = Math.min(D.ptexts.length, 12);
+
+    for (let i = 0; i < max; i++) {
+        const lines = D.ptexts[i].split('\n').filter(l => l.trim());
+        const t     = lines[0]         || 'Slide ' + (i + 1);
+        const b     = lines.slice(1, 4).join('\n');
+
+        const card = document.createElement('div');
+        card.className = 'slide-card';
+        card.innerHTML = `<div class="sn">#${i + 1}</div>
+                          <div class="st">${X(t)}</div>
+                          <div class="sb">${X(b)}</div>`;
+        pv.appendChild(card);
     }
 
-    function crc32(d){
-        var t=[];for(var i=0;i<256;i++){var c=i;for(var j=0;j<8;j++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[i]=c;}
-        var v=0xFFFFFFFF;for(var i=0;i<d.length;i++)v=t[(v^d[i])&0xFF]^(v>>>8);
-        return(v^0xFFFFFFFF)>>>0;
+    if (D.ptexts.length > 12) {
+        const more = document.createElement('div');
+        more.className = 'slide-card';
+        more.style.cssText = 'display:flex;align-items:center;justify-content:center;';
+        more.innerHTML = `<p style="color:var(--text-light);font-size:13px;text-align:center;">
+                            +${D.ptexts.length - 12} more slides
+                          </p>`;
+        pv.appendChild(more);
     }
 
-    // ===== Show Result =====
-    function showResult() {
-        var w = D.text.split(/\s+/).filter(function(x){return x.length>0;}).length;
-        document.getElementById('rSlides').textContent = D.pages;
-        document.getElementById('rWords').textContent = w.toLocaleString();
-        document.getElementById('rSz').textContent = D.blob ? szF(D.blob.size) : '-';
-        document.getElementById('rfn').textContent = D.name + '.pptx';
+    goTo('s4');
+}
 
-        // Slide preview cards
-        var pv = document.getElementById('spv');
-        pv.innerHTML = '';
-        var max = Math.min(D.ptexts.length, 12);
-        for (var i = 0; i < max; i++) {
-            var lines = D.ptexts[i].split('\n').filter(function(l){return l.trim();});
-            var t = lines[0] || 'Slide '+(i+1);
-            var b = lines.slice(1,4).join('\n');
-            var card = document.createElement('div');
-            card.className = 'slide-card';
-            card.innerHTML = '<div class="sn">#'+(i+1)+'</div>'
-                + '<div class="st">'+X(t)+'</div>'
-                + '<div class="sb">'+X(b)+'</div>';
-            pv.appendChild(card);
-        }
-        if (D.ptexts.length > 12) {
-            var more = document.createElement('div');
-            more.className = 'slide-card';
-            more.style.cssText = 'display:flex;align-items:center;justify-content:center;';
-            more.innerHTML = '<p style="color:var(--text-light);font-size:13px;">+'+(D.ptexts.length-12)+' more slides</p>';
-            pv.appendChild(more);
-        }
+/* ════════════════════════════════════════════════════════
+   DOWNLOAD
+════════════════════════════════════════════════════════ */
+function doDownload() {
+    if (!D.blob) { alert('No file ready. Please convert first.'); return; }
+    const url  = URL.createObjectURL(D.blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = D.name + '.pptx';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+}
 
-        goTo('s4');
-    }
+/* ════════════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════════════ */
+function goBackOptions() {
+    D.blob = null;
+    goTo('s2');
+}
 
-    // ===== Download =====
-    function doDownload() {
-        if (!D.blob) { alert('No file ready.'); return; }
-        console.log('Downloading:', D.name+'.pptx', D.blob.size, 'bytes');
-        var url = URL.createObjectURL(D.blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = D.name + '.pptx';
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function() {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }, 500);
-    }
-
-    // ===== Reset =====
-    function doReset() {
-        D.file=null;D.rawBytes=null;D.name='presentation';
-        D.pages=0;D.text='';D.ptexts=[];D.blob=null;
-        hideE();prog(0,'Converting...','');
-        document.getElementById('fi').value='';
-        goTo('s1');
-    }
-
-    // ===== Helpers =====
-    function goTo(id) {
-        ['s1','s2','s3','s4'].forEach(function(s){document.getElementById(s).style.display='none';});
-        document.getElementById(id).style.display='block';
-    }
-
-    function prog(p,t,s) {
-        var b=document.getElementById('pb'),pt=document.getElementById('pp');
-        var tt=document.getElementById('pt'),ss=document.getElementById('ps');
-        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';
-        if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
-    }
-
-    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
-    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
-    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
-    function X(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
-
-    console.log('PDF to PowerPoint - Fixed version loaded');
-    </script>
-
+function doReset() {
+    D.file     = null;
+    D.rawBytes = null;
+    D.name     = 'presentation';
+    D.pages    = 0;
+    D.text     = '';
+    D.ptexts   = [];
+    D.blob     = null;
+    hideE();
+    prog(0, 'Converting to PowerPoint...', 'Creating slides');
+    fi.value = '';
+    goTo('s1');
+}
+</script>
 </body>
 </html>

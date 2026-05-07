@@ -3,922 +3,1777 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit PDF - Free Online PDF Editor | PDFTools</title>
+    <title>Edit PDF - Add Text, Draw & Annotate PDF Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+    <meta name="description" content="Edit PDF online free. Add text, draw, highlight, add shapes and annotations to PDF. Works 100% in your browser!">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- pdf-lib -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
     <style>
-        .editor-container{display:flex;flex-direction:column;gap:0;border-radius:16px;overflow:hidden}
-        .editor-toolbar{display:flex;flex-wrap:wrap;gap:5px;padding:12px 15px;background:rgba(30,41,59,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.1);align-items:center}
-        .tb-group{display:flex;gap:3px;padding:0 8px;border-right:1px solid rgba(255,255,255,0.15)}
-        .tb-group:last-child{border-right:none}
-        .tb-btn{width:36px;height:36px;border:none;border-radius:8px;background:transparent;color:#94a3b8;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
-        .tb-btn:hover{background:rgba(255,255,255,0.1);color:#e2e8f0}
-        .tb-btn.active{background:rgba(99,102,241,0.3);color:#818cf8}
-        .tb-btn .tooltip{position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);background:#1e293b;color:#e2e8f0;padding:3px 8px;border-radius:4px;font-size:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:10}
-        .tb-btn:hover .tooltip{opacity:1}
-        .tb-sep{width:1px;height:24px;background:rgba(255,255,255,0.15);margin:0 5px}
-        .tb-color{width:28px;height:28px;border-radius:6px;border:2px solid rgba(255,255,255,0.3);cursor:pointer;padding:0}
-        .tb-select{padding:4px 8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#e2e8f0;font-size:12px;cursor:pointer}
-        .tb-select option{background:#1e293b;color:#e2e8f0}
-        .tb-label{color:#94a3b8;font-size:11px;margin-right:4px}
+        /* ════════════════════════════════════════
+           EDITOR LAYOUT
+        ════════════════════════════════════════ */
+        .editor-wrap {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 0;
+            min-height: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
 
-        .canvas-area{position:relative;background:#64748b;min-height:500px;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
-        .page-container{position:relative;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
-        .page-container canvas{display:block}
-        .edit-overlay{position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair}
+        /* ════════════════════════════════════════
+           SIDEBAR — TOOLS
+        ════════════════════════════════════════ */
+        .editor-sidebar {
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255,255,255,0.6);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+        }
 
-        .page-nav{display:flex;align-items:center;justify-content:center;gap:15px;padding:12px;background:rgba(30,41,59,0.95);color:#e2e8f0}
-        .page-nav button{padding:6px 14px;background:rgba(255,255,255,0.1);border:none;border-radius:6px;color:#e2e8f0;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s}
-        .page-nav button:hover{background:rgba(99,102,241,0.3)}
-        .page-nav button:disabled{opacity:0.3;cursor:default}
-        .page-nav span{font-size:13px;font-weight:600}
+        .sidebar-section {
+            background: rgba(255,255,255,0.50);
+            border: 1px solid rgba(255,255,255,0.70);
+            border-radius: 12px;
+            padding: 12px;
+        }
 
-        .text-input-overlay{position:absolute;border:2px solid #6366f1;background:rgba(255,255,255,0.95);padding:4px 8px;font-size:16px;min-width:100px;outline:none;z-index:20;border-radius:4px;font-family:Arial,sans-serif}
+        .sidebar-section-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-light, #94a3b8);
+            margin-bottom: 10px;
+        }
 
-        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
-        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#a855f7,#9333ea)}
-        .file-card-info{flex:1;min-width:0}
-        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
-        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
-        .fbadge{background:rgba(168,85,247,0.1);color:#9333ea;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+        /* Tool Buttons */
+        .tool-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
 
-        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
-        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
-        .sbox h4{font-size:22px;font-weight:800;color:#9333ea}.sbox p{font-size:11px;color:var(--text-light)}
-        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+        .tool-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px 6px;
+            border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.50);
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dark, #1e293b);
+            transition: all 0.2s ease;
+            user-select: none;
+        }
 
-        @media(max-width:768px){
-            .tb-group{padding:0 4px}
-            .tb-btn{width:32px;height:32px;font-size:13px}
-            .canvas-area{padding:10px}
-            .tb-label{display:none}
+        .tool-btn i {
+            font-size: 18px;
+            color: var(--primary, #6366f1);
+        }
+
+        .tool-btn:hover {
+            background: rgba(99,102,241,0.08);
+            border-color: rgba(99,102,241,0.30);
+            transform: translateY(-1px);
+        }
+
+        .tool-btn.active {
+            background: linear-gradient(135deg,
+                rgba(99,102,241,0.12),
+                rgba(139,92,246,0.08));
+            border-color: var(--primary, #6366f1);
+            color: var(--primary, #6366f1);
+        }
+
+        .tool-btn.active i { color: var(--primary, #6366f1); }
+
+        /* Color Picker Row */
+        .color-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .color-dot:hover { transform: scale(1.15); }
+        .color-dot.active { border-color: var(--text-dark, #1e293b); transform: scale(1.15); }
+
+        .color-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .color-input-wrap input[type="color"] {
+            width: 36px;
+            height: 36px;
+            border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 2px;
+            background: white;
+        }
+
+        .color-input-wrap span {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark, #1e293b);
+            font-family: monospace;
+        }
+
+        /* Range Slider */
+        .range-wrap {
+            margin-top: 6px;
+        }
+
+        .range-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-light, #64748b);
+            margin-bottom: 4px;
+        }
+
+        .range-wrap input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary, #6366f1);
+            height: 4px;
+        }
+
+        /* Font size input */
+        .font-size-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .font-size-row input[type="number"] {
+            width: 60px;
+            padding: 6px 8px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+            outline: none;
+        }
+
+        .font-size-row input[type="number"]:focus {
+            border-color: var(--primary, #6366f1);
+        }
+
+        /* Page Navigation */
+        .page-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(255,255,255,0.50);
+            border: 1px solid rgba(255,255,255,0.70);
+            border-radius: 10px;
+        }
+
+        .page-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid rgba(99,102,241,0.20);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.70);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--primary, #6366f1);
+            transition: all 0.2s;
+        }
+
+        .page-nav-btn:hover {
+            background: var(--primary, #6366f1);
+            color: white;
+        }
+
+        .page-nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark, #1e293b);
+            white-space: nowrap;
+        }
+
+        /* Action Buttons */
+        .sidebar-action-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: all 0.2s;
+        }
+
+        .sab-primary {
+            background: linear-gradient(135deg, var(--primary, #6366f1), #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 14px rgba(99,102,241,0.25);
+        }
+
+        .sab-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(99,102,241,0.35); }
+
+        .sab-danger {
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.22);
+            color: #dc2626;
+        }
+
+        .sab-danger:hover { background: rgba(239,68,68,0.15); }
+
+        .sab-outline {
+            background: rgba(255,255,255,0.60);
+            border: 1.5px solid rgba(255,255,255,0.80);
+            color: var(--text-dark, #1e293b);
+        }
+
+        .sab-outline:hover { background: rgba(255,255,255,0.85); }
+
+        /* ════════════════════════════════════════
+           CANVAS AREA
+        ════════════════════════════════════════ */
+        .editor-canvas-area {
+            background: rgba(248,250,252,0.60);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .canvas-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.55);
+            border-bottom: 1px solid rgba(255,255,255,0.65);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .canvas-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .zoom-btn {
+            width: 30px; height: 30px;
+            border: 1.5px solid rgba(99,102,241,0.20);
+            border-radius: 7px;
+            background: rgba(255,255,255,0.70);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--primary, #6366f1);
+            transition: all 0.2s;
+        }
+
+        .zoom-btn:hover { background: var(--primary, #6366f1); color: white; }
+
+        .zoom-info {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark, #1e293b);
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .current-tool-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(99,102,241,0.10);
+            border: 1px solid rgba(99,102,241,0.20);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary, #6366f1);
+        }
+
+        .canvas-scroll {
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .canvas-container {
+            position: relative;
+            box-shadow:
+                0 8px 32px rgba(0,0,0,0.12),
+                0 2px 8px rgba(0,0,0,0.06);
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        #pdfCanvas {
+            display: block;
+        }
+
+        #drawCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            cursor: crosshair;
+        }
+
+        /* Text input overlay */
+        .text-input-overlay {
+            position: absolute;
+            border: 2px dashed var(--primary, #6366f1);
+            border-radius: 4px;
+            background: rgba(255,255,255,0.85);
+            padding: 4px 8px;
+            font-size: 16px;
+            outline: none;
+            min-width: 120px;
+            min-height: 30px;
+            resize: both;
+            overflow: auto;
+            display: none;
+            z-index: 100;
+            font-family: 'Segoe UI', sans-serif;
+            color: #000;
+            cursor: text;
+        }
+
+        /* ════════════════════════════════════════
+           ERROR BOX
+        ════════════════════════════════════════ */
+        .error-box {
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #dc2626;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ════════════════════════════════════════
+           ICON COLORS
+        ════════════════════════════════════════ */
+        .icon-red    { background: linear-gradient(135deg,#ef4444,#dc2626); }
+        .icon-blue   { background: linear-gradient(135deg,#3b82f6,#2563eb); }
+        .icon-green  { background: linear-gradient(135deg,#22c55e,#16a34a); }
+        .icon-orange { background: linear-gradient(135deg,#f97316,#ea580c); }
+        .icon-purple { background: linear-gradient(135deg,#a855f7,#9333ea); }
+        .icon-teal   { background: linear-gradient(135deg,#14b8a6,#0d9488); }
+        .icon-dark   { background: linear-gradient(135deg,#374151,#1f2937); }
+
+        /* ════════════════════════════════════════
+           FAQ ACCORDION
+        ════════════════════════════════════════ */
+        .faq-section { padding: 50px 0; }
+        .faq-list { max-width: 750px; margin: 0 auto; }
+
+        .faq-item {
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .faq-item:hover {
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+            transform: translateY(-1px);
+        }
+
+        .faq-item.open {
+            background: rgba(255,255,255,0.85);
+            border-color: rgba(99,102,241,0.20);
+            box-shadow: 0 6px 25px rgba(99,102,241,0.10);
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            gap: 14px;
+        }
+
+        .faq-question h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark, #1e293b);
+            margin: 0;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .faq-item.open .faq-question h4 { color: var(--primary, #6366f1); }
+
+        .faq-question i {
+            font-size: 13px;
+            color: var(--text-light, #94a3b8);
+            transition: transform 0.35s ease, color 0.3s ease;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+            color: var(--primary, #6366f1);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .faq-item.open .faq-answer { max-height: 400px; opacity: 1; }
+
+        .faq-answer-inner { padding: 0 22px 20px; }
+
+        .faq-item.open .faq-answer-inner {
+            border-top: 1px solid rgba(99,102,241,0.10);
+            padding-top: 16px;
+            margin: 0 22px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .faq-answer-inner p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-light, #64748b);
+            margin: 0;
+        }
+
+        .faq-answer-inner p strong { color: var(--text-dark, #1e293b); }
+
+        .faq-num {
+            width: 28px; height: 28px;
+            background: rgba(99,102,241,0.10);
+            color: var(--primary, #6366f1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.open .faq-num {
+            background: var(--primary, #6366f1);
+            color: #fff;
+        }
+
+        /* ════════════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .editor-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.60);
+                gap: 10px;
+                padding: 12px;
+            }
+
+            .sidebar-section {
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .tool-btns { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .canvas-scroll { padding: 12px; }
+            .tool-btns { grid-template-columns: repeat(3, 1fr); }
+            .canvas-toolbar { padding: 8px 12px; }
+
+            .faq-question { padding: 16px 18px; gap: 10px; }
+            .faq-question h4 { font-size: 14px; }
+            .faq-answer-inner { padding: 0 18px 18px; }
+            .faq-item.open .faq-answer-inner { margin: 0 18px; }
+            .faq-answer-inner p { font-size: 13px; }
+            .faq-num { width: 24px; height: 24px; font-size: 11px; }
+        }
+
+        @media (max-width: 480px) {
+            .tool-btns { grid-template-columns: repeat(2, 1fr); }
+            .editor-sidebar { flex-direction: column; }
+            .sidebar-section { min-width: unset; }
+            .faq-question { padding: 14px; }
+            .faq-question h4 { font-size: 13px; }
+            .faq-item { border-radius: 10px; margin-bottom: 8px; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar glass">
-        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-        <div class="nav-links" id="navLinks">
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <a href="index.html" class="logo">
+        <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+    </a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb">
             <a href="index.html"><i class="fas fa-home"></i> Home</a>
-            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Edit PDF</span>
         </div>
-    </nav>
-
-    <section class="tool-header">
-        <div class="container">
-            <div class="breadcrumb">
-                <a href="index.html"><i class="fas fa-home"></i> Home</a>
-                <i class="fas fa-chevron-right"></i><span>Edit PDF</span>
+        <div class="tool-title">
+            <div class="tool-title-icon icon-purple">
+                <i class="fas fa-pen-fancy"></i>
             </div>
-            <div class="tool-title">
-                <div class="tool-title-icon icon-purple"><i class="fas fa-pen-fancy"></i></div>
-                <div>
-                    <h1>Edit PDF</h1>
-                    <p>Add text, draw, highlight, shapes and annotations to your PDF. 100% browser-based!</p>
-                </div>
+            <div>
+                <h1>Edit PDF</h1>
+                <p>Add text, draw, highlight, shapes & annotations to your PDF. Free &amp; browser-based!</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="tool-area">
-        <div class="container" style="max-width:1100px;">
-            <div class="tool-wrapper glass">
+<!-- AD TOP -->
+<div class="adsense-wrapper">
+    <div class="adsense-unit" data-slot="topBanner" data-format="auto"></div>
+</div>
 
-                <!-- STEP 1: UPLOAD -->
-                <div id="s1">
-                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(168,85,247,0.3);border-radius:20px;margin:25px;cursor:pointer;"
-                         id="dropBox" onclick="document.getElementById('fi').click()">
-                        <div style="font-size:60px;margin-bottom:20px;color:#9333ea;"><i class="fas fa-pen-fancy"></i></div>
-                        <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Edit</h2>
-                        <p style="color:var(--text-light);margin-bottom:25px;">Add text, draw, highlight and annotate</p>
-                        <button class="upload-btn" style="background:linear-gradient(135deg,#a855f7,#9333ea);"
-                                onclick="event.stopPropagation();document.getElementById('fi').click()">
+<!-- MAIN TOOL -->
+<section class="tool-area">
+    <div class="container">
+        <div class="tool-wrapper glass">
+
+            <!-- Error -->
+            <div class="error-box" id="errorBox">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText">Something went wrong.</span>
+            </div>
+
+            <!-- ── UPLOAD ── -->
+            <div id="uploadSection" data-section>
+                <div class="upload-zone" id="dropZone"
+                     onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-zone-content">
+                        <div class="upload-icon">
+                            <i class="fas fa-pen-fancy"></i>
+                        </div>
+                        <h2>Upload PDF to Edit</h2>
+                        <p>Drop your PDF here or click to browse</p>
+                        <button class="upload-btn"
+                                onclick="event.stopPropagation();
+                                         document.getElementById('fileInput').click()">
                             <i class="fas fa-plus"></i> Select PDF File
                         </button>
-                        <input type="file" id="fi" accept=".pdf" style="display:none">
-                        <div class="upload-hints" style="margin-top:20px;">
-                            <span><i class="fas fa-text-height"></i> Add Text</span>
-                            <span><i class="fas fa-pencil-alt"></i> Draw</span>
-                            <span><i class="fas fa-highlighter"></i> Highlight</span>
-                            <span><i class="fas fa-shapes"></i> Shapes</span>
+                        <input type="file" id="fileInput"
+                               accept=".pdf,application/pdf" hidden>
+                        <div class="upload-hints">
+                            <span><i class="fas fa-lock"></i> 100% Private</span>
+                            <span><i class="fas fa-laptop"></i> Browser Only</span>
+                            <span><i class="fas fa-pen"></i> Full Editor</span>
                         </div>
+                        <p style="margin-top:12px;font-size:12px;color:var(--text-light);">
+                            <i class="fas fa-shield-alt"></i>
+                            Files never leave your device!
+                        </p>
                     </div>
                 </div>
+            </div>
 
-                <!-- STEP 2: EDITOR -->
-                <div id="s2" style="display:none;">
-                    <div class="emsg" id="em" style="margin:15px 15px 0;"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+            <!-- ── EDITOR ── -->
+            <div id="editorSection" data-section style="display:none;">
+                <div class="editor-wrap">
 
-                    <div class="editor-container">
+                    <!-- SIDEBAR -->
+                    <div class="editor-sidebar">
 
-                        <!-- TOOLBAR -->
-                        <div class="editor-toolbar" id="toolbar">
-                            <!-- Tools -->
-                            <div class="tb-group">
-                                <button class="tb-btn active" onclick="setTool('select',this)" title="Select">
+                        <!-- Tools -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Tools</div>
+                            <div class="tool-btns">
+                                <button class="tool-btn active" id="btn-select"
+                                        onclick="setTool('select', this)" title="Select">
                                     <i class="fas fa-mouse-pointer"></i>
-                                    <span class="tooltip">Select</span>
+                                    <span>Select</span>
                                 </button>
-                                <button class="tb-btn" onclick="setTool('text',this)" title="Add Text">
-                                    <i class="fas fa-text-height"></i>
-                                    <span class="tooltip">Add Text</span>
+                                <button class="tool-btn" id="btn-text"
+                                        onclick="setTool('text', this)" title="Add Text">
+                                    <i class="fas fa-font"></i>
+                                    <span>Text</span>
                                 </button>
-                                <button class="tb-btn" onclick="setTool('draw',this)" title="Free Draw">
-                                    <i class="fas fa-pencil-alt"></i>
-                                    <span class="tooltip">Draw</span>
+                                <button class="tool-btn" id="btn-draw"
+                                        onclick="setTool('draw', this)" title="Freehand Draw">
+                                    <i class="fas fa-pen"></i>
+                                    <span>Draw</span>
                                 </button>
-                                <button class="tb-btn" onclick="setTool('highlight',this)" title="Highlight">
+                                <button class="tool-btn" id="btn-highlight"
+                                        onclick="setTool('highlight', this)" title="Highlight">
                                     <i class="fas fa-highlighter"></i>
-                                    <span class="tooltip">Highlight</span>
+                                    <span>Highlight</span>
                                 </button>
-                                <button class="tb-btn" onclick="setTool('eraser',this)" title="Eraser">
-                                    <i class="fas fa-eraser"></i>
-                                    <span class="tooltip">Eraser</span>
-                                </button>
-                            </div>
-
-                            <!-- Shapes -->
-                            <div class="tb-group">
-                                <button class="tb-btn" onclick="setTool('rect',this)" title="Rectangle">
+                                <button class="tool-btn" id="btn-rect"
+                                        onclick="setTool('rect', this)" title="Rectangle">
                                     <i class="far fa-square"></i>
-                                    <span class="tooltip">Rectangle</span>
+                                    <span>Rect</span>
                                 </button>
-                                <button class="tb-btn" onclick="setTool('circle',this)" title="Circle">
+                                <button class="tool-btn" id="btn-circle"
+                                        onclick="setTool('circle', this)" title="Circle">
                                     <i class="far fa-circle"></i>
-                                    <span class="tooltip">Circle</span>
+                                    <span>Circle</span>
                                 </button>
-                                <button class="tb-btn" onclick="setTool('line',this)" title="Line">
+                                <button class="tool-btn" id="btn-line"
+                                        onclick="setTool('line', this)" title="Line">
                                     <i class="fas fa-minus"></i>
-                                    <span class="tooltip">Line</span>
+                                    <span>Line</span>
                                 </button>
-                                <button class="tb-btn" onclick="setTool('arrow',this)" title="Arrow">
-                                    <i class="fas fa-long-arrow-alt-right"></i>
-                                    <span class="tooltip">Arrow</span>
+                                <button class="tool-btn" id="btn-arrow"
+                                        onclick="setTool('arrow', this)" title="Arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                    <span>Arrow</span>
                                 </button>
-                            </div>
-
-                            <!-- Style -->
-                            <div class="tb-group">
-                                <span class="tb-label">Color</span>
-                                <input type="color" class="tb-color" id="colorPick" value="#ff0000" title="Color">
-                                <span class="tb-label">Size</span>
-                                <select class="tb-select" id="sizePick">
-                                    <option value="1">1px</option>
-                                    <option value="2" selected>2px</option>
-                                    <option value="3">3px</option>
-                                    <option value="5">5px</option>
-                                    <option value="8">8px</option>
-                                </select>
-                                <span class="tb-label">Font</span>
-                                <select class="tb-select" id="fontSizePick">
-                                    <option value="14">14px</option>
-                                    <option value="18" selected>18px</option>
-                                    <option value="24">24px</option>
-                                    <option value="32">32px</option>
-                                    <option value="48">48px</option>
-                                </select>
-                            </div>
-
-                            <!-- Actions -->
-                            <div class="tb-group">
-                                <button class="tb-btn" onclick="undoAction()" title="Undo">
-                                    <i class="fas fa-undo"></i>
-                                    <span class="tooltip">Undo</span>
-                                </button>
-                                <button class="tb-btn" onclick="clearPage()" title="Clear Page">
-                                    <i class="fas fa-trash"></i>
-                                    <span class="tooltip">Clear Page</span>
-                                </button>
-                            </div>
-
-                            <!-- Save -->
-                            <div class="tb-group" style="margin-left:auto;border-right:none;">
-                                <button class="tb-btn" onclick="savePDF()" title="Save PDF" style="background:rgba(34,197,94,0.2);color:#22c55e;width:auto;padding:0 12px;gap:6px;">
-                                    <i class="fas fa-download"></i>
-                                    <span style="font-size:12px;font-weight:700;">Save PDF</span>
+                                <button class="tool-btn" id="btn-eraser"
+                                        onclick="setTool('eraser', this)" title="Eraser">
+                                    <i class="fas fa-eraser"></i>
+                                    <span>Eraser</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- CANVAS AREA -->
-                        <div class="canvas-area" id="canvasArea">
-                            <div class="page-container" id="pageContainer">
+                        <!-- Color -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Color</div>
+                            <div class="color-row">
+                                <div class="color-dot active" style="background:#000000;"
+                                     onclick="setColor('#000000', this)" title="Black"></div>
+                                <div class="color-dot" style="background:#dc2626;"
+                                     onclick="setColor('#dc2626', this)" title="Red"></div>
+                                <div class="color-dot" style="background:#2563eb;"
+                                     onclick="setColor('#2563eb', this)" title="Blue"></div>
+                                <div class="color-dot" style="background:#16a34a;"
+                                     onclick="setColor('#16a34a', this)" title="Green"></div>
+                                <div class="color-dot" style="background:#ea580c;"
+                                     onclick="setColor('#ea580c', this)" title="Orange"></div>
+                                <div class="color-dot" style="background:#9333ea;"
+                                     onclick="setColor('#9333ea', this)" title="Purple"></div>
+                                <div class="color-dot" style="background:#0891b2;"
+                                     onclick="setColor('#0891b2', this)" title="Teal"></div>
+                                <div class="color-dot" style="background:#ffffff;border:1px solid #e2e8f0;"
+                                     onclick="setColor('#ffffff', this)" title="White"></div>
+                            </div>
+                            <div class="color-input-wrap">
+                                <input type="color" id="colorPicker" value="#000000"
+                                       oninput="setColorFromPicker(this.value)">
+                                <span id="colorHex">#000000</span>
+                            </div>
+                        </div>
+
+                        <!-- Size -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Brush Size</div>
+                            <div class="range-wrap">
+                                <div class="range-label">
+                                    <span>Thin</span>
+                                    <span id="brushVal">3px</span>
+                                </div>
+                                <input type="range" id="brushSize" min="1" max="30"
+                                       value="3" oninput="updateBrushSize(this.value)">
+                            </div>
+                        </div>
+
+                        <!-- Font Size (for text tool) -->
+                        <div class="sidebar-section" id="fontSection">
+                            <div class="sidebar-section-title">Font Size</div>
+                            <div class="font-size-row">
+                                <input type="number" id="fontSize" value="16"
+                                       min="8" max="72" oninput="updateFontSize(this.value)">
+                                <span style="font-size:12px;color:var(--text-light);">px</span>
+                            </div>
+                        </div>
+
+                        <!-- Opacity -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Opacity</div>
+                            <div class="range-wrap">
+                                <div class="range-label">
+                                    <span>0%</span>
+                                    <span id="opacityVal">100%</span>
+                                </div>
+                                <input type="range" id="opacity" min="0.1" max="1"
+                                       step="0.05" value="1"
+                                       oninput="updateOpacity(this.value)">
+                            </div>
+                        </div>
+
+                        <!-- Page Nav -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Pages</div>
+                            <div class="page-nav">
+                                <button class="page-nav-btn" id="prevBtn"
+                                        onclick="changePage(-1)" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span class="page-info" id="pageInfo">1 / 1</span>
+                                <button class="page-nav-btn" id="nextBtn"
+                                        onclick="changePage(1)">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Actions</div>
+                            <div style="display:flex;flex-direction:column;gap:7px;">
+                                <button class="sidebar-action-btn sab-outline"
+                                        onclick="undoLast()">
+                                    <i class="fas fa-undo"></i> Undo
+                                </button>
+                                <button class="sidebar-action-btn sab-danger"
+                                        onclick="clearPage()">
+                                    <i class="fas fa-trash"></i> Clear Page
+                                </button>
+                                <button class="sidebar-action-btn sab-outline"
+                                        onclick="changeFile()">
+                                    <i class="fas fa-folder-open"></i> Change PDF
+                                </button>
+                                <button class="sidebar-action-btn sab-primary"
+                                        onclick="savePDF()">
+                                    <i class="fas fa-download"></i> Save PDF
+                                </button>
+                            </div>
+                        </div>
+
+                    </div><!-- /.editor-sidebar -->
+
+                    <!-- CANVAS AREA -->
+                    <div class="editor-canvas-area">
+
+                        <!-- Toolbar -->
+                        <div class="canvas-toolbar">
+                            <div class="canvas-toolbar-left">
+                                <button class="zoom-btn" onclick="zoom(-0.1)" title="Zoom Out">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span class="zoom-info" id="zoomInfo">100%</span>
+                                <button class="zoom-btn" onclick="zoom(0.1)" title="Zoom In">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button class="zoom-btn" onclick="zoomReset()" title="Reset Zoom">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                </button>
+                            </div>
+                            <div class="current-tool-badge" id="toolBadge">
+                                <i class="fas fa-mouse-pointer"></i>
+                                <span>Select</span>
+                            </div>
+                            <button class="sidebar-action-btn sab-primary"
+                                    style="width:auto;padding:8px 16px;font-size:12px;"
+                                    onclick="savePDF()">
+                                <i class="fas fa-download"></i> Save PDF
+                            </button>
+                        </div>
+
+                        <!-- Canvas Scroll -->
+                        <div class="canvas-scroll" id="canvasScroll">
+                            <div class="canvas-container" id="canvasContainer">
                                 <canvas id="pdfCanvas"></canvas>
-                                <canvas id="editCanvas" class="edit-overlay"></canvas>
+                                <canvas id="drawCanvas"
+                                        onmousedown="startDraw(event)"
+                                        onmousemove="continueDraw(event)"
+                                        onmouseup="endDraw(event)"
+                                        onmouseleave="endDraw(event)"
+                                        ontouchstart="touchStart(event)"
+                                        ontouchmove="touchMove(event)"
+                                        ontouchend="touchEnd(event)">
+                                </canvas>
+                                <textarea id="textOverlay" class="text-input-overlay"
+                                          placeholder="Type here..."
+                                          onblur="commitText()"></textarea>
                             </div>
                         </div>
 
-                        <!-- PAGE NAVIGATION -->
-                        <div class="page-nav">
-                            <button onclick="prevPage()" id="btnPrev" disabled><i class="fas fa-chevron-left"></i> Previous</button>
-                            <span>Page <span id="curPage">1</span> of <span id="totalPages">1</span></span>
-                            <button onclick="nextPage()" id="btnNext"><i class="fas fa-chevron-right"></i> Next</button>
-                        </div>
+                    </div><!-- /.editor-canvas-area -->
 
-                    </div>
+                </div><!-- /.editor-wrap -->
+            </div><!-- /#editorSection -->
 
-                    <!-- Info bar below editor -->
-                    <div style="padding:15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <span style="font-size:12px;color:var(--text-light);"><i class="fas fa-file-pdf" style="color:#9333ea"></i> <span id="edFn">doc.pdf</span></span>
-                            <span style="font-size:12px;color:var(--text-light);">|</span>
-                            <span style="font-size:12px;color:var(--text-light);" id="edInfo">0 edits</span>
-                        </div>
-                        <div style="display:flex;gap:8px;">
-                            <button class="btn-sm btn-primary-sm" onclick="savePDF()"><i class="fas fa-download"></i> Save & Download</button>
-                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i> Close</button>
-                        </div>
+        </div>
+    </div>
+</section>
+
+<!-- AD MIDDLE -->
+<div class="adsense-wrapper">
+    <div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div>
+</div>
+
+<!-- RELATED TOOLS -->
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header">
+            <h2>Related Tools</h2>
+            <p>Tools that work great with Edit PDF</p>
+        </div>
+        <div class="related-grid">
+            <a href="sign-pdf.html"     class="related-card glass">
+                <div class="related-icon icon-dark"><i class="fas fa-signature"></i></div>
+                <h4>Sign PDF</h4>
+            </a>
+            <a href="merge-pdf.html"    class="related-card glass">
+                <div class="related-icon icon-red"><i class="fas fa-object-group"></i></div>
+                <h4>Merge PDF</h4>
+            </a>
+            <a href="compress-pdf.html" class="related-card glass">
+                <div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div>
+                <h4>Compress PDF</h4>
+            </a>
+            <a href="pdf-to-word.html"  class="related-card glass">
+                <div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div>
+                <h4>PDF to Word</h4>
+            </a>
+            <a href="watermark.html"    class="related-card glass">
+                <div class="related-icon icon-teal"><i class="fas fa-tint"></i></div>
+                <h4>Watermark</h4>
+            </a>
+            <a href="split-pdf.html"    class="related-card glass">
+                <div class="related-icon icon-blue"><i class="fas fa-cut"></i></div>
+                <h4>Split PDF</h4>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- HOW TO -->
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>How to Edit PDF</h2>
+            <p>Simple 3-step process</p>
+        </div>
+        <div class="steps-row">
+            <div class="step-box glass">
+                <div class="step-num">1</div>
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h4>Upload PDF</h4>
+                <p>Select your PDF file. It stays on your device.</p>
+            </div>
+            <div class="step-box glass">
+                <div class="step-num">2</div>
+                <i class="fas fa-pen-fancy"></i>
+                <h4>Edit</h4>
+                <p>Add text, draw, highlight, shapes and more.</p>
+            </div>
+            <div class="step-box glass">
+                <div class="step-num">3</div>
+                <i class="fas fa-download"></i>
+                <h4>Save PDF</h4>
+                <p>Download your edited PDF instantly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-list">
+
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">1</span>
+                    <h4>What can I add to my PDF?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>You can add <strong>text</strong>, <strong>freehand drawings</strong>,
+                        <strong>highlights</strong>, <strong>rectangles</strong>,
+                        <strong>circles</strong>, <strong>lines</strong>, and
+                        <strong>arrows</strong>. All with custom colors and sizes.</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- STEP 3: PROCESSING -->
-                <div id="s3" style="display:none;">
-                    <div class="processing-area">
-                        <div class="spinner"></div>
-                        <h3 id="pt">Saving edited PDF...</h3>
-                        <p id="ps">Applying changes</p>
-                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#a855f7,#9333ea);"></div></div>
-                        <span class="progress-text" id="pp">0%</span>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">2</span>
+                    <h4>Is my PDF uploaded to a server?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>No! <strong>Everything runs in your browser</strong> using JavaScript.
+                        Your PDF never leaves your device — complete privacy guaranteed.</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- STEP 4: RESULT -->
-                <div id="s4" style="display:none;">
-                    <div class="result-area">
-                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                        <h2>PDF Saved! ✏️</h2>
-                        <p>Your edited PDF is ready to download</p>
-
-                        <div class="srow">
-                            <div class="sbox"><h4 id="rPages">0</h4><p>Pages</p></div>
-                            <div class="sbox"><h4 id="rEdits">0</h4><p>Edits Made</p></div>
-                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
-                        </div>
-
-                        <div class="result-info glass-light" style="margin-top:15px;">
-                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#9333ea"></i> <span id="rfn">edited.pdf</span></div>
-                        </div>
-
-                        <button class="download-btn" style="background:linear-gradient(135deg,#a855f7,#9333ea);" onclick="doDownload()">
-                            <i class="fas fa-download"></i> Download Edited PDF
-                        </button>
-
-                        <div class="result-actions">
-                            <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-pen"></i> Continue Editing</button>
-                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Edit Another</button>
-                        </div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">3</span>
+                    <h4>Can I edit multiple pages?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>Yes! Use the <strong>page navigation arrows</strong> in the sidebar
+                        to switch between pages. Your edits on each page are
+                        saved separately.</p>
                     </div>
                 </div>
+            </div>
 
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">4</span>
+                    <h4>Will my edits be permanent in the PDF?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>Yes! When you click <strong>Save PDF</strong>, all your annotations
+                        are permanently embedded into the PDF using pdf-lib.
+                        The original content is preserved.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">5</span>
+                    <h4>Can I undo my edits?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>Yes! Click the <strong>Undo</strong> button in the sidebar to
+                        remove the last annotation. You can also
+                        <strong>Clear Page</strong> to remove all edits
+                        from the current page.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo">
+                <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+            </div>
+            <p>© 2025 PDFTools. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="contact.html">Contact</a>
             </div>
         </div>
-    </section>
+    </div>
+</footer>
 
-    <section class="related-tools">
-        <div class="container">
-            <div class="section-header"><h2>Related Tools</h2></div>
-            <div class="related-grid">
-                <a href="sign-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-signature"></i></div><h4>Sign PDF</h4></a>
-                <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
-                <a href="page-numbers.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-list-ol"></i></div><h4>Page Numbers</h4></a>
-                <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
-                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
-                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
-            </div>
-        </div>
-    </section>
+<script src="js/tool-page.js"></script>
+<script src="js/adsense.js"></script>
 
-    <section class="how-to-section">
-        <div class="container">
-            <div class="section-header"><h2>How to Edit PDF</h2></div>
-            <div class="steps-row">
-                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your PDF file.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-pen"></i><h4>Edit</h4><p>Add text, draw, shapes.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Save</h4><p>Download edited PDF.</p></div>
-            </div>
-        </div>
-    </section>
+<script>
+/* ════════════════════════════════════════════════════════
+   PDF.js Worker
+════════════════════════════════════════════════════════ */
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    <section class="faq-section">
-        <div class="container">
-            <div class="section-header"><h2>FAQ</h2></div>
-            <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What can I edit?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Add text, freehand drawing, highlights, rectangles, circles, lines, arrows, and erase edits.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I undo changes?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Click the undo button to remove the last edit. You can undo multiple times.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Everything runs locally in your browser. No files uploaded.</p></div></div>
-            </div>
-        </div>
-    </section>
+/* ════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════ */
+let pdfDoc       = null;
+let rawBytes     = null;
+let currentPage  = 1;
+let totalPages   = 0;
+let zoomLevel    = 1.0;
+let currentTool  = 'select';
+let currentColor = '#000000';
+let brushSize    = 3;
+let fontSize     = 16;
+let opacity      = 1;
+let isDrawing    = false;
+let startX       = 0;
+let startY       = 0;
+let lastX        = 0;
+let lastY        = 0;
+let annotations  = {};  // { pageNum: [annotation,...] }
+let currentPath  = [];
+let selectedFile = null;
 
-    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+const pdfCanvas   = document.getElementById('pdfCanvas');
+const drawCanvas  = document.getElementById('drawCanvas');
+const pdfCtx      = pdfCanvas.getContext('2d');
+const drawCtx     = drawCanvas.getContext('2d');
+const textOverlay = document.getElementById('textOverlay');
 
-    <script src="js/tool-page.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+/* ════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════ */
+function toggleFaq(clickedItem) {
+    const isOpen = clickedItem.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) clickedItem.classList.add('open');
+}
 
-    <script>
-    // ==========================================
-    // EDIT PDF - COMPLETE WORKING CODE
-    // PDF.js (render) + Canvas (edit) + pdf-lib (save)
-    // ==========================================
-
-    // PDF.js worker
-    window.addEventListener('load', function() {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    });
-
-    // State
-    var E = {
-        rawBytes: null,
-        name: 'document',
-        pdfDoc: null,      // PDF.js document
-        currentPage: 1,
-        totalPages: 0,
-        scale: 1.5,
-        tool: 'select',    // select, text, draw, highlight, eraser, rect, circle, line, arrow
-        color: '#ff0000',
-        lineWidth: 2,
-        fontSize: 18,
-        isDrawing: false,
-        startX: 0, startY: 0,
-        // Per-page edit layers
-        pageEdits: {},     // {pageNum: [{type, data}]}
-        undoStack: {},     // {pageNum: []}
-        blob: null,
-        editCount: 0
+if (typeof toggleMobileMenu === 'undefined') {
+    window.toggleMobileMenu = function () {
+        document.getElementById('navLinks').classList.toggle('open');
     };
+}
 
-    // Canvas refs
-    var pdfCanvas = document.getElementById('pdfCanvas');
-    var editCanvas = document.getElementById('editCanvas');
-    var pdfCtx = pdfCanvas.getContext('2d');
-    var editCtx = editCanvas.getContext('2d');
+function showSection(id) {
+    document.querySelectorAll('[data-section]').forEach(s => s.style.display = 'none');
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block';
+}
 
-    // File input
-    document.getElementById('fi').addEventListener('change', function() {
-        if (this.files && this.files[0]) onFile(this.files[0]);
-    });
+function showError(msg) {
+    const el = document.getElementById('errorBox');
+    document.getElementById('errorText').textContent = msg;
+    el.style.display = 'flex';
+    setTimeout(() => el.style.display = 'none', 8000);
+}
 
-    // Drag drop
-    var dropBox = document.getElementById('dropBox');
-    dropBox.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = '#9333ea'; });
-    dropBox.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(168,85,247,0.3)'; });
-    dropBox.addEventListener('drop', function(e) {
-        e.preventDefault(); this.style.borderColor = 'rgba(168,85,247,0.3)';
-        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
-    });
+function hideError() {
+    document.getElementById('errorBox').style.display = 'none';
+}
 
-    // ===== LOAD PDF =====
-    async function onFile(file) {
-        hideE();
-        if (!file.name.toLowerCase().endsWith('.pdf')) { showE('Please select a PDF file!'); return; }
+function szF(bytes) {
+    if (!bytes) return '0 B';
+    const k = 1024;
+    const u = ['B','KB','MB','GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + u[i];
+}
 
-        E.name = file.name.replace(/\.pdf$/i, '');
+/* ════════════════════════════════════════════════════════
+   DRAG & DROP + FILE INPUT
+════════════════════════════════════════════════════════ */
+const dropZone  = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
 
-        try {
-            var ab = await readF(file);
-            E.rawBytes = new Uint8Array(ab);
+dropZone.addEventListener('dragover', e => {
+    e.preventDefault(); dropZone.classList.add('drag-over');
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) loadPDF(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) loadPDF(fileInput.files[0]);
+});
 
-            E.pdfDoc = await pdfjsLib.getDocument({ data: E.rawBytes.slice(0) }).promise;
-            E.totalPages = E.pdfDoc.numPages;
-            E.currentPage = 1;
-            E.pageEdits = {};
-            E.undoStack = {};
-            E.editCount = 0;
-
-            document.getElementById('totalPages').textContent = E.totalPages;
-            document.getElementById('edFn').textContent = file.name;
-
-            await renderPage(1);
-            goTo('s2');
-        } catch(e) {
-            console.error(e);
-            showE('Cannot read PDF: ' + e.message);
-        }
+/* ════════════════════════════════════════════════════════
+   LOAD PDF
+════════════════════════════════════════════════════════ */
+async function loadPDF(file) {
+    hideError();
+    if (!file.name.toLowerCase().endsWith('.pdf') &&
+        file.type !== 'application/pdf') {
+        showError('Please select a valid PDF file.');
+        return;
     }
 
-    function readF(f) {
-        return new Promise(function(ok, fail) {
-            var r = new FileReader();
-            r.onload = function() { ok(r.result); };
-            r.onerror = function() { fail(new Error('Read failed')); };
-            r.readAsArrayBuffer(f);
-        });
+    try {
+        selectedFile = file;
+        const ab     = await file.arrayBuffer();
+        rawBytes     = new Uint8Array(ab);
+
+        pdfDoc       = await pdfjsLib.getDocument({ data: rawBytes.slice(0) }).promise;
+        totalPages   = pdfDoc.numPages;
+        currentPage  = 1;
+        annotations  = {};
+
+        showSection('editorSection');
+        await renderPage(currentPage);
+        updatePageNav();
+
+    } catch(e) {
+        console.error(e);
+        showError('Could not read PDF: ' + e.message);
     }
+}
 
-    // ===== RENDER PAGE =====
-    async function renderPage(num) {
-        E.currentPage = num;
-        document.getElementById('curPage').textContent = num;
-        document.getElementById('btnPrev').disabled = (num <= 1);
-        document.getElementById('btnNext').disabled = (num >= E.totalPages);
+/* ════════════════════════════════════════════════════════
+   RENDER PAGE
+════════════════════════════════════════════════════════ */
+async function renderPage(pageNum) {
+    const page     = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: zoomLevel });
 
-        var page = await E.pdfDoc.getPage(num);
-        var viewport = page.getViewport({ scale: E.scale });
+    pdfCanvas.width  = viewport.width;
+    pdfCanvas.height = viewport.height;
+    drawCanvas.width  = viewport.width;
+    drawCanvas.height = viewport.height;
 
-        pdfCanvas.width = viewport.width;
-        pdfCanvas.height = viewport.height;
-        editCanvas.width = viewport.width;
-        editCanvas.height = viewport.height;
+    await page.render({ canvasContext: pdfCtx, viewport }).promise;
 
-        await page.render({ canvasContext: pdfCtx, viewport: viewport }).promise;
+    /* Re-draw annotations for this page */
+    redrawAnnotations(pageNum);
+}
 
-        // Redraw edits for this page
-        redrawEdits();
-    }
+/* ════════════════════════════════════════════════════════
+   ANNOTATIONS
+════════════════════════════════════════════════════════ */
+function getAnnotations(page) {
+    if (!annotations[page]) annotations[page] = [];
+    return annotations[page];
+}
 
-    function prevPage() { if (E.currentPage > 1) renderPage(E.currentPage - 1); }
-    function nextPage() { if (E.currentPage < E.totalPages) renderPage(E.currentPage + 1); }
+function redrawAnnotations(pageNum) {
+    drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+    const list = getAnnotations(pageNum);
+    list.forEach(ann => drawAnnotation(ann));
+}
 
-    // ===== TOOL SELECTION =====
-    function setTool(tool, btn) {
-        E.tool = tool;
-        document.querySelectorAll('.tb-btn').forEach(function(b) { b.classList.remove('active'); });
-        if (btn) btn.classList.add('active');
+function drawAnnotation(ann) {
+    drawCtx.save();
+    drawCtx.globalAlpha = ann.opacity || 1;
+    drawCtx.strokeStyle = ann.color;
+    drawCtx.fillStyle   = ann.color;
+    drawCtx.lineWidth   = ann.size || 2;
+    drawCtx.lineCap     = 'round';
+    drawCtx.lineJoin    = 'round';
 
-        editCanvas.style.cursor = tool === 'select' ? 'default'
-            : tool === 'text' ? 'text'
-            : tool === 'eraser' ? 'cell'
-            : 'crosshair';
-    }
-
-    // Color and size
-    document.getElementById('colorPick').addEventListener('input', function() { E.color = this.value; });
-    document.getElementById('sizePick').addEventListener('change', function() { E.lineWidth = parseInt(this.value); });
-    document.getElementById('fontSizePick').addEventListener('change', function() { E.fontSize = parseInt(this.value); });
-
-    // ===== CANVAS EVENTS =====
-    editCanvas.addEventListener('mousedown', onPointerDown);
-    editCanvas.addEventListener('mousemove', onPointerMove);
-    editCanvas.addEventListener('mouseup', onPointerUp);
-    editCanvas.addEventListener('mouseleave', onPointerUp);
-
-    // Touch support
-    editCanvas.addEventListener('touchstart', function(e) { e.preventDefault(); var t = touchPos(e); onPointerDown(t); });
-    editCanvas.addEventListener('touchmove', function(e) { e.preventDefault(); var t = touchPos(e); onPointerMove(t); });
-    editCanvas.addEventListener('touchend', function(e) { e.preventDefault(); onPointerUp(e); });
-
-    function touchPos(e) {
-        var rect = editCanvas.getBoundingClientRect();
-        var touch = e.touches[0];
-        return { offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top };
-    }
-
-    // Drawing state
-    var drawPath = [];
-    var tempShape = null;
-
-    function onPointerDown(e) {
-        var x = e.offsetX, y = e.offsetY;
-        E.startX = x; E.startY = y;
-        E.isDrawing = true;
-
-        if (E.tool === 'text') {
-            addTextInput(x, y);
-            E.isDrawing = false;
-            return;
-        }
-
-        if (E.tool === 'draw' || E.tool === 'highlight') {
-            drawPath = [{ x: x, y: y }];
-        }
-
-        if (E.tool === 'eraser') {
-            eraseAt(x, y);
-        }
-    }
-
-    function onPointerMove(e) {
-        if (!E.isDrawing) return;
-        var x = e.offsetX, y = e.offsetY;
-
-        if (E.tool === 'draw') {
-            drawPath.push({ x: x, y: y });
-            redrawEdits();
-            drawTempPath(drawPath, E.color, E.lineWidth, 1);
-        }
-
-        if (E.tool === 'highlight') {
-            drawPath.push({ x: x, y: y });
-            redrawEdits();
-            drawTempPath(drawPath, E.color, E.lineWidth * 8, 0.3);
-        }
-
-        if (E.tool === 'rect' || E.tool === 'circle' || E.tool === 'line' || E.tool === 'arrow') {
-            redrawEdits();
-            drawTempShape(E.tool, E.startX, E.startY, x, y);
-        }
-
-        if (E.tool === 'eraser') {
-            eraseAt(x, y);
-        }
-    }
-
-    function onPointerUp(e) {
-        if (!E.isDrawing) return;
-        E.isDrawing = false;
-
-        var x = e.offsetX || E.startX;
-        var y = e.offsetY || E.startY;
-        var pg = E.currentPage;
-
-        if (!E.pageEdits[pg]) E.pageEdits[pg] = [];
-        if (!E.undoStack[pg]) E.undoStack[pg] = [];
-
-        if (E.tool === 'draw' && drawPath.length > 1) {
-            var edit = { type: 'path', points: drawPath.slice(), color: E.color, width: E.lineWidth, alpha: 1 };
-            E.pageEdits[pg].push(edit);
-            E.undoStack[pg].push(edit);
-            E.editCount++;
-        }
-
-        if (E.tool === 'highlight' && drawPath.length > 1) {
-            var edit = { type: 'path', points: drawPath.slice(), color: E.color, width: E.lineWidth * 8, alpha: 0.3 };
-            E.pageEdits[pg].push(edit);
-            E.undoStack[pg].push(edit);
-            E.editCount++;
-        }
-
-        if (E.tool === 'rect' || E.tool === 'circle' || E.tool === 'line' || E.tool === 'arrow') {
-            var edit = { type: E.tool, x1: E.startX, y1: E.startY, x2: x, y2: y, color: E.color, width: E.lineWidth };
-            E.pageEdits[pg].push(edit);
-            E.undoStack[pg].push(edit);
-            E.editCount++;
-        }
-
-        drawPath = [];
-        redrawEdits();
-        updateEditCount();
-    }
-
-    // ===== TEXT INPUT =====
-    function addTextInput(x, y) {
-        // Remove existing text inputs
-        var existing = document.querySelector('.text-input-overlay');
-        if (existing) existing.remove();
-
-        var input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'text-input-overlay';
-        input.style.left = x + 'px';
-        input.style.top = y + 'px';
-        input.style.fontSize = E.fontSize + 'px';
-        input.style.color = E.color;
-        input.placeholder = 'Type here...';
-
-        document.getElementById('pageContainer').appendChild(input);
-        input.focus();
-
-        input.addEventListener('keydown', function(ev) {
-            if (ev.key === 'Enter') {
-                commitText(input, x, y);
+    switch (ann.type) {
+        case 'draw':
+            if (ann.path && ann.path.length > 1) {
+                drawCtx.beginPath();
+                drawCtx.moveTo(ann.path[0].x, ann.path[0].y);
+                ann.path.forEach(p => drawCtx.lineTo(p.x, p.y));
+                drawCtx.stroke();
             }
-        });
+            break;
 
-        input.addEventListener('blur', function() {
-            commitText(input, x, y);
-        });
-    }
-
-    function commitText(input, x, y) {
-        var text = input.value.trim();
-        if (text) {
-            var pg = E.currentPage;
-            if (!E.pageEdits[pg]) E.pageEdits[pg] = [];
-            if (!E.undoStack[pg]) E.undoStack[pg] = [];
-
-            var edit = { type: 'text', text: text, x: x, y: y + E.fontSize, color: E.color, size: E.fontSize };
-            E.pageEdits[pg].push(edit);
-            E.undoStack[pg].push(edit);
-            E.editCount++;
-            updateEditCount();
-            redrawEdits();
-        }
-        input.remove();
-    }
-
-    // ===== ERASER =====
-    function eraseAt(x, y) {
-        var pg = E.currentPage;
-        if (!E.pageEdits[pg]) return;
-
-        var radius = 15;
-        E.pageEdits[pg] = E.pageEdits[pg].filter(function(edit) {
-            if (edit.type === 'text') {
-                return Math.abs(edit.x - x) > radius * 2 || Math.abs(edit.y - y) > radius * 2;
+        case 'highlight':
+            drawCtx.globalAlpha = 0.35;
+            drawCtx.fillStyle = ann.color;
+            if (ann.path && ann.path.length > 1) {
+                drawCtx.beginPath();
+                drawCtx.moveTo(ann.path[0].x, ann.path[0].y);
+                ann.path.forEach(p => drawCtx.lineTo(p.x, p.y));
+                drawCtx.lineWidth = ann.size;
+                drawCtx.strokeStyle = ann.color;
+                drawCtx.stroke();
             }
-            if (edit.type === 'path') {
-                return !edit.points.some(function(p) {
-                    return Math.abs(p.x - x) < radius && Math.abs(p.y - y) < radius;
-                });
-            }
-            if (edit.type === 'rect' || edit.type === 'circle' || edit.type === 'line' || edit.type === 'arrow') {
-                var cx = (edit.x1 + edit.x2) / 2;
-                var cy = (edit.y1 + edit.y2) / 2;
-                return Math.abs(cx - x) > radius * 3 || Math.abs(cy - y) > radius * 3;
-            }
-            return true;
+            break;
+
+        case 'rect':
+            drawCtx.strokeRect(ann.x, ann.y, ann.w, ann.h);
+            break;
+
+        case 'circle':
+            drawCtx.beginPath();
+            drawCtx.ellipse(
+                ann.x + ann.w/2, ann.y + ann.h/2,
+                Math.abs(ann.w/2), Math.abs(ann.h/2),
+                0, 0, Math.PI*2
+            );
+            drawCtx.stroke();
+            break;
+
+        case 'line':
+            drawCtx.beginPath();
+            drawCtx.moveTo(ann.x, ann.y);
+            drawCtx.lineTo(ann.x2, ann.y2);
+            drawCtx.stroke();
+            break;
+
+        case 'arrow':
+            drawArrow(drawCtx, ann.x, ann.y, ann.x2, ann.y2, ann.size);
+            break;
+
+        case 'text':
+            drawCtx.globalAlpha = ann.opacity || 1;
+            drawCtx.font        = `${ann.fontSize || 16}px 'Segoe UI', sans-serif`;
+            drawCtx.fillStyle   = ann.color;
+            const lines = ann.text.split('\n');
+            lines.forEach((line, i) => {
+                drawCtx.fillText(line, ann.x, ann.y + i * (ann.fontSize || 16) * 1.3);
+            });
+            break;
+    }
+
+    drawCtx.restore();
+}
+
+function drawArrow(ctx, x1, y1, x2, y2, size) {
+    const angle    = Math.atan2(y2 - y1, x2 - x1);
+    const headLen  = Math.max(10, size * 4);
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(
+        x2 - headLen * Math.cos(angle - Math.PI/6),
+        y2 - headLen * Math.sin(angle - Math.PI/6)
+    );
+    ctx.lineTo(
+        x2 - headLen * Math.cos(angle + Math.PI/6),
+        y2 - headLen * Math.sin(angle + Math.PI/6)
+    );
+    ctx.closePath();
+    ctx.fill();
+}
+
+/* ════════════════════════════════════════════════════════
+   DRAWING EVENTS
+════════════════════════════════════════════════════════ */
+function getPos(e) {
+    const r = drawCanvas.getBoundingClientRect();
+    return {
+        x: (e.clientX - r.left) / zoomLevel * 1,
+        y: (e.clientY - r.top)  / zoomLevel * 1
+    };
+}
+
+function startDraw(e) {
+    if (currentTool === 'select') return;
+    if (currentTool === 'text') {
+        const pos = getPos(e);
+        showTextInput(pos.x, pos.y);
+        return;
+    }
+
+    isDrawing  = true;
+    const pos  = getPos(e);
+    startX     = pos.x;
+    startY     = pos.y;
+    lastX      = pos.x;
+    lastY      = pos.y;
+    currentPath = [{ x: pos.x, y: pos.y }];
+}
+
+function continueDraw(e) {
+    if (!isDrawing) return;
+    const pos = getPos(e);
+
+    drawCtx.save();
+    drawCtx.globalAlpha = opacity;
+    drawCtx.strokeStyle = currentColor;
+    drawCtx.fillStyle   = currentColor;
+    drawCtx.lineWidth   = brushSize;
+    drawCtx.lineCap     = 'round';
+    drawCtx.lineJoin    = 'round';
+
+    if (currentTool === 'draw') {
+        drawCtx.beginPath();
+        drawCtx.moveTo(lastX, lastY);
+        drawCtx.lineTo(pos.x, pos.y);
+        drawCtx.stroke();
+        currentPath.push({ x: pos.x, y: pos.y });
+    } else if (currentTool === 'highlight') {
+        drawCtx.globalAlpha = 0.35;
+        drawCtx.lineWidth   = brushSize * 8;
+        drawCtx.beginPath();
+        drawCtx.moveTo(lastX, lastY);
+        drawCtx.lineTo(pos.x, pos.y);
+        drawCtx.strokeStyle = currentColor;
+        drawCtx.stroke();
+        currentPath.push({ x: pos.x, y: pos.y });
+    } else if (currentTool === 'eraser') {
+        /* Eraser — draw white over top */
+        drawCtx.globalAlpha = 1;
+        drawCtx.strokeStyle = '#ffffff';
+        drawCtx.lineWidth   = brushSize * 4;
+        drawCtx.beginPath();
+        drawCtx.moveTo(lastX, lastY);
+        drawCtx.lineTo(pos.x, pos.y);
+        drawCtx.stroke();
+        currentPath.push({ x: pos.x, y: pos.y });
+    } else {
+        /* Shape preview — redraw page annotations then preview */
+        redrawAnnotations(currentPage);
+        previewShape(pos.x, pos.y);
+    }
+
+    drawCtx.restore();
+    lastX = pos.x;
+    lastY = pos.y;
+}
+
+function previewShape(x, y) {
+    drawCtx.save();
+    drawCtx.globalAlpha = opacity;
+    drawCtx.strokeStyle = currentColor;
+    drawCtx.fillStyle   = currentColor;
+    drawCtx.lineWidth   = brushSize;
+    drawCtx.lineCap     = 'round';
+
+    const w = x - startX;
+    const h = y - startY;
+
+    switch (currentTool) {
+        case 'rect':
+            drawCtx.strokeRect(startX, startY, w, h);
+            break;
+        case 'circle':
+            drawCtx.beginPath();
+            drawCtx.ellipse(
+                startX + w/2, startY + h/2,
+                Math.abs(w/2), Math.abs(h/2),
+                0, 0, Math.PI*2
+            );
+            drawCtx.stroke();
+            break;
+        case 'line':
+            drawCtx.beginPath();
+            drawCtx.moveTo(startX, startY);
+            drawCtx.lineTo(x, y);
+            drawCtx.stroke();
+            break;
+        case 'arrow':
+            drawArrow(drawCtx, startX, startY, x, y, brushSize);
+            break;
+    }
+
+    drawCtx.restore();
+}
+
+function endDraw(e) {
+    if (!isDrawing) return;
+    isDrawing = false;
+
+    const pos  = getPos(e);
+    const anns = getAnnotations(currentPage);
+
+    if (currentTool === 'draw' || currentTool === 'highlight') {
+        if (currentPath.length > 1) {
+            anns.push({
+                type:    currentTool,
+                color:   currentColor,
+                size:    currentTool === 'highlight' ? brushSize * 8 : brushSize,
+                opacity: currentTool === 'highlight' ? 0.35 : opacity,
+                path:    [...currentPath]
+            });
+        }
+    } else if (currentTool === 'eraser') {
+        anns.push({
+            type:  'draw',
+            color: '#ffffff',
+            size:  brushSize * 4,
+            opacity: 1,
+            path:  [...currentPath]
         });
-
-        redrawEdits();
+    } else {
+        const ann = {
+            type:    currentTool,
+            color:   currentColor,
+            size:    brushSize,
+            opacity: opacity,
+            x:       startX,
+            y:       startY,
+            x2:      pos.x,
+            y2:      pos.y,
+            w:       pos.x - startX,
+            h:       pos.y - startY
+        };
+        if (Math.abs(ann.w) > 2 || Math.abs(ann.h) > 2 ||
+            Math.abs(ann.x2-ann.x) > 2 || Math.abs(ann.y2-ann.y) > 2) {
+            anns.push(ann);
+        }
     }
 
-    // ===== REDRAW ALL EDITS =====
-    function redrawEdits() {
-        editCtx.clearRect(0, 0, editCanvas.width, editCanvas.height);
-        var pg = E.currentPage;
-        if (!E.pageEdits[pg]) return;
+    currentPath = [];
+    redrawAnnotations(currentPage);
+}
 
-        E.pageEdits[pg].forEach(function(edit) {
-            drawEdit(edit);
+/* ════════════════════════════════════════════════════════
+   TOUCH SUPPORT
+════════════════════════════════════════════════════════ */
+function touchToMouse(e) {
+    const touch = e.touches[0] || e.changedTouches[0];
+    return { clientX: touch.clientX, clientY: touch.clientY };
+}
+
+function touchStart(e) { e.preventDefault(); startDraw(touchToMouse(e)); }
+function touchMove(e)  { e.preventDefault(); continueDraw(touchToMouse(e)); }
+function touchEnd(e)   { e.preventDefault(); endDraw(touchToMouse(e)); }
+
+/* ════════════════════════════════════════════════════════
+   TEXT TOOL
+════════════════════════════════════════════════════════ */
+function showTextInput(x, y) {
+    textOverlay.style.display = 'block';
+    textOverlay.style.left    = x + 'px';
+    textOverlay.style.top     = y + 'px';
+    textOverlay.style.fontSize   = fontSize + 'px';
+    textOverlay.style.color      = currentColor;
+    textOverlay.style.opacity    = opacity;
+    textOverlay.value = '';
+    textOverlay.focus();
+}
+
+function commitText() {
+    const val = textOverlay.value.trim();
+    if (val) {
+        const x = parseInt(textOverlay.style.left);
+        const y = parseInt(textOverlay.style.top) + fontSize;
+        getAnnotations(currentPage).push({
+            type:     'text',
+            text:     val,
+            color:    currentColor,
+            fontSize: fontSize,
+            opacity:  opacity,
+            x, y
         });
+        redrawAnnotations(currentPage);
     }
+    textOverlay.style.display = 'none';
+    textOverlay.value = '';
+}
 
-    function drawEdit(edit) {
-        editCtx.save();
+/* ════════════════════════════════════════════════════════
+   TOOL CONTROLS
+════════════════════════════════════════════════════════ */
+const toolMeta = {
+    select:    { icon: 'fa-mouse-pointer', label: 'Select' },
+    text:      { icon: 'fa-font',         label: 'Text' },
+    draw:      { icon: 'fa-pen',          label: 'Draw' },
+    highlight: { icon: 'fa-highlighter',  label: 'Highlight' },
+    rect:      { icon: 'fa-square',       label: 'Rectangle' },
+    circle:    { icon: 'fa-circle',       label: 'Circle' },
+    line:      { icon: 'fa-minus',        label: 'Line' },
+    arrow:     { icon: 'fa-arrow-right',  label: 'Arrow' },
+    eraser:    { icon: 'fa-eraser',       label: 'Eraser' }
+};
 
-        if (edit.type === 'path') {
-            editCtx.globalAlpha = edit.alpha || 1;
-            editCtx.strokeStyle = edit.color;
-            editCtx.lineWidth = edit.width;
-            editCtx.lineCap = 'round';
-            editCtx.lineJoin = 'round';
-            editCtx.beginPath();
-            editCtx.moveTo(edit.points[0].x, edit.points[0].y);
-            for (var i = 1; i < edit.points.length; i++) {
-                editCtx.lineTo(edit.points[i].x, edit.points[i].y);
-            }
-            editCtx.stroke();
-        }
+function setTool(tool, el) {
+    currentTool = tool;
 
-        if (edit.type === 'text') {
-            editCtx.fillStyle = edit.color;
-            editCtx.font = edit.size + 'px Arial';
-            editCtx.fillText(edit.text, edit.x, edit.y);
-        }
+    /* Commit any open text */
+    if (textOverlay.style.display !== 'none') commitText();
 
-        if (edit.type === 'rect') {
-            editCtx.strokeStyle = edit.color;
-            editCtx.lineWidth = edit.width;
-            editCtx.strokeRect(edit.x1, edit.y1, edit.x2 - edit.x1, edit.y2 - edit.y1);
-        }
+    /* Update active btn */
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+    if (el) el.classList.add('active');
 
-        if (edit.type === 'circle') {
-            var cx = (edit.x1 + edit.x2) / 2;
-            var cy = (edit.y1 + edit.y2) / 2;
-            var rx = Math.abs(edit.x2 - edit.x1) / 2;
-            var ry = Math.abs(edit.y2 - edit.y1) / 2;
-            editCtx.strokeStyle = edit.color;
-            editCtx.lineWidth = edit.width;
-            editCtx.beginPath();
-            editCtx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-            editCtx.stroke();
-        }
+    /* Update badge */
+    const meta   = toolMeta[tool] || toolMeta.select;
+    const badge  = document.getElementById('toolBadge');
+    badge.innerHTML = `<i class="fas ${meta.icon}"></i><span>${meta.label}</span>`;
 
-        if (edit.type === 'line') {
-            editCtx.strokeStyle = edit.color;
-            editCtx.lineWidth = edit.width;
-            editCtx.beginPath();
-            editCtx.moveTo(edit.x1, edit.y1);
-            editCtx.lineTo(edit.x2, edit.y2);
-            editCtx.stroke();
-        }
+    /* Cursor */
+    const cursors = {
+        select: 'default', text: 'text',
+        draw: 'crosshair', highlight: 'crosshair',
+        eraser: 'cell'
+    };
+    drawCanvas.style.cursor = cursors[tool] || 'crosshair';
+}
 
-        if (edit.type === 'arrow') {
-            editCtx.strokeStyle = edit.color;
-            editCtx.fillStyle = edit.color;
-            editCtx.lineWidth = edit.width;
-            editCtx.beginPath();
-            editCtx.moveTo(edit.x1, edit.y1);
-            editCtx.lineTo(edit.x2, edit.y2);
-            editCtx.stroke();
-            // Arrowhead
-            var angle = Math.atan2(edit.y2 - edit.y1, edit.x2 - edit.x1);
-            var headLen = 12;
-            editCtx.beginPath();
-            editCtx.moveTo(edit.x2, edit.y2);
-            editCtx.lineTo(edit.x2 - headLen * Math.cos(angle - 0.4), edit.y2 - headLen * Math.sin(angle - 0.4));
-            editCtx.lineTo(edit.x2 - headLen * Math.cos(angle + 0.4), edit.y2 - headLen * Math.sin(angle + 0.4));
-            editCtx.closePath();
-            editCtx.fill();
-        }
+function setColor(hex, el) {
+    currentColor = hex;
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+    if (el) el.classList.add('active');
+    document.getElementById('colorPicker').value = hex;
+    document.getElementById('colorHex').textContent  = hex.toUpperCase();
+}
 
-        editCtx.restore();
+function setColorFromPicker(hex) {
+    currentColor = hex;
+    document.getElementById('colorHex').textContent = hex.toUpperCase();
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+}
+
+function updateBrushSize(v) {
+    brushSize = parseInt(v);
+    document.getElementById('brushVal').textContent = v + 'px';
+}
+
+function updateFontSize(v) {
+    fontSize = parseInt(v) || 16;
+}
+
+function updateOpacity(v) {
+    opacity = parseFloat(v);
+    document.getElementById('opacityVal').textContent = Math.round(opacity * 100) + '%';
+}
+
+/* ════════════════════════════════════════════════════════
+   PAGE NAVIGATION
+════════════════════════════════════════════════════════ */
+async function changePage(dir) {
+    const newPage = currentPage + dir;
+    if (newPage < 1 || newPage > totalPages) return;
+    currentPage = newPage;
+    await renderPage(currentPage);
+    updatePageNav();
+}
+
+function updatePageNav() {
+    document.getElementById('pageInfo').textContent = `${currentPage} / ${totalPages}`;
+    document.getElementById('prevBtn').disabled = currentPage <= 1;
+    document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+}
+
+/* ════════════════════════════════════════════════════════
+   ZOOM
+════════════════════════════════════════════════════════ */
+async function zoom(delta) {
+    zoomLevel = Math.min(3, Math.max(0.3, zoomLevel + delta));
+    document.getElementById('zoomInfo').textContent =
+        Math.round(zoomLevel * 100) + '%';
+    await renderPage(currentPage);
+}
+
+async function zoomReset() {
+    zoomLevel = 1.0;
+    document.getElementById('zoomInfo').textContent = '100%';
+    await renderPage(currentPage);
+}
+
+/* ════════════════════════════════════════════════════════
+   UNDO & CLEAR
+════════════════════════════════════════════════════════ */
+function undoLast() {
+    const list = getAnnotations(currentPage);
+    if (list.length > 0) {
+        list.pop();
+        redrawAnnotations(currentPage);
     }
+}
 
-    // Temp drawing helpers
-    function drawTempPath(points, color, width, alpha) {
-        editCtx.save();
-        editCtx.globalAlpha = alpha;
-        editCtx.strokeStyle = color;
-        editCtx.lineWidth = width;
-        editCtx.lineCap = 'round';
-        editCtx.beginPath();
-        editCtx.moveTo(points[0].x, points[0].y);
-        for (var i = 1; i < points.length; i++) editCtx.lineTo(points[i].x, points[i].y);
-        editCtx.stroke();
-        editCtx.restore();
+function clearPage() {
+    if (confirm('Clear all annotations on this page?')) {
+        annotations[currentPage] = [];
+        redrawAnnotations(currentPage);
     }
+}
 
-    function drawTempShape(type, x1, y1, x2, y2) {
-        editCtx.save();
-        editCtx.strokeStyle = E.color;
-        editCtx.fillStyle = E.color;
-        editCtx.lineWidth = E.lineWidth;
-        editCtx.setLineDash([5, 5]);
-
-        if (type === 'rect') editCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-        if (type === 'circle') {
-            editCtx.beginPath();
-            editCtx.ellipse((x1+x2)/2, (y1+y2)/2, Math.abs(x2-x1)/2, Math.abs(y2-y1)/2, 0, 0, Math.PI*2);
-            editCtx.stroke();
-        }
-        if (type === 'line' || type === 'arrow') {
-            editCtx.beginPath(); editCtx.moveTo(x1,y1); editCtx.lineTo(x2,y2); editCtx.stroke();
-        }
-        editCtx.restore();
+function changeFile() {
+    if (confirm('Load a new PDF? Current edits will be lost.')) {
+        pdfDoc = null; rawBytes = null;
+        annotations = {}; currentPage = 1;
+        fileInput.value = '';
+        showSection('uploadSection');
     }
+}
 
-    // ===== UNDO =====
-    function undoAction() {
-        var pg = E.currentPage;
-        if (!E.pageEdits[pg] || E.pageEdits[pg].length === 0) return;
-        E.pageEdits[pg].pop();
-        E.editCount = Math.max(0, E.editCount - 1);
-        redrawEdits();
-        updateEditCount();
-    }
+/* ════════════════════════════════════════════════════════
+   SAVE PDF — Embed annotations using pdf-lib
+════════════════════════════════════════════════════════ */
+async function savePDF() {
+    if (!rawBytes) { showError('No PDF loaded.'); return; }
 
-    function clearPage() {
-        if (!confirm('Clear all edits on this page?')) return;
-        var pg = E.currentPage;
-        var count = (E.pageEdits[pg] || []).length;
-        E.pageEdits[pg] = [];
-        E.editCount = Math.max(0, E.editCount - count);
-        redrawEdits();
-        updateEditCount();
-    }
+    try {
+        const pdfLibDoc = await PDFLib.PDFDocument.load(rawBytes.slice(0));
+        const pages     = pdfLibDoc.getPages();
 
-    function updateEditCount() {
-        document.getElementById('edInfo').textContent = E.editCount + ' edit' + (E.editCount !== 1 ? 's' : '');
-    }
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+            const anns = getAnnotations(pageNum);
+            if (!anns.length) continue;
 
-    // ==========================================
-    // ✅ SAVE EDITED PDF (using pdf-lib + canvas)
-    // ==========================================
-    async function savePDF() {
-        goTo('s3');
+            const pdfPage = pages[pageNum - 1];
+            const { width: pW, height: pH } = pdfPage.getSize();
 
-        try {
-            prog(10, 'Loading PDF...', 'Preparing document');
+            /* Get rendered page size at zoom=1 for coordinate mapping */
+            const rendered = await pdfDoc.getPage(pageNum);
+            const vp       = rendered.getViewport({ scale: 1 });
+            const scaleX   = pW / vp.width;
+            const scaleY   = pH / vp.height;
 
-            var pdfDoc = await PDFLib.PDFDocument.load(E.rawBytes.slice(0));
-            var pages = pdfDoc.getPages();
+            for (const ann of anns) {
+                const hexToRgb = hex => {
+                    const r = parseInt(hex.slice(1,3),16)/255;
+                    const g = parseInt(hex.slice(3,5),16)/255;
+                    const b = parseInt(hex.slice(5,7),16)/255;
+                    return { r, g, b };
+                };
 
-            prog(25, 'Rendering edits...', 'Processing pages');
+                const clr = hexToRgb(ann.color || '#000000');
+                const col = PDFLib.rgb(clr.r, clr.g, clr.b);
 
-            for (var p = 0; p < pages.length; p++) {
-                var pageNum = p + 1;
-                var edits = E.pageEdits[pageNum];
-                if (!edits || edits.length === 0) continue;
+                const toY = y => pH - (y * scaleY);
 
-                prog(25 + Math.round((p / pages.length) * 50), 'Page ' + pageNum, 'Applying edits...');
-
-                // Render PDF page + edits to a combined canvas
-                var page = pages[p];
-                var pdfPage = await E.pdfDoc.getPage(pageNum);
-                var viewport = pdfPage.getViewport({ scale: E.scale });
-
-                var combinedCanvas = document.createElement('canvas');
-                combinedCanvas.width = viewport.width;
-                combinedCanvas.height = viewport.height;
-                var ctx = combinedCanvas.getContext('2d');
-
-                // Draw PDF page
-                await pdfPage.render({ canvasContext: ctx, viewport: viewport }).promise;
-
-                // Draw edits on top
-                edits.forEach(function(edit) {
-                    ctx.save();
-                    if (edit.type === 'path') {
-                        ctx.globalAlpha = edit.alpha || 1;
-                        ctx.strokeStyle = edit.color;
-                        ctx.lineWidth = edit.width;
-                        ctx.lineCap = 'round';
-                        ctx.beginPath();
-                        ctx.moveTo(edit.points[0].x, edit.points[0].y);
-                        for (var i = 1; i < edit.points.length; i++) ctx.lineTo(edit.points[i].x, edit.points[i].y);
-                        ctx.stroke();
-                    }
-                    if (edit.type === 'text') {
-                        ctx.fillStyle = edit.color;
-                        ctx.font = edit.size + 'px Arial';
-                        ctx.fillText(edit.text, edit.x, edit.y);
-                    }
-                    if (edit.type === 'rect') {
-                        ctx.strokeStyle = edit.color; ctx.lineWidth = edit.width;
-                        ctx.strokeRect(edit.x1, edit.y1, edit.x2 - edit.x1, edit.y2 - edit.y1);
-                    }
-                    if (edit.type === 'circle') {
-                        ctx.strokeStyle = edit.color; ctx.lineWidth = edit.width;
-                        ctx.beginPath(); ctx.ellipse((edit.x1+edit.x2)/2,(edit.y1+edit.y2)/2,Math.abs(edit.x2-edit.x1)/2,Math.abs(edit.y2-edit.y1)/2,0,0,Math.PI*2); ctx.stroke();
-                    }
-                    if (edit.type === 'line' || edit.type === 'arrow') {
-                        ctx.strokeStyle = edit.color; ctx.lineWidth = edit.width;
-                        ctx.beginPath(); ctx.moveTo(edit.x1,edit.y1); ctx.lineTo(edit.x2,edit.y2); ctx.stroke();
-                        if (edit.type === 'arrow') {
-                            var a = Math.atan2(edit.y2-edit.y1,edit.x2-edit.x1);
-                            ctx.fillStyle = edit.color;
-                            ctx.beginPath(); ctx.moveTo(edit.x2,edit.y2);
-                            ctx.lineTo(edit.x2-12*Math.cos(a-0.4),edit.y2-12*Math.sin(a-0.4));
-                            ctx.lineTo(edit.x2-12*Math.cos(a+0.4),edit.y2-12*Math.sin(a+0.4));
-                            ctx.closePath(); ctx.fill();
+                switch (ann.type) {
+                    case 'draw':
+                    case 'highlight':
+                        if (ann.path && ann.path.length > 1) {
+                            for (let i = 1; i < ann.path.length; i++) {
+                                const x1 = ann.path[i-1].x * scaleX;
+                                const y1 = toY(ann.path[i-1].y);
+                                const x2 = ann.path[i].x   * scaleX;
+                                const y2 = toY(ann.path[i].y);
+                                pdfPage.drawLine({
+                                    start:     { x: x1, y: y1 },
+                                    end:       { x: x2, y: y2 },
+                                    thickness: (ann.size || 2) * scaleX,
+                                    color:     col,
+                                    opacity:   ann.opacity || 1
+                                });
+                            }
                         }
-                    }
-                    ctx.restore();
-                });
+                        break;
 
-                // Convert canvas to image and embed in PDF
-                var imgData = combinedCanvas.toDataURL('image/jpeg', 0.92);
-                var imgBytes = Uint8Array.from(atob(imgData.split(',')[1]), function(c) { return c.charCodeAt(0); });
-                var embeddedImg = await pdfDoc.embedJpg(imgBytes);
+                    case 'rect':
+                        pdfPage.drawRectangle({
+                            x:           ann.x * scaleX,
+                            y:           toY(ann.y + ann.h),
+                            width:       Math.abs(ann.w) * scaleX,
+                            height:      Math.abs(ann.h) * scaleY,
+                            borderColor: col,
+                            borderWidth: ann.size || 2,
+                            opacity:     ann.opacity || 1
+                        });
+                        break;
 
-                // Replace page content with image
-                var { width, height } = page.getSize();
-                page.drawImage(embeddedImg, {
-                    x: 0, y: 0,
-                    width: width,
-                    height: height
-                });
+                    case 'circle':
+                        pdfPage.drawEllipse({
+                            x:           (ann.x + ann.w/2) * scaleX,
+                            y:           toY(ann.y + ann.h/2),
+                            xScale:      Math.abs(ann.w/2) * scaleX,
+                            yScale:      Math.abs(ann.h/2) * scaleY,
+                            borderColor: col,
+                            borderWidth: ann.size || 2,
+                            opacity:     ann.opacity || 1
+                        });
+                        break;
+
+                    case 'line':
+                    case 'arrow':
+                        pdfPage.drawLine({
+                            start:     { x: ann.x * scaleX, y: toY(ann.y) },
+                            end:       { x: ann.x2 * scaleX, y: toY(ann.y2) },
+                            thickness: ann.size || 2,
+                            color:     col,
+                            opacity:   ann.opacity || 1
+                        });
+                        break;
+
+                    case 'text':
+                        try {
+                            const font = await pdfLibDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                            const lines = ann.text.split('\n');
+                            lines.forEach((line, li) => {
+                                const fs = (ann.fontSize || 16) * ((scaleX + scaleY) / 2);
+                                pdfPage.drawText(line, {
+                                    x:       ann.x * scaleX,
+                                    y:       toY(ann.y) - li * fs * 1.2,
+                                    size:    fs,
+                                    font:    font,
+                                    color:   col,
+                                    opacity: ann.opacity || 1
+                                });
+                            });
+                        } catch(te) { console.warn('Text embed error:', te); }
+                        break;
+                }
             }
-
-            prog(85, 'Saving...', 'Generating PDF');
-
-            var savedBytes = await pdfDoc.save();
-            E.blob = new Blob([savedBytes], { type: 'application/pdf' });
-
-            prog(100, 'Done!', 'PDF saved');
-
-            document.getElementById('rPages').textContent = E.totalPages;
-            document.getElementById('rEdits').textContent = E.editCount;
-            document.getElementById('rSz').textContent = szF(E.blob.size);
-            document.getElementById('rfn').textContent = E.name + '_edited.pdf';
-
-            setTimeout(function() { goTo('s4'); }, 400);
-
-        } catch(e) {
-            console.error(e);
-            goTo('s2');
-            showE('Save failed: ' + e.message);
         }
-    }
 
-    // ===== DOWNLOAD =====
-    function doDownload() {
-        if (!E.blob) { alert('No file ready.'); return; }
-        var url = URL.createObjectURL(E.blob);
-        var a = document.createElement('a');
-        a.href = url; a.download = E.name + '_edited.pdf';
-        a.style.display = 'none';
-        document.body.appendChild(a); a.click();
-        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
-    }
+        const pdfBytes  = await pdfLibDoc.save();
+        const blob      = new Blob([pdfBytes], { type: 'application/pdf' });
+        const name      = selectedFile
+            ? selectedFile.name.replace(/\.pdf$/i, '') + '_edited.pdf'
+            : 'edited.pdf';
+        const url       = URL.createObjectURL(blob);
+        const a         = document.createElement('a');
+        a.href          = url;
+        a.download      = name;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
 
-    // ===== RESET =====
-    function doReset() {
-        E.rawBytes = null; E.name = 'document';
-        E.pdfDoc = null; E.currentPage = 1; E.totalPages = 0;
-        E.pageEdits = {}; E.undoStack = {};
-        E.blob = null; E.editCount = 0;
-        E.tool = 'select';
-        hideE(); prog(0, 'Saving...', '');
-        document.getElementById('fi').value = '';
-        editCtx.clearRect(0, 0, editCanvas.width, editCanvas.height);
-        goTo('s1');
+    } catch(e) {
+        console.error('Save error:', e);
+        showError('Save failed: ' + e.message);
     }
-
-    // ===== HELPERS =====
-    function goTo(id) {
-        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
-        document.getElementById(id).style.display = 'block';
-    }
-    function prog(p,t,s) {
-        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
-        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
-    }
-    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
-    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
-    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
-
-    console.log('Edit PDF tool loaded');
-    console.log('Libraries: PDF.js + pdf-lib');
-    </script>
-
+}
+</script>
 </body>
 </html>

@@ -3,72 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protect PDF - Add Password Free | PDFTools</title>
+    <title>Protect PDF - Add Password to PDF Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+    <meta name="description" content="Add password protection to your PDF files online for free.">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+
+    <!-- PDF-LIB for valid PDF rebuilding -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
     <style>
-        .fic{display:flex;align-items:center;gap:15px;padding:15px 18px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
-        .fic-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
-        .fic-info{flex:1;min-width:0}.fic-info h4{font-size:14px;font-weight:700;margin-bottom:3px}
-        .fic-meta{display:flex;gap:10px;flex-wrap:wrap}.fic-meta span{font-size:11px;color:var(--text-light)}
-        .fic-badge{background:rgba(239,68,68,0.1);color:#dc2626;padding:2px 9px;border-radius:15px;font-weight:600;font-size:11px}
-        .pw-field{margin-bottom:16px}.pw-field label{display:block;font-size:12px;font-weight:600;color:var(--text-medium);margin-bottom:5px}
-        .pw-field label i{margin-right:4px;color:#ef4444}
-        .pw-wrap{position:relative}
-        .pw-wrap input{width:100%;padding:13px 48px 13px 16px;border:2px solid rgba(239,68,68,0.2);border-radius:12px;background:rgba(255,255,255,0.5);font-size:15px;outline:none;box-sizing:border-box;transition:border-color 0.2s}
-        .pw-wrap input:focus{border-color:#ef4444}
-        .pw-wrap .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-light);cursor:pointer;font-size:16px;padding:5px}
-        .pw-bar{height:5px;border-radius:3px;background:rgba(0,0,0,0.06);margin:7px 0;overflow:hidden}
-        .pw-bar-fill{height:100%;border-radius:3px;transition:width 0.3s,background 0.3s}
-        .pw-bar-text{font-size:11px;color:var(--text-light);margin-bottom:6px}
-        .pw-match{font-size:12px;display:none;align-items:center;gap:5px;margin-top:5px}
-        .pw-match.ok{color:#16a34a}.pw-match.no{color:#dc2626}
-        .pw-gen{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
-        .pw-gen button{padding:6px 13px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,0.1);color:#dc2626;display:flex;align-items:center;gap:4px;transition:background 0.2s,color 0.2s}
-        .pw-gen button:hover{background:#ef4444;color:#fff}
-        .enc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
-        .enc-card{padding:14px 10px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;text-align:center;cursor:pointer;transition:border-color 0.2s}
-        .enc-card:hover{border-color:#ef4444}
-        .enc-card.on{border-color:#ef4444;background:rgba(239,68,68,0.06)}
-        .enc-card h5{font-size:13px;font-weight:700;margin-bottom:3px}
-        .enc-card p{font-size:10px;color:var(--text-light)}
-        .enc-card .ei{font-size:20px;color:#ef4444;margin-bottom:5px;display:block}
-        .perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
-        .perm-item{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;cursor:pointer;transition:border-color 0.2s;font-size:12px;font-weight:600}
-        .perm-item:hover{border-color:#ef4444}
-        .perm-item.on{border-color:#22c55e;background:rgba(34,197,94,0.04)}
-        .perm-item .pc{width:20px;height:20px;border-radius:5px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all 0.2s}
-        .perm-item.on .pc{background:#22c55e;border-color:#22c55e;color:#fff}
-        .perm-item i{color:#ef4444;width:16px}
-        .sec-summary{background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:14px;margin:14px 0}
-        .sec-summary h4{font-size:13px;font-weight:700;color:#dc2626;margin-bottom:8px}
-        .sec-summary .sr{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(239,68,68,0.08)}
-        .sec-summary .sr:last-child{border:none}
-        .sec-summary .sl{color:#64748b}.sec-summary .sv{font-weight:600;color:#1e293b}
-        .comp-box{display:grid;grid-template-columns:1fr auto 1fr;gap:15px;align-items:center;margin:18px 0;padding:18px;background:rgba(255,255,255,0.3);border-radius:14px}
-        .comp-item{text-align:center;padding:14px;border-radius:12px}
-        .comp-item.before{background:rgba(34,197,94,0.06);border:2px solid rgba(34,197,94,0.2)}
-        .comp-item.after{background:rgba(239,68,68,0.06);border:2px solid rgba(239,68,68,0.2)}
-        .comp-item i{font-size:28px;margin-bottom:7px;display:block}
-        .comp-item.before i{color:#22c55e}.comp-item.after i{color:#ef4444}
-        .comp-item h4{font-size:13px;font-weight:700;margin-bottom:3px}
-        .comp-item p{font-size:10px;color:var(--text-light)}
-        .comp-arrow{font-size:22px;color:var(--primary)}
-        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
-        .srow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0}
-        .sbox{padding:12px 18px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
-        .sbox h4{font-size:20px;font-weight:800;color:#dc2626}.sbox p{font-size:10px;color:var(--text-light)}
-        .warn{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:12px;color:#92400e}
-        .warn i{color:#f59e0b;margin-right:6px}
-        @media(max-width:768px){.perm-grid{grid-template-columns:1fr}.enc-cards{grid-template-columns:1fr}.comp-box{grid-template-columns:1fr}.comp-arrow{transform:rotate(90deg)}}
+        .file-info-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 15px 18px;
+            background: rgba(255,255,255,0.45);
+            border: 1px solid rgba(255,255,255,0.60);
+            border-radius: 14px; margin-bottom: 20px;
+        }
+        .file-info-icon {
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg,#ef4444,#dc2626);
+            border-radius: 12px; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 20px; color: #fff; flex-shrink: 0;
+        }
+        .file-info-details { flex: 1; min-width: 0; }
+        .file-info-details h4 {
+            font-size: 14px; font-weight: 700;
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; margin-bottom: 5px;
+            color: var(--text-dark, #1e293b);
+        }
+        .file-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .file-meta span {
+            font-size: 12px; color: var(--text-light, #64748b);
+            display: flex; align-items: center; gap: 4px;
+        }
+        .size-badge {
+            background: rgba(239,68,68,0.10); color: #dc2626;
+            padding: 2px 10px; border-radius: 20px;
+            font-weight: 600; font-size: 12px !important;
+        }
+        .pw-field { margin-bottom: 16px; }
+        .pw-field label {
+            display: block; font-size: 12px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-light, #64748b); margin-bottom: 8px;
+        }
+        .pw-input-wrap { position: relative; display: flex; align-items: center; }
+        .pw-input-wrap input {
+            width: 100%; padding: 12px 48px 12px 16px;
+            border: 1.5px solid #e2e8f0; border-radius: 12px;
+            font-size: 14px; background: rgba(255,255,255,0.80);
+            color: var(--text-dark, #1e293b); outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1.5px; box-sizing: border-box;
+        }
+        .pw-input-wrap input:focus {
+            border-color: var(--primary, #6366f1);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.10);
+        }
+        .pw-input-wrap input.mismatch {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
+        }
+        .pw-input-wrap input.match {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.10);
+        }
+        .toggle-pw {
+            position: absolute; right: 12px; background: none;
+            border: none; color: var(--text-light, #94a3b8);
+            cursor: pointer; font-size: 15px; padding: 4px;
+            transition: color 0.2s;
+        }
+        .toggle-pw:hover { color: var(--primary, #6366f1); }
+        .strength-bar-wrap { margin-top: 8px; }
+        .strength-bar-track {
+            height: 5px; background: #e2e8f0;
+            border-radius: 10px; overflow: hidden; margin-bottom: 4px;
+        }
+        .strength-bar-fill {
+            height: 100%; border-radius: 10px;
+            transition: width 0.4s ease, background 0.4s ease; width: 0%;
+        }
+        .strength-label { font-size: 11px; font-weight: 600; color: var(--text-light, #94a3b8); }
+        .match-hint {
+            font-size: 11px; font-weight: 600; margin-top: 5px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .match-hint.ok  { color: #16a34a; }
+        .match-hint.bad { color: #dc2626; }
+        .permissions-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;
+        }
+        .perm-toggle {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 14px; background: rgba(255,255,255,0.55);
+            border: 1.5px solid rgba(255,255,255,0.80);
+            border-radius: 10px; cursor: pointer;
+            transition: all 0.2s ease; user-select: none;
+        }
+        .perm-toggle:hover {
+            background: rgba(255,255,255,0.80);
+            border-color: rgba(99,102,241,0.20);
+        }
+        .perm-toggle input[type="checkbox"] {
+            width: 16px; height: 16px;
+            accent-color: var(--primary, #6366f1);
+            cursor: pointer; flex-shrink: 0;
+        }
+        .perm-toggle i {
+            font-size: 14px; color: var(--text-light, #94a3b8);
+            width: 16px; text-align: center; flex-shrink: 0;
+        }
+        .perm-toggle span { font-size: 12px; font-weight: 600; color: var(--text-dark, #1e293b); }
+        .result-stats {
+            display: flex; justify-content: center;
+            gap: 18px; flex-wrap: wrap; margin: 18px 0;
+        }
+        .result-stat {
+            text-align: center; background: rgba(255,255,255,0.38);
+            border: 1px solid rgba(255,255,255,0.55);
+            border-radius: 12px; padding: 13px 16px; min-width: 100px;
+        }
+        .result-stat strong {
+            display: block; font-size: 20px;
+            color: var(--primary, #6366f1); line-height: 1; margin-bottom: 4px;
+        }
+        .result-stat small {
+            color: var(--text-light, #64748b);
+            font-size: 11px; font-weight: 600; text-transform: uppercase;
+        }
+        .protect-badge {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 6px 16px; background: rgba(239,68,68,0.10);
+            border: 1px solid rgba(239,68,68,0.22);
+            border-radius: 20px; font-size: 13px;
+            font-weight: 700; color: #dc2626; margin: 10px 0 16px;
+        }
+        .error-box {
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 10px; padding: 12px 16px;
+            color: #dc2626; font-size: 14px; margin-bottom: 16px;
+            display: none; align-items: center; gap: 8px; font-weight: 500;
+        }
+        .icon-red    { background: linear-gradient(135deg,#ef4444,#dc2626); }
+        .icon-blue   { background: linear-gradient(135deg,#3b82f6,#2563eb); }
+        .icon-green  { background: linear-gradient(135deg,#22c55e,#16a34a); }
+        .icon-purple { background: linear-gradient(135deg,#a855f7,#9333ea); }
+        .icon-teal   { background: linear-gradient(135deg,#14b8a6,#0d9488); }
+        .faq-section { padding: 50px 0; }
+        .faq-list { max-width: 750px; margin: 0 auto; }
+        .faq-item {
+            background: rgba(255,255,255,0.65); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.6); border-radius: 14px;
+            margin-bottom: 12px; overflow: hidden; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .faq-item:hover {
+            background: rgba(255,255,255,0.80);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.07); transform: translateY(-1px);
+        }
+        .faq-item.open {
+            background: rgba(255,255,255,0.85);
+            border-color: rgba(99,102,241,0.20);
+            box-shadow: 0 6px 25px rgba(99,102,241,0.10);
+        }
+        .faq-question {
+            display: flex; align-items: center;
+            justify-content: space-between; padding: 18px 22px; gap: 14px;
+        }
+        .faq-question h4 {
+            font-size: 15px; font-weight: 600;
+            color: var(--text-dark, #1e293b); margin: 0; line-height: 1.4; flex: 1;
+        }
+        .faq-item.open .faq-question h4 { color: var(--primary, #6366f1); }
+        .faq-question i {
+            font-size: 13px; color: var(--text-light, #94a3b8);
+            transition: transform 0.35s ease, color 0.3s ease;
+            flex-shrink: 0; width: 20px; text-align: center;
+        }
+        .faq-item.open .faq-question i { transform: rotate(180deg); color: var(--primary, #6366f1); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease; opacity: 0; }
+        .faq-item.open .faq-answer { max-height: 400px; opacity: 1; }
+        .faq-answer-inner { padding: 0 22px 20px; }
+        .faq-item.open .faq-answer-inner {
+            border-top: 1px solid rgba(99,102,241,0.10);
+            padding-top: 16px; margin: 0 22px; padding-left: 0; padding-right: 0;
+        }
+        .faq-answer-inner p { font-size: 14px; line-height: 1.7; color: var(--text-light, #64748b); margin: 0; }
+        .faq-answer-inner p strong { color: var(--text-dark, #1e293b); }
+        .faq-num {
+            width: 28px; height: 28px; background: rgba(99,102,241,0.10);
+            color: var(--primary, #6366f1); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; flex-shrink: 0; transition: all 0.3s ease;
+        }
+        .faq-item.open .faq-num { background: var(--primary, #6366f1); color: #fff; }
+        .info-banner {
+            background: rgba(99,102,241,0.07); border: 1px solid rgba(99,102,241,0.20);
+            border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #4338ca;
+            display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .permissions-grid { grid-template-columns: 1fr; }
+            .result-stats { gap: 10px; }
+            .result-stat { min-width: 80px; padding: 11px 12px; }
+        }
+        @media (max-width: 480px) {
+            .file-info-card { flex-wrap: wrap; }
+            .faq-question { padding: 14px; }
+            .faq-question h4 { font-size: 13px; }
+            .faq-item { border-radius: 10px; margin-bottom: 8px; }
+        }
     </style>
 </head>
 <body>
 
 <nav class="navbar glass">
-    <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <a href="index.html" class="logo">
+        <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+    </a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+    </div>
     <div class="nav-links" id="navLinks">
         <a href="index.html"><i class="fas fa-home"></i> Home</a>
         <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
@@ -78,173 +241,239 @@
 
 <section class="tool-header">
     <div class="container">
-        <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Protect PDF</span></div>
+        <div class="breadcrumb">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Protect PDF</span>
+        </div>
         <div class="tool-title">
-            <div class="tool-title-icon icon-red"><i class="fas fa-shield-alt"></i></div>
-            <div><h1>Protect PDF</h1><p>Add password protection to your PDF. 100% browser-based!</p></div>
+            <div class="tool-title-icon icon-red">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div>
+                <h1>Protect PDF</h1>
+                <p>Add password protection to your PDF files. Free &amp; 100% browser-based!</p>
+            </div>
         </div>
     </div>
 </section>
+
+<div class="adsense-wrapper">
+    <div class="adsense-unit" data-slot="topBanner" data-format="auto"></div>
+</div>
 
 <section class="tool-area">
     <div class="container">
         <div class="tool-wrapper glass">
 
+            <div class="error-box" id="errorBox">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText">Something went wrong.</span>
+            </div>
+
             <!-- UPLOAD -->
-            <div id="s1">
-                <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(239,68,68,0.3);border-radius:20px;margin:25px;cursor:pointer;" id="dropBox">
-                    <div style="font-size:60px;margin-bottom:20px;color:#ef4444;"><i class="fas fa-shield-alt"></i></div>
-                    <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Protect</h2>
-                    <p style="color:var(--text-light);margin-bottom:25px;">Add password and set security permissions</p>
-                    <button class="upload-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" id="pickBtn" type="button">
-                        <i class="fas fa-plus"></i> Select PDF File
-                    </button>
-                    <input type="file" id="fi" accept=".pdf" style="display:none">
-                    <div class="upload-hints" style="margin-top:20px;">
-                        <span><i class="fas fa-key"></i> Password</span>
-                        <span><i class="fas fa-lock"></i> Encryption</span>
-                        <span><i class="fas fa-ban"></i> Permissions</span>
+            <div id="uploadSection" data-section>
+                <div class="upload-zone" id="dropZone"
+                     onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-zone-content">
+                        <div class="upload-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h2>Upload PDF to Protect</h2>
+                        <p>Drop your PDF here or click to browse</p>
+                        <button class="upload-btn"
+                                onclick="event.stopPropagation();document.getElementById('fileInput').click()">
+                            <i class="fas fa-plus"></i> Select PDF File
+                        </button>
+                        <input type="file" id="fileInput" accept=".pdf,application/pdf" hidden>
+                        <div class="upload-hints">
+                            <span><i class="fas fa-lock"></i> 100% Private</span>
+                            <span><i class="fas fa-laptop"></i> Browser Only</span>
+                            <span><i class="fas fa-shield-alt"></i> RC4-128 Encryption</span>
+                        </div>
+                        <p style="margin-top:12px;font-size:12px;color:var(--text-light);">
+                            <i class="fas fa-shield-alt"></i> Files never leave your device!
+                        </p>
                     </div>
                 </div>
             </div>
 
             <!-- OPTIONS -->
-            <div id="s2" style="display:none;">
+            <div id="optionsSection" data-section style="display:none;">
                 <div class="files-area">
-                    <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
 
-                    <div class="fic">
-                        <div class="fic-icon"><i class="fas fa-file-pdf"></i></div>
-                        <div class="fic-info">
-                            <h4 id="fn">doc.pdf</h4>
-                            <div class="fic-meta">
-                                <span class="fic-badge"><i class="fas fa-lock-open"></i> No Protection</span>
-                                <span><i class="fas fa-weight-hanging"></i> <span id="fs">0</span></span>
-                                <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
+                    <div class="file-info-card">
+                        <div class="file-info-icon"><i class="fas fa-file-pdf"></i></div>
+                        <div class="file-info-details">
+                            <h4 id="fileName">document.pdf</h4>
+                            <div class="file-meta">
+                                <span class="size-badge" id="fileSize">0 KB</span>
+                                <span><i class="fas fa-copy"></i> <span id="pageCount">0</span> pages</span>
                             </div>
                         </div>
-                        <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
+                        <div class="files-actions">
+                            <button class="btn-danger-sm" onclick="resetTool()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Password -->
+                    <div class="info-banner">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Uses <strong>RC4-128 bit encryption</strong> — Standard PDF Security Handler Rev.3. Compatible with Adobe Acrobat, Chrome, and all PDF readers.</span>
+                    </div>
+
                     <div class="options-panel glass-light">
                         <h4><i class="fas fa-key"></i> Set Password</h4>
-                        <div style="max-width:450px;margin:0 auto;">
-                            <div class="pw-field">
-                                <label><i class="fas fa-key"></i> Password</label>
-                                <div class="pw-wrap">
-                                    <input type="password" id="pw1" placeholder="Enter strong password" oninput="onPwChange()">
-                                    <button class="pw-eye" onclick="togglePw('pw1','eye1')"><i class="fas fa-eye" id="eye1"></i></button>
+                        <div class="pw-field">
+                            <label>
+                                <i class="fas fa-lock" style="color:#dc2626;margin-right:5px;"></i>
+                                Open Password
+                                <span style="font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;margin-left:4px;color:#94a3b8;">
+                                    (required to open the PDF)
+                                </span>
+                            </label>
+                            <div class="pw-input-wrap">
+                                <input type="password" id="openPw"
+                                       placeholder="Enter password..."
+                                       autocomplete="new-password"
+                                       oninput="checkStrength();checkMatch()">
+                                <button class="toggle-pw" type="button"
+                                        onclick="togglePwVis('openPw','eye1')">
+                                    <i class="fas fa-eye" id="eye1"></i>
+                                </button>
+                            </div>
+                            <div class="strength-bar-wrap">
+                                <div class="strength-bar-track">
+                                    <div class="strength-bar-fill" id="strengthFill"></div>
                                 </div>
-                                <div class="pw-bar"><div class="pw-bar-fill" id="pwFill" style="width:0%;background:#ef4444;"></div></div>
-                                <div class="pw-bar-text" id="pwText">Enter a password</div>
-                            </div>
-                            <div class="pw-field">
-                                <label><i class="fas fa-check-circle"></i> Confirm Password</label>
-                                <div class="pw-wrap">
-                                    <input type="password" id="pw2" placeholder="Re-enter password" oninput="onPwChange()">
-                                    <button class="pw-eye" onclick="togglePw('pw2','eye2')"><i class="fas fa-eye" id="eye2"></i></button>
-                                </div>
-                                <div class="pw-match" id="pwMatch"></div>
-                            </div>
-                            <div class="pw-gen">
-                                <button onclick="genPw(8)"><i class="fas fa-dice"></i> Simple (8)</button>
-                                <button onclick="genPw(12)"><i class="fas fa-dice"></i> Medium (12)</button>
-                                <button onclick="genPw(16)"><i class="fas fa-dice"></i> Strong (16)</button>
-                                <button onclick="copyPw()"><i class="fas fa-copy"></i> Copy</button>
+                                <span class="strength-label" id="strengthLabel">Enter a password</span>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Encryption -->
-                    <div class="options-panel glass-light" style="margin-top:14px;">
-                        <h4><i class="fas fa-lock"></i> Encryption Level</h4>
-                        <div class="enc-cards">
-                            <div class="enc-card" onclick="setEnc('rc4-40',this)"><span class="ei"><i class="fas fa-lock"></i></span><h5>RC4 40-bit</h5><p>Basic</p></div>
-                            <div class="enc-card on" onclick="setEnc('rc4-128',this)"><span class="ei"><i class="fas fa-shield-alt"></i></span><h5>RC4 128-bit</h5><p>Recommended</p></div>
-                            <div class="enc-card" onclick="setEnc('aes-256',this)"><span class="ei"><i class="fas fa-user-shield"></i></span><h5>AES 256-bit</h5><p>Maximum</p></div>
+                        <div class="pw-field">
+                            <label>
+                                <i class="fas fa-lock-open" style="color:#6366f1;margin-right:5px;"></i>
+                                Confirm Password
+                            </label>
+                            <div class="pw-input-wrap">
+                                <input type="password" id="confirmPw"
+                                       placeholder="Re-enter password..."
+                                       autocomplete="new-password"
+                                       oninput="checkMatch()">
+                                <button class="toggle-pw" type="button"
+                                        onclick="togglePwVis('confirmPw','eye2')">
+                                    <i class="fas fa-eye" id="eye2"></i>
+                                </button>
+                            </div>
+                            <div class="match-hint" id="matchHint"></div>
                         </div>
                     </div>
 
-                    <!-- Permissions -->
-                    <div class="options-panel glass-light" style="margin-top:14px;">
-                        <h4><i class="fas fa-user-cog"></i> Permissions</h4>
-                        <div class="perm-grid">
-                            <div class="perm-item on" data-perm="print" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-print"></i><span>Allow Printing</span></div>
-                            <div class="perm-item on" data-perm="copy" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-copy"></i><span>Allow Copy</span></div>
-                            <div class="perm-item" data-perm="edit" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-edit"></i><span>Allow Editing</span></div>
-                            <div class="perm-item" data-perm="annotate" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-sticky-note"></i><span>Allow Annotations</span></div>
-                            <div class="perm-item" data-perm="fill" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-pen-square"></i><span>Allow Form Fill</span></div>
-                            <div class="perm-item" data-perm="extract" onclick="togglePerm(this)"><div class="pc"><i class="fas fa-check"></i></div><i class="fas fa-file-export"></i><span>Allow Extract</span></div>
-                        </div>
-                        <div style="margin-top:6px;">
-                            <button class="pw-gen" style="display:inline-flex;" onclick="permAll(true)"><i class="fas fa-check-double"></i> All</button>
-                            <button class="pw-gen" style="display:inline-flex;" onclick="permAll(false)"><i class="fas fa-ban"></i> None</button>
+                    <div class="options-panel glass-light" style="margin-top:16px;">
+                        <h4>
+                            <i class="fas fa-sliders-h"></i> Permissions
+                            <span style="font-size:11px;font-weight:400;color:var(--text-light);margin-left:8px;">
+                                (what others can do after opening)
+                            </span>
+                        </h4>
+                        <div class="permissions-grid">
+                            <label class="perm-toggle">
+                                <input type="checkbox" id="permPrint" checked>
+                                <i class="fas fa-print"></i><span>Allow Printing</span>
+                            </label>
+                            <label class="perm-toggle">
+                                <input type="checkbox" id="permCopy" checked>
+                                <i class="fas fa-copy"></i><span>Allow Copying</span>
+                            </label>
+                            <label class="perm-toggle">
+                                <input type="checkbox" id="permEdit">
+                                <i class="fas fa-pen"></i><span>Allow Editing</span>
+                            </label>
+                            <label class="perm-toggle">
+                                <input type="checkbox" id="permAnnotate" checked>
+                                <i class="fas fa-comment"></i><span>Allow Annotations</span>
+                            </label>
+                            <label class="perm-toggle">
+                                <input type="checkbox" id="permForms" checked>
+                                <i class="fas fa-wpforms"></i><span>Allow Form Fill</span>
+                            </label>
+                            <label class="perm-toggle">
+                                <input type="checkbox" id="permExtract">
+                                <i class="fas fa-file-export"></i><span>Allow Extract</span>
+                            </label>
                         </div>
                     </div>
 
-                    <!-- Summary -->
-                    <div class="sec-summary">
-                        <h4><i class="fas fa-shield-alt"></i> Security Summary</h4>
-                        <div class="sr"><span class="sl">Password</span><span class="sv" id="sumPw">Not set</span></div>
-                        <div class="sr"><span class="sl">Encryption</span><span class="sv" id="sumEnc">RC4 128-bit</span></div>
-                        <div class="sr"><span class="sl">Printing</span><span class="sv" id="sumPrint">Allowed</span></div>
-                        <div class="sr"><span class="sl">Copying</span><span class="sv" id="sumCopy">Allowed</span></div>
-                        <div class="sr"><span class="sl">Editing</span><span class="sv" id="sumEdit">Denied</span></div>
-                    </div>
-
-                    <button class="action-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="protectPDF()">
+                    <button class="action-btn" id="protectBtn"
+                            onclick="doProtect()" style="margin-top:20px;">
                         <i class="fas fa-shield-alt"></i> Protect PDF
                     </button>
                 </div>
             </div>
 
             <!-- PROCESSING -->
-            <div id="s3" style="display:none;">
+            <div id="processingSection" data-section style="display:none;">
                 <div class="processing-area">
                     <div class="spinner"></div>
-                    <h3 id="pt">Protecting PDF...</h3>
-                    <p id="ps">Applying encryption</p>
-                    <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#ef4444,#dc2626);"></div></div>
-                    <span class="progress-text" id="pp">0%</span>
+                    <h3 id="processTitle">Protecting PDF...</h3>
+                    <p id="processSubtitle">Adding password encryption</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0%</span>
                 </div>
             </div>
 
             <!-- RESULT -->
-            <div id="s4" style="display:none;">
+            <div id="resultSection" data-section style="display:none;">
                 <div class="result-area">
-                    <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                    <h2>PDF Protected! 🔒</h2>
-
-                    <div class="comp-box">
-                        <div class="comp-item before"><i class="fas fa-lock-open"></i><h4>Before</h4><p>No Protection</p></div>
-                        <div class="comp-arrow"><i class="fas fa-arrow-right"></i></div>
-                        <div class="comp-item after"><i class="fas fa-lock"></i><h4>After</h4><p>Protected</p></div>
+                    <div class="result-icon success">
+                        <i class="fas fa-check-circle"></i>
                     </div>
-
-                    <div class="srow">
-                        <div class="sbox"><h4 id="rPages">0</h4><p>Pages</p></div>
-                        <div class="sbox"><h4 id="rSz">0</h4><p>Size</p></div>
-                        <div class="sbox"><h4>🔒</h4><p>Protected</p></div>
+                    <h2>PDF Protected Successfully! 🔐</h2>
+                    <p>Your PDF is now password protected</p>
+                    <div class="protect-badge">
+                        <i class="fas fa-shield-alt"></i> RC4-128 Encrypted
                     </div>
-
-                    <div class="result-info glass-light" style="margin-top:14px;">
-                        <div class="info-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i> <span id="rfn">protected.pdf</span></div>
-                        <div class="info-item"><i class="fas fa-lock" style="color:#ef4444"></i> <span id="rEnc">RC4 128-bit</span></div>
+                    <div class="result-stats">
+                        <div class="result-stat">
+                            <strong id="rPages">0</strong><small>Pages</small>
+                        </div>
+                        <div class="result-stat">
+                            <strong id="rSize">0 KB</strong><small>File Size</small>
+                        </div>
+                        <div class="result-stat">
+                            <strong style="color:#dc2626;"><i class="fas fa-lock"></i></strong>
+                            <small>Protected</small>
+                        </div>
                     </div>
-
-                    <div class="warn">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Remember your password!</strong> You need it to open this PDF.
+                    <div class="result-info glass-light">
+                        <div class="info-item">
+                            <i class="fas fa-file-pdf"></i>
+                            <span id="rFileName">document_protected.pdf</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-key" style="color:#dc2626;"></i>
+                            <span id="rPwHint">Password: ***</span>
+                        </div>
                     </div>
-
-                    <button class="download-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="doDownload()">
+                    <div style="background:rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.25);
+                                border-radius:12px;padding:14px 18px;margin:16px 0;text-align:left;">
+                        <p style="font-size:13px;color:#92400e;margin:0;display:flex;align-items:flex-start;gap:8px;">
+                            <i class="fas fa-exclamation-triangle" style="margin-top:1px;flex-shrink:0;"></i>
+                            <span><strong>Important:</strong> Save your password safely!
+                            If you forget it, the PDF cannot be recovered.
+                            We do not store your password anywhere.</span>
+                        </p>
+                    </div>
+                    <button class="download-btn" onclick="doDownload()">
                         <i class="fas fa-download"></i> Download Protected PDF
                     </button>
-
                     <div class="result-actions">
-                        <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Protect Another</button>
-                        <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-sliders-h"></i> Change Settings</button>
+                        <button class="btn-outline" onclick="resetTool()">
+                            <i class="fas fa-redo"></i> Protect Another
+                        </button>
+                        <button class="btn-outline" onclick="goBack()">
+                            <i class="fas fa-sliders-h"></i> Change Password
+                        </button>
                     </div>
                 </div>
             </div>
@@ -253,38 +482,118 @@
     </div>
 </section>
 
+<div class="adsense-wrapper">
+    <div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div>
+</div>
+
 <section class="related-tools">
     <div class="container">
-        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="section-header">
+            <h2>Related Tools</h2>
+            <p>Tools that work great with Protect PDF</p>
+        </div>
         <div class="related-grid">
-            <a href="unlock-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-lock-open"></i></div><h4>Unlock PDF</h4></a>
-            <a href="sign-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-signature"></i></div><h4>Sign PDF</h4></a>
-            <a href="watermark.html" class="related-card glass"><div class="related-icon icon-cyan"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
-            <a href="redact-pdf.html" class="related-card glass"><div class="related-icon icon-dark"><i class="fas fa-eraser"></i></div><h4>Redact</h4></a>
-            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
-            <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+            <a href="unlock-pdf.html" class="related-card glass">
+                <div class="related-icon icon-green"><i class="fas fa-lock-open"></i></div>
+                <h4>Unlock PDF</h4>
+            </a>
+            <a href="compress-pdf.html" class="related-card glass">
+                <div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div>
+                <h4>Compress PDF</h4>
+            </a>
+            <a href="merge-pdf.html" class="related-card glass">
+                <div class="related-icon icon-red"><i class="fas fa-object-group"></i></div>
+                <h4>Merge PDF</h4>
+            </a>
+            <a href="edit-pdf.html" class="related-card glass">
+                <div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div>
+                <h4>Edit PDF</h4>
+            </a>
+            <a href="watermark.html" class="related-card glass">
+                <div class="related-icon icon-teal"><i class="fas fa-tint"></i></div>
+                <h4>Watermark</h4>
+            </a>
+            <a href="split-pdf.html" class="related-card glass">
+                <div class="related-icon icon-blue"><i class="fas fa-cut"></i></div>
+                <h4>Split PDF</h4>
+            </a>
         </div>
     </div>
 </section>
 
 <section class="how-to-section">
     <div class="container">
-        <div class="section-header"><h2>How to Protect PDF</h2></div>
+        <div class="section-header">
+            <h2>How to Protect PDF</h2>
+            <p>Simple 3-step process</p>
+        </div>
         <div class="steps-row">
-            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select PDF.</p></div>
-            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-key"></i><h4>Password</h4><p>Set password & permissions.</p></div>
-            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get protected PDF.</p></div>
+            <div class="step-box glass">
+                <div class="step-num">1</div>
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h4>Upload PDF</h4>
+                <p>Select the PDF you want to password protect.</p>
+            </div>
+            <div class="step-box glass">
+                <div class="step-num">2</div>
+                <i class="fas fa-key"></i>
+                <h4>Set Password</h4>
+                <p>Enter a strong password and set permissions.</p>
+            </div>
+            <div class="step-box glass">
+                <div class="step-num">3</div>
+                <i class="fas fa-download"></i>
+                <h4>Download</h4>
+                <p>Download your password-protected PDF.</p>
+            </div>
         </div>
     </div>
 </section>
 
 <section class="faq-section">
     <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="section-header"><h2>Frequently Asked Questions</h2></div>
         <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How secure is it?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>We add encryption metadata. For maximum security use AES-256.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I set permissions?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Allow/deny printing, copying, editing independently.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% browser-based. Password never leaves your device.</p></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">1</span>
+                    <h4>What type of encryption is used?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer"><div class="faq-answer-inner">
+                    <p>We use <strong>RC4-128 bit encryption</strong> (PDF Standard Security Handler Revision 3), compatible with Adobe Acrobat, Chrome, Firefox, and all major PDF readers.</p>
+                </div></div>
+            </div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">2</span>
+                    <h4>Is my PDF uploaded to any server?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer"><div class="faq-answer-inner">
+                    <p>No! <strong>Everything runs in your browser</strong>. Your PDF and password never leave your device.</p>
+                </div></div>
+            </div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">3</span>
+                    <h4>What if I forget my password?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer"><div class="faq-answer-inner">
+                    <p>We <strong>do not store your password</strong>. If you forget it, the PDF cannot be recovered. Always save your password safely!</p>
+                </div></div>
+            </div>
+            <div class="faq-item glass" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span class="faq-num">4</span>
+                    <h4>Will protection affect PDF quality?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer"><div class="faq-answer-inner">
+                    <p>No! Adding a password only adds encryption. All content remains <strong>100% intact</strong>.</p>
+                </div></div>
+            </div>
         </div>
     </div>
 </section>
@@ -293,22 +602,968 @@
     <div class="container">
         <div class="footer-simple">
             <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-            <p>&copy; 2025 PDFTools.</p>
+            <p>© 2025 PDFTools. All rights reserved.</p>
             <div class="footer-links">
                 <a href="index.html">Home</a>
                 <a href="privacy.html">Privacy</a>
                 <a href="terms.html">Terms</a>
-                <a href="about.html">About</a>
                 <a href="contact.html">Contact</a>
             </div>
         </div>
     </div>
 </footer>
 
-<!-- SCRIPTS -->
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="js/tool-page.js"></script>
-<script src="js/protect-pdf.js"></script>
+<script src="js/adsense.js"></script>
 
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════════════ */
+let rawBytes     = null;
+let selectedFile = null;
+let protBlob     = null;
+let pagesCount   = 0;
+
+/* ═══════════════════════════════════════════════════════════════════
+   CRYPTO PRIMITIVES
+═══════════════════════════════════════════════════════════════════ */
+
+/** MD5 — returns Uint8Array(16) */
+function md5(input) {
+    // input: Uint8Array
+    function add(a,b){ return (a+b)|0; }
+    function rol(x,n){ return (x<<n)|(x>>>(32-n)); }
+    function F(b,c,d){ return (b&c)|(~b&d); }
+    function G(b,c,d){ return (b&d)|(c&~d); }
+    function H(b,c,d){ return b^c^d; }
+    function I(b,c,d){ return c^(b|~d); }
+
+    const msg = new Uint8Array(input.length + 64 + 8);
+    msg.set(input);
+    msg[input.length] = 0x80;
+    const dv = new DataView(msg.buffer);
+    dv.setUint32(Math.ceil((input.length+1)/64)*64-8, input.length*8, true);
+
+    let [a,b,c,d] = [0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476];
+    const len = Math.ceil((input.length+1)/64)*64;
+
+    for (let i=0;i<len;i+=64){
+        const M=[];
+        for(let j=0;j<16;j++) M[j]=dv.getUint32(i+j*4,true);
+        let [aa,bb,cc,dd]=[a,b,c,d];
+
+        const step=(fn,a2,b2,c2,d2,x,s,t)=>add(rol(add(add(a2,fn(b2,c2,d2)),add(x,t)),s),b2);
+        a=step(F,a,b,c,d,M[0], 7,-680876936);  d=step(F,d,a,b,c,M[1],12,-389564586);
+        c=step(F,c,d,a,b,M[2],17, 606105819);  b=step(F,b,c,d,a,M[3],22,-1044525330);
+        a=step(F,a,b,c,d,M[4], 7,-176418897);  d=step(F,d,a,b,c,M[5],12,1200080426);
+        c=step(F,c,d,a,b,M[6],17,-1473231341); b=step(F,b,c,d,a,M[7],22,-45705983);
+        a=step(F,a,b,c,d,M[8], 7,1770035416);  d=step(F,d,a,b,c,M[9],12,-1958414417);
+        c=step(F,c,d,a,b,M[10],17,-42063);     b=step(F,b,c,d,a,M[11],22,-1990404162);
+        a=step(F,a,b,c,d,M[12],7,1804603682);  d=step(F,d,a,b,c,M[13],12,-40341101);
+        c=step(F,c,d,a,b,M[14],17,-1502002290);b=step(F,b,c,d,a,M[15],22,1236535329);
+
+        a=step(G,a,b,c,d,M[1], 5,-165796510);  d=step(G,d,a,b,c,M[6], 9,-1069501632);
+        c=step(G,c,d,a,b,M[11],14,643717713);  b=step(G,b,c,d,a,M[0],20,-373897302);
+        a=step(G,a,b,c,d,M[5], 5,-701558691);  d=step(G,d,a,b,c,M[10],9,38016083);
+        c=step(G,c,d,a,b,M[15],14,-660478335); b=step(G,b,c,d,a,M[4],20,-405537848);
+        a=step(G,a,b,c,d,M[9], 5,568446438);   d=step(G,d,a,b,c,M[14],9,-1019803690);
+        c=step(G,c,d,a,b,M[3],14,-187363961);  b=step(G,b,c,d,a,M[8],20,1163531501);
+        a=step(G,a,b,c,d,M[13],5,-1444681467); d=step(G,d,a,b,c,M[2], 9,-51403784);
+        c=step(G,c,d,a,b,M[7],14,1735328473);  b=step(G,b,c,d,a,M[12],20,-1926607734);
+
+        a=step(H,a,b,c,d,M[5], 4,-378558);     d=step(H,d,a,b,c,M[8],11,-2022574463);
+        c=step(H,c,d,a,b,M[11],16,1839030562); b=step(H,b,c,d,a,M[14],23,-35309556);
+        a=step(H,a,b,c,d,M[1], 4,-1530992060);d=step(H,d,a,b,c,M[4],11,1272893353);
+        c=step(H,c,d,a,b,M[7],16,-155497632);  b=step(H,b,c,d,a,M[10],23,-1094730640);
+        a=step(H,a,b,c,d,M[13],4,681279174);   d=step(H,d,a,b,c,M[0],11,-358537222);
+        c=step(H,c,d,a,b,M[3],16,-722521979);  b=step(H,b,c,d,a,M[6],23,76029189);
+        a=step(H,a,b,c,d,M[9], 4,-640364487);  d=step(H,d,a,b,c,M[12],11,-421815835);
+        c=step(H,c,d,a,b,M[15],16,530742520);  b=step(H,b,c,d,a,M[2],23,-995338651);
+
+        a=step(I,a,b,c,d,M[0], 6,-198630844);  d=step(I,d,a,b,c,M[7],10,1126891415);
+        c=step(I,c,d,a,b,M[14],15,-1416354905);b=step(I,b,c,d,a,M[5],21,-57434055);
+        a=step(I,a,b,c,d,M[12],6,1700485571);  d=step(I,d,a,b,c,M[3],10,-1894986606);
+        c=step(I,c,d,a,b,M[10],15,-1051523);   b=step(I,b,c,d,a,M[1],21,-2054922799);
+        a=step(I,a,b,c,d,M[8], 6,1873313359);  d=step(I,d,a,b,c,M[15],10,-30611744);
+        c=step(I,c,d,a,b,M[6],15,-1560198380); b=step(I,b,c,d,a,M[13],21,1309151649);
+        a=step(I,a,b,c,d,M[4], 6,-145523070);  d=step(I,d,a,b,c,M[11],10,-1120210379);
+        c=step(I,c,d,a,b,M[2],15,718787259);   b=step(I,b,c,d,a,M[9],21,-343485551);
+
+        a=add(a,aa); b=add(b,bb); c=add(c,cc); d=add(d,dd);
+    }
+
+    const out = new Uint8Array(16);
+    const odv = new DataView(out.buffer);
+    odv.setUint32(0,a,true); odv.setUint32(4,b,true);
+    odv.setUint32(8,c,true); odv.setUint32(12,d,true);
+    return out;
+}
+
+/** RC4 */
+function RC4(key, data) {
+    const S = new Uint8Array(256);
+    for (let i=0;i<256;i++) S[i]=i;
+    let j=0;
+    for (let i=0;i<256;i++){
+        j=(j+S[i]+key[i%key.length])&0xff;
+        [S[i],S[j]]=[S[j],S[i]];
+    }
+    const out=new Uint8Array(data.length);
+    let x=0; j=0;
+    for(let k=0;k<data.length;k++){
+        x=(x+1)&0xff; j=(j+S[x])&0xff;
+        [S[x],S[j]]=[S[j],S[x]];
+        out[k]=data[k]^S[(S[x]+S[j])&0xff];
+    }
+    return out;
+}
+
+function toHex(arr){
+    return Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function concatU8(...arrays){
+    const len=arrays.reduce((s,a)=>s+a.length,0);
+    const out=new Uint8Array(len); let off=0;
+    for(const a of arrays){out.set(a,off);off+=a.length;}
+    return out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PDF STANDARD SECURITY HANDLER — Rev 3 / RC4-128
+   Exact implementation per PDF Reference 1.4 §3.5
+═══════════════════════════════════════════════════════════════════ */
+
+// Standard padding string (PDF spec §3.5)
+const PDF_PAD = new Uint8Array([
+    0x28,0xBF,0x4E,0x5E,0x4E,0x75,0x8A,0x41,
+    0x64,0x00,0x4E,0x56,0xFF,0xFA,0x01,0x08,
+    0x2E,0x2E,0x00,0xB6,0xD0,0x68,0x3E,0x80,
+    0x2F,0x0C,0xA9,0xFE,0x64,0x53,0x69,0x7A
+]);
+
+// Pad/truncate password to 32 bytes
+function pdfPadPassword(pw) {
+    const b = typeof pw === 'string' ? new TextEncoder().encode(pw) : pw;
+    const r = new Uint8Array(32);
+    for(let i=0;i<32;i++) r[i] = i<b.length ? b[i] : PDF_PAD[i-b.length];
+    return r;
+}
+
+// Permission flags — PDF Table 3.20
+function pdfPermFlags(p) {
+    // Bits 1-2: reserved = 0
+    // Bits 3-6, 9-12: permission bits
+    // Bits 7-8, 13-32: reserved = 1
+    let f = 0xFFFFF0C0; // base: reserved bits all 1
+    if (!p.print)    f &= ~0x0004;  // bit 3  off = no print
+    if (!p.modify)   f &= ~0x0008;  // bit 4  off = no modify
+    if (!p.copy)     f &= ~0x0010;  // bit 5  off = no copy
+    if (!p.annotate) f &= ~0x0020;  // bit 6  off = no annotate
+    if (!p.forms)    f &= ~0x0100;  // bit 9  off = no forms
+    if (!p.extract)  f &= ~0x0200;  // bit 10 off = no extract
+    // bit 11 (assemble) always off
+    f &= ~0x0400;
+    // bit 12 (high-res print) matches print
+    if (!p.print)    f &= ~0x0800;
+    return f | 0; // signed 32-bit integer
+}
+
+// Algorithm 3: Compute /O hash (owner password hash)
+function computeO(ownerPw, userPw) {
+    const keyLen = 16;
+    // Step 1: Pad owner password
+    const padOwner = pdfPadPassword(ownerPw);
+    // Step 2: MD5
+    let hash = md5(padOwner);
+    // Step 3: 50 more MD5
+    for(let i=0;i<50;i++) hash = md5(hash);
+    // Step 4: First 16 bytes = RC4 key
+    const key = hash.slice(0, keyLen);
+    // Step 5: Pad user password
+    const padUser = pdfPadPassword(userPw);
+    // Step 6: RC4 encrypt
+    let result = RC4(key, padUser);
+    // Step 7: 19 more RC4 with key XORed with i
+    for(let i=1;i<=19;i++){
+        const k = key.map(b=>b^i);
+        result = RC4(k, result);
+    }
+    return result; // 32 bytes = /O value
+}
+
+// Algorithm 2: Compute encryption key
+function computeEncryptionKey(userPw, O, P, fileId) {
+    const keyLen = 16;
+    // Step 1-2: Pad user password
+    const padUser = pdfPadPassword(userPw);
+    // Step 3: Compute hash input
+    // P as unsigned 32-bit little-endian
+    const pBytes = new Uint8Array(4);
+    new DataView(pBytes.buffer).setInt32(0, P, true);
+    const buf = concatU8(padUser, O, pBytes, fileId);
+    // Step 4: MD5
+    let hash = md5(buf);
+    // Step 5: 50 more MD5
+    for(let i=0;i<50;i++) hash = md5(hash.slice(0,keyLen));
+    return hash.slice(0, keyLen); // 16-byte encryption key
+}
+
+// Algorithm 5: Compute /U hash (user password validation)
+function computeU(encKey, fileId) {
+    const keyLen = 16;
+    // Step 1: Hash of PDF_PAD + fileId
+    const buf    = concatU8(PDF_PAD, fileId);
+    const hash   = md5(buf);
+    // Step 2: RC4 encrypt with encryption key
+    let result   = RC4(encKey, hash);
+    // Step 3: 19 more RC4 with key XORed with i
+    for(let i=1;i<=19;i++){
+        const k = encKey.map(b=>b^i);
+        result = RC4(k, result);
+    }
+    // Step 4: Pad to 32 bytes
+    const out = new Uint8Array(32);
+    out.set(result); // first 16 = computed, rest = arbitrary
+    return out; // 32 bytes = /U value
+}
+
+// Per-object RC4 key (Algorithm 1)
+function objectEncKey(encKey, objNum, genNum) {
+    const extra = new Uint8Array([
+        objNum&0xff, (objNum>>8)&0xff, (objNum>>16)&0xff,
+        genNum&0xff, (genNum>>8)&0xff
+    ]);
+    const buf = concatU8(encKey, extra);
+    const h   = md5(buf);
+    const kl  = Math.min(encKey.length+5, 16);
+    return h.slice(0, kl);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CORE STRATEGY:
+   
+   1. Use pdf-lib to LOAD & RESAVE the PDF → gives us a clean,
+      valid, linearized PDF with a proper xref table.
+   2. Take that clean PDF bytes and inject encryption by:
+      a. Parsing the xref to find all objects
+      b. Encrypting string/stream content of each object
+      c. Injecting /Encrypt dict into the trailer
+      d. Rebuilding the xref with correct offsets
+   
+   This avoids the "missing root" error because pdf-lib ensures
+   the PDF structure is 100% valid before we touch it.
+═══════════════════════════════════════════════════════════════════ */
+
+async function buildCleanPDF(srcBytes) {
+    // Use pdf-lib to load + re-save → produces clean, valid PDF bytes
+    const pdfDoc = await PDFLib.PDFDocument.load(srcBytes, {
+        ignoreEncryption: true,
+        updateMetadata:   false,
+        throwOnInvalidObject: false,
+    });
+    // Save without any encryption (pdf-lib ignores encrypt options anyway)
+    const cleanBytes = await pdfDoc.save({
+        useObjectStreams: false,  // CRITICAL: plain xref table, not compressed
+        addDefaultPage:   false,
+        objectsPerTick:   50,
+    });
+    return new Uint8Array(cleanBytes);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LOW-LEVEL PDF INJECTOR
+   Takes clean PDF bytes from pdf-lib and injects real encryption.
+═══════════════════════════════════════════════════════════════════ */
+
+class PDFEncryptInjector {
+
+    constructor(bytes, userPw, ownerPw, perms) {
+        this.bytes   = bytes;
+        this.userPw  = userPw;
+        this.ownerPw = ownerPw;
+        this.perms   = perms;
+        // Decode as latin1 for text scanning (preserves byte values)
+        this.txt = '';
+        for(let i=0;i<bytes.length;i++) this.txt += String.fromCharCode(bytes[i]);
+    }
+
+    run() {
+        // 1. Random file ID
+        const fileId = new Uint8Array(16);
+        crypto.getRandomValues(fileId);
+
+        // 2. Permission flags
+        const P = pdfPermFlags(this.perms);
+
+        // 3. Compute security hashes
+        const O      = computeO(this.ownerPw, this.userPw);
+        const encKey = computeEncryptionKey(this.userPw, O, P, fileId);
+        const U      = computeU(encKey, fileId);
+
+        // 4. Parse xref from clean PDF
+        const { objects, trailerDict, xrefOffset } = this.parseXref();
+
+        // 5. Get trailer values
+        const rootRef = this.getRef(trailerDict, '/Root');
+        const infoRef = this.getRef(trailerDict, '/Info');
+        const oldSize = this.getNum(trailerDict, '/Size') || (objects.length + 2);
+
+        if (!rootRef) throw new Error('PDF has no /Root — invalid PDF structure');
+
+        // 6. Encrypt all objects
+        const encObjNum    = oldSize;
+        const encryptedMap = this.encryptObjects(objects, encKey, encObjNum);
+
+        // 7. Build /Encrypt dictionary string
+        const encDictContent = [
+            '/Filter /Standard',
+            '/V 2',
+            '/R 3',
+            '/Length 128',
+            `/P ${P}`,
+            `/O <${toHex(O)}>`,
+            `/U <${toHex(U)}>`,
+        ].join('\n');
+
+        // 8. Assemble final PDF
+        return this.assembleFinal(
+            encryptedMap, encObjNum, encDictContent,
+            oldSize, rootRef, infoRef, fileId
+        );
+    }
+
+    /* Parse xref table and return objects list */
+    parseXref() {
+        const txt = this.txt;
+
+        // Find startxref
+        const sxIdx = txt.lastIndexOf('startxref');
+        if (sxIdx < 0) throw new Error('No startxref in PDF');
+        const sxAfter  = txt.slice(sxIdx + 9).trimStart();
+        const xrefOff  = parseInt(sxAfter);
+        if (isNaN(xrefOff)) throw new Error('Invalid startxref offset');
+
+        // Find xref at that offset
+        const xrefStr = txt.slice(xrefOff);
+        if (!xrefStr.startsWith('xref')) {
+            throw new Error('Expected xref at offset ' + xrefOff + ', found: ' + xrefStr.slice(0,20));
+        }
+
+        // Parse all xref subsections
+        const objects = []; // { objNum, genNum, offset }
+        let pos = xrefOff + 4; // skip 'xref'
+
+        while (pos < txt.length) {
+            // Skip whitespace
+            while (pos < txt.length && /\s/.test(txt[pos])) pos++;
+
+            // Check for 'trailer'
+            if (txt.slice(pos, pos+7) === 'trailer') break;
+
+            // Parse "firstObj count" header
+            const lineEnd = txt.indexOf('\n', pos);
+            if (lineEnd < 0) break;
+            const line = txt.slice(pos, lineEnd).trim();
+            const parts = line.split(/\s+/);
+            if (parts.length < 2 || isNaN(parseInt(parts[0]))) break;
+
+            const firstObj = parseInt(parts[0]);
+            const count    = parseInt(parts[1]);
+            pos = lineEnd + 1;
+
+            for (let i=0; i<count; i++) {
+                // Each entry is exactly 20 bytes: "nnnnnnnnnn ggggg n \n"
+                const entry  = txt.slice(pos, pos+20);
+                const eParts = entry.trim().split(/\s+/);
+                if (eParts.length >= 3) {
+                    const offset = parseInt(eParts[0]);
+                    const gen    = parseInt(eParts[1]);
+                    const inUse  = eParts[2] === 'n';
+                    if (inUse && offset > 0) {
+                        objects.push({ objNum: firstObj+i, genNum: gen, offset });
+                    }
+                }
+                pos += 20;
+            }
+        }
+
+        // Skip whitespace then parse trailer
+        while (pos < txt.length && /\s/.test(txt[pos])) pos++;
+        const trailerStart = txt.indexOf('trailer', pos);
+        if (trailerStart < 0) throw new Error('No trailer keyword');
+
+        const afterTrailer = txt.slice(trailerStart + 7).trimStart();
+        if (!afterTrailer.startsWith('<<')) throw new Error('No trailer dict');
+        const trailerDict  = this.extractDict(afterTrailer, 0);
+
+        return { objects, trailerDict, xrefOffset: xrefOff };
+    }
+
+    /* Extract a << ... >> dict, handling nested dicts */
+    extractDict(txt, start) {
+        // txt[start] should be '<'
+        let i = start;
+        if (txt[i]==='<' && txt[i+1]==='<') i+=2; else return '';
+        let depth = 1, result = '<<';
+        while (i < txt.length && depth > 0) {
+            if (txt[i]==='<' && txt[i+1]==='<') { depth++; result+='<<'; i+=2; }
+            else if (txt[i]==='>' && txt[i+1]==='>') { depth--; result+='>>'; i+=2; }
+            else { result += txt[i]; i++; }
+        }
+        return result;
+    }
+
+    /* Get /Key N from dict string */
+    getNum(dict, key) {
+        const esc = key.replace('/','\\\/');
+        const m   = dict.match(new RegExp(esc+'\\s+(\\d+)'));
+        return m ? parseInt(m[1]) : null;
+    }
+
+    /* Get /Key X Y R from dict string */
+    getRef(dict, key) {
+        const esc = key.replace('/','\\\/');
+        const m   = dict.match(new RegExp(esc+'\\s+(\\d+\\s+\\d+\\s+R)'));
+        return m ? m[1] : null;
+    }
+
+    /* Read the body of one object from pdf bytes */
+    readObjectBody(offset) {
+        const txt = this.txt;
+        // Skip "N G obj"
+        const headerRx = /(\d+)\s+(\d+)\s+obj\s*/;
+        const chunk    = txt.slice(offset, offset + 50);
+        const hm       = headerRx.exec(chunk);
+        if (!hm) return { body: '', bodyStart: offset, bodyEnd: offset, hasStream: false };
+
+        const objNum    = parseInt(hm[1]);
+        const genNum    = parseInt(hm[2]);
+        const bodyStart = offset + hm[0].length;
+
+        // Find endobj — account for streams
+        let pos = bodyStart;
+
+        // Look ahead for stream keyword before endobj
+        const nextEndobj = txt.indexOf('endobj', pos);
+        const nextStream = txt.indexOf('stream', pos);
+
+        let bodyEnd;
+
+        if (nextStream > 0 && nextStream < nextEndobj) {
+            // Has a stream — find matching endstream
+            let streamStart = nextStream;
+            // Skip past "stream\n" or "stream\r\n"
+            let dataStart = streamStart + 6;
+            if (txt[dataStart] === '\r') dataStart++;
+            if (txt[dataStart] === '\n') dataStart++;
+
+            // Get stream length from dict
+            const dictPart = txt.slice(pos, streamStart);
+            const lenM     = /\/Length\s+(\d+)/.exec(dictPart);
+            let   dataEnd;
+
+            if (lenM) {
+                dataEnd = dataStart + parseInt(lenM[1]);
+            } else {
+                const esIdx = txt.indexOf('endstream', dataStart);
+                dataEnd = esIdx > 0 ? esIdx : nextEndobj;
+            }
+
+            const esIdx2 = txt.indexOf('endstream', dataEnd - 5);
+            const eoIdx2 = txt.indexOf('endobj', esIdx2 > 0 ? esIdx2 : dataEnd);
+            bodyEnd = eoIdx2 > 0 ? eoIdx2 : nextEndobj;
+        } else {
+            bodyEnd = nextEndobj > 0 ? nextEndobj : txt.length;
+        }
+
+        return {
+            objNum, genNum,
+            body:      txt.slice(bodyStart, bodyEnd),
+            bodyStart, bodyEnd,
+            hasStream: nextStream > 0 && nextStream < nextEndobj
+        };
+    }
+
+    /* Encrypt all objects, return map of objNum → encrypted body string */
+    encryptObjects(objects, encKey, encObjNum) {
+        const map = {};
+        for (const obj of objects) {
+            const { objNum, genNum, body } = this.readObjectBody(obj.offset);
+            const oKey = objectEncKey(encKey, objNum, genNum);
+            map[objNum] = {
+                genNum,
+                body: this.encryptBody(body, oKey)
+            };
+        }
+        return map;
+    }
+
+    /* Encrypt strings and streams in an object body */
+    encryptBody(body, key) {
+        // Separate dict+stream
+        const streamRx = /([\s\S]*?)(stream\r?\n)([\s\S]*?)(\r?\nendstream)([\s\S]*)$/;
+        const sm = streamRx.exec(body);
+
+        if (sm) {
+            let dictPart     = sm[1];
+            const streamKw   = sm[2];
+            const streamData = sm[3];
+            const endStream  = sm[4];
+            const tail       = sm[5];
+
+            // Encrypt strings in dict
+            dictPart = this.encryptStrings(dictPart, key);
+
+            // Encrypt stream bytes
+            const raw = new Uint8Array(streamData.length);
+            for(let i=0;i<streamData.length;i++) raw[i]=streamData.charCodeAt(i)&0xff;
+            const enc = RC4(key, raw);
+            let encStr='';
+            for(let i=0;i<enc.length;i++) encStr+=String.fromCharCode(enc[i]);
+
+            // Update /Length
+            dictPart = dictPart.replace(/\/Length\s+\d+/, '/Length '+enc.length);
+
+            return dictPart + streamKw + encStr + endStream + tail;
+
+        } else {
+            return this.encryptStrings(body, key);
+        }
+    }
+
+    /* Encrypt all PDF strings (literal and hex) in a text chunk */
+    encryptStrings(text, key) {
+        let out = '', i = 0;
+        while (i < text.length) {
+            if (text[i] === '(') {
+                // Literal string
+                const { raw, end } = this.readLiteralString(text, i+1);
+                const enc = RC4(key, raw);
+                out += '(' + this.encodeLiteral(enc) + ')';
+                i = end + 1;
+            } else if (text[i] === '<' && text[i+1] !== '<') {
+                // Hex string
+                const close = text.indexOf('>', i+1);
+                if (close < 0) { out += text[i++]; continue; }
+                const hex = text.slice(i+1, close).replace(/\s/g,'');
+                if (!hex || hex.length%2!==0 || !/^[0-9a-fA-F]*$/.test(hex)) {
+                    out += text.slice(i, close+1); i = close+1; continue;
+                }
+                const raw = new Uint8Array(hex.length/2);
+                for(let k=0;k<raw.length;k++) raw[k]=parseInt(hex.slice(k*2,k*2+2),16);
+                const enc = RC4(key, raw);
+                out += '<' + toHex(enc) + '>';
+                i = close+1;
+            } else {
+                out += text[i++];
+            }
+        }
+        return out;
+    }
+
+    /* Read literal PDF string, returns { raw: Uint8Array, end: indexOfClosingParen } */
+    readLiteralString(text, start) {
+        let depth=0, bytes=[], i=start;
+        while (i < text.length) {
+            const c = text[i];
+            if (c === '\\') {
+                i++;
+                const e = text[i];
+                if      (e==='n')  { bytes.push(10); i++; }
+                else if (e==='r')  { bytes.push(13); i++; }
+                else if (e==='t')  { bytes.push(9);  i++; }
+                else if (e==='b')  { bytes.push(8);  i++; }
+                else if (e==='f')  { bytes.push(12); i++; }
+                else if (e==='(')  { bytes.push(40); i++; }
+                else if (e===')')  { bytes.push(41); i++; }
+                else if (e==='\\') { bytes.push(92); i++; }
+                else if (e==='\n') { i++; }
+                else if (e==='\r') { i++; if(text[i]==='\n') i++; }
+                else if (e>='0'&&e<='7') {
+                    let oct='';
+                    for(let j=0;j<3&&i<text.length&&text[i]>='0'&&text[i]<='7';j++,i++) oct+=text[i];
+                    bytes.push(parseInt(oct,8)&0xff);
+                } else { bytes.push(text.charCodeAt(i)&0xff); i++; }
+            } else if (c==='(') { depth++; bytes.push(40); i++; }
+            else if (c===')') {
+                if (depth===0) return { raw: new Uint8Array(bytes), end: i };
+                depth--; bytes.push(41); i++;
+            } else { bytes.push(text.charCodeAt(i)&0xff); i++; }
+        }
+        return { raw: new Uint8Array(bytes), end: i };
+    }
+
+    /* Encode Uint8Array back to PDF literal string content */
+    encodeLiteral(bytes) {
+        let s='';
+        for(const b of bytes){
+            if(b===40)  s+='\\(';
+            else if(b===41) s+='\\)';
+            else if(b===92) s+='\\\\';
+            else if(b===13) s+='\\r';
+            else if(b===10) s+='\\n';
+            else s+=String.fromCharCode(b);
+        }
+        return s;
+    }
+
+    /* Assemble final encrypted PDF */
+    assembleFinal(encMap, encObjNum, encDictContent, oldSize, rootRef, infoRef, fileId) {
+        const enc       = new TextEncoder();
+        const fileIdHex = toHex(fileId);
+        const parts     = [];
+        const offsets   = {};
+
+        // ── Header ──
+        const hdr = '%PDF-1.4\n%\xe2\xe3\xcf\xd3\n';
+        parts.push(this.strToU8(hdr));
+        let pos = this.totalLen(parts);
+
+        // ── Write encrypted objects ──
+        const sortedNums = Object.keys(encMap)
+            .map(Number).sort((a,b)=>a-b);
+
+        for (const num of sortedNums) {
+            const { genNum, body } = encMap[num];
+            offsets[num] = pos;
+
+            const header = `${num} ${genNum} obj\n`;
+            const footer = `\nendobj\n`;
+
+            const hBytes = enc.encode(header);
+            const bBytes = this.strToU8(body);   // binary-safe
+            const fBytes = enc.encode(footer);
+
+            parts.push(hBytes, bBytes, fBytes);
+            pos += hBytes.length + bBytes.length + fBytes.length;
+        }
+
+        // ── Write /Encrypt object ──
+        offsets[encObjNum] = pos;
+        const encObjStr = `${encObjNum} 0 obj\n<<\n${encDictContent}\n>>\nendobj\n`;
+        const encObjBytes = enc.encode(encObjStr);
+        parts.push(encObjBytes);
+        pos += encObjBytes.length;
+
+        // ── Build xref table ──
+        const xrefPos = pos;
+        const maxObj  = Math.max(encObjNum, ...Object.keys(offsets).map(Number)) + 1;
+
+        let xref = `xref\n0 ${maxObj}\n`;
+        xref += `0000000000 65535 f \n`; // obj 0
+
+        for (let n=1; n<maxObj; n++) {
+            if (offsets[n] !== undefined) {
+                xref += `${String(offsets[n]).padStart(10,'0')} 00000 n \n`;
+            } else {
+                xref += `0000000000 65535 f \n`;
+            }
+        }
+        parts.push(enc.encode(xref));
+
+        // ── Trailer ──
+        let trailer = `trailer\n<<\n/Size ${maxObj}\n`;
+        if (rootRef) trailer += `/Root ${rootRef}\n`;
+        if (infoRef) trailer += `/Info ${infoRef}\n`;
+        trailer += `/Encrypt ${encObjNum} 0 R\n`;
+        trailer += `/ID [<${fileIdHex}><${fileIdHex}>]\n`;
+        trailer += `>>\nstartxref\n${xrefPos}\n%%EOF\n`;
+        parts.push(enc.encode(trailer));
+
+        // ── Merge ──
+        const total = parts.reduce((s,p)=>s+p.length,0);
+        const out   = new Uint8Array(total);
+        let   off2  = 0;
+        for(const p of parts){ out.set(p,off2); off2+=p.length; }
+        return out;
+    }
+
+    strToU8(str) {
+        const b = new Uint8Array(str.length);
+        for(let i=0;i<str.length;i++) b[i]=str.charCodeAt(i)&0xff;
+        return b;
+    }
+
+    totalLen(parts) {
+        return parts.reduce((s,p)=>s+p.length,0);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════════════════════════════ */
+function toggleFaq(el){
+    const open=el.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!open) el.classList.add('open');
+}
+
+if(typeof toggleMobileMenu==='undefined'){
+    window.toggleMobileMenu=function(){
+        document.getElementById('navLinks').classList.toggle('open');
+    };
+}
+
+function showSection(id){
+    document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');
+    const el=document.getElementById(id);
+    if(el) el.style.display='block';
+}
+
+function setProgress(pct,title,sub){
+    const f=document.getElementById('progressFill');
+    const t=document.getElementById('progressText');
+    const h=document.getElementById('processTitle');
+    const s=document.getElementById('processSubtitle');
+    if(f) f.style.width=pct+'%';
+    if(t) t.textContent=pct+'%';
+    if(h&&title) h.textContent=title;
+    if(s&&sub)   s.textContent=sub;
+}
+
+function szF(bytes){
+    if(!bytes) return '0 B';
+    const k=1024,u=['B','KB','MB','GB'];
+    const i=Math.floor(Math.log(bytes)/Math.log(k));
+    return (bytes/Math.pow(k,i)).toFixed(1)+' '+u[i];
+}
+
+function showError(msg){
+    const el=document.getElementById('errorBox');
+    document.getElementById('errorText').textContent=msg;
+    el.style.display='flex';
+    setTimeout(()=>el.style.display='none',8000);
+}
+function hideError(){ document.getElementById('errorBox').style.display='none'; }
+function tick(){ return new Promise(r=>setTimeout(r,40)); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FILE HANDLING
+═══════════════════════════════════════════════════════════════════ */
+const dropZone  = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over');});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change',()=>{
+    if(fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+async function handleFile(file){
+    hideError();
+    if(!file.name.toLowerCase().endsWith('.pdf') && file.type!=='application/pdf'){
+        showError('Please select a valid PDF file.'); return;
+    }
+    try {
+        selectedFile = file;
+        const ab     = await file.arrayBuffer();
+        rawBytes     = new Uint8Array(ab);
+
+        // Count pages
+        const txt  = new TextDecoder('latin1').decode(rawBytes);
+        const pm   = txt.match(/\/Type\s*\/Page[^s]/g);
+        pagesCount = pm ? pm.length : 1;
+
+        document.getElementById('fileName').textContent  = file.name;
+        document.getElementById('fileSize').textContent  = szF(file.size);
+        document.getElementById('pageCount').textContent = pagesCount;
+
+        showSection('optionsSection');
+    } catch(e){
+        console.error(e);
+        showError('Could not read PDF: '+e.message);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PASSWORD UI
+═══════════════════════════════════════════════════════════════════ */
+function checkStrength(){
+    const pw=document.getElementById('openPw').value;
+    const fill=document.getElementById('strengthFill');
+    const label=document.getElementById('strengthLabel');
+    if(!pw){
+        fill.style.width='0%'; fill.style.background='#e2e8f0';
+        label.textContent='Enter a password'; label.style.color='#94a3b8'; return;
+    }
+    let sc=0;
+    if(pw.length>=6) sc++;
+    if(pw.length>=10) sc++;
+    if(/[A-Z]/.test(pw)) sc++;
+    if(/[0-9]/.test(pw)) sc++;
+    if(/[^A-Za-z0-9]/.test(pw)) sc++;
+    const L=[
+        {pct:'20%',bg:'#ef4444',text:'Very Weak', color:'#ef4444'},
+        {pct:'40%',bg:'#f97316',text:'Weak',      color:'#f97316'},
+        {pct:'60%',bg:'#f59e0b',text:'Fair',      color:'#f59e0b'},
+        {pct:'80%',bg:'#22c55e',text:'Strong',    color:'#22c55e'},
+        {pct:'100%',bg:'#16a34a',text:'Very Strong',color:'#16a34a'}
+    ];
+    const lv=L[Math.min(sc-1,4)]||L[0];
+    fill.style.width=lv.pct; fill.style.background=lv.bg;
+    label.textContent=lv.text; label.style.color=lv.color;
+}
+
+function checkMatch(){
+    const pw1=document.getElementById('openPw').value;
+    const pw2=document.getElementById('confirmPw').value;
+    const hint=document.getElementById('matchHint');
+    const inp2=document.getElementById('confirmPw');
+    if(!pw2){ hint.innerHTML=''; inp2.classList.remove('match','mismatch'); return; }
+    if(pw1===pw2){
+        inp2.classList.add('match'); inp2.classList.remove('mismatch');
+        hint.className='match-hint ok';
+        hint.innerHTML='<i class="fas fa-check-circle"></i> Passwords match!';
+    } else {
+        inp2.classList.add('mismatch'); inp2.classList.remove('match');
+        hint.className='match-hint bad';
+        hint.innerHTML='<i class="fas fa-times-circle"></i> Passwords do not match';
+    }
+}
+
+function togglePwVis(inputId,iconId){
+    const inp=document.getElementById(inputId);
+    const icon=document.getElementById(iconId);
+    if(inp.type==='password'){ inp.type='text'; icon.className='fas fa-eye-slash'; }
+    else { inp.type='password'; icon.className='fas fa-eye'; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MAIN — DO PROTECT
+═══════════════════════════════════════════════════════════════════ */
+async function doProtect(){
+    const pw1 = document.getElementById('openPw').value;
+    const pw2 = document.getElementById('confirmPw').value;
+    const btn = document.getElementById('protectBtn');
+
+    if(!pw1){ showError('Please enter a password.'); document.getElementById('openPw').focus(); return; }
+    if(pw1.length<4){ showError('Password must be at least 4 characters.'); return; }
+    if(pw1!==pw2){ showError('Passwords do not match.'); document.getElementById('confirmPw').focus(); return; }
+    if(!rawBytes){ showError('No PDF loaded.'); return; }
+
+    btn.disabled=true;
+    hideError();
+    showSection('processingSection');
+    setProgress(5,'Preparing...','Loading PDF document');
+    await tick();
+
+    try {
+        // Step 1: Use pdf-lib to produce a clean, valid PDF
+        setProgress(20,'Rebuilding PDF...','Normalizing document structure');
+        await tick();
+
+        let cleanBytes;
+        try {
+            cleanBytes = await buildCleanPDF(rawBytes);
+        } catch(e) {
+            console.warn('pdf-lib rebuild failed, using original bytes:', e);
+            cleanBytes = rawBytes; // Fallback to original
+        }
+
+        setProgress(45,'Computing keys...','Deriving encryption parameters');
+        await tick();
+
+        const perms = {
+            print:    document.getElementById('permPrint').checked,
+            modify:   document.getElementById('permEdit').checked,
+            copy:     document.getElementById('permCopy').checked,
+            annotate: document.getElementById('permAnnotate').checked,
+            forms:    document.getElementById('permForms').checked,
+            extract:  document.getElementById('permExtract').checked,
+        };
+
+        setProgress(60,'Encrypting...','Applying RC4-128 to all objects');
+        await tick();
+
+        // Step 2: Inject real encryption into the clean PDF
+        const ownerPw = pw1 + '_owner_' + Math.random().toString(36).slice(2);
+
+        const encBytes = await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                try {
+                    const injector = new PDFEncryptInjector(cleanBytes, pw1, ownerPw, perms);
+                    resolve(injector.run());
+                } catch(e) { reject(e); }
+            }, 20);
+        });
+
+        setProgress(90,'Finalizing...','Building output file');
+        await tick();
+
+        protBlob = new Blob([encBytes], {type:'application/pdf'});
+
+        setProgress(100,'Done!','PDF protected successfully!');
+        await new Promise(r=>setTimeout(r,600));
+
+        const pwMask = pw1.length<=2
+            ? '*'.repeat(pw1.length)
+            : pw1[0]+'*'.repeat(pw1.length-2)+pw1[pw1.length-1];
+
+        document.getElementById('rPages').textContent    = pagesCount;
+        document.getElementById('rSize').textContent     = szF(protBlob.size);
+        document.getElementById('rFileName').textContent =
+            selectedFile.name.replace(/\.pdf$/i,'')+'_protected.pdf';
+        document.getElementById('rPwHint').textContent   = 'Password: '+pwMask;
+
+        showSection('resultSection');
+
+    } catch(e){
+        console.error('Protect failed:', e);
+        showSection('optionsSection');
+        btn.disabled=false;
+        showError('Protection failed: '+e.message);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DOWNLOAD / RESET / NAV
+═══════════════════════════════════════════════════════════════════ */
+function doDownload(){
+    if(!protBlob){ showError('No protected PDF available.'); return; }
+    const name=selectedFile
+        ? selectedFile.name.replace(/\.pdf$/i,'')+'_protected.pdf'
+        : 'protected.pdf';
+    const url=URL.createObjectURL(protBlob);
+    const a=document.createElement('a');
+    a.href=url; a.download=name;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); },500);
+}
+
+function goBack(){
+    protBlob=null;
+    document.getElementById('protectBtn').disabled=false;
+    setProgress(0,'Protecting PDF...','Adding password encryption');
+    showSection('optionsSection');
+}
+
+function resetTool(){
+    rawBytes=null; selectedFile=null; protBlob=null; pagesCount=0;
+    fileInput.value='';
+    ['openPw','confirmPw'].forEach(id=>{
+        const el=document.getElementById(id);
+        el.value=''; el.classList.remove('match','mismatch');
+    });
+    document.getElementById('matchHint').innerHTML='';
+    document.getElementById('strengthFill').style.width='0%';
+    document.getElementById('strengthLabel').textContent='Enter a password';
+    document.getElementById('protectBtn').disabled=false;
+    document.getElementById('permPrint').checked=true;
+    document.getElementById('permCopy').checked=true;
+    document.getElementById('permEdit').checked=false;
+    document.getElementById('permAnnotate').checked=true;
+    document.getElementById('permForms').checked=true;
+    document.getElementById('permExtract').checked=false;
+    hideError();
+    setProgress(0,'Protecting PDF...','Adding password encryption');
+    showSection('uploadSection');
+}
+</script>
 </body>
 </html>

@@ -10,11 +10,12 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
-
-    <!-- JSZip for ZIP pack -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
+        /* ════════════════════════════════════════
+           PREVIEW LAYOUT
+        ════════════════════════════════════════ */
         .image-preview-wrap {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -37,6 +38,9 @@
             color: var(--text-dark);
         }
 
+        /* ════════════════════════════════════════
+           CHECKERBOARD PREVIEW
+        ════════════════════════════════════════ */
         .img-preview-box {
             min-height: 220px;
             display: flex;
@@ -63,6 +67,9 @@
             border-radius: 8px;
         }
 
+        /* ════════════════════════════════════════
+           ICO SIZE STRIP
+        ════════════════════════════════════════ */
         .ico-sizes {
             display: flex;
             justify-content: center;
@@ -108,6 +115,9 @@
             color: var(--text-light);
         }
 
+        /* ════════════════════════════════════════
+           RESULT STATS
+        ════════════════════════════════════════ */
         .result-stats {
             display: flex;
             justify-content: center;
@@ -133,6 +143,9 @@
 
         .result-stat small { color: var(--text-light); font-size: 11px; }
 
+        /* ════════════════════════════════════════
+           FORMAT BADGE
+        ════════════════════════════════════════ */
         .format-badge {
             display: inline-block;
             background: rgba(34,197,94,0.12);
@@ -144,6 +157,9 @@
             margin-top: 10px;
         }
 
+        /* ════════════════════════════════════════
+           ICO RESULT PREVIEW BOX
+        ════════════════════════════════════════ */
         .ico-preview-box {
             width: 128px;
             height: 128px;
@@ -169,25 +185,26 @@
             image-rendering: pixelated;
         }
 
+        /* ════════════════════════════════════════
+           ERROR MESSAGE
+        ════════════════════════════════════════ */
         .error-message {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.3);
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.25);
             border-radius: 10px;
-            padding: 14px 18px;
+            padding: 13px 18px;
             color: #dc2626;
             font-size: 14px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             display: none;
             align-items: center;
             gap: 8px;
+            font-weight: 500;
         }
 
-        .upload-zone.dragover {
-            border-color: var(--primary, #6366f1) !important;
-            background: rgba(99,102,241,0.07) !important;
-        }
-
-        /* ZIP pack sizes grid in result */
+        /* ════════════════════════════════════════
+           ZIP SIZES GRID
+        ════════════════════════════════════════ */
         .zip-sizes-grid {
             display: flex;
             justify-content: center;
@@ -200,9 +217,7 @@
             border-radius: 14px;
         }
 
-        .zip-size-item {
-            text-align: center;
-        }
+        .zip-size-item { text-align: center; }
 
         .zip-size-thumb {
             border: 1px solid #cbd5e1;
@@ -233,16 +248,183 @@
             font-weight: 600;
         }
 
+        /* ════════════════════════════════════════
+           DRAG OVER
+        ════════════════════════════════════════ */
+        .upload-zone.dragover {
+            border-color: var(--primary, #6366f1) !important;
+            background: rgba(99,102,241,0.07) !important;
+        }
+
+        /* ════════════════════════════════════════
+           ICON COLORS
+        ════════════════════════════════════════ */
+        .icon-red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .icon-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
+        .icon-green  { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .icon-dark   { background: linear-gradient(135deg, #374151, #1f2937); }
+        .icon-blue   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .icon-purple { background: linear-gradient(135deg, #a855f7, #9333ea); }
+
+        /* ════════════════════════════════════════
+           FAQ ACCORDION
+        ════════════════════════════════════════ */
+        .faq-section { padding: 50px 0; }
+
+        .faq-list { max-width: 750px; margin: 0 auto; }
+
+        .faq-item {
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .faq-item:hover {
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+            transform: translateY(-1px);
+        }
+
+        .faq-item.open {
+            background: rgba(255,255,255,0.85);
+            border-color: rgba(99,102,241,0.2);
+            box-shadow: 0 6px 25px rgba(99,102,241,0.1);
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            gap: 14px;
+        }
+
+        .faq-question h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark, #1e293b);
+            margin: 0;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .faq-item.open .faq-question h4 {
+            color: var(--primary, #6366f1);
+        }
+
+        .faq-question i {
+            font-size: 13px;
+            color: var(--text-light, #94a3b8);
+            transition: transform 0.35s ease, color 0.3s ease;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+            color: var(--primary, #6366f1);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        .faq-answer-inner {
+            padding: 0 22px 20px;
+        }
+
+        .faq-item.open .faq-answer-inner {
+            border-top: 1px solid rgba(99,102,241,0.1);
+            padding-top: 16px;
+            margin: 0 22px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .faq-answer-inner p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-light, #64748b);
+            margin: 0;
+        }
+
+        .faq-answer-inner p strong {
+            color: var(--text-dark, #1e293b);
+        }
+
+        .faq-answer-inner p code {
+            background: rgba(99,102,241,0.08);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: var(--primary, #6366f1);
+        }
+
+        .faq-num {
+            width: 28px;
+            height: 28px;
+            background: rgba(99,102,241,0.1);
+            color: var(--primary, #6366f1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.open .faq-num {
+            background: var(--primary, #6366f1);
+            color: #fff;
+        }
+
+        /* ════════════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════════════ */
         @media (max-width: 768px) {
             .image-preview-wrap { grid-template-columns: 1fr; }
             .ico-sizes { gap: 10px; }
             .ico-size-box { width: 68px; }
+            .result-stats { gap: 12px; }
+
+            .faq-question { padding: 16px 18px; gap: 10px; }
+            .faq-question h4 { font-size: 14px; }
+            .faq-answer-inner { padding: 0 18px 18px; }
+            .faq-item.open .faq-answer-inner { margin: 0 18px; }
+            .faq-answer-inner p { font-size: 13px; }
+            .faq-num { width: 24px; height: 24px; font-size: 11px; }
+        }
+
+        @media (max-width: 480px) {
+            .ico-size-box { width: 58px; }
+            .faq-question { padding: 14px; }
+            .faq-question h4 { font-size: 13px; }
+            .faq-item { border-radius: 10px; margin-bottom: 8px; }
         }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- ═══════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════ -->
 <nav class="navbar glass">
     <a href="index.html" class="logo">
         <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
@@ -257,7 +439,9 @@
     </div>
 </nav>
 
-<!-- HEADER -->
+<!-- ═══════════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
 <section class="tool-header">
     <div class="container">
         <div class="breadcrumb">
@@ -266,7 +450,9 @@
             <span>JPG to ICO</span>
         </div>
         <div class="tool-title">
-            <div class="tool-title-icon icon-orange"><i class="fas fa-image"></i></div>
+            <div class="tool-title-icon icon-orange">
+                <i class="fas fa-image"></i>
+            </div>
             <div>
                 <h1>JPG to ICO</h1>
                 <p>Convert JPG, PNG, WEBP and other images into favicon ICO files. Free, fast &amp; browser-based!</p>
@@ -275,12 +461,14 @@
     </div>
 </section>
 
-<!-- AD -->
+<!-- AD TOP -->
 <div class="adsense-wrapper">
     <div class="adsense-unit" data-slot="topBanner" data-format="auto"></div>
 </div>
 
-<!-- MAIN TOOL -->
+<!-- ═══════════════════════════════════════
+     MAIN TOOL
+═══════════════════════════════════════ -->
 <section class="tool-area">
     <div class="container">
         <div class="tool-wrapper glass">
@@ -290,7 +478,9 @@
                 <div class="upload-zone" id="dropZone"
                      onclick="document.getElementById('fileInput').click()">
                     <div class="upload-zone-content">
-                        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
                         <h2>Drop image file here</h2>
                         <p>or click to browse from your device</p>
                         <button class="upload-btn"
@@ -305,7 +495,8 @@
                             <span><i class="fas fa-icons"></i> Real ICO File</span>
                         </div>
                         <p style="margin-top:15px;font-size:12px;color:var(--text-light);">
-                            <i class="fas fa-shield-alt"></i> Your image never leaves your device!
+                            <i class="fas fa-shield-alt"></i>
+                            Your image never leaves your device!
                         </p>
                     </div>
                 </div>
@@ -315,11 +506,13 @@
             <div id="optionsSection" data-section style="display:none;">
                 <div class="files-area">
 
+                    <!-- Error -->
                     <div class="error-message" id="errorMsg">
                         <i class="fas fa-exclamation-triangle"></i>
                         <span id="errorText">Something went wrong.</span>
                     </div>
 
+                    <!-- File Header -->
                     <div class="files-header">
                         <h3>
                             <i class="fas fa-file-image"></i>
@@ -350,25 +543,29 @@
 
                             <div class="ico-sizes">
                                 <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:16px;height:16px;">
+                                    <div class="ico-size-preview"
+                                         style="width:16px;height:16px;">
                                         <img id="preview16" alt="16x16">
                                     </div>
                                     <div class="ico-size-label">16×16</div>
                                 </div>
                                 <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:32px;height:32px;">
+                                    <div class="ico-size-preview"
+                                         style="width:32px;height:32px;">
                                         <img id="preview32" alt="32x32">
                                     </div>
                                     <div class="ico-size-label">32×32</div>
                                 </div>
                                 <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:48px;height:48px;">
+                                    <div class="ico-size-preview"
+                                         style="width:48px;height:48px;">
                                         <img id="preview48" alt="48x48">
                                     </div>
                                     <div class="ico-size-label">48×48</div>
                                 </div>
                                 <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:64px;height:64px;">
+                                    <div class="ico-size-preview"
+                                         style="width:64px;height:64px;">
                                         <img id="preview64" alt="64x64">
                                     </div>
                                     <div class="ico-size-label">64×64</div>
@@ -446,15 +643,13 @@
                     <h2 id="resultTitle">ICO File Created Successfully! 🎉</h2>
                     <p id="resultSubtitle">Your favicon icon is ready to download</p>
 
-                    <!-- Single ICO preview -->
+                    <!-- Single preview -->
                     <div class="ico-preview-box" id="singlePreviewBox">
                         <img id="resultPreview" alt="Final ICO Preview">
                     </div>
 
-                    <!-- ZIP pack preview grid -->
-                    <div class="zip-sizes-grid" id="zipPreviewGrid" style="display:none;">
-                        <!-- filled by JS -->
-                    </div>
+                    <!-- ZIP preview grid -->
+                    <div class="zip-sizes-grid" id="zipPreviewGrid" style="display:none;"></div>
 
                     <div class="format-badge" id="formatBadge">Windows ICO Format</div>
 
@@ -500,12 +695,14 @@
     </div>
 </section>
 
-<!-- AD -->
+<!-- AD MIDDLE -->
 <div class="adsense-wrapper">
     <div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div>
 </div>
 
-<!-- RELATED TOOLS -->
+<!-- ═══════════════════════════════════════
+     RELATED TOOLS
+═══════════════════════════════════════ -->
 <section class="related-tools">
     <div class="container">
         <div class="section-header">
@@ -513,17 +710,37 @@
             <p>Tools that work great with JPG to ICO</p>
         </div>
         <div class="related-grid">
-            <a href="pdf-to-ico.html"   class="related-card glass"><div class="related-icon icon-red"   ><i class="fas fa-file-image"></i></div><h4>PDF to ICO</h4></a>
-            <a href="pdf-to-jpg.html"   class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-file-image"></i></div><h4>PDF to JPG</h4></a>
-            <a href="jpg-to-pdf.html"   class="related-card glass"><div class="related-icon icon-red"   ><i class="fas fa-image"></i></div><h4>JPG to PDF</h4></a>
-            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green" ><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
-            <a href="color-picker.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-palette"></i></div><h4>Color Picker</h4></a>
-            <a href="qr-generator.html" class="related-card glass"><div class="related-icon icon-dark"  ><i class="fas fa-qrcode"></i></div><h4>QR Generator</h4></a>
+            <a href="pdf-to-ico.html"   class="related-card glass">
+                <div class="related-icon icon-red"><i class="fas fa-file-image"></i></div>
+                <h4>PDF to ICO</h4>
+            </a>
+            <a href="pdf-to-jpg.html"   class="related-card glass">
+                <div class="related-icon icon-orange"><i class="fas fa-file-image"></i></div>
+                <h4>PDF to JPG</h4>
+            </a>
+            <a href="jpg-to-pdf.html"   class="related-card glass">
+                <div class="related-icon icon-red"><i class="fas fa-image"></i></div>
+                <h4>JPG to PDF</h4>
+            </a>
+            <a href="compress-pdf.html" class="related-card glass">
+                <div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div>
+                <h4>Compress PDF</h4>
+            </a>
+            <a href="color-picker.html" class="related-card glass">
+                <div class="related-icon icon-orange"><i class="fas fa-palette"></i></div>
+                <h4>Color Picker</h4>
+            </a>
+            <a href="qr-generator.html" class="related-card glass">
+                <div class="related-icon icon-dark"><i class="fas fa-qrcode"></i></div>
+                <h4>QR Generator</h4>
+            </a>
         </div>
     </div>
 </section>
 
-<!-- HOW TO -->
+<!-- ═══════════════════════════════════════
+     HOW TO
+═══════════════════════════════════════ -->
 <section class="how-to-section">
     <div class="container">
         <div class="section-header">
@@ -553,67 +770,88 @@
     </div>
 </section>
 
-<!-- FAQ -->
+<!-- ═══════════════════════════════════════
+     FAQ — ACCORDION
+═══════════════════════════════════════ -->
 <section class="faq-section">
     <div class="container">
-        <div class="section-header"><h2>Frequently Asked Questions</h2></div>
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+        </div>
         <div class="faq-list">
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
+                    <span class="faq-num">1</span>
                     <h4>What is an ICO file?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>ICO is the standard icon format used for website favicons and Windows desktop icons.
-                       Browsers use ICO files to show your site icon in tabs and bookmarks.</p>
+                    <div class="faq-answer-inner">
+                        <p>ICO is the standard icon format used for website favicons and Windows desktop icons.
+                        Browsers use ICO files to show your site icon in tabs and bookmarks.</p>
+                    </div>
                 </div>
             </div>
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
+                    <span class="faq-num">2</span>
                     <h4>Which size should I choose?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>32×32 is the most common recommended size for website favicons.
-                       Use 16×16 for small browser tab icons, or 64×64 for higher resolution displays.
-                       Choose <strong>All Sizes ZIP</strong> to get every size at once!</p>
+                    <div class="faq-answer-inner">
+                        <p><strong>32×32</strong> is the most common recommended size for website favicons.
+                        Use <strong>16×16</strong> for small browser tab icons, or <strong>64×64</strong>
+                        for higher resolution displays. Choose <strong>All Sizes ZIP</strong>
+                        to get every size at once!</p>
+                    </div>
                 </div>
             </div>
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
+                    <span class="faq-num">3</span>
                     <h4>What is included in the ZIP pack?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>The ZIP pack includes both <strong>.ico</strong> and <strong>.png</strong> files
-                       for all 5 standard sizes: 16×16, 32×32, 48×48, 64×64 and 128×128.
-                       That's 10 files total — perfect for any project!</p>
+                    <div class="faq-answer-inner">
+                        <p>The ZIP pack includes both <strong>.ico</strong> and <strong>.png</strong>
+                        files for all 5 standard sizes: 16×16, 32×32, 48×48, 64×64 and 128×128.
+                        That's <strong>10 files total</strong> — perfect for any project!</p>
+                    </div>
                 </div>
             </div>
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
+                    <span class="faq-num">4</span>
                     <h4>Should I use transparent background?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>Yes, transparent background is best for logos and symbols. It allows your icon to
-                       blend nicely with browser themes and operating system backgrounds.</p>
+                    <div class="faq-answer-inner">
+                        <p>Yes! <strong>Transparent</strong> background is best for logos and symbols.
+                        It allows your icon to blend nicely with browser themes and
+                        operating system backgrounds.</p>
+                    </div>
                 </div>
             </div>
 
             <div class="faq-item glass" onclick="toggleFaq(this)">
                 <div class="faq-question">
+                    <span class="faq-num">5</span>
                     <h4>How do I use the ICO on my website?</h4>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>Upload the downloaded <code>.ico</code> file to your website root and add:<br>
-                       <code>&lt;link rel="icon" href="favicon.ico"&gt;</code>
-                       inside your HTML <code>&lt;head&gt;</code> section.</p>
+                    <div class="faq-answer-inner">
+                        <p>Upload the <code>.ico</code> file to your website root folder and add
+                        this line inside your HTML <code>&lt;head&gt;</code> section:<br>
+                        <code>&lt;link rel="icon" href="favicon.ico"&gt;</code></p>
+                    </div>
                 </div>
             </div>
 
@@ -621,11 +859,15 @@
     </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
 <footer class="footer">
     <div class="container">
         <div class="footer-simple">
-            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <div class="footer-logo">
+                <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+            </div>
             <p>© 2025 PDFTools. All rights reserved.</p>
             <div class="footer-links">
                 <a href="index.html">Home</a>
@@ -653,12 +895,27 @@
 ════════════════════════════════════════════════════════ */
 let selectedImage    = null;
 let selectedFileName = 'favicon';
-let outputBlob       = null;   // single ICO blob or ZIP blob
+let outputBlob       = null;
 let outputIsZip      = false;
 
 /* ════════════════════════════════════════════════════════
    HELPERS
 ════════════════════════════════════════════════════════ */
+
+/* FAQ Accordion — one open at a time */
+function toggleFaq(clickedItem) {
+    const isOpen = clickedItem.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('open'));
+    if (!isOpen) clickedItem.classList.add('open');
+}
+
+/* Mobile menu guard */
+if (typeof toggleMobileMenu === 'undefined') {
+    window.toggleMobileMenu = function () {
+        document.getElementById('navLinks').classList.toggle('open');
+    };
+}
+
 function showSection(id) {
     document.querySelectorAll('[data-section]')
             .forEach(s => s.style.display = 'none');
@@ -677,8 +934,8 @@ function updateProgress(pct, title, sub) {
 }
 
 function formatSize(bytes) {
-    if (bytes < 1024)        return bytes + ' B';
-    if (bytes < 1048576)     return (bytes / 1024).toFixed(1) + ' KB';
+    if (bytes < 1024)    return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / 1048576).toFixed(2) + ' MB';
 }
 
@@ -689,16 +946,8 @@ function showError(msg) {
     setTimeout(() => el.style.display = 'none', 5000);
 }
 
-function toggleFaq(el) { el.classList.toggle('open'); }
-
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function () {
-        document.getElementById('navLinks').classList.toggle('open');
-    };
-}
-
 /* ════════════════════════════════════════════════════════
-   DRAG & DROP  +  FILE INPUT
+   DRAG & DROP + FILE INPUT
 ════════════════════════════════════════════════════════ */
 const dropZone  = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -787,16 +1036,14 @@ function drawToCanvas(canvas, img, size) {
 function updatePreview() {
     if (!selectedImage) return;
 
-    const sizeVal = document.getElementById('icoSize').value;
+    const sizeVal     = document.getElementById('icoSize').value;
     const previewSize = sizeVal === 'all' ? 64 : parseInt(sizeVal);
 
-    // Main ICO preview
     const mainCanvas = document.getElementById('canvas' + previewSize) ||
                        document.getElementById('canvas32');
     drawToCanvas(mainCanvas, selectedImage, previewSize);
     document.getElementById('icoMainPreview').src = mainCanvas.toDataURL('image/png');
 
-    // Size strip
     [16, 32, 48, 64].forEach(s => {
         const c = document.getElementById('canvas' + s);
         drawToCanvas(c, selectedImage, s);
@@ -806,24 +1053,20 @@ function updatePreview() {
 
 /* ════════════════════════════════════════════════════════
    BUILD ICO BLOB
-   Offset 0  : ICONDIR      (6 bytes)
-   Offset 6  : ICONDIRENTRY (16 bytes)
+   Offset  0 : ICONDIR      (6 bytes)
+   Offset  6 : ICONDIRENTRY (16 bytes)
    Offset 22 : PNG data
 ════════════════════════════════════════════════════════ */
 function buildICO(pngBytes, size) {
     const DATA_OFFSET = 22;
-    const totalSize   = DATA_OFFSET + pngBytes.length;
-
-    const buf  = new ArrayBuffer(totalSize);
+    const buf  = new ArrayBuffer(DATA_OFFSET + pngBytes.length);
     const view = new DataView(buf);
     const u8   = new Uint8Array(buf);
 
-    // ICONDIR
     view.setUint16(0, 0, true);
     view.setUint16(2, 1, true);
     view.setUint16(4, 1, true);
 
-    // ICONDIRENTRY
     u8[6]  = size >= 256 ? 0 : size;
     u8[7]  = size >= 256 ? 0 : size;
     u8[8]  = 0;
@@ -831,13 +1074,12 @@ function buildICO(pngBytes, size) {
     view.setUint16(10, 1,               true);
     view.setUint16(12, 32,              true);
     view.setUint32(14, pngBytes.length, true);
-    view.setUint32(18, DATA_OFFSET,     true);  // ★ = 22
+    view.setUint32(18, DATA_OFFSET,     true);
 
     u8.set(pngBytes, DATA_OFFSET);
     return new Blob([buf], { type: 'image/x-icon' });
 }
 
-/* Canvas → PNG Uint8Array (async) */
 async function canvasToPngBytes(canvas) {
     const blob   = await new Promise(res => canvas.toBlob(res, 'image/png'));
     const buffer = await blob.arrayBuffer();
@@ -859,12 +1101,12 @@ async function generateICO() {
 
         const sizeVal = document.getElementById('icoSize').value;
 
-        /* ── ZIP Pack ─────────────────────────────────────── */
+        /* ── ZIP Pack ── */
         if (sizeVal === 'all') {
-            outputIsZip     = true;
-            const zip       = new JSZip();
-            const sizes     = [16, 32, 48, 64, 128];
-            const previews  = {};   // store dataURLs for result grid
+            outputIsZip    = true;
+            const zip      = new JSZip();
+            const sizes    = [16, 32, 48, 64, 128];
+            const previews = {};
 
             for (let i = 0; i < sizes.length; i++) {
                 const s   = sizes[i];
@@ -880,17 +1122,14 @@ async function generateICO() {
 
                 zip.file(`favicon-${s}x${s}.ico`, icoBuf);
                 zip.file(`favicon-${s}x${s}.png`, pngBytes);
-
                 previews[s] = canvas.toDataURL('image/png');
             }
 
             updateProgress(85, 'Packing ZIP…', 'Almost done');
             outputBlob = await zip.generateAsync({ type: 'blob' });
 
-            // ── Result UI for ZIP ──
+            /* Result UI */
             document.getElementById('singlePreviewBox').style.display = 'none';
-
-            // Build zip preview grid
             const grid = document.getElementById('zipPreviewGrid');
             grid.innerHTML = '';
             grid.style.display = 'flex';
@@ -899,7 +1138,8 @@ async function generateICO() {
                 const item = document.createElement('div');
                 item.className = 'zip-size-item';
                 item.innerHTML = `
-                    <div class="zip-size-thumb" style="width:${Math.min(s,64)}px;height:${Math.min(s,64)}px;">
+                    <div class="zip-size-thumb"
+                         style="width:${Math.min(s,64)}px;height:${Math.min(s,64)}px;">
                         <img src="${previews[s]}" alt="${s}x${s}">
                     </div>
                     <div class="zip-size-label">${s}×${s}</div>`;
@@ -907,7 +1147,7 @@ async function generateICO() {
             });
 
             document.getElementById('resultTitle').textContent      = 'ICO Pack Created! 🎉';
-            document.getElementById('resultSubtitle').textContent   = 'All 5 sizes packed into ZIP — ready to download';
+            document.getElementById('resultSubtitle').textContent   = 'All 5 sizes packed into ZIP';
             document.getElementById('resultDimensions').textContent = '16–128px';
             document.getElementById('resultFormat').textContent     = 'ZIP';
             document.getElementById('resultFileSize').textContent   = formatSize(outputBlob.size);
@@ -915,7 +1155,7 @@ async function generateICO() {
             document.getElementById('formatBadge').textContent      = 'ICO + PNG Multi-size Pack (10 files)';
             document.getElementById('downloadBtnText').textContent  = 'Download ZIP Pack';
 
-        /* ── Single ICO ───────────────────────────────────── */
+        /* ── Single ICO ── */
         } else {
             outputIsZip  = false;
             const size   = parseInt(sizeVal);
@@ -935,7 +1175,7 @@ async function generateICO() {
             await new Promise(r => setTimeout(r, 300));
             updateProgress(100, 'Done!', 'ICO file ready');
 
-            // ── Result UI for single ──
+            /* Result UI */
             document.getElementById('singlePreviewBox').style.display = 'flex';
             document.getElementById('zipPreviewGrid').style.display   = 'none';
             document.getElementById('resultPreview').src               = canvas.toDataURL('image/png');
@@ -1012,7 +1252,7 @@ function resetTool() {
     });
 
     document.getElementById('zipPreviewGrid').innerHTML = '';
-    document.getElementById('zipPreviewGrid').style.display = 'none';
+    document.getElementById('zipPreviewGrid').style.display  = 'none';
     document.getElementById('singlePreviewBox').style.display = 'flex';
     document.getElementById('icoSize').value = '32';
 
