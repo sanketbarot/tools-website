@@ -9,31 +9,87 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
     <style>
-        .legal-page{max-width:800px;margin:0 auto;padding:30px 20px 60px}
-        .legal-hero{text-align:center;padding:40px 20px 30px}
-        .legal-hero .icon-circle{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ea580c);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;color:#fff}
-        .legal-hero h1{font-size:32px;font-weight:800;margin-bottom:8px}
-        .legal-hero p{color:var(--text-light);font-size:14px}
-        .legal-content{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.5);border-radius:16px;padding:35px;margin-top:20px;line-height:1.85}
-        .legal-content h2{font-size:20px;font-weight:700;color:var(--text-dark);margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid rgba(249,115,22,0.15);display:flex;align-items:center;gap:8px}
-        .legal-content h2:first-child{margin-top:0}
-        .legal-content h2 i{color:#ea580c;font-size:18px}
-        .legal-content h3{font-size:16px;font-weight:600;color:var(--text-dark);margin:18px 0 8px}
-        .legal-content p{font-size:14px;color:var(--text-medium);margin-bottom:12px}
-        .legal-content ul{margin:8px 0 16px 20px;color:var(--text-medium);font-size:14px}
-        .legal-content ul li{margin-bottom:6px;line-height:1.7}
-        .legal-content .highlight-box{background:rgba(249,115,22,0.06);border-left:4px solid #ea580c;border-radius:0 10px 10px 0;padding:14px 18px;margin:15px 0;font-size:13px;color:var(--text-medium)}
-        .legal-content .highlight-box i{color:#ea580c;margin-right:6px}
-        .last-updated{text-align:center;font-size:12px;color:var(--text-light);margin-top:25px;padding-top:15px;border-top:1px solid rgba(255,255,255,0.5)}
-        .back-home{display:inline-flex;align-items:center;gap:6px;color:var(--primary);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:15px;transition:color 0.2s ease}
-        .back-home:hover{color:var(--primary-dark)}
+        .legal-page { max-width: 800px; margin: 0 auto; padding: 30px 20px 60px; }
+
+        /* Hero */
+        .legal-hero { text-align: center; padding: 40px 20px 30px; }
+        .legal-hero .icon-circle { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #f97316, #ea580c); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 28px; color: #fff; box-shadow: 0 12px 35px rgba(249,115,22,0.3); }
+        .legal-hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+        .legal-hero h1 span { background: linear-gradient(135deg, #f97316, #ea580c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .legal-hero p { color: var(--text-light); font-size: 14px; }
+
+        /* Content */
+        .legal-content { background: rgba(255,255,255,0.5); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.5); border-radius: 16px; padding: 35px; margin-top: 20px; line-height: 1.85; }
+        .legal-content h2 { font-size: 20px; font-weight: 700; color: var(--text-dark); margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 2px solid rgba(249,115,22,0.15); display: flex; align-items: center; gap: 8px; }
+        .legal-content h2:first-of-type { margin-top: 0; }
+        .legal-content h2 i { color: #ea580c; font-size: 18px; }
+        .legal-content h3 { font-size: 15px; font-weight: 600; color: var(--text-dark); margin: 18px 0 8px; }
+        .legal-content p { font-size: 14px; color: var(--text-medium); margin-bottom: 12px; }
+        .legal-content ul { margin: 8px 0 16px 20px; color: var(--text-medium); font-size: 14px; }
+        .legal-content ul li { margin-bottom: 6px; line-height: 1.7; }
+        .legal-content a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .legal-content a:hover { text-decoration: underline; }
+
+        /* Highlight Boxes */
+        .highlight-box { background: rgba(249,115,22,0.06); border-left: 4px solid #ea580c; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 15px 0; font-size: 13px; color: var(--text-medium); }
+        .highlight-box i { color: #ea580c; margin-right: 6px; }
+        .highlight-box.blue { background: rgba(99,102,241,0.06); border-left-color: var(--primary); }
+        .highlight-box.blue i { color: var(--primary); }
+        .highlight-box.green { background: rgba(34,197,94,0.06); border-left-color: #22c55e; }
+        .highlight-box.green i { color: #22c55e; }
+        .highlight-box.red { background: rgba(239,68,68,0.06); border-left-color: #ef4444; }
+        .highlight-box.red i { color: #ef4444; }
+
+        /* TOC */
+        .toc { background: rgba(249,115,22,0.04); border: 1px solid rgba(249,115,22,0.15); border-radius: 12px; padding: 20px 24px; margin-bottom: 25px; }
+        .toc h4 { font-size: 13px; font-weight: 700; color: var(--text-medium); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .toc h4 i { color: #ea580c; }
+        .toc-links { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .toc-links a { font-size: 12px; color: #ea580c; text-decoration: none; padding: 5px 8px; border-radius: 6px; transition: background 0.2s; display: flex; align-items: center; gap: 5px; font-weight: 500; }
+        .toc-links a:hover { background: rgba(249,115,22,0.08); text-decoration: none; }
+
+        /* Do & Don't Grid */
+        .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+        .do-box { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.2); border-radius: 12px; padding: 16px; }
+        .do-box h4 { font-size: 13px; font-weight: 700; color: #16a34a; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .dont-box { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 16px; }
+        .dont-box h4 { font-size: 13px; font-weight: 700; color: #dc2626; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .do-box ul, .dont-box ul { margin: 0; padding-left: 16px; font-size: 12px; }
+        .do-box ul li { color: #16a34a; margin-bottom: 5px; }
+        .dont-box ul li { color: #dc2626; margin-bottom: 5px; }
+
+        /* Summary Cards */
+        .summary-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+        .summary-card { padding: 16px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); border-radius: 12px; text-align: center; }
+        .summary-card .sc-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+        .summary-card h5 { font-size: 12px; font-weight: 700; margin-bottom: 4px; color: var(--text-dark); }
+        .summary-card p { font-size: 11px; color: var(--text-light); margin: 0; line-height: 1.5; }
+
+        /* Last Updated */
+        .last-updated { text-align: center; font-size: 12px; color: var(--text-light); margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.5); }
+
+        /* Back Button */
+        .back-home { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 15px; transition: color 0.2s; }
+        .back-home:hover { color: var(--primary-dark); }
+
+        @media (max-width: 600px) {
+            .legal-content { padding: 22px 18px; }
+            .legal-hero h1 { font-size: 26px; }
+            .toc-links { grid-template-columns: 1fr; }
+            .do-dont { grid-template-columns: 1fr; }
+            .summary-cards { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
     <nav class="navbar glass">
-        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <a href="index.html" class="logo">
+            <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+        </a>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </div>
         <div class="nav-links" id="navLinks">
             <a href="index.html"><i class="fas fa-home"></i> Home</a>
             <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
@@ -43,134 +99,308 @@
     </nav>
 
     <div class="legal-page">
-        <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <a href="index.html" class="back-home">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
 
+        <!-- HERO -->
         <div class="legal-hero">
             <div class="icon-circle"><i class="fas fa-file-contract"></i></div>
-            <h1>Terms of Service</h1>
+            <h1>Terms of <span>Service</span></h1>
             <p>Please read these terms carefully before using PDFTools.</p>
         </div>
 
         <div class="legal-content">
 
-            <div class="highlight-box">
-                <i class="fas fa-info-circle"></i>
-                <strong>Summary:</strong> PDFTools is free to use. All processing happens in your browser. Use our tools responsibly and legally.
+            <!-- Quick Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <span class="sc-icon">🆓</span>
+                    <h5>Free Forever</h5>
+                    <p>All tools are free to use. No hidden charges.</p>
+                </div>
+                <div class="summary-card">
+                    <span class="sc-icon">🔒</span>
+                    <h5>100% Private</h5>
+                    <p>Files never leave your browser. Zero uploads.</p>
+                </div>
+                <div class="summary-card">
+                    <span class="sc-icon">⚖️</span>
+                    <h5>Use Responsibly</h5>
+                    <p>Use tools legally and ethically only.</p>
+                </div>
             </div>
 
-            <h2><i class="fas fa-handshake"></i> 1. Acceptance of Terms</h2>
-            <p>By accessing or using PDFTools ("the Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the Service.</p>
+            <!-- Main Highlight -->
+            <div class="highlight-box blue">
+                <i class="fas fa-info-circle"></i>
+                <strong>Summary:</strong> PDFTools is free to use. All processing happens
+                in your browser. Use our tools responsibly and legally.
+                By using our service, you agree to these terms.
+            </div>
 
-            <h2><i class="fas fa-info-circle"></i> 2. Description of Service</h2>
-            <p>PDFTools provides free online PDF processing tools including but not limited to:</p>
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h4><i class="fas fa-list"></i> Table of Contents</h4>
+                <div class="toc-links">
+                    <a href="#acceptance"><i class="fas fa-chevron-right"></i> 1. Acceptance of Terms</a>
+                    <a href="#description"><i class="fas fa-chevron-right"></i> 2. Description of Service</a>
+                    <a href="#responsibilities"><i class="fas fa-chevron-right"></i> 3. User Responsibilities</a>
+                    <a href="#ip"><i class="fas fa-chevron-right"></i> 4. Intellectual Property</a>
+                    <a href="#privacy"><i class="fas fa-chevron-right"></i> 5. Privacy & Data</a>
+                    <a href="#warranties"><i class="fas fa-chevron-right"></i> 6. Disclaimer</a>
+                    <a href="#liability"><i class="fas fa-chevron-right"></i> 7. Limitation of Liability</a>
+                    <a href="#free"><i class="fas fa-chevron-right"></i> 8. Free Service & Ads</a>
+                    <a href="#third"><i class="fas fa-chevron-right"></i> 9. Third-Party Services</a>
+                    <a href="#termination"><i class="fas fa-chevron-right"></i> 10. Termination</a>
+                    <a href="#changes"><i class="fas fa-chevron-right"></i> 11. Changes to Terms</a>
+                    <a href="#law"><i class="fas fa-chevron-right"></i> 12. Governing Law</a>
+                    <a href="#contact"><i class="fas fa-chevron-right"></i> 13. Contact Us</a>
+                </div>
+            </div>
+
+            <!-- 1. Acceptance -->
+            <h2 id="acceptance"><i class="fas fa-handshake"></i> 1. Acceptance of Terms</h2>
+            <p>By accessing or using <strong>PDFTools</strong> ("the Service"), you agree
+            to be bound by these Terms of Service ("Terms"). If you do not agree to
+            these Terms, please do not use the Service.</p>
+            <p>These Terms apply to all visitors, users, and others who access or use
+            the Service. We reserve the right to update these Terms at any time.</p>
+
+            <!-- 2. Description -->
+            <h2 id="description"><i class="fas fa-info-circle"></i> 2. Description of Service</h2>
+            <p>PDFTools provides free online PDF processing tools including but not
+            limited to:</p>
             <ul>
                 <li>Merging, splitting, and compressing PDF files</li>
                 <li>Converting between PDF and other file formats</li>
                 <li>Editing, signing, and annotating PDF documents</li>
                 <li>OCR text extraction and AI-powered summarization</li>
-                <li>All processing is performed locally in your web browser</li>
+                <li>PDF translation and watermarking tools</li>
+                <li>All processing is performed <strong>locally in your web browser</strong></li>
             </ul>
+            <div class="highlight-box green">
+                <i class="fas fa-check-circle"></i>
+                <strong>Key Point:</strong> No account required. No file size limits
+                (browser memory only). No hidden fees. Ever.
+            </div>
 
-            <h2><i class="fas fa-user-check"></i> 3. User Responsibilities</h2>
-            <p>You agree to:</p>
+            <!-- 3. Responsibilities -->
+            <h2 id="responsibilities"><i class="fas fa-user-check"></i> 3. User Responsibilities</h2>
+            <p>When using PDFTools, you agree to use the service responsibly:</p>
+
+            <div class="do-dont">
+                <div class="do-box">
+                    <h4><i class="fas fa-check-circle"></i> You CAN</h4>
+                    <ul>
+                        <li>Process your own documents</li>
+                        <li>Use tools for personal use</li>
+                        <li>Use tools for business use</li>
+                        <li>Share PDFTools with others</li>
+                        <li>Use on any device or browser</li>
+                    </ul>
+                </div>
+                <div class="dont-box">
+                    <h4><i class="fas fa-times-circle"></i> You CANNOT</h4>
+                    <ul>
+                        <li>Process illegal content</li>
+                        <li>Process documents you don't own</li>
+                        <li>Attempt to hack or exploit the site</li>
+                        <li>Use for automated bulk requests</li>
+                        <li>Reverse engineer our code</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p>You agree to comply with all applicable local, national, and
+            international laws and regulations when using our Service.</p>
+
+            <!-- 4. Intellectual Property -->
+            <h2 id="ip"><i class="fas fa-copyright"></i> 4. Intellectual Property</h2>
+            <p>All content, design, logos, and code of PDFTools are owned by us
+            and protected by copyright law.</p>
             <ul>
-                <li>Use the Service only for lawful purposes</li>
-                <li>Not process documents you don't have rights to modify</li>
-                <li>Not attempt to bypass any security features</li>
-                <li>Not use the Service to process illegal, harmful, or offensive content</li>
-                <li>Not overload our servers with automated requests</li>
-                <li>Comply with all applicable laws and regulations</li>
+                <li>You may not copy, modify, or distribute our website code</li>
+                <li>You may not use our logo or branding without written permission</li>
+                <li>You may not create derivative works based on our Service</li>
+                <li>You may not reverse engineer any part of the Service</li>
             </ul>
+            <div class="highlight-box green">
+                <i class="fas fa-shield-alt"></i>
+                <strong>Your Rights:</strong> You retain full ownership and all rights
+                to the documents you process using our tools.
+                We claim no ownership over your files.
+            </div>
 
-            <h2><i class="fas fa-copyright"></i> 4. Intellectual Property</h2>
-            <p>All content, design, logos, and code of PDFTools are owned by us and protected by copyright law. You may not:</p>
+            <!-- 5. Privacy -->
+            <h2 id="privacy"><i class="fas fa-lock"></i> 5. Privacy & Data</h2>
+            <p>Your privacy is extremely important to us. Please review our full
+            <a href="privacy.html">Privacy Policy</a> for complete details.</p>
             <ul>
-                <li>Copy, modify, or distribute our website code</li>
-                <li>Use our logo or branding without permission</li>
-                <li>Create derivative works based on our Service</li>
-                <li>Reverse engineer any part of the Service</li>
-            </ul>
-            <p>You retain all rights to the documents you process using our tools.</p>
-
-            <h2><i class="fas fa-lock"></i> 5. Privacy & Data</h2>
-            <p>Your privacy is important to us. Please review our <a href="privacy.html" style="color:var(--primary);font-weight:600;">Privacy Policy</a> for details on how we handle your information.</p>
-            <p>Key points:</p>
-            <ul>
-                <li>Files are processed in your browser — never uploaded to our servers</li>
-                <li>We don't store or access your documents</li>
+                <li>Files are processed in your browser —
+                <strong>never uploaded to our servers</strong></li>
+                <li>We don't store or have access to your documents</li>
                 <li>We use cookies for analytics and advertising (Google AdSense)</li>
+                <li>No personal data is sold to third parties</li>
+                <li>No account or registration is ever required</li>
             </ul>
 
-            <h2><i class="fas fa-exclamation-triangle"></i> 6. Disclaimer of Warranties</h2>
-            <p>The Service is provided "AS IS" and "AS AVAILABLE" without warranties of any kind, either express or implied, including but not limited to:</p>
+            <!-- 6. Disclaimer -->
+            <h2 id="warranties">
+                <i class="fas fa-exclamation-triangle"></i> 6. Disclaimer of Warranties
+            </h2>
+            <p>The Service is provided <strong>"AS IS"</strong> and
+            <strong>"AS AVAILABLE"</strong> without warranties of any kind,
+            either express or implied, including but not limited to:</p>
             <ul>
                 <li>Fitness for a particular purpose</li>
                 <li>Accuracy or reliability of results</li>
                 <li>Uninterrupted or error-free operation</li>
                 <li>Compatibility with all file types or browsers</li>
+                <li>Results from AI-powered features (OCR, Summarizer, Translator)</li>
             </ul>
+            <div class="highlight-box red">
+                <i class="fas fa-exclamation-circle"></i>
+                <strong>Important:</strong> Always keep backup copies of important
+                documents before processing them with any online tool.
+            </div>
 
-            <h2><i class="fas fa-ban"></i> 7. Limitation of Liability</h2>
-            <p>PDFTools shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from:</p>
+            <!-- 7. Liability -->
+            <h2 id="liability"><i class="fas fa-ban"></i> 7. Limitation of Liability</h2>
+            <p>PDFTools shall not be liable for any direct, indirect, incidental,
+            special, or consequential damages resulting from:</p>
             <ul>
                 <li>Use or inability to use the Service</li>
-                <li>Loss of data or documents</li>
-                <li>Any errors in processing or conversion</li>
+                <li>Loss of data or documents during processing</li>
+                <li>Any errors in PDF processing or file conversion</li>
                 <li>Unauthorized access to your information</li>
+                <li>Any interruption or cessation of the Service</li>
             </ul>
-            <p>We recommend keeping backup copies of all important documents before processing them with any tool.</p>
+            <p>Our total liability to you for any claims arising from use of
+            the Service shall not exceed $0, as the Service is provided free of charge.</p>
 
-            <h2><i class="fas fa-dollar-sign"></i> 8. Free Service & Advertising</h2>
-            <p>PDFTools is provided free of charge. We sustain our service through:</p>
+            <!-- 8. Free Service -->
+            <h2 id="free"><i class="fas fa-dollar-sign"></i> 8. Free Service & Advertising</h2>
+            <p>PDFTools is provided completely free of charge. We sustain our
+            service through:</p>
             <ul>
                 <li>Google AdSense advertisements displayed on our pages</li>
-                <li>We may introduce premium features in the future</li>
-                <li>Ad blockers may affect site functionality</li>
+                <li>Ads help us cover server costs and development time</li>
+                <li>We may introduce optional premium features in the future</li>
+                <li>Core tools will always remain free</li>
             </ul>
+            <div class="highlight-box blue">
+                <i class="fas fa-heart"></i>
+                <strong>Support Us:</strong> By allowing ads to show, you help us
+                keep PDFTools free for everyone. Thank you! 🙏
+            </div>
 
-            <h2><i class="fas fa-link"></i> 9. Third-Party Services</h2>
-            <p>Our Service may use or link to third-party services including:</p>
+            <!-- 9. Third Party -->
+            <h2 id="third"><i class="fas fa-link"></i> 9. Third-Party Services</h2>
+            <p>Our Service uses or links to third-party services including:</p>
             <ul>
-                <li>Google AdSense (advertising)</li>
-                <li>Google Analytics (website analytics)</li>
-                <li>Open-source JavaScript libraries (pdf-lib, PDF.js, Tesseract.js)</li>
-                <li>MyMemory Translation API (for translation feature)</li>
+                <li><strong>Google AdSense</strong> — advertising platform</li>
+                <li><strong>Google Analytics</strong> — anonymous website analytics</li>
+                <li><strong>pdf-lib.js</strong> — open-source PDF manipulation</li>
+                <li><strong>PDF.js (Mozilla)</strong> — open-source PDF rendering</li>
+                <li><strong>Tesseract.js</strong> — open-source OCR engine</li>
+                <li><strong>MyMemory API</strong> — translation service</li>
+                <li><strong>Web3Forms</strong> — contact form service</li>
             </ul>
-            <p>We are not responsible for third-party services' terms or privacy practices.</p>
+            <p>We are not responsible for third-party services' terms,
+            privacy practices, or availability.</p>
 
-            <h2><i class="fas fa-gavel"></i> 10. Termination</h2>
+            <!-- 10. Termination -->
+            <h2 id="termination"><i class="fas fa-gavel"></i> 10. Termination</h2>
             <p>We reserve the right to:</p>
             <ul>
-                <li>Modify or discontinue the Service at any time</li>
+                <li>Modify or discontinue the Service at any time without notice</li>
                 <li>Block access for users who violate these Terms</li>
-                <li>Change features, tools, or functionality without notice</li>
+                <li>Change features, tools, or functionality at our discretion</li>
+                <li>Add or remove PDF tools from the platform</li>
             </ul>
 
-            <h2><i class="fas fa-edit"></i> 11. Changes to Terms</h2>
-            <p>We may update these Terms from time to time. Changes will be posted on this page with an updated date. Continued use of the Service after changes constitutes acceptance of the updated Terms.</p>
+            <!-- 11. Changes -->
+            <h2 id="changes"><i class="fas fa-edit"></i> 11. Changes to Terms</h2>
+            <p>We may update these Terms of Service from time to time to reflect
+            changes in our practices or for legal, operational, or regulatory reasons.</p>
+            <ul>
+                <li>Changes will be posted on this page</li>
+                <li>The "Last Updated" date at the bottom will be revised</li>
+                <li>Continued use of the Service after changes constitutes
+                acceptance of the updated Terms</li>
+                <li>We encourage you to review this page periodically</li>
+            </ul>
 
-            <h2><i class="fas fa-balance-scale"></i> 12. Governing Law</h2>
-            <p>These Terms shall be governed by and construed in accordance with applicable laws, without regard to conflict of law principles.</p>
+            <!-- 12. Governing Law -->
+            <h2 id="law"><i class="fas fa-balance-scale"></i> 12. Governing Law</h2>
+            <p>These Terms shall be governed by and construed in accordance with
+            applicable laws, without regard to conflict of law principles.</p>
+            <p>Any disputes arising from these Terms or your use of the Service
+            shall be resolved through good-faith negotiation. If resolution
+            cannot be reached, disputes shall be subject to the jurisdiction
+            of applicable courts.</p>
 
-            <h2><i class="fas fa-envelope"></i> 13. Contact</h2>
-            <p>For questions about these Terms, please visit our <a href="about.html" style="color:var(--primary);font-weight:600;">About & Contact page</a>.</p>
+            <!-- 13. Contact -->
+            <h2 id="contact"><i class="fas fa-envelope"></i> 13. Contact Us</h2>
+            <p>If you have any questions about these Terms of Service,
+            please contact us:</p>
+            <ul>
+                <li>
+                    <strong>Email:</strong>
+                    <a href="mailto:sanketspprt@gmail.com">
+                        sanketspprt@gmail.com
+                    </a>
+                </li>
+                <li>
+                    <strong>Contact Form:</strong>
+                    <a href="contact.html">
+                        Click here to send us a message
+                    </a>
+                </li>
+                <li>
+                    <strong>Response Time:</strong>
+                    We aim to reply within 24–48 hours on weekdays
+                </li>
+            </ul>
 
-            <div class="last-updated">
-                <i class="fas fa-calendar-alt"></i> Last Updated: January 2025
+            <div class="highlight-box blue">
+                <i class="fas fa-info-circle"></i>
+                These Terms of Service were written in plain English to make them
+                easy to understand. If anything is unclear, please
+                <a href="contact.html">contact us</a> — we're happy to help!
             </div>
+
+            <!-- Last Updated -->
+            <div class="last-updated">
+                <i class="fas fa-calendar-alt"></i> Last Updated:
+                <script>
+                    var months = [
+                        'January','February','March','April','May','June',
+                        'July','August','September','October','November','December'
+                    ];
+                    var d = new Date();
+                    document.write(months[d.getMonth()] + ' ' + d.getFullYear());
+                </script>
+            </div>
+
         </div>
     </div>
 
     <footer class="footer">
         <div class="container">
             <div class="footer-simple">
-                <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-                <p>© 2025 PDFTools. All rights reserved.</p>
+                <div class="footer-logo">
+                    <i class="fas fa-file-pdf"></i><span>PDF</span>Tools
+                </div>
+                <p>© <script>document.write(new Date().getFullYear())</script>
+                PDFTools. All rights reserved.</p>
                 <div class="footer-links">
                     <a href="index.html">Home</a>
                     <a href="privacy.html">Privacy</a>
                     <a href="terms.html">Terms</a>
-                    <a href="about.html">About & Contact</a>
+                    <a href="about.html">About</a>
+                    <a href="contact.html">Contact</a>
                 </div>
             </div>
         </div>
