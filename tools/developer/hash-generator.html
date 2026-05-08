@@ -3,267 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hash Generator - MD5 SHA-256 SHA-512 | PDFTools</title>
+    <title>Hash Generator - Generate MD5 SHA1 SHA256 Hashes Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
-    <meta name="description" content="Free hash generator. Generate MD5, SHA-1, SHA-256, SHA-384, SHA-512, CRC32 hashes from text or files.">
+    <meta name="description" content="Free Hash Generator. Generate MD5, SHA-1, SHA-256, SHA-384, SHA-512 hashes from text. Compare hashes for integrity verification!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/tool-page.css">
     <style>
-        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
-        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .cc h2 i{color:#475569}
-        .text-box{width:100%;min-height:140px;padding:16px;border:2px solid rgba(71,85,105,0.15);border-radius:14px;background:#1e293b;color:#94a3b8;font-size:14px;line-height:1.7;font-family:'Courier New',monospace;resize:vertical;outline:none;box-sizing:border-box}
-        .text-box:focus{border-color:#475569;color:#e2e8f0}
-        .input-stats{display:flex;gap:15px;margin:8px 0;font-size:12px;color:var(--text-light)}
-        .input-stats strong{color:#475569}
-        .actions-row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-        .act-btn{padding:7px 14px;border:1px solid rgba(71,85,105,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:5px}
-        .act-btn:hover{border-color:#475569;color:#475569}
-        .auto-row{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:13px;font-weight:600;color:var(--text-medium)}
-        .auto-row input{width:16px;height:16px;accent-color:#475569}
-        .gen-btn{width:100%;padding:16px;background:linear-gradient(135deg,#475569,#334155);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
-        .gen-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(71,85,105,0.35)}
+        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .calc-card h2 i{color:#14b8a6;font-size:17px}
 
-        /* Hash results */
-        .hash-grid{display:flex;flex-direction:column;gap:10px;margin:14px 0}
-        .hash-item{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;transition:all .15s}
-        .hash-item:hover{box-shadow:0 3px 10px rgba(0,0,0,0.05)}
-        .hash-label{min-width:80px;font-size:12px;font-weight:700;color:#475569;flex-shrink:0}
-        .hash-value{flex:1;font-family:'Courier New',monospace;font-size:12px;color:var(--text-dark);word-break:break-all;line-height:1.5;font-weight:600}
-        .hash-bits{font-size:10px;color:var(--text-light);min-width:50px;text-align:right;flex-shrink:0}
-        .hash-copy{width:32px;height:32px;border:none;border-radius:50%;background:rgba(71,85,105,0.1);color:#475569;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
-        .hash-copy:hover{background:#475569;color:#fff}
+        .editor-wrap textarea{width:100%;min-height:150px;padding:18px;border:2px solid rgba(20,184,166,0.15);border-radius:14px;background:rgba(255,255,255,0.6);font-size:14px;font-weight:500;color:var(--text-dark);font-family:inherit;line-height:1.7;resize:vertical;outline:none;box-sizing:border-box}
+        .editor-wrap textarea:focus{border-color:#14b8a6}
 
-        .case-row{display:flex;align-items:center;gap:10px;margin:10px 0}
-        .case-row label{font-size:12px;font-weight:600;color:var(--text-medium);display:flex;align-items:center;gap:5px;cursor:pointer}
-        .case-row input{accent-color:#475569}
+        .gen-btn{width:100%;padding:16px;background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
+        .gen-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(20,184,166,0.35)}
 
-        /* Compare */
-        .comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
-        .comp-field label{display:block;font-size:12px;font-weight:600;color:var(--text-medium);margin-bottom:5px}
-        .comp-field input{width:100%;padding:12px;border:2px solid rgba(71,85,105,0.15);border-radius:10px;background:rgba(255,255,255,0.6);font-family:monospace;font-size:13px;outline:none;box-sizing:border-box}
-        .comp-field input:focus{border-color:#475569}
-        .comp-btn{padding:12px 24px;background:rgba(71,85,105,0.1);color:#475569;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;transition:all .15s}
-        .comp-btn:hover{background:#475569;color:#fff}
-        .comp-result{text-align:center;padding:18px;margin-top:12px;border-radius:12px;display:none}
+        .hash-results{margin-top:18px}
+        .hash-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:8px;transition:all .2s}
+        .hash-item:hover{background:rgba(20,184,166,0.04)}
+        .hash-label{min-width:80px;font-size:12px;font-weight:800;color:#14b8a6;text-transform:uppercase;padding-top:3px;flex-shrink:0}
+        .hash-value{flex:1;font-size:13px;font-family:'Courier New',monospace;color:var(--text-dark);word-break:break-all;line-height:1.5;font-weight:500}
+        .hash-copy{padding:5px 12px;border:1.5px solid rgba(20,184,166,0.2);border-radius:50px;background:transparent;color:#14b8a6;font-size:10px;font-weight:600;cursor:pointer;transition:all .2s;flex-shrink:0;white-space:nowrap}
+        .hash-copy:hover{background:#14b8a6;color:#fff}
 
-        .file-info{display:none;padding:10px 14px;background:rgba(71,85,105,0.06);border:1px solid rgba(71,85,105,0.15);border-radius:10px;font-size:12px;color:var(--text-medium);margin:10px 0}
+        .compare-section{margin-top:18px}
+        .compare-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+        .compare-row textarea{width:100%;min-height:60px;padding:12px;border:2px solid rgba(20,184,166,0.15);border-radius:10px;background:rgba(255,255,255,0.6);font-size:12px;font-family:monospace;color:var(--text-dark);outline:none;box-sizing:border-box;resize:vertical}
+        .compare-row textarea:focus{border-color:#14b8a6}
+        .compare-result{padding:10px 16px;border-radius:10px;font-size:13px;font-weight:700;text-align:center;display:none}
+        .compare-result.match{display:block;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:#16a34a}
+        .compare-result.nomatch{display:block;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#dc2626}
 
-        .copied-msg{display:none;position:fixed;top:20px;right:20px;background:#22c55e;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999}
-        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+        .tool-btn{padding:9px 16px;border:2px solid rgba(20,184,166,0.15);border-radius:50px;background:transparent;color:#0d9488;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;margin:3px}
+        .tool-btn:hover{background:#14b8a6;color:#fff;border-color:#14b8a6}
 
-        /* Info table */
-        .info-table{width:100%;border-collapse:collapse;font-size:12px;margin:14px 0}
-        .info-table th{background:rgba(71,85,105,0.1);padding:10px 14px;text-align:left;font-weight:700;color:#475569;border-bottom:2px solid rgba(71,85,105,0.15)}
-        .info-table td{padding:8px 14px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--text-medium)}
-        .info-table tr:hover td{background:rgba(71,85,105,0.03)}
+        .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
+        .privacy-note i{color:#22c55e;margin-right:4px}
 
-        @media(max-width:768px){.hash-label{min-width:60px;font-size:11px}.hash-value{font-size:10px}.comp-grid{grid-template-columns:1fr}.hash-bits{display:none}}
+        .hg-faq .faq-item{background:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .hg-faq .faq-item:hover{background:rgba(255,255,255,0.8)}
+        .hg-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(20,184,166,0.25)}
+        .hg-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
+        .hg-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .hg-faq .faq-item.active .faq-q h4{color:#14b8a6}
+        .hg-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s}
+        .hg-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#14b8a6}
+        .hg-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(20,184,166,0.1);color:#14b8a6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+        .hg-faq .faq-item.active .faq-q .faq-num{background:#14b8a6;color:#fff}
+        .hg-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(20,184,166,0.1);margin:0 22px}
+        .hg-faq .faq-item.active .faq-a{display:block}
+        .hg-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0}
+
+        @media(max-width:480px){.calc-card{padding:20px 16px}.compare-row{grid-template-columns:1fr}.hg-faq .faq-q{padding:14px 16px}}
     </style>
 </head>
 <body>
 
-<nav class="navbar glass">
-    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-    <div class="nav-links" id="navLinks">
-        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+<nav class="navbar glass"><a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a><div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div><div class="nav-links" id="navLinks"><a href="../../index.html"><i class="fas fa-home"></i> Home</a><a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a><a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a></div></nav>
+
+<section class="tool-header"><div class="container"><div class="breadcrumb"><a href="../../index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Hash Generator</span></div><div class="tool-title"><div class="tool-title-icon" style="background:linear-gradient(135deg,#14b8a6,#0d9488);"><i class="fas fa-fingerprint"></i></div><div><h1>Hash Generator</h1><p>Generate SHA-1, SHA-256, SHA-384, SHA-512 hashes from text. Compare hashes instantly!</p></div></div></div></section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<section class="tool-area"><div class="container">
+
+<div class="calc-card">
+    <h2><i class="fas fa-keyboard"></i> Enter Text</h2>
+    <div class="editor-wrap"><textarea id="hashInput" placeholder="Enter text to hash..." oninput="autoHash()"></textarea></div>
+    <button class="gen-btn" onclick="generateHashes()"><i class="fas fa-fingerprint"></i> Generate All Hashes</button>
+</div>
+
+<div class="calc-card" id="hashResults" style="display:none">
+    <h2><i class="fas fa-list"></i> Hash Results</h2>
+    <div class="hash-results" id="hashList"></div>
+    <div style="text-align:center;margin-top:12px">
+        <button class="tool-btn" onclick="copyAllHashes()"><i class="fas fa-copy"></i> Copy All</button>
+        <button class="tool-btn" onclick="downloadHashes()"><i class="fas fa-download"></i> Download</button>
     </div>
-</nav>
+</div>
 
-<div class="copied-msg" id="copiedMsg"></div>
-<input type="file" id="fileInput" style="display:none">
-
-<section class="tool-header">
-    <div class="container">
-        <div class="breadcrumb">
-            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-            <i class="fas fa-chevron-right"></i><span>Hash Generator</span>
-        </div>
-        <div class="tool-title">
-            <div class="tool-title-icon" style="background:linear-gradient(135deg,#475569,#334155);"><i class="fas fa-fingerprint"></i></div>
-            <div><h1>Hash Generator</h1><p>Generate MD5, SHA-1, SHA-256, SHA-512, CRC32 hashes from text or files!</p></div>
-        </div>
+<!-- Compare -->
+<div class="calc-card">
+    <h2><i class="fas fa-balance-scale"></i> Compare Hashes</h2>
+    <div class="compare-row">
+        <textarea id="cmpHash1" placeholder="Paste first hash..."></textarea>
+        <textarea id="cmpHash2" placeholder="Paste second hash..."></textarea>
     </div>
-</section>
+    <div style="text-align:center"><button class="tool-btn" onclick="compareHashes()" style="background:linear-gradient(135deg,#14b8a6,#0d9488);color:#fff;border:none;padding:10px 24px"><i class="fas fa-check-double"></i> Compare</button></div>
+    <div class="compare-result" id="cmpResult"></div>
+</div>
 
-<section class="tool-area">
-    <div class="container">
+<div class="privacy-note"><i class="fas fa-shield-alt"></i> 100% Private — Hashes generated in your browser using Web Crypto API</div>
 
-        <!-- Input -->
-        <div class="cc">
-            <h2><i class="fas fa-keyboard"></i> Enter Text or Upload File</h2>
-            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+</div></section>
 
-            <textarea class="text-box" id="textInput" placeholder="Enter text to generate hash values..."></textarea>
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
-            <div class="input-stats">
-                <span><i class="fas fa-weight-hanging"></i> <strong id="inputSize">0 B</strong></span>
-                <span><i class="fas fa-text-width"></i> <strong id="inputChars">0</strong> chars</span>
-            </div>
+<section class="how-to-section"><div class="container"><div class="section-header"><h2>How It Works</h2></div><div class="steps-row"><div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Enter Text</h4><p>Type or paste your text.</p></div><div class="step-box glass"><div class="step-num">2</div><i class="fas fa-fingerprint"></i><h4>Generate</h4><p>Click to generate all hashes.</p></div><div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy</h4><p>Copy any hash individually.</p></div></div></div></section>
 
-            <div class="actions-row">
-                <button class="act-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
-                <button class="act-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample</button>
-                <button class="act-btn" onclick="hashFile()"><i class="fas fa-file"></i> Hash File</button>
-                <button class="act-btn" onclick="clearAll()"><i class="fas fa-trash"></i> Clear</button>
-            </div>
+<section class="faq-section"><div class="container"><div class="section-header"><h2>FAQ</h2></div><div class="hg-faq">
+    <div class="faq-item" onclick="hgFaqToggle(this)"><div class="faq-q"><span class="faq-num">1</span><h4>What is a hash?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>A hash is a fixed-length string generated from input data using a mathematical function. It's a one-way process — you cannot reverse a hash back to the original data. Used for data integrity, password storage, and digital signatures.</p></div></div>
+    <div class="faq-item" onclick="hgFaqToggle(this)"><div class="faq-q"><span class="faq-num">2</span><h4>What's the difference between SHA-256 and SHA-512?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>SHA-256 produces a 256-bit (64 character) hash, while SHA-512 produces a 512-bit (128 character) hash. SHA-512 is more secure but slightly slower. Both are widely used.</p></div></div>
+    <div class="faq-item" onclick="hgFaqToggle(this)"><div class="faq-q"><span class="faq-num">3</span><h4>Is my data stored?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>No! All hashing is done locally using the Web Crypto API in your browser. Nothing is sent anywhere.</p></div></div>
+</div></div></section>
 
-            <div class="file-info" id="fileInfo"></div>
+<footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>&copy; 2025 PDFTools. All rights reserved.</p><div class="footer-links"><a href="../../index.html">Home</a><a href="../../privacy.html">Privacy</a><a href="../../terms.html">Terms</a><a href="../../about.html">About</a><a href="../../contact.html">Contact</a></div></div></div></footer>
 
-            <label class="auto-row">
-                <input type="checkbox" id="autoHash" checked> Auto-generate as you type
-            </label>
+<script>
+var hashResults={};
 
-            <button class="gen-btn" onclick="generateAllHashes()">
-                <i class="fas fa-fingerprint"></i> Generate Hashes
-            </button>
-        </div>
+async function sha(algo,text){
+    var encoder=new TextEncoder();
+    var data=encoder.encode(text);
+    var hash=await crypto.subtle.digest(algo,data);
+    return Array.from(new Uint8Array(hash)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
 
-        <!-- Results -->
-        <div id="resultSection" style="display:none;">
-            <div class="cc">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-                    <h2 style="margin:0;"><i class="fas fa-check-circle" style="color:#22c55e;"></i> Hash Results</h2>
-                    <div style="display:flex;gap:8px;align-items:center;">
-                        <label class="case-row" style="margin:0;">
-                            <input type="checkbox" id="upperCase" onchange="toggleCase()"> UPPERCASE
-                        </label>
-                        <button class="act-btn" onclick="copyAllHashes()"><i class="fas fa-copy"></i> Copy All</button>
-                    </div>
-                </div>
+async function generateHashes(){
+    var text=document.getElementById('hashInput').value;
+    if(!text.trim()){alert('Please enter some text.');return;}
 
-                <div class="hash-grid">
-                    <div class="hash-item">
-                        <span class="hash-label">MD5</span>
-                        <span class="hash-value" id="resMd5">-</span>
-                        <span class="hash-bits">128-bit</span>
-                        <button class="hash-copy" onclick="copyHash('resMd5')" title="Copy"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="hash-item">
-                        <span class="hash-label">SHA-1</span>
-                        <span class="hash-value" id="resSha1">-</span>
-                        <span class="hash-bits">160-bit</span>
-                        <button class="hash-copy" onclick="copyHash('resSha1')" title="Copy"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="hash-item" style="background:rgba(71,85,105,0.06);border-color:rgba(71,85,105,0.15);">
-                        <span class="hash-label" style="color:#1e293b;font-size:13px;">SHA-256</span>
-                        <span class="hash-value" id="resSha256" style="font-size:13px;">-</span>
-                        <span class="hash-bits">256-bit</span>
-                        <button class="hash-copy" onclick="copyHash('resSha256')" title="Copy"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="hash-item">
-                        <span class="hash-label">SHA-384</span>
-                        <span class="hash-value" id="resSha384">-</span>
-                        <span class="hash-bits">384-bit</span>
-                        <button class="hash-copy" onclick="copyHash('resSha384')" title="Copy"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="hash-item">
-                        <span class="hash-label">SHA-512</span>
-                        <span class="hash-value" id="resSha512">-</span>
-                        <span class="hash-bits">512-bit</span>
-                        <button class="hash-copy" onclick="copyHash('resSha512')" title="Copy"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="hash-item">
-                        <span class="hash-label">CRC32</span>
-                        <span class="hash-value" id="resCrc32">-</span>
-                        <span class="hash-bits">32-bit</span>
-                        <button class="hash-copy" onclick="copyHash('resCrc32')" title="Copy"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="hash-item">
-                        <span class="hash-label">Adler-32</span>
-                        <span class="hash-value" id="resAdler">-</span>
-                        <span class="hash-bits">32-bit</span>
-                        <button class="hash-copy" onclick="copyHash('resAdler')" title="Copy"><i class="fas fa-copy"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    var algos=[
+        {name:'SHA-1',algo:'SHA-1'},
+        {name:'SHA-256',algo:'SHA-256'},
+        {name:'SHA-384',algo:'SHA-384'},
+        {name:'SHA-512',algo:'SHA-512'}
+    ];
 
-        <!-- Compare -->
-        <div class="cc">
-            <h2><i class="fas fa-not-equal"></i> Compare Hashes</h2>
-            <div class="comp-grid">
-                <div class="comp-field">
-                    <label>Hash 1</label>
-                    <input type="text" id="compare1" placeholder="Enter first hash...">
-                </div>
-                <div class="comp-field">
-                    <label>Hash 2</label>
-                    <input type="text" id="compare2" placeholder="Enter second hash...">
-                </div>
-            </div>
-            <button class="comp-btn" onclick="compareHashes()"><i class="fas fa-check-double"></i> Compare</button>
-            <div class="comp-result" id="compareResult">
-                <div id="compareIcon"></div>
-                <h3 id="compareText" style="margin-top:8px;font-size:16px;"></h3>
-            </div>
-        </div>
+    hashResults={};
+    var html='';
 
-        <!-- Hash Info Table -->
-        <div class="cc">
-            <h2><i class="fas fa-info-circle"></i> Hash Algorithm Reference</h2>
-            <table class="info-table">
-                <thead>
-                    <tr><th>Algorithm</th><th>Output</th><th>Security</th><th>Use Case</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td><strong>MD5</strong></td><td>128-bit (32 hex)</td><td>⚠️ Weak</td><td>Checksums, non-security</td></tr>
-                    <tr><td><strong>SHA-1</strong></td><td>160-bit (40 hex)</td><td>⚠️ Deprecated</td><td>Legacy systems, Git</td></tr>
-                    <tr><td><strong>SHA-256</strong></td><td>256-bit (64 hex)</td><td>✅ Strong</td><td>Digital signatures, SSL, Bitcoin</td></tr>
-                    <tr><td><strong>SHA-384</strong></td><td>384-bit (96 hex)</td><td>✅ Strong</td><td>TLS, certificate</td></tr>
-                    <tr><td><strong>SHA-512</strong></td><td>512-bit (128 hex)</td><td>✅ Very Strong</td><td>High security, passwords</td></tr>
-                    <tr><td><strong>CRC32</strong></td><td>32-bit (8 hex)</td><td>❌ Not for security</td><td>File integrity, ZIP files</td></tr>
-                    <tr><td><strong>Adler-32</strong></td><td>32-bit (8 hex)</td><td>❌ Not for security</td><td>Fast checksums, zlib</td></tr>
-                </tbody>
-            </table>
-        </div>
+    for(var i=0;i<algos.length;i++){
+        var hash=await sha(algos[i].algo,text);
+        hashResults[algos[i].name]=hash;
+        html+='<div class="hash-item"><span class="hash-label">'+algos[i].name+'</span><span class="hash-value">'+hash+'</span><button class="hash-copy" onclick="quickCopy(\''+hash+'\')"><i class="fas fa-copy"></i> Copy</button></div>';
+    }
 
-    </div>
-</section>
+    document.getElementById('hashList').innerHTML=html;
+    document.getElementById('hashResults').style.display='block';
+    document.getElementById('hashResults').scrollIntoView({behavior:'smooth',block:'start'});
+}
 
-<section class="how-to-section">
-    <div class="container">
-        <div class="section-header"><h2>How It Works</h2></div>
-        <div class="steps-row">
-            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Enter Text</h4><p>Type text or upload file.</p></div>
-            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-fingerprint"></i><h4>Generate</h4><p>All hashes computed instantly.</p></div>
-            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy/Compare</h4><p>Copy hash or compare two.</p></div>
-        </div>
-    </div>
-</section>
+var hashTimer=null;
+function autoHash(){
+    clearTimeout(hashTimer);
+    hashTimer=setTimeout(function(){
+        if(document.getElementById('hashInput').value.trim())generateHashes();
+    },500);
+}
 
-<section class="faq-section">
-    <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
-        <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is a hash?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>A hash is a fixed-size string produced from any input data. Same input always produces same hash. Different inputs produce different hashes (ideally). Used for data integrity verification.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Which hash should I use?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>SHA-256 is recommended for most purposes. MD5/SHA-1 are deprecated for security. CRC32 is only for quick checksums, not security.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can hashes be reversed?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>No. Hashes are one-way functions. You cannot recover the original data from a hash. That's what makes them useful for password storage and data integrity.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is this secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! SHA hashes use the browser's built-in Web Crypto API. MD5 and CRC32 use pure JavaScript. All processing is 100% local - no data sent to servers.</p></div></div>
-        </div>
-    </div>
-</section>
+function compareHashes(){
+    var h1=document.getElementById('cmpHash1').value.trim().toLowerCase();
+    var h2=document.getElementById('cmpHash2').value.trim().toLowerCase();
+    if(!h1||!h2){alert('Please enter both hashes.');return;}
+    var el=document.getElementById('cmpResult');
+    if(h1===h2){el.className='compare-result match';el.innerHTML='<i class="fas fa-check-circle"></i> Hashes Match!';}
+    else{el.className='compare-result nomatch';el.innerHTML='<i class="fas fa-times-circle"></i> Hashes Do NOT Match!';}
+}
 
-<footer class="footer">
-    <div class="container">
-        <div class="footer-simple">
-            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-            <p>&copy; 2025 PDFTools.</p>
-            <div class="footer-links">
-                <a href="../../index.html">Home</a>
-                <a href="../../privacy.html">Privacy</a>
-                <a href="../../terms.html">Terms</a>
-                <a href="../../about.html">About</a>
-                <a href="../../contact.html">Contact</a>
-            </div>
-        </div>
-    </div>
-</footer>
+function copyAllHashes(){
+    var text='';for(var key in hashResults){text+=key+': '+hashResults[key]+'\n';}
+    if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){alert('All hashes copied!');});}else{prompt('Copy:',text);}
+}
 
+function downloadHashes(){
+    var text='Hash Results\n============\n\n';for(var key in hashResults){text+=key+': '+hashResults[key]+'\n';}
+    var blob=new Blob([text],{type:'text/plain'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='hashes.txt';a.click();URL.revokeObjectURL(url);
+}
+
+function quickCopy(t){if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){alert('Copied!');});}else{prompt('Copy:',t);}}
+
+function hgFaqToggle(el){var a=el.classList.contains('active');var items=document.querySelectorAll('.hg-faq .faq-item');for(var i=0;i<items.length;i++)items[i].classList.remove('active');if(!a)el.classList.add('active');}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open');};}
+</script>
 <script src="../../js/tool-page.js"></script>
-<script src="../../js/hash-generator.js"></script>
+<script src="../../js/adsense.js"></script>
 </body>
 </html>

@@ -3,264 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator - Free Online | PDFTools</title>
+    <title>Percentage Calculator - Calculate Percentages Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
-    <meta name="description" content="Free percentage calculator. Calculate percentages, increase, decrease, percentage change, tip calculator and more.">
+    <meta name="description" content="Free Percentage Calculator. Calculate percentage of a number, percentage change, increase, decrease, difference & more!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/tool-page.css">
     <style>
-        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
-        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .cc h2 i{color:#6366f1}
+        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .calc-card h2 i{color:#6366f1;font-size:17px}
 
-        .mode-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:14px 0}
-        .mode-btn{padding:14px 8px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:12px;text-align:center;cursor:pointer;font-size:11px;font-weight:600;transition:all .2s;color:var(--text-medium)}
-        .mode-btn:hover{border-color:#6366f1;transform:translateY(-2px)}
-        .mode-btn.on{border-color:#6366f1;background:rgba(99,102,241,0.08);color:#6366f1}
-        .mode-btn i{font-size:20px;display:block;margin-bottom:5px;color:#6366f1}
-        .mode-desc{font-size:12px;color:var(--text-light);text-align:center;margin:5px 0 15px;font-style:italic}
+        /* Tab System */
+        .tab-bar{display:flex;gap:4px;background:rgba(99,102,241,0.06);border-radius:12px;padding:4px;margin-bottom:22px;flex-wrap:wrap}
+        .tab-btn{flex:1;padding:11px 8px;border:none;background:transparent;border-radius:10px;font-size:12px;font-weight:600;color:var(--text-medium);cursor:pointer;transition:all .3s;text-align:center;min-width:80px;white-space:nowrap}
+        .tab-btn.active{background:white;color:#6366f1;box-shadow:0 2px 10px rgba(99,102,241,0.15)}
+        .tab-btn i{display:block;font-size:16px;margin-bottom:4px}
 
-        .input-row{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;margin:14px 0;align-items:end}
-        .inp-field{display:flex;flex-direction:column;gap:5px}
-        .inp-field label{font-size:12px;font-weight:600;color:var(--text-medium)}
-        .inp-field input{width:100%;padding:15px 16px;border:2px solid rgba(99,102,241,0.2);border-radius:12px;background:rgba(255,255,255,0.6);font-size:20px;font-weight:700;color:var(--text-dark);outline:none;box-sizing:border-box;transition:border-color .2s;text-align:center}
-        .inp-field input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.12)}
-        .inp-equals{font-size:24px;color:var(--text-light);font-weight:800;padding-bottom:15px}
+        /* Tab Content */
+        .tab-content{display:none}
+        .tab-content.active{display:block}
 
-        .btn-row{display:flex;gap:10px;margin-top:14px}
-        .calc-btn{flex:1;padding:16px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .2s,box-shadow .2s}
+        /* Input Fields */
+        .pct-row{display:flex;align-items:center;gap:10px;margin:14px 0;flex-wrap:wrap}
+        .pct-row .pct-label{font-size:14px;font-weight:600;color:var(--text-medium);white-space:nowrap}
+        .pct-input{padding:14px 16px;border:2px solid rgba(99,102,241,0.2);border-radius:12px;background:rgba(255,255,255,0.6);font-size:16px;font-weight:600;color:var(--text-dark);outline:none;box-sizing:border-box;transition:border-color .2s;width:120px;text-align:center}
+        .pct-input:focus{border-color:#6366f1}
+        .pct-input.wide{width:160px}
+
+        /* Calculate Button */
+        .calc-btn{width:100%;padding:16px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
         .calc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(99,102,241,0.35)}
-        .clear-btn{padding:16px 24px;background:rgba(239,68,68,0.1);color:#ef4444;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s}
-        .clear-btn:hover{background:#ef4444;color:#fff}
 
-        /* Result */
-        .res-card{text-align:center;padding:28px;margin-top:18px;background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(236,72,153,0.04));border:1px solid rgba(99,102,241,0.15);border-radius:16px}
-        .res-q{font-size:16px;color:var(--text-medium);margin-bottom:10px;font-weight:500}
-        .res-a{font-size:56px;font-weight:800;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;line-height:1.1}
-        .res-f{font-size:13px;color:var(--text-light);background:rgba(255,255,255,0.6);padding:10px 18px;border-radius:10px;display:inline-block;margin-top:5px;font-family:monospace}
+        /* Result Box */
+        .result-box{display:none;margin-top:18px;padding:22px;background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(168,85,247,0.06));border:1.5px solid rgba(99,102,241,0.15);border-radius:16px;text-align:center}
+        .result-box.show{display:block;animation:fadeUp .3s ease}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .rb-answer{font-size:42px;font-weight:900;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:6px}
+        .rb-formula{font-size:13px;color:var(--text-light);font-weight:500;margin-bottom:4px;font-family:monospace;background:rgba(99,102,241,0.06);padding:8px 14px;border-radius:8px;display:inline-block}
+        .rb-explain{font-size:14px;color:var(--text-medium);margin-top:10px;line-height:1.6}
+        .rb-explain strong{color:var(--text-dark)}
 
-        /* Extra content */
-        .extra-title{font-size:14px;font-weight:700;color:#6366f1;margin:18px 0 10px;display:flex;align-items:center;gap:7px}
-        .extra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
-        .extra-item{padding:12px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:10px;text-align:center;transition:transform .15s}
-        .extra-item:hover{transform:translateY(-2px)}
-        .ei-pct{display:block;font-size:14px;font-weight:800;color:#6366f1;margin-bottom:3px}
-        .ei-val{display:block;font-size:12px;color:var(--text-medium);font-weight:600}
+        /* Copy Answer */
+        .copy-ans{margin-top:12px;padding:8px 18px;border:2px solid rgba(99,102,241,0.2);border-radius:50px;background:transparent;color:#6366f1;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s}
+        .copy-ans:hover{background:#6366f1;color:#fff;border-color:#6366f1}
 
-        /* Quick calcs */
-        .qc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin:14px 0}
-        .qc-card{padding:14px 10px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;text-align:center;cursor:pointer;transition:all .15s}
-        .qc-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,0.08);border-color:#6366f1}
-        .qc-card h4{font-size:16px;font-weight:800;color:#6366f1;margin-bottom:2px}
-        .qc-card p{font-size:10px;color:var(--text-light)}
+        /* History */
+        .history-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:22px;margin-top:18px}
+        .history-card h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text-dark)}
+        .history-card h3 i{color:#6366f1}
+        .history-list{display:flex;flex-direction:column;gap:6px}
+        .history-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(255,255,255,0.4);border-radius:10px;font-size:13px;transition:all .2s}
+        .history-item:hover{background:rgba(99,102,241,0.06)}
+        .hi-calc{color:var(--text-medium);font-weight:500;flex:1}
+        .hi-result{color:#6366f1;font-weight:700;margin-left:10px}
+        .history-empty{text-align:center;padding:20px;color:var(--text-light);font-size:13px}
+        .clear-hist{margin-top:10px;padding:6px 14px;border:1.5px solid rgba(239,68,68,0.2);border-radius:50px;background:transparent;color:#ef4444;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+        .clear-hist:hover{background:#ef4444;color:#fff;border-color:#ef4444}
 
-        /* Share */
-        .shr{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-        .shr button{padding:8px 16px;border:2px solid rgba(99,102,241,0.25);border-radius:50px;background:transparent;color:#6366f1;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
-        .shr button:hover{background:#6366f1;color:#fff}
+        /* Quick Reference */
+        .ref-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+        .ref-item{padding:12px 8px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:10px;text-align:center;transition:transform .2s;cursor:pointer}
+        .ref-item:hover{transform:translateY(-2px);background:rgba(99,102,241,0.06)}
+        .ref-item .ri-pct{font-size:18px;font-weight:800;color:#6366f1;display:block}
+        .ref-item .ri-frac{font-size:10px;color:var(--text-light);font-weight:600}
+        .ref-item .ri-dec{font-size:10px;color:var(--text-medium);font-weight:500}
 
-        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+        /* Error */
+        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none;align-items:center;gap:8px}
+
+        /* Privacy */
+        .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
+        .privacy-note i{color:#22c55e;margin-right:4px}
+
+        /* FAQ Override */
+        .pct-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .pct-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
+        .pct-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(99,102,241,0.25)}
+        .pct-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
+        .pct-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .pct-faq .faq-item.active .faq-q h4{color:#6366f1}
+        .pct-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
+        .pct-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#6366f1}
+        .pct-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .pct-faq .faq-item.active .faq-q .faq-num{background:#6366f1;color:#fff}
+        .pct-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(99,102,241,0.1);margin:0 22px}
+        .pct-faq .faq-item.active .faq-a{display:block}
+        .pct-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
 
         @media(max-width:768px){
-            .mode-grid{grid-template-columns:repeat(3,1fr)}
-            .input-row{grid-template-columns:1fr;gap:8px}
-            .inp-equals{display:none}
-            .res-a{font-size:42px}
-            .btn-row{flex-direction:column}
+            .tab-bar{flex-wrap:wrap}
+            .tab-btn{min-width:60px;font-size:11px;padding:9px 6px}
+            .pct-row{flex-direction:column;align-items:stretch}
+            .pct-input{width:100%}
+            .pct-input.wide{width:100%}
+            .ref-grid{grid-template-columns:repeat(3,1fr)}
+            .rb-answer{font-size:34px}
         }
         @media(max-width:480px){
-            .mode-grid{grid-template-columns:repeat(2,1fr)}
-            .extra-grid{grid-template-columns:repeat(3,1fr)}
+            .calc-card{padding:20px 16px}
+            .ref-grid{grid-template-columns:repeat(2,1fr)}
+            .pct-faq .faq-q{padding:14px 16px}
         }
     </style>
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar glass">
     <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
     <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
     <div class="nav-links" id="navLinks">
         <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
     </div>
 </nav>
 
+<!-- HEADER -->
 <section class="tool-header">
     <div class="container">
         <div class="breadcrumb">
             <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-            <i class="fas fa-chevron-right"></i><span>Percentage Calculator</span>
+            <i class="fas fa-chevron-right"></i>
+            <span>Percentage Calculator</span>
         </div>
         <div class="tool-title">
             <div class="tool-title-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">
-                <i class="fas fa-percentage"></i>
+                <i class="fas fa-percent"></i>
             </div>
             <div>
                 <h1>Percentage Calculator</h1>
-                <p>Calculate percentages, increase, decrease, change & tips instantly!</p>
+                <p>Calculate percentages instantly — percentage of, increase, decrease, change & more!</p>
             </div>
         </div>
     </div>
 </section>
 
+<!-- TOP AD -->
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<!-- TOOL AREA -->
 <section class="tool-area">
     <div class="container">
 
-        <!-- INPUT -->
-        <div class="cc">
-            <h2><i class="fas fa-calculator"></i> Choose Calculation</h2>
-            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+        <div class="calc-card">
+            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i><span id="et"></span></div>
 
-            <!-- Mode buttons -->
-            <div class="mode-grid">
-                <div class="mode-btn on" data-mode="basic" onclick="setMode('basic',this)">
-                    <i class="fas fa-percentage"></i> X% of Y
+            <!-- TABS -->
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTab('basic')"><i class="fas fa-percent"></i>Basic</button>
+                <button class="tab-btn" onclick="switchTab('of')"><i class="fas fa-calculator"></i>% of</button>
+                <button class="tab-btn" onclick="switchTab('change')"><i class="fas fa-exchange-alt"></i>Change</button>
+                <button class="tab-btn" onclick="switchTab('increase')"><i class="fas fa-arrow-up"></i>Increase</button>
+                <button class="tab-btn" onclick="switchTab('decrease')"><i class="fas fa-arrow-down"></i>Decrease</button>
+                <button class="tab-btn" onclick="switchTab('isWhat')"><i class="fas fa-question"></i>X is ?% of Y</button>
+            </div>
+
+            <!-- TAB 1: Basic — What is X% of Y -->
+            <div class="tab-content active" id="tab-basic">
+                <h2><i class="fas fa-percent"></i> What is X% of Y?</h2>
+                <div class="pct-row">
+                    <span class="pct-label">What is</span>
+                    <input type="number" class="pct-input" id="b_pct" placeholder="25" step="any">
+                    <span class="pct-label">% of</span>
+                    <input type="number" class="pct-input wide" id="b_num" placeholder="200" step="any">
+                    <span class="pct-label">?</span>
                 </div>
-                <div class="mode-btn" data-mode="increase" onclick="setMode('increase',this)">
-                    <i class="fas fa-arrow-up"></i> Increase
-                </div>
-                <div class="mode-btn" data-mode="decrease" onclick="setMode('decrease',this)">
-                    <i class="fas fa-arrow-down"></i> Decrease
-                </div>
-                <div class="mode-btn" data-mode="change" onclick="setMode('change',this)">
-                    <i class="fas fa-exchange-alt"></i> % Change
-                </div>
-                <div class="mode-btn" data-mode="whatpercent" onclick="setMode('whatpercent',this)">
-                    <i class="fas fa-question"></i> What %?
-                </div>
-                <div class="mode-btn" data-mode="tipCalc" onclick="setMode('tipCalc',this)">
-                    <i class="fas fa-utensils"></i> Tip Calc
+                <button class="calc-btn" onclick="calcBasic()"><i class="fas fa-calculator"></i> Calculate</button>
+                <div class="result-box" id="res-basic">
+                    <div class="rb-answer" id="ans-basic">0</div>
+                    <div class="rb-formula" id="formula-basic"></div>
+                    <div class="rb-explain" id="explain-basic"></div>
+                    <button class="copy-ans" onclick="copyAnswer('ans-basic')"><i class="fas fa-copy"></i> Copy Answer</button>
                 </div>
             </div>
 
-            <div class="mode-desc" id="modeDesc">What is X% of Y?</div>
-
-            <!-- Inputs -->
-            <div class="input-row">
-                <div class="inp-field">
-                    <label id="label1">Percentage (%)</label>
-                    <input type="number" id="inp1" placeholder="Enter percentage" step="any" autocomplete="off">
+            <!-- TAB 2: X is what % of Y -->
+            <div class="tab-content" id="tab-of">
+                <h2><i class="fas fa-calculator"></i> X is what % of Y?</h2>
+                <div class="pct-row">
+                    <input type="number" class="pct-input wide" id="of_x" placeholder="50" step="any">
+                    <span class="pct-label">is what % of</span>
+                    <input type="number" class="pct-input wide" id="of_y" placeholder="200" step="any">
+                    <span class="pct-label">?</span>
                 </div>
-                <div class="inp-equals">=</div>
-                <div class="inp-field">
-                    <label id="label2">Number</label>
-                    <input type="number" id="inp2" placeholder="Enter number" step="any" autocomplete="off">
+                <button class="calc-btn" onclick="calcOf()"><i class="fas fa-calculator"></i> Calculate</button>
+                <div class="result-box" id="res-of">
+                    <div class="rb-answer" id="ans-of">0%</div>
+                    <div class="rb-formula" id="formula-of"></div>
+                    <div class="rb-explain" id="explain-of"></div>
+                    <button class="copy-ans" onclick="copyAnswer('ans-of')"><i class="fas fa-copy"></i> Copy Answer</button>
                 </div>
             </div>
 
-            <!-- Buttons -->
-            <div class="btn-row">
-                <button class="calc-btn" onclick="calcPercentage()">
-                    <i class="fas fa-calculator"></i> Calculate
-                </button>
-                <button class="clear-btn" onclick="clearAll()">
-                    <i class="fas fa-trash"></i>
-                </button>
+            <!-- TAB 3: Percentage Change -->
+            <div class="tab-content" id="tab-change">
+                <h2><i class="fas fa-exchange-alt"></i> Percentage Change</h2>
+                <div class="pct-row">
+                    <span class="pct-label">From</span>
+                    <input type="number" class="pct-input wide" id="ch_from" placeholder="80" step="any">
+                    <span class="pct-label">to</span>
+                    <input type="number" class="pct-input wide" id="ch_to" placeholder="100" step="any">
+                </div>
+                <button class="calc-btn" onclick="calcChange()"><i class="fas fa-calculator"></i> Calculate</button>
+                <div class="result-box" id="res-change">
+                    <div class="rb-answer" id="ans-change">0%</div>
+                    <div class="rb-formula" id="formula-change"></div>
+                    <div class="rb-explain" id="explain-change"></div>
+                    <button class="copy-ans" onclick="copyAnswer('ans-change')"><i class="fas fa-copy"></i> Copy Answer</button>
+                </div>
+            </div>
+
+            <!-- TAB 4: Percentage Increase -->
+            <div class="tab-content" id="tab-increase">
+                <h2><i class="fas fa-arrow-up"></i> Increase by Percentage</h2>
+                <div class="pct-row">
+                    <span class="pct-label">Increase</span>
+                    <input type="number" class="pct-input wide" id="inc_num" placeholder="200" step="any">
+                    <span class="pct-label">by</span>
+                    <input type="number" class="pct-input" id="inc_pct" placeholder="15" step="any">
+                    <span class="pct-label">%</span>
+                </div>
+                <button class="calc-btn" onclick="calcIncrease()"><i class="fas fa-calculator"></i> Calculate</button>
+                <div class="result-box" id="res-increase">
+                    <div class="rb-answer" id="ans-increase">0</div>
+                    <div class="rb-formula" id="formula-increase"></div>
+                    <div class="rb-explain" id="explain-increase"></div>
+                    <button class="copy-ans" onclick="copyAnswer('ans-increase')"><i class="fas fa-copy"></i> Copy Answer</button>
+                </div>
+            </div>
+
+            <!-- TAB 5: Percentage Decrease -->
+            <div class="tab-content" id="tab-decrease">
+                <h2><i class="fas fa-arrow-down"></i> Decrease by Percentage</h2>
+                <div class="pct-row">
+                    <span class="pct-label">Decrease</span>
+                    <input type="number" class="pct-input wide" id="dec_num" placeholder="200" step="any">
+                    <span class="pct-label">by</span>
+                    <input type="number" class="pct-input" id="dec_pct" placeholder="15" step="any">
+                    <span class="pct-label">%</span>
+                </div>
+                <button class="calc-btn" onclick="calcDecrease()"><i class="fas fa-calculator"></i> Calculate</button>
+                <div class="result-box" id="res-decrease">
+                    <div class="rb-answer" id="ans-decrease">0</div>
+                    <div class="rb-formula" id="formula-decrease"></div>
+                    <div class="rb-explain" id="explain-decrease"></div>
+                    <button class="copy-ans" onclick="copyAnswer('ans-decrease')"><i class="fas fa-copy"></i> Copy Answer</button>
+                </div>
+            </div>
+
+            <!-- TAB 6: X is what % of Y (reverse) -->
+            <div class="tab-content" id="tab-isWhat">
+                <h2><i class="fas fa-question"></i> Percentage Difference</h2>
+                <div class="pct-row">
+                    <span class="pct-label">Difference between</span>
+                    <input type="number" class="pct-input wide" id="diff_a" placeholder="40" step="any">
+                    <span class="pct-label">and</span>
+                    <input type="number" class="pct-input wide" id="diff_b" placeholder="60" step="any">
+                </div>
+                <button class="calc-btn" onclick="calcDiff()"><i class="fas fa-calculator"></i> Calculate</button>
+                <div class="result-box" id="res-isWhat">
+                    <div class="rb-answer" id="ans-isWhat">0%</div>
+                    <div class="rb-formula" id="formula-isWhat"></div>
+                    <div class="rb-explain" id="explain-isWhat"></div>
+                    <button class="copy-ans" onclick="copyAnswer('ans-isWhat')"><i class="fas fa-copy"></i> Copy Answer</button>
+                </div>
+            </div>
+
+            <div class="privacy-note">
+                <i class="fas fa-shield-alt"></i> 100% Private — All calculations run in your browser
             </div>
         </div>
 
-        <!-- RESULT -->
-        <div id="resultArea" style="display:none;">
-            <div class="res-card">
-                <div class="res-q" id="resQuestion">-</div>
-                <div class="res-a" id="resAnswer">0</div>
-                <div class="res-f" id="resFormula">-</div>
-
-                <div class="shr">
-                    <button onclick="copyResult()"><i class="fas fa-copy"></i> Copy</button>
-                </div>
+        <!-- History -->
+        <div class="history-card" id="historyCard">
+            <h3><i class="fas fa-history"></i> Calculation History</h3>
+            <div class="history-list" id="historyList">
+                <div class="history-empty" id="historyEmpty"><i class="fas fa-calculator"></i> No calculations yet</div>
             </div>
-
-            <!-- Extra content (table, tip split etc.) -->
-            <div id="extraContent" style="display:none;" class="cc"></div>
+            <div style="text-align:center;margin-top:10px;">
+                <button class="clear-hist" id="clearHistBtn" onclick="clearHistory()" style="display:none;"><i class="fas fa-trash"></i> Clear History</button>
+            </div>
         </div>
 
         <!-- Quick Reference -->
-        <div class="cc">
-            <h2><i class="fas fa-bolt"></i> Quick Calculations</h2>
-            <div class="qc-grid">
-                <div class="qc-card" onclick="quickCalc(5,100)"><h4>5%</h4><p>of 100 = 5</p></div>
-                <div class="qc-card" onclick="quickCalc(10,200)"><h4>10%</h4><p>of 200 = 20</p></div>
-                <div class="qc-card" onclick="quickCalc(15,100)"><h4>15%</h4><p>of 100 = 15</p></div>
-                <div class="qc-card" onclick="quickCalc(20,500)"><h4>20%</h4><p>of 500 = 100</p></div>
-                <div class="qc-card" onclick="quickCalc(25,1000)"><h4>25%</h4><p>of 1000 = 250</p></div>
-                <div class="qc-card" onclick="quickCalc(33.33,300)"><h4>33%</h4><p>of 300 = 100</p></div>
-                <div class="qc-card" onclick="quickCalc(50,500)"><h4>50%</h4><p>of 500 = 250</p></div>
-                <div class="qc-card" onclick="quickCalc(75,400)"><h4>75%</h4><p>of 400 = 300</p></div>
-                <div class="qc-card" onclick="quickCalc(18,100)"><h4>GST 18%</h4><p>of 100 = 18</p></div>
-                <div class="qc-card" onclick="quickCalc(12,100)"><h4>GST 12%</h4><p>of 100 = 12</p></div>
-                <div class="qc-card" onclick="quickCalc(5,100)"><h4>GST 5%</h4><p>of 100 = 5</p></div>
-                <div class="qc-card" onclick="quickCalc(28,100)"><h4>GST 28%</h4><p>of 100 = 28</p></div>
-            </div>
-        </div>
-
-        <!-- Formulas -->
-        <div class="cc">
-            <h2><i class="fas fa-book"></i> Percentage Formulas</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div style="padding:14px;background:rgba(255,255,255,0.4);border-radius:12px;">
-                    <h4 style="font-size:13px;font-weight:700;color:#6366f1;margin-bottom:6px;">X% of Y</h4>
-                    <p style="font-size:12px;color:var(--text-medium);font-family:monospace;">Result = (X ÷ 100) × Y</p>
-                </div>
-                <div style="padding:14px;background:rgba(255,255,255,0.4);border-radius:12px;">
-                    <h4 style="font-size:13px;font-weight:700;color:#6366f1;margin-bottom:6px;">% Increase</h4>
-                    <p style="font-size:12px;color:var(--text-medium);font-family:monospace;">New = Old × (1 + %/100)</p>
-                </div>
-                <div style="padding:14px;background:rgba(255,255,255,0.4);border-radius:12px;">
-                    <h4 style="font-size:13px;font-weight:700;color:#6366f1;margin-bottom:6px;">% Decrease</h4>
-                    <p style="font-size:12px;color:var(--text-medium);font-family:monospace;">New = Old × (1 - %/100)</p>
-                </div>
-                <div style="padding:14px;background:rgba(255,255,255,0.4);border-radius:12px;">
-                    <h4 style="font-size:13px;font-weight:700;color:#6366f1;margin-bottom:6px;">% Change</h4>
-                    <p style="font-size:12px;color:var(--text-medium);font-family:monospace;">% = ((New-Old) ÷ Old) × 100</p>
-                </div>
+        <div class="calc-card">
+            <h2><i class="fas fa-book"></i> Quick Reference</h2>
+            <div class="ref-grid">
+                <div class="ref-item"><span class="ri-pct">10%</span><span class="ri-frac">1/10</span><span class="ri-dec">0.10</span></div>
+                <div class="ref-item"><span class="ri-pct">20%</span><span class="ri-frac">1/5</span><span class="ri-dec">0.20</span></div>
+                <div class="ref-item"><span class="ri-pct">25%</span><span class="ri-frac">1/4</span><span class="ri-dec">0.25</span></div>
+                <div class="ref-item"><span class="ri-pct">33.3%</span><span class="ri-frac">1/3</span><span class="ri-dec">0.333</span></div>
+                <div class="ref-item"><span class="ri-pct">50%</span><span class="ri-frac">1/2</span><span class="ri-dec">0.50</span></div>
+                <div class="ref-item"><span class="ri-pct">66.7%</span><span class="ri-frac">2/3</span><span class="ri-dec">0.667</span></div>
+                <div class="ref-item"><span class="ri-pct">75%</span><span class="ri-frac">3/4</span><span class="ri-dec">0.75</span></div>
+                <div class="ref-item"><span class="ri-pct">100%</span><span class="ri-frac">1/1</span><span class="ri-dec">1.00</span></div>
             </div>
         </div>
 
     </div>
 </section>
 
+<!-- MIDDLE AD -->
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
+
+<!-- HOW IT WORKS -->
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How It Works</h2></div>
         <div class="steps-row">
-            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-list-alt"></i><h4>Choose</h4><p>Select calculation type.</p></div>
-            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-keyboard"></i><h4>Enter</h4><p>Type your values.</p></div>
-            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-check-circle"></i><h4>Result</h4><p>Get instant answer!</p></div>
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-mouse-pointer"></i><h4>Choose Type</h4><p>Select the calculation type from tabs.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-keyboard"></i><h4>Enter Values</h4><p>Enter your numbers in the fields.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-check-circle"></i><h4>Get Result</h4><p>Get instant answer with formula.</p></div>
         </div>
     </div>
 </section>
 
+<!-- RELATED TOOLS -->
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="../calculator/age-calculator.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#f97316,#ea580c)"><i class="fas fa-birthday-cake"></i></div>
+                <h4>Age Calculator</h4>
+            </a>
+            <a href="../calculator/bmi-calculator.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><i class="fas fa-weight"></i></div>
+                <h4>BMI Calculator</h4>
+            </a>
+            <a href="../calculator/discount-calculator.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#ec4899,#db2777)"><i class="fas fa-tags"></i></div>
+                <h4>Discount Calc</h4>
+            </a>
+            <a href="../calculator/loan-calculator.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea)"><i class="fas fa-university"></i></div>
+                <h4>Loan Calculator</h4>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
 <section class="faq-section">
     <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
-        <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)">
-                <div class="faq-question"><h4>How to calculate percentage?</h4><i class="fas fa-chevron-down"></i></div>
-                <div class="faq-answer"><p>Formula: (Part ÷ Whole) × 100. Example: 25 out of 50 = (25÷50)×100 = 50%.</p></div>
+        <div class="section-header"><h2>Frequently Asked Questions</h2></div>
+        <div class="pct-faq">
+
+            <div class="faq-item" onclick="pctFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">1</span>
+                    <h4>How do I calculate percentage of a number?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>To find X% of Y, multiply Y by X and divide by 100. For example, 25% of 200 = (200 × 25) / 100 = <strong>50</strong>.</p>
+                </div>
             </div>
-            <div class="faq-item glass" onclick="toggleFaq(this)">
-                <div class="faq-question"><h4>How to calculate percentage increase?</h4><i class="fas fa-chevron-down"></i></div>
-                <div class="faq-answer"><p>New Value = Original × (1 + Percentage/100). Example: 100 + 20% = 100 × 1.20 = 120.</p></div>
+
+            <div class="faq-item" onclick="pctFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">2</span>
+                    <h4>How do I calculate percentage change?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>Percentage change = ((New - Old) / Old) × 100. For example, from 80 to 100: ((100-80)/80) × 100 = <strong>25% increase</strong>.</p>
+                </div>
             </div>
-            <div class="faq-item glass" onclick="toggleFaq(this)">
-                <div class="faq-question"><h4>How to calculate percentage change?</h4><i class="fas fa-chevron-down"></i></div>
-                <div class="faq-answer"><p>% Change = ((New - Old) ÷ |Old|) × 100. Example: 80 to 100 = ((100-80)÷80)×100 = 25% increase.</p></div>
+
+            <div class="faq-item" onclick="pctFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">3</span>
+                    <h4>What is percentage difference?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>Percentage difference = (|A - B| / ((A + B) / 2)) × 100. It measures the relative difference between two values compared to their average.</p>
+                </div>
             </div>
-            <div class="faq-item glass" onclick="toggleFaq(this)">
-                <div class="faq-question"><h4>What is GST percentage?</h4><i class="fas fa-chevron-down"></i></div>
-                <div class="faq-answer"><p>India GST rates: 5%, 12%, 18%, 28%. Use our quick buttons to calculate GST on any amount.</p></div>
+
+            <div class="faq-item" onclick="pctFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">4</span>
+                    <h4>How to increase a number by percentage?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>To increase a number by X%, multiply it by (1 + X/100). For example, 200 increased by 15% = 200 × 1.15 = <strong>230</strong>.</p>
+                </div>
             </div>
+
+            <div class="faq-item" onclick="pctFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">5</span>
+                    <h4>Is my data stored?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>No! All calculations run in your browser. Nothing is sent to any server. Calculation history is stored only in your current session and is cleared when you close the page.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-simple">
             <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-            <p>&copy; 2025 PDFTools.</p>
+            <p>&copy; 2025 PDFTools. All rights reserved.</p>
             <div class="footer-links">
                 <a href="../../index.html">Home</a>
                 <a href="../../privacy.html">Privacy</a>
@@ -272,7 +427,225 @@
     </div>
 </footer>
 
+<!-- JS -->
+<script>
+// ==========================================
+// PERCENTAGE CALCULATOR - COMPLETE
+// ==========================================
+
+var history = [];
+
+// ===== TAB SWITCH =====
+function switchTab(id) {
+    var tabs = document.querySelectorAll('.tab-content');
+    var btns = document.querySelectorAll('.tab-btn');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    document.getElementById('tab-' + id).classList.add('active');
+    // Find button
+    var tabNames = ['basic','of','change','increase','decrease','isWhat'];
+    var idx = tabNames.indexOf(id);
+    if (idx >= 0 && btns[idx]) btns[idx].classList.add('active');
+    hideE();
+}
+
+// ===== FORMAT NUMBER =====
+function fmt(n) {
+    if (Number.isInteger(n)) return n.toLocaleString();
+    return parseFloat(n.toFixed(4)).toLocaleString();
+}
+
+// ===== TAB 1: Basic — X% of Y =====
+function calcBasic() {
+    hideE();
+    var pct = parseFloat(document.getElementById('b_pct').value);
+    var num = parseFloat(document.getElementById('b_num').value);
+    if (isNaN(pct) || isNaN(num)) { showE('Please enter both values.'); return; }
+
+    var result = (pct / 100) * num;
+    document.getElementById('ans-basic').textContent = fmt(result);
+    document.getElementById('formula-basic').textContent = pct + '% × ' + num + ' = ' + fmt(result);
+    document.getElementById('explain-basic').innerHTML = '<strong>' + pct + '%</strong> of <strong>' + num + '</strong> is <strong>' + fmt(result) + '</strong>';
+    document.getElementById('res-basic').classList.add('show');
+    addHistory(pct + '% of ' + num, fmt(result));
+}
+
+// ===== TAB 2: X is what % of Y =====
+function calcOf() {
+    hideE();
+    var x = parseFloat(document.getElementById('of_x').value);
+    var y = parseFloat(document.getElementById('of_y').value);
+    if (isNaN(x) || isNaN(y)) { showE('Please enter both values.'); return; }
+    if (y === 0) { showE('Cannot divide by zero.'); return; }
+
+    var result = (x / y) * 100;
+    document.getElementById('ans-of').textContent = fmt(result) + '%';
+    document.getElementById('formula-of').textContent = '(' + x + ' ÷ ' + y + ') × 100 = ' + fmt(result) + '%';
+    document.getElementById('explain-of').innerHTML = '<strong>' + x + '</strong> is <strong>' + fmt(result) + '%</strong> of <strong>' + y + '</strong>';
+    document.getElementById('res-of').classList.add('show');
+    addHistory(x + ' is ?% of ' + y, fmt(result) + '%');
+}
+
+// ===== TAB 3: Percentage Change =====
+function calcChange() {
+    hideE();
+    var from = parseFloat(document.getElementById('ch_from').value);
+    var to = parseFloat(document.getElementById('ch_to').value);
+    if (isNaN(from) || isNaN(to)) { showE('Please enter both values.'); return; }
+    if (from === 0) { showE('Original value cannot be zero.'); return; }
+
+    var change = ((to - from) / Math.abs(from)) * 100;
+    var dir = change >= 0 ? 'increase' : 'decrease';
+    document.getElementById('ans-change').textContent = (change >= 0 ? '+' : '') + fmt(change) + '%';
+    document.getElementById('formula-change').textContent = '((' + to + ' - ' + from + ') ÷ ' + Math.abs(from) + ') × 100 = ' + fmt(change) + '%';
+    document.getElementById('explain-change').innerHTML = 'From <strong>' + from + '</strong> to <strong>' + to + '</strong> is a <strong>' + fmt(Math.abs(change)) + '% ' + dir + '</strong>';
+    document.getElementById('res-change').classList.add('show');
+    addHistory(from + ' → ' + to, fmt(change) + '%');
+}
+
+// ===== TAB 4: Increase =====
+function calcIncrease() {
+    hideE();
+    var num = parseFloat(document.getElementById('inc_num').value);
+    var pct = parseFloat(document.getElementById('inc_pct').value);
+    if (isNaN(num) || isNaN(pct)) { showE('Please enter both values.'); return; }
+
+    var increase = num * (pct / 100);
+    var result = num + increase;
+    document.getElementById('ans-increase').textContent = fmt(result);
+    document.getElementById('formula-increase').textContent = num + ' + (' + num + ' × ' + pct + '%) = ' + fmt(result);
+    document.getElementById('explain-increase').innerHTML = '<strong>' + num + '</strong> increased by <strong>' + pct + '%</strong> is <strong>' + fmt(result) + '</strong> (added ' + fmt(increase) + ')';
+    document.getElementById('res-increase').classList.add('show');
+    addHistory(num + ' + ' + pct + '%', fmt(result));
+}
+
+// ===== TAB 5: Decrease =====
+function calcDecrease() {
+    hideE();
+    var num = parseFloat(document.getElementById('dec_num').value);
+    var pct = parseFloat(document.getElementById('dec_pct').value);
+    if (isNaN(num) || isNaN(pct)) { showE('Please enter both values.'); return; }
+
+    var decrease = num * (pct / 100);
+    var result = num - decrease;
+    document.getElementById('ans-decrease').textContent = fmt(result);
+    document.getElementById('formula-decrease').textContent = num + ' - (' + num + ' × ' + pct + '%) = ' + fmt(result);
+    document.getElementById('explain-decrease').innerHTML = '<strong>' + num + '</strong> decreased by <strong>' + pct + '%</strong> is <strong>' + fmt(result) + '</strong> (removed ' + fmt(decrease) + ')';
+    document.getElementById('res-decrease').classList.add('show');
+    addHistory(num + ' - ' + pct + '%', fmt(result));
+}
+
+// ===== TAB 6: Percentage Difference =====
+function calcDiff() {
+    hideE();
+    var a = parseFloat(document.getElementById('diff_a').value);
+    var b = parseFloat(document.getElementById('diff_b').value);
+    if (isNaN(a) || isNaN(b)) { showE('Please enter both values.'); return; }
+
+    var avg = (a + b) / 2;
+    if (avg === 0) { showE('Average cannot be zero.'); return; }
+
+    var diff = (Math.abs(a - b) / avg) * 100;
+    document.getElementById('ans-isWhat').textContent = fmt(diff) + '%';
+    document.getElementById('formula-isWhat').textContent = '(|' + a + ' - ' + b + '| ÷ ((' + a + ' + ' + b + ') ÷ 2)) × 100 = ' + fmt(diff) + '%';
+    document.getElementById('explain-isWhat').innerHTML = 'The percentage difference between <strong>' + a + '</strong> and <strong>' + b + '</strong> is <strong>' + fmt(diff) + '%</strong>';
+    document.getElementById('res-isWhat').classList.add('show');
+    addHistory('diff(' + a + ', ' + b + ')', fmt(diff) + '%');
+}
+
+// ===== HISTORY =====
+function addHistory(calc, result) {
+    history.unshift({ calc: calc, result: result });
+    if (history.length > 15) history.pop();
+    renderHistory();
+}
+
+function renderHistory() {
+    var container = document.getElementById('historyList');
+    var emptyEl = document.getElementById('historyEmpty');
+    var clearBtn = document.getElementById('clearHistBtn');
+
+    if (history.length === 0) {
+        emptyEl.style.display = 'block';
+        clearBtn.style.display = 'none';
+        container.innerHTML = '';
+        container.appendChild(emptyEl);
+        return;
+    }
+
+    emptyEl.style.display = 'none';
+    clearBtn.style.display = 'inline-flex';
+
+    var html = '';
+    for (var i = 0; i < history.length; i++) {
+        html += '<div class="history-item"><span class="hi-calc">' + history[i].calc + '</span><span class="hi-result">' + history[i].result + '</span></div>';
+    }
+    container.innerHTML = html;
+}
+
+function clearHistory() {
+    history = [];
+    renderHistory();
+}
+
+// ===== COPY =====
+function copyAnswer(id) {
+    var text = document.getElementById(id).textContent;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() { alert('Copied: ' + text); });
+    } else {
+        prompt('Copy this:', text);
+    }
+}
+
+// ===== HELPERS =====
+function showE(msg) {
+    var el = document.getElementById('em');
+    var t = document.getElementById('et');
+    if (el && t) { t.textContent = msg; el.style.display = 'flex'; }
+    setTimeout(hideE, 8000);
+}
+function hideE() {
+    var el = document.getElementById('em');
+    if (el) el.style.display = 'none';
+}
+
+// ===== FAQ =====
+function pctFaqToggle(el) {
+    var isActive = el.classList.contains('active');
+    var items = document.querySelectorAll('.pct-faq .faq-item');
+    for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+    if (!isActive) el.classList.add('active');
+}
+
+// ===== MOBILE MENU =====
+if (typeof toggleMobileMenu === 'undefined') {
+    window.toggleMobileMenu = function() {
+        document.getElementById('navLinks').classList.toggle('open');
+    };
+}
+
+// ===== ENTER KEY SUPPORT =====
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        var activeTab = document.querySelector('.tab-content.active');
+        if (!activeTab) return;
+        var id = activeTab.id.replace('tab-', '');
+        var funcMap = {
+            'basic': calcBasic,
+            'of': calcOf,
+            'change': calcChange,
+            'increase': calcIncrease,
+            'decrease': calcDecrease,
+            'isWhat': calcDiff
+        };
+        if (funcMap[id]) funcMap[id]();
+    }
+});
+</script>
+
 <script src="../../js/tool-page.js"></script>
-<script src="../../js/percentage-calculator.js"></script>
+<script src="../../js/adsense.js"></script>
+
 </body>
 </html>

@@ -3,251 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Formatter - Beautify & Validate JSON | PDFTools</title>
+    <title>JSON Formatter - Format & Validate JSON Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
-    <meta name="description" content="Free JSON formatter, beautifier and validator. Format, minify, validate JSON and convert to CSV, YAML, XML.">
+    <meta name="description" content="Free JSON Formatter. Format, validate, minify JSON data. Syntax highlighting, error detection, tree view & more!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/tool-page.css">
     <style>
-        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
-        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .cc h2 i{color:#3b82f6}
-        .json-input{width:100%;min-height:250px;padding:16px;border:2px solid rgba(59,130,246,0.15);border-radius:14px;background:#1e293b;color:#a5f3fc;font-size:13px;line-height:1.7;font-family:'Courier New',monospace;resize:vertical;outline:none;box-sizing:border-box;tab-size:2}
-        .json-input:focus{border-color:#3b82f6}
-        .json-input::placeholder{color:#475569}
-        .input-stats{display:flex;gap:15px;margin:8px 0;font-size:12px;color:var(--text-light)}
-        .input-stats span{display:flex;align-items:center;gap:4px}
-        .input-actions{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
-        .ia-btn{padding:7px 14px;border:1px solid rgba(59,130,246,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:5px}
-        .ia-btn:hover{border-color:#3b82f6;color:#3b82f6}
-        .ia-btn i{font-size:11px}
+        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .calc-card h2 i{color:#06b6d4;font-size:17px}
 
-        .btn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
-        .act-btn{padding:14px 10px;background:rgba(255,255,255,0.4);border:2px solid rgba(255,255,255,0.5);border-radius:12px;text-align:center;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:var(--text-medium)}
-        .act-btn:hover{border-color:#3b82f6;color:#3b82f6;transform:translateY(-2px)}
-        .act-btn i{font-size:18px;display:block;margin-bottom:4px;color:#3b82f6}
+        .editor-wrap textarea{width:100%;min-height:250px;padding:18px;border:2px solid rgba(6,182,212,0.15);border-radius:14px;background:rgba(30,41,59,0.95);font-size:13px;font-weight:500;color:#e2e8f0;font-family:'Courier New',monospace;line-height:1.7;resize:vertical;outline:none;box-sizing:border-box}
+        .editor-wrap textarea:focus{border-color:#06b6d4}
+        .editor-wrap textarea::placeholder{color:#64748b}
 
-        .indent-row{display:flex;gap:10px;align-items:center;margin:10px 0}
+        .toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+        .tool-btn{padding:9px 16px;border:2px solid rgba(6,182,212,0.15);border-radius:50px;background:transparent;color:#0891b2;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .tool-btn:hover{background:#06b6d4;color:#fff;border-color:#06b6d4}
+        .tool-btn.primary{background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;border-color:transparent}
+        .tool-btn.primary:hover{box-shadow:0 6px 20px rgba(6,182,212,0.3)}
+        .tool-btn.danger{color:#ef4444;border-color:rgba(239,68,68,0.15)}
+        .tool-btn.danger:hover{background:#ef4444;color:#fff}
+
+        .status-bar{padding:10px 16px;border-radius:10px;margin:12px 0;font-size:13px;font-weight:600;display:none;align-items:center;gap:8px}
+        .status-bar.valid{display:flex;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:#16a34a}
+        .status-bar.invalid{display:flex;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#dc2626}
+
+        .stats-row{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+        .stat-chip{padding:6px 14px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.15);border-radius:50px;font-size:11px;font-weight:600;color:#0891b2}
+
+        .output-wrap{margin-top:14px}
+        .output-wrap pre{padding:18px;background:rgba(30,41,59,0.95);border-radius:14px;color:#e2e8f0;font-size:13px;font-family:'Courier New',monospace;line-height:1.7;overflow-x:auto;max-height:400px;white-space:pre-wrap;word-break:break-all}
+        .output-wrap .json-key{color:#7dd3fc}
+        .output-wrap .json-str{color:#86efac}
+        .output-wrap .json-num{color:#fde68a}
+        .output-wrap .json-bool{color:#c4b5fd}
+        .output-wrap .json-null{color:#94a3b8}
+
+        .indent-row{display:flex;gap:6px;align-items:center;margin:12px 0}
         .indent-row label{font-size:12px;font-weight:600;color:var(--text-medium)}
-        .indent-row select{padding:8px 14px;border:1px solid rgba(59,130,246,0.2);border-radius:10px;background:rgba(255,255,255,0.5);font-size:13px;font-weight:600;outline:none}
+        .indent-btn{padding:6px 14px;border:1.5px solid rgba(6,182,212,0.15);border-radius:50px;background:transparent;color:#0891b2;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}
+        .indent-btn:hover,.indent-btn.active{background:#06b6d4;color:#fff;border-color:#06b6d4}
 
-        /* Output */
-        .json-output{background:#0f172a;color:#22d3ee;border-radius:14px;padding:18px;max-height:400px;overflow-y:auto;font-family:'Courier New',monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;word-wrap:break-word}
-        .json-output::-webkit-scrollbar{width:5px}
-        .json-output::-webkit-scrollbar-thumb{background:rgba(34,211,238,0.25);border-radius:3px}
-        .output-actions{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+        .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
+        .privacy-note i{color:#22c55e;margin-right:4px}
 
-        /* Size comparison */
-        .size-row{display:flex;gap:10px;margin:10px 0;justify-content:center;flex-wrap:wrap}
-        .size-pill{padding:8px 16px;background:rgba(255,255,255,0.4);border-radius:50px;font-size:12px;font-weight:600;color:var(--text-medium);display:flex;align-items:center;gap:5px}
-        .size-pill strong{color:#3b82f6}
+        .jf-faq .faq-item{background:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .jf-faq .faq-item:hover{background:rgba(255,255,255,0.8)}
+        .jf-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(6,182,212,0.25)}
+        .jf-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
+        .jf-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .jf-faq .faq-item.active .faq-q h4{color:#06b6d4}
+        .jf-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s}
+        .jf-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#06b6d4}
+        .jf-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(6,182,212,0.1);color:#06b6d4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+        .jf-faq .faq-item.active .faq-q .faq-num{background:#06b6d4;color:#fff}
+        .jf-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(6,182,212,0.1);margin:0 22px}
+        .jf-faq .faq-item.active .faq-a{display:block}
+        .jf-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0}
 
-        /* Validate */
-        .valid-result{text-align:center;padding:20px}
-        .valid-result h3{font-size:20px;margin:10px 0;font-weight:700}
-        .vd-row{display:flex;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,0.3);border-radius:8px;margin:5px 0;font-size:13px}
-        .vd-row span{color:var(--text-light)}
-        .vd-row strong{color:var(--text-dark)}
-        .error-pos{display:none;font-size:12px;color:#ef4444;margin-top:5px;font-weight:600}
-
-        /* Tree */
-        .tree-list{list-style:none;padding-left:20px;margin:0}
-        .tree-item{padding:3px 0;font-size:13px;font-family:monospace}
-        .tree-key{color:#3b82f6;font-weight:700}
-        .tree-toggle{cursor:pointer;margin:0 5px;color:var(--text-light);font-size:11px}
-        .tree-type{font-size:11px;color:var(--text-light);font-style:italic}
-        .tree-val{font-weight:600}
-        .tree-val.string{color:#22c55e}
-        .tree-val.number{color:#f59e0b}
-        .tree-val.boolean{color:#a855f7}
-        .tree-val.null{color:#ef4444;font-style:italic}
-        .tree-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;max-height:400px;overflow-y:auto}
-
-        /* Convert */
-        .conv-btns{display:flex;gap:8px;margin:10px 0}
-        .conv-btn{padding:10px 18px;border:1px solid rgba(59,130,246,0.2);border-radius:10px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:13px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:6px}
-        .conv-btn:hover{border-color:#3b82f6;color:#3b82f6}
-        .conv-output{background:#1e293b;color:#a5f3fc;border-radius:12px;padding:16px;max-height:300px;overflow-y:auto;font-family:monospace;font-size:12px;line-height:1.7;white-space:pre-wrap}
-
-        .copied-msg{display:none;position:fixed;top:20px;right:20px;background:#22c55e;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999}
-        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
-
-        @media(max-width:768px){.btn-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:480px){.calc-card{padding:20px 16px}.jf-faq .faq-q{padding:14px 16px}}
     </style>
 </head>
 <body>
 
-<nav class="navbar glass">
-    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-    <div class="nav-links" id="navLinks">
-        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+<nav class="navbar glass"><a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a><div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div><div class="nav-links" id="navLinks"><a href="../../index.html"><i class="fas fa-home"></i> Home</a><a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a><a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a></div></nav>
+
+<section class="tool-header"><div class="container"><div class="breadcrumb"><a href="../../index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>JSON Formatter</span></div><div class="tool-title"><div class="tool-title-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2);"><i class="fas fa-code"></i></div><div><h1>JSON Formatter</h1><p>Format, validate, minify JSON data with syntax highlighting and error detection!</p></div></div></div></section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<section class="tool-area"><div class="container">
+
+<div class="calc-card">
+    <h2><i class="fas fa-edit"></i> Input JSON</h2>
+    <div class="editor-wrap"><textarea id="jsonInput" placeholder='Paste your JSON here...&#10;&#10;Example:&#10;{"name": "John", "age": 30, "city": "New York"}'></textarea></div>
+
+    <div class="toolbar">
+        <button class="tool-btn primary" onclick="formatJSON()"><i class="fas fa-indent"></i> Format</button>
+        <button class="tool-btn" onclick="minifyJSON()"><i class="fas fa-compress-alt"></i> Minify</button>
+        <button class="tool-btn" onclick="validateJSON()"><i class="fas fa-check-circle"></i> Validate</button>
+        <button class="tool-btn" onclick="copyOutput()"><i class="fas fa-copy"></i> Copy</button>
+        <button class="tool-btn" onclick="downloadJSON()"><i class="fas fa-download"></i> Download</button>
+        <button class="tool-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample</button>
+        <button class="tool-btn danger" onclick="clearJSON()"><i class="fas fa-trash"></i> Clear</button>
     </div>
-</nav>
 
-<div class="copied-msg" id="copiedMsg"></div>
-
-<section class="tool-header">
-    <div class="container">
-        <div class="breadcrumb">
-            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-            <i class="fas fa-chevron-right"></i><span>JSON Formatter</span>
-        </div>
-        <div class="tool-title">
-            <div class="tool-title-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"><i class="fas fa-code"></i></div>
-            <div><h1>JSON Formatter</h1><p>Format, beautify, minify, validate JSON & convert to CSV/YAML/XML!</p></div>
-        </div>
+    <div class="indent-row">
+        <label>Indent:</label>
+        <button class="indent-btn active" onclick="setIndent(this,2)">2 spaces</button>
+        <button class="indent-btn" onclick="setIndent(this,4)">4 spaces</button>
+        <button class="indent-btn" onclick="setIndent(this,1)">Tab</button>
     </div>
-</section>
 
-<section class="tool-area">
-    <div class="container">
+    <div class="status-bar" id="statusBar"></div>
+    <div class="stats-row" id="statsRow"></div>
+</div>
 
-        <!-- Input -->
-        <div class="cc">
-            <h2><i class="fas fa-keyboard"></i> Enter JSON</h2>
-            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
-            <div id="errorPos" class="error-pos"></div>
+<div class="calc-card" id="outputCard" style="display:none">
+    <h2><i class="fas fa-check"></i> Formatted Output</h2>
+    <div class="output-wrap"><pre id="jsonOutput"></pre></div>
+</div>
 
-            <textarea class="json-input" id="jsonInput" placeholder='{"name": "John", "age": 30, "city": "New York"}'></textarea>
+<div class="privacy-note"><i class="fas fa-shield-alt"></i> 100% Private — JSON processed in your browser only</div>
 
-            <div class="input-stats">
-                <span><i class="fas fa-weight-hanging" style="color:#3b82f6;"></i> <strong id="inputSize">0 B</strong></span>
-                <span><i class="fas fa-align-left" style="color:#3b82f6;"></i> <strong id="inputLines">0</strong> lines</span>
-            </div>
+</div></section>
 
-            <div class="input-actions">
-                <button class="ia-btn" onclick="pasteJSON()"><i class="fas fa-paste"></i> Paste</button>
-                <button class="ia-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample</button>
-                <button class="ia-btn" onclick="copyInput()"><i class="fas fa-copy"></i> Copy Input</button>
-                <button class="ia-btn" onclick="clearAll()"><i class="fas fa-trash"></i> Clear</button>
-            </div>
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
-            <!-- Indent option -->
-            <div class="indent-row">
-                <label>Indent:</label>
-                <select id="indentSize">
-                    <option value="2">2 spaces</option>
-                    <option value="4">4 spaces</option>
-                    <option value="1">1 space</option>
-                </select>
-            </div>
-        </div>
+<section class="how-to-section"><div class="container"><div class="section-header"><h2>How It Works</h2></div><div class="steps-row"><div class="step-box glass"><div class="step-num">1</div><i class="fas fa-paste"></i><h4>Paste JSON</h4><p>Paste your JSON data.</p></div><div class="step-box glass"><div class="step-num">2</div><i class="fas fa-indent"></i><h4>Format</h4><p>Click format, minify or validate.</p></div><div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy</h4><p>Copy or download the result.</p></div></div></div></section>
 
-        <!-- Action Buttons -->
-        <div class="cc">
-            <h2><i class="fas fa-magic"></i> Actions</h2>
-            <div class="btn-grid">
-                <div class="act-btn" onclick="formatJSON()"><i class="fas fa-align-left"></i> Format</div>
-                <div class="act-btn" onclick="minifyJSON()"><i class="fas fa-compress"></i> Minify</div>
-                <div class="act-btn" onclick="validateJSON()"><i class="fas fa-check-circle"></i> Validate</div>
-                <div class="act-btn" onclick="showTreeView()"><i class="fas fa-sitemap"></i> Tree View</div>
-            </div>
+<section class="faq-section"><div class="container"><div class="section-header"><h2>FAQ</h2></div><div class="jf-faq">
+    <div class="faq-item" onclick="jfFaqToggle(this)"><div class="faq-q"><span class="faq-num">1</span><h4>What does JSON Formatter do?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>It takes raw or minified JSON data and formats it with proper indentation and line breaks, making it easy to read. It also validates and highlights syntax errors.</p></div></div>
+    <div class="faq-item" onclick="jfFaqToggle(this)"><div class="faq-q"><span class="faq-num">2</span><h4>What is minification?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>Minification removes all unnecessary whitespace and line breaks from JSON, making it as compact as possible. Useful for reducing file size in APIs and storage.</p></div></div>
+    <div class="faq-item" onclick="jfFaqToggle(this)"><div class="faq-q"><span class="faq-num">3</span><h4>Is my JSON data stored?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>No! All processing happens in your browser. Your JSON data never leaves your device.</p></div></div>
+</div></div></section>
 
-            <h3 style="font-size:14px;font-weight:600;color:var(--text-medium);margin:14px 0 8px;"><i class="fas fa-exchange-alt" style="color:#3b82f6;"></i> Convert To:</h3>
-            <div class="conv-btns">
-                <button class="conv-btn" onclick="convertTo('csv')"><i class="fas fa-file-csv"></i> CSV</button>
-                <button class="conv-btn" onclick="convertTo('yaml')"><i class="fas fa-file-alt"></i> YAML</button>
-                <button class="conv-btn" onclick="convertTo('xml')"><i class="fas fa-file-code"></i> XML</button>
-            </div>
-        </div>
+<footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>&copy; 2025 PDFTools. All rights reserved.</p><div class="footer-links"><a href="../../index.html">Home</a><a href="../../privacy.html">Privacy</a><a href="../../terms.html">Terms</a><a href="../../about.html">About</a><a href="../../contact.html">Contact</a></div></div></div></footer>
 
-        <!-- Result -->
-        <div id="resultSection" style="display:none;">
-            <div class="cc">
-                <h2><i class="fas fa-check"></i> <span id="resultTitle">Result</span></h2>
+<script>
+var indentSize=2;var useTab=false;
 
-                <div class="size-row">
-                    <div class="size-pill"><i class="fas fa-file" style="color:#3b82f6;"></i> Original: <strong id="rOrigSize">0 B</strong></div>
-                    <div class="size-pill"><i class="fas fa-file-alt" style="color:#3b82f6;"></i> Result: <strong id="rNewSize">0 B</strong></div>
-                    <div class="size-pill"><i class="fas fa-exchange-alt" style="color:#3b82f6;"></i> Diff: <strong id="rDiff">0 B</strong></div>
-                </div>
+function setIndent(btn,n){
+    var btns=document.querySelectorAll('.indent-btn');
+    for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');
+    btn.classList.add('active');
+    if(n===1){useTab=true;indentSize=1;}else{useTab=false;indentSize=n;}
+}
 
-                <div class="output-actions">
-                    <button class="ia-btn" onclick="copyOutput()"><i class="fas fa-copy"></i> Copy</button>
-                    <button class="ia-btn" onclick="downloadOutput('json')"><i class="fas fa-download"></i> Download</button>
-                    <button class="ia-btn" onclick="useOutput()"><i class="fas fa-arrow-up"></i> Use as Input</button>
-                </div>
+function formatJSON(){
+    var input=document.getElementById('jsonInput').value.trim();
+    if(!input){showStatus('Please enter JSON data.','invalid');return;}
+    try{
+        var obj=JSON.parse(input);
+        var indent=useTab?'\t':indentSize;
+        var formatted=JSON.stringify(obj,null,indent);
+        document.getElementById('jsonInput').value=formatted;
+        showOutput(formatted);
+        showStatus('<i class="fas fa-check-circle"></i> Valid JSON — Formatted successfully!','valid');
+        showStats(formatted,obj);
+    }catch(e){showStatus('<i class="fas fa-times-circle"></i> Invalid JSON: '+e.message,'invalid');document.getElementById('outputCard').style.display='none';}
+}
 
-                <div class="json-output" id="jsonOutput"></div>
-            </div>
-        </div>
+function minifyJSON(){
+    var input=document.getElementById('jsonInput').value.trim();
+    if(!input){showStatus('Please enter JSON data.','invalid');return;}
+    try{
+        var obj=JSON.parse(input);
+        var minified=JSON.stringify(obj);
+        document.getElementById('jsonInput').value=minified;
+        showOutput(minified);
+        showStatus('<i class="fas fa-check-circle"></i> Valid JSON — Minified!','valid');
+        showStats(minified,obj);
+    }catch(e){showStatus('<i class="fas fa-times-circle"></i> Invalid JSON: '+e.message,'invalid');}
+}
 
-        <!-- Validate Result -->
-        <div id="validateSection" style="display:none;">
-            <div class="cc">
-                <div class="valid-result">
-                    <div id="validIcon"></div>
-                    <h3 id="validTitle"></h3>
-                    <div id="validDetails"></div>
-                </div>
-            </div>
-        </div>
+function validateJSON(){
+    var input=document.getElementById('jsonInput').value.trim();
+    if(!input){showStatus('Please enter JSON data.','invalid');return;}
+    try{var obj=JSON.parse(input);showStatus('<i class="fas fa-check-circle"></i> Valid JSON!','valid');showStats(input,obj);}
+    catch(e){showStatus('<i class="fas fa-times-circle"></i> Invalid: '+e.message,'invalid');}
+}
 
-        <!-- Tree View -->
-        <div id="treeSection" style="display:none;">
-            <div class="cc">
-                <h2><i class="fas fa-sitemap"></i> Tree View</h2>
-                <div class="tree-wrap" id="treeContent"></div>
-            </div>
-        </div>
+function showOutput(text){
+    var highlighted=syntaxHighlight(text);
+    document.getElementById('jsonOutput').innerHTML=highlighted;
+    document.getElementById('outputCard').style.display='block';
+}
 
-        <!-- Convert Output -->
-        <div id="convertSection" style="display:none;">
-            <div class="cc">
-                <h2><i class="fas fa-exchange-alt"></i> Converted to <span id="convertFormat">CSV</span></h2>
-                <div class="output-actions">
-                    <button class="ia-btn" onclick="copyConvert()"><i class="fas fa-copy"></i> Copy</button>
-                    <button class="ia-btn" onclick="downloadOutput('convert')"><i class="fas fa-download"></i> Download</button>
-                </div>
-                <div class="conv-output" id="convertOutput"></div>
-            </div>
-        </div>
+function syntaxHighlight(json){
+    json=json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,function(match){
+        var cls='json-num';
+        if(/^"/.test(match)){cls=/:$/.test(match)?'json-key':'json-str';}
+        else if(/true|false/.test(match)){cls='json-bool';}
+        else if(/null/.test(match)){cls='json-null';}
+        return '<span class="'+cls+'">'+match+'</span>';
+    });
+}
 
-    </div>
-</section>
+function showStatus(msg,type){
+    var el=document.getElementById('statusBar');
+    el.className='status-bar '+type;
+    el.innerHTML=msg;
+}
 
-<section class="how-to-section">
-    <div class="container">
-        <div class="section-header"><h2>How It Works</h2></div>
-        <div class="steps-row">
-            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-paste"></i><h4>Paste JSON</h4><p>Enter or paste JSON data.</p></div>
-            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-magic"></i><h4>Choose Action</h4><p>Format, minify, validate or convert.</p></div>
-            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy/Download</h4><p>Copy result or download file.</p></div>
-        </div>
-    </div>
-</section>
+function showStats(text,obj){
+    var keys=0;function countKeys(o){if(typeof o==='object'&&o!==null){if(Array.isArray(o)){o.forEach(function(v){countKeys(v);});}else{var k=Object.keys(o);keys+=k.length;k.forEach(function(key){countKeys(o[key]);});}}}
+    countKeys(obj);
+    var size=new Blob([text]).size;
+    var sizeStr=size>1024?(size/1024).toFixed(1)+' KB':size+' B';
+    var depth=0;function getDepth(o,d){if(d>depth)depth=d;if(typeof o==='object'&&o!==null){if(Array.isArray(o)){o.forEach(function(v){getDepth(v,d+1);});}else{Object.values(o).forEach(function(v){getDepth(v,d+1);});}}}
+    getDepth(obj,0);
+    var isArray=Array.isArray(obj);
+    document.getElementById('statsRow').innerHTML=
+        '<span class="stat-chip"><i class="fas fa-key"></i> '+keys+' keys</span>'+
+        '<span class="stat-chip"><i class="fas fa-weight-hanging"></i> '+sizeStr+'</span>'+
+        '<span class="stat-chip"><i class="fas fa-layer-group"></i> Depth: '+depth+'</span>'+
+        '<span class="stat-chip"><i class="fas fa-'+(isArray?'list':'cube')+'"></i> '+(isArray?'Array':'Object')+'</span>';
+}
 
-<section class="faq-section">
-    <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
-        <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is JSON?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>JSON (JavaScript Object Notation) is a lightweight data format used for data exchange. It's human-readable and widely used in APIs and web applications.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What does formatting do?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Formatting adds proper indentation and line breaks, making the JSON easier to read and debug.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What does minifying do?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Minifying removes all whitespace and line breaks, making the JSON as compact as possible. Useful for reducing file size in production.</p></div></div>
-        </div>
-    </div>
-</section>
+function copyOutput(){var t=document.getElementById('jsonInput').value;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){alert('Copied!');});}else{prompt('Copy:',t);}}
+function downloadJSON(){var t=document.getElementById('jsonInput').value;var blob=new Blob([t],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='formatted.json';a.click();setTimeout(function(){URL.revokeObjectURL(url);},300);}
+function clearJSON(){document.getElementById('jsonInput').value='';document.getElementById('outputCard').style.display='none';document.getElementById('statusBar').className='status-bar';document.getElementById('statsRow').innerHTML='';}
+function loadSample(){document.getElementById('jsonInput').value='{\n  "name": "John Doe",\n  "age": 30,\n  "email": "john@example.com",\n  "isActive": true,\n  "address": {\n    "street": "123 Main St",\n    "city": "New York",\n    "zip": "10001"\n  },\n  "hobbies": ["reading", "coding", "gaming"],\n  "scores": [95, 87, 92, 78],\n  "metadata": null\n}';formatJSON();}
 
-<footer class="footer">
-    <div class="container">
-        <div class="footer-simple">
-            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-            <p>&copy; 2025 PDFTools.</p>
-            <div class="footer-links">
-                <a href="../../index.html">Home</a>
-                <a href="../../privacy.html">Privacy</a>
-                <a href="../../terms.html">Terms</a>
-                <a href="../../about.html">About</a>
-                <a href="../../contact.html">Contact</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
+function jfFaqToggle(el){var a=el.classList.contains('active');var items=document.querySelectorAll('.jf-faq .faq-item');for(var i=0;i<items.length;i++)items[i].classList.remove('active');if(!a)el.classList.add('active');}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open');};}
+</script>
 <script src="../../js/tool-page.js"></script>
-<script src="../../js/json-formatter.js"></script>
+<script src="../../js/adsense.js"></script>
 </body>
 </html>

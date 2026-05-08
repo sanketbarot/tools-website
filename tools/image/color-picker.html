@@ -3,63 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Picker - HEX RGB HSL Converter | PDFTools</title>
+    <title>Color Picker - Pick & Convert Colors Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
-    <meta name="description" content="Free color picker tool. Get HEX, RGB, HSL, CMYK values. Generate palettes, tints, shades and CSS code.">
+    <meta name="description" content="Free Color Picker. Pick colors, convert between HEX, RGB, HSL. Generate palettes, shades, tints. Copy CSS color codes instantly!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/tool-page.css">
     <style>
-        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
-        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .cc h2 i{color:#f97316}
-        .pick-area{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
-        .picker-wrap{text-align:center}
-        .picker-wrap input[type=color]{width:120px;height:120px;border:none;border-radius:16px;cursor:pointer;padding:0;background:none}
-        .color-preview{width:120px;height:60px;border-radius:12px;margin-top:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:1px solid rgba(0,0,0,0.1);position:relative}
-        .val-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-        .val-box{padding:14px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:12px}
-        .val-box label{display:block;font-size:10px;font-weight:700;color:var(--text-light);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px}
-        .val-box .val-display{font-size:14px;font-weight:700;color:var(--text-dark);font-family:monospace;margin-bottom:6px;word-break:break-all}
-        .val-box .val-inputs{display:flex;gap:5px}
-        .val-box input{width:100%;padding:7px;border:1px solid rgba(0,0,0,0.1);border-radius:8px;font-size:13px;font-weight:600;text-align:center;outline:none;box-sizing:border-box}
-        .val-box input:focus{border-color:#f97316}
-        .copy-btn{padding:5px 10px;border:1px solid rgba(249,115,22,0.2);border-radius:8px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:10px;font-weight:600;color:#f97316;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
-        .copy-btn:hover{background:#f97316;color:#fff}
-        .copied-msg{display:none;position:fixed;top:20px;right:20px;background:#22c55e;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
-        .btn-row{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
-        .act-btn{padding:8px 16px;border:1px solid rgba(249,115,22,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:12px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:5px}
-        .act-btn:hover{border-color:#f97316;color:#f97316}
+        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .calc-card h2 i{color:#f97316;font-size:17px}
 
-        /* Tints & Shades */
-        .ts-row{display:flex;gap:4px;margin:8px 0}
-        .ts-swatch{flex:1;height:40px;border-radius:8px;cursor:pointer;transition:transform .15s;border:1px solid rgba(0,0,0,0.05)}
-        .ts-swatch:hover{transform:scaleY(1.3);z-index:1}
+        /* Color Preview */
+        .color-hero{border-radius:20px;padding:40px;text-align:center;margin-bottom:18px;transition:background .3s;position:relative;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .color-hero .ch-hex{font-size:36px;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.3);cursor:pointer}
+        .color-hero .ch-sub{font-size:14px;color:rgba(255,255,255,0.8);margin-top:6px;font-weight:500}
+
+        /* Picker */
+        .picker-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:18px 0}
+        .picker-native{width:80px;height:80px;border:none;border-radius:16px;cursor:pointer;padding:0;background:none;-webkit-appearance:none}
+        .picker-native::-webkit-color-swatch-wrapper{padding:0}
+        .picker-native::-webkit-color-swatch{border-radius:14px;border:3px solid rgba(0,0,0,0.1)}
+
+        /* Color Values */
+        .color-values{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:200px}
+        .cv-item{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:10px;cursor:pointer;transition:all .2s}
+        .cv-item:hover{background:rgba(249,115,22,0.06);transform:translateX(2px)}
+        .cv-item .cv-label{font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;min-width:35px}
+        .cv-item .cv-val{font-size:13px;font-weight:600;color:var(--text-dark);font-family:monospace;flex:1}
+        .cv-item .cv-copy{font-size:10px;color:var(--text-light);flex-shrink:0}
+
+        /* Input Fields */
+        .hex-input-row{display:flex;gap:10px;align-items:center;margin:14px 0}
+        .hex-input-row label{font-size:12px;font-weight:600;color:var(--text-medium)}
+        .hex-input-row input{padding:12px 14px;border:2px solid rgba(249,115,22,0.2);border-radius:10px;background:rgba(255,255,255,0.6);font-size:15px;font-weight:700;color:var(--text-dark);outline:none;font-family:monospace;width:140px;box-sizing:border-box}
+        .hex-input-row input:focus{border-color:#f97316}
+        .hex-input-row button{padding:12px 18px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+        .hex-input-row button:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(249,115,22,0.3)}
 
         /* Palette */
-        .pal-btns{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-        .pal-btn{padding:7px 14px;border:1px solid rgba(249,115,22,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);transition:all .15s}
-        .pal-btn:hover{border-color:#f97316;color:#f97316}
-        .pal-btn.on{border-color:#f97316;background:rgba(249,115,22,0.08);color:#f97316}
-        .pal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
-        .pal-color{height:70px;border-radius:12px;cursor:pointer;display:flex;align-items:end;justify-content:center;padding-bottom:8px;transition:transform .15s;border:1px solid rgba(0,0,0,0.05)}
-        .pal-color:hover{transform:translateY(-4px)}
-        .pal-hex{font-size:11px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.3)}
+        .palette-section h3{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;color:var(--text-dark)}
+        .palette-section h3 i{color:#f97316}
+        .palette-row{display:flex;gap:4px;border-radius:12px;overflow:hidden;margin-bottom:14px}
+        .palette-swatch{flex:1;height:50px;cursor:pointer;transition:transform .2s;position:relative}
+        .palette-swatch:hover{transform:scaleY(1.15);z-index:2}
+        .palette-swatch .ps-label{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;color:rgba(255,255,255,0.8);text-shadow:0 1px 3px rgba(0,0,0,0.5);white-space:nowrap;opacity:0;transition:opacity .2s}
+        .palette-swatch:hover .ps-label{opacity:1}
 
-        /* CSS Code */
-        .css-block{background:#1e293b;color:#a5f3fc;border-radius:10px;padding:14px;font-family:monospace;font-size:13px;line-height:1.8;margin:8px 0}
-        .css-block span{color:#fbbf24}
-
-        /* Contrast */
-        .contrast-row{display:flex;gap:10px;margin:10px 0}
-        .contrast-box{flex:1;padding:14px;border-radius:12px;text-align:center;font-size:14px;font-weight:700}
-        .contrast-box p{font-size:11px;margin-top:4px;font-weight:500}
+        /* Saved Colors */
+        .saved-colors{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+        .saved-dot{width:36px;height:36px;border-radius:10px;cursor:pointer;border:2px solid rgba(0,0,0,0.08);transition:transform .2s}
+        .saved-dot:hover{transform:scale(1.15)}
 
         /* History */
-        .hist-grid{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
-        .hist-swatch{width:32px;height:32px;border-radius:8px;cursor:pointer;border:1px solid rgba(0,0,0,0.08);transition:transform .15s}
-        .hist-swatch:hover{transform:scale(1.2)}
+        .history-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+        .hist-dot{width:28px;height:28px;border-radius:8px;cursor:pointer;border:1px solid rgba(0,0,0,0.06);transition:transform .2s}
+        .hist-dot:hover{transform:scale(1.15)}
 
-        @media(max-width:768px){.pick-area{grid-template-columns:1fr}.val-grid{grid-template-columns:1fr}.pal-grid{grid-template-columns:repeat(5,1fr)}.contrast-row{flex-direction:column}}
+        .action-btn{padding:8px 16px;border:2px solid rgba(249,115,22,0.2);border-radius:50px;background:transparent;color:#ea580c;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;margin:3px}
+        .action-btn:hover{background:#f97316;color:#fff;border-color:#f97316}
+
+        .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
+        .privacy-note i{color:#22c55e;margin-right:4px}
+
+        .cp-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .cp-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
+        .cp-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(249,115,22,0.25)}
+        .cp-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
+        .cp-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .cp-faq .faq-item.active .faq-q h4{color:#f97316}
+        .cp-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
+        .cp-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#f97316}
+        .cp-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(249,115,22,0.1);color:#f97316;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .cp-faq .faq-item.active .faq-q .faq-num{background:#f97316;color:#fff}
+        .cp-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(249,115,22,0.1);margin:0 22px}
+        .cp-faq .faq-item.active .faq-a{display:block}
+        .cp-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
+
+        @media(max-width:480px){.calc-card{padding:20px 16px}.picker-row{flex-direction:column;align-items:center}.color-values{grid-template-columns:1fr}.color-hero .ch-hex{font-size:28px}.cp-faq .faq-q{padding:14px 16px}}
     </style>
 </head>
 <body>
@@ -70,182 +91,299 @@
     <div class="nav-links" id="navLinks">
         <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
     </div>
 </nav>
 
-<!-- Copied toast -->
-<div class="copied-msg" id="copiedMsg"><i class="fas fa-check"></i> Copied!</div>
+<section class="tool-header"><div class="container"><div class="breadcrumb"><a href="../../index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Color Picker</span></div><div class="tool-title"><div class="tool-title-icon" style="background:linear-gradient(135deg,#f97316,#ea580c);"><i class="fas fa-palette"></i></div><div><h1>Color Picker</h1><p>Pick colors, convert HEX/RGB/HSL, generate palettes, shades & tints instantly!</p></div></div></div></section>
 
-<section class="tool-header">
-    <div class="container">
-        <div class="breadcrumb">
-            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-            <i class="fas fa-chevron-right"></i><span>Color Picker</span>
-        </div>
-        <div class="tool-title">
-            <div class="tool-title-icon" style="background:linear-gradient(135deg,#f97316,#eab308);"><i class="fas fa-palette"></i></div>
-            <div><h1>Color Picker</h1><p>Pick colors, get HEX/RGB/HSL codes, generate palettes & CSS!</p></div>
-        </div>
-    </div>
-</section>
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
 <section class="tool-area">
-    <div class="container">
+<div class="container">
 
-        <!-- Picker + Values -->
-        <div class="cc">
-            <h2><i class="fas fa-eyedropper"></i> Pick a Color</h2>
-
-            <div class="pick-area">
-                <div class="picker-wrap">
-                    <input type="color" id="mainPicker" value="#6366f1">
-                    <div class="color-preview" id="colorPreview" style="background:#6366f1;">
-                        <span id="previewText" style="color:#fff;">Preview</span>
-                    </div>
-                    <div class="btn-row" style="justify-content:center;margin-top:8px;">
-                        <button class="act-btn" onclick="randomColor()"><i class="fas fa-dice"></i> Random</button>
-                        <button class="act-btn" onclick="addToHistory()"><i class="fas fa-plus"></i> Save</button>
-                    </div>
-                </div>
-
-                <div class="val-grid">
-                    <div class="val-box">
-                        <label>HEX</label>
-                        <div class="val-display" id="hexDisplay">#6366F1</div>
-                        <div style="display:flex;gap:5px;">
-                            <input type="text" id="hexInput" value="#6366f1" maxlength="7">
-                            <button class="copy-btn" onclick="copyHex()"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                    <div class="val-box">
-                        <label>RGB</label>
-                        <div class="val-display" id="rgbDisplay">rgb(99, 102, 241)</div>
-                        <div class="val-inputs">
-                            <input type="number" id="rInput" min="0" max="255" value="99" placeholder="R">
-                            <input type="number" id="gInput" min="0" max="255" value="102" placeholder="G">
-                            <input type="number" id="bInput" min="0" max="255" value="241" placeholder="B">
-                            <button class="copy-btn" onclick="copyRgb()"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                    <div class="val-box">
-                        <label>HSL</label>
-                        <div class="val-display" id="hslDisplay">hsl(239, 84%, 67%)</div>
-                        <div class="val-inputs">
-                            <input type="number" id="hInput" min="0" max="360" value="239" placeholder="H">
-                            <input type="number" id="sInput" min="0" max="100" value="84" placeholder="S">
-                            <input type="number" id="lInput" min="0" max="100" value="67" placeholder="L">
-                            <button class="copy-btn" onclick="copyHsl()"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                    <div class="val-box">
-                        <label>CMYK</label>
-                        <div class="val-display" id="cmykDisplay">cmyk(59%, 58%, 0%, 5%)</div>
-                    </div>
-                </div>
-            </div>
+    <!-- Main Card -->
+    <div class="calc-card">
+        <div class="color-hero" id="colorHero" style="background:#f97316">
+            <div class="ch-hex" id="heroHex" onclick="quickCopy('#F97316')">#F97316</div>
+            <div class="ch-sub">Click to copy • Tap color values below</div>
         </div>
 
-        <!-- Tints & Shades -->
-        <div class="cc">
-            <h2><i class="fas fa-adjust"></i> Tints & Shades</h2>
-            <div><strong style="font-size:12px;color:var(--text-medium);">Tints (lighter):</strong><div class="ts-row" id="tintsList"></div></div>
-            <div><strong style="font-size:12px;color:var(--text-medium);">Shades (darker):</strong><div class="ts-row" id="shadesList"></div></div>
-            <p style="font-size:11px;color:var(--text-light);">Click any swatch to select that color</p>
+        <div class="picker-row">
+            <input type="color" class="picker-native" id="colorPicker" value="#f97316" oninput="onPickerChange(this.value)">
+            <div class="color-values" id="colorValues"></div>
         </div>
 
-        <!-- Palette -->
-        <div class="cc">
-            <h2><i class="fas fa-swatchbook"></i> Color Palette</h2>
-            <div class="pal-btns">
-                <button class="pal-btn on" onclick="generatePalette('analogous')">Analogous</button>
-                <button class="pal-btn" onclick="generatePalette('complementary')">Complementary</button>
-                <button class="pal-btn" onclick="generatePalette('triadic')">Triadic</button>
-                <button class="pal-btn" onclick="generatePalette('split')">Split</button>
-                <button class="pal-btn" onclick="generatePalette('monochromatic')">Monochromatic</button>
-                <button class="pal-btn" onclick="generatePalette('random')">Random</button>
-            </div>
-            <div class="pal-grid" id="paletteGrid"></div>
-            <p style="font-size:11px;color:var(--text-light);">Click any color to select it</p>
+        <div class="hex-input-row">
+            <label>HEX:</label>
+            <input type="text" id="hexInput" value="#F97316" maxlength="7" onkeydown="if(event.key==='Enter')applyHex()">
+            <button onclick="applyHex()"><i class="fas fa-check"></i> Apply</button>
+            <button onclick="randomColor()" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-random"></i> Random</button>
         </div>
-
-        <!-- CSS Code -->
-        <div class="cc">
-            <h2><i class="fas fa-code"></i> CSS Code</h2>
-            <div class="css-block">
-                <div id="cssHex" style="cursor:pointer;" onclick="copyCss('Hex')">color: #6366f1;</div>
-                <div id="cssRgb" style="cursor:pointer;" onclick="copyCss('Rgb')">color: rgb(99, 102, 241);</div>
-                <div id="cssHsl" style="cursor:pointer;" onclick="copyCss('Hsl')">color: hsl(239, 84%, 67%);</div>
-            </div>
-            <p style="font-size:11px;color:var(--text-light);">Click any line to copy</p>
-        </div>
-
-        <!-- Contrast -->
-        <div class="cc">
-            <h2><i class="fas fa-eye"></i> Contrast Check</h2>
-            <div class="contrast-row">
-                <div class="contrast-box" style="background:#000;color:#fff;">
-                    <span id="contrastBlack">-</span>
-                    <p>vs Black Text</p>
-                </div>
-                <div class="contrast-box" style="background:#fff;color:#000;border:1px solid #e2e8f0;">
-                    <span id="contrastWhite">-</span>
-                    <p>vs White Text</p>
-                </div>
-            </div>
-            <p style="font-size:11px;color:var(--text-light);">WCAG requires minimum 4.5:1 for normal text. <span style="color:#22c55e;">Green</span> = passes, <span style="color:#ef4444;">Red</span> = fails.</p>
-        </div>
-
-        <!-- History -->
-        <div class="cc">
-            <h2><i class="fas fa-history"></i> Saved Colors</h2>
-            <div class="hist-grid" id="historyGrid">
-                <p style="font-size:12px;color:var(--text-light);">Click "Save" to add colors here</p>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Shades & Tints -->
+    <div class="calc-card">
+        <div class="palette-section">
+            <h3><i class="fas fa-moon"></i> Shades (Darker)</h3>
+            <div class="palette-row" id="shadesRow"></div>
+            <h3><i class="fas fa-sun"></i> Tints (Lighter)</h3>
+            <div class="palette-row" id="tintsRow"></div>
+        </div>
+    </div>
+
+    <!-- Complementary -->
+    <div class="calc-card">
+        <div class="palette-section">
+            <h3><i class="fas fa-adjust"></i> Complementary Palette</h3>
+            <div class="palette-row" id="compRow"></div>
+            <h3><i class="fas fa-palette"></i> Analogous Palette</h3>
+            <div class="palette-row" id="analogRow"></div>
+            <h3><i class="fas fa-shapes"></i> Triadic Palette</h3>
+            <div class="palette-row" id="triadRow"></div>
+        </div>
+    </div>
+
+    <!-- Saved Colors -->
+    <div class="calc-card">
+        <h2><i class="fas fa-heart"></i> Saved Colors</h2>
+        <div class="saved-colors" id="savedColors"><span style="color:var(--text-light);font-size:12px;">No saved colors yet</span></div>
+        <div style="margin-top:10px">
+            <button class="action-btn" onclick="saveColor()"><i class="fas fa-plus"></i> Save Current</button>
+            <button class="action-btn" onclick="clearSaved()"><i class="fas fa-trash"></i> Clear</button>
+        </div>
+    </div>
+
+    <!-- History -->
+    <div class="calc-card">
+        <h2><i class="fas fa-history"></i> Recent Colors</h2>
+        <div class="history-row" id="historyRow"></div>
+    </div>
+
+    <div class="privacy-note"><i class="fas fa-shield-alt"></i> 100% Private — Everything runs in your browser</div>
+
+</div>
 </section>
 
-<section class="how-to-section">
-    <div class="container">
-        <div class="section-header"><h2>How It Works</h2></div>
-        <div class="steps-row">
-            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-eyedropper"></i><h4>Pick Color</h4><p>Use picker or enter values.</p></div>
-            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-code"></i><h4>Get Codes</h4><p>HEX, RGB, HSL, CMYK.</p></div>
-            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy & Use</h4><p>Copy CSS code directly.</p></div>
-        </div>
-    </div>
-</section>
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
-<section class="faq-section">
-    <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
-        <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What color formats are supported?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>HEX (#ff0000), RGB (255,0,0), HSL (0°,100%,50%), and CMYK (0%,100%,100%,0%). All update in real-time.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What are tints and shades?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Tints = color mixed with white (lighter). Shades = color mixed with black (darker). Useful for creating color schemes.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is WCAG contrast?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>WCAG (Web Content Accessibility Guidelines) requires minimum 4.5:1 contrast ratio between text and background for readability.</p></div></div>
-        </div>
-    </div>
-</section>
+<section class="how-to-section"><div class="container"><div class="section-header"><h2>How It Works</h2></div><div class="steps-row"><div class="step-box glass"><div class="step-num">1</div><i class="fas fa-palette"></i><h4>Pick Color</h4><p>Use the picker or enter a HEX code.</p></div><div class="step-box glass"><div class="step-num">2</div><i class="fas fa-exchange-alt"></i><h4>Convert</h4><p>Get HEX, RGB, HSL values instantly.</p></div><div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy & Use</h4><p>Click any value to copy it.</p></div></div></div></section>
 
-<footer class="footer">
-    <div class="container">
-        <div class="footer-simple">
-            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-            <p>&copy; 2025 PDFTools.</p>
-            <div class="footer-links">
-                <a href="../../index.html">Home</a>
-                <a href="../../privacy.html">Privacy</a>
-                <a href="../../terms.html">Terms</a>
-                <a href="../../about.html">About</a>
-                <a href="../../contact.html">Contact</a>
-            </div>
-        </div>
-    </div>
-</footer>
+<section class="related-tools"><div class="container"><div class="section-header"><h2>Related Tools</h2></div><div class="related-grid">
+    <a href="../image/qr-generator.html" class="related-card glass"><div class="related-icon" style="background:linear-gradient(135deg,#1e293b,#334155)"><i class="fas fa-qrcode"></i></div><h4>QR Generator</h4></a>
+    <a href="../image/image-compressor.html" class="related-card glass"><div class="related-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><i class="fas fa-compress"></i></div><h4>Image Compressor</h4></a>
+    <a href="../text/case-converter.html" class="related-card glass"><div class="related-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb)"><i class="fas fa-font"></i></div><h4>Case Converter</h4></a>
+    <a href="../calculator/percentage-calculator.html" class="related-card glass"><div class="related-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-percent"></i></div><h4>Percentage Calc</h4></a>
+</div></div></section>
 
+<section class="faq-section"><div class="container"><div class="section-header"><h2>FAQ</h2></div><div class="cp-faq">
+    <div class="faq-item" onclick="cpFaqToggle(this)"><div class="faq-q"><span class="faq-num">1</span><h4>What color formats are supported?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>HEX (#FF5733), RGB (rgb(255,87,51)), HSL (hsl(14,100%,60%)), and CSS named colors are supported.</p></div></div>
+    <div class="faq-item" onclick="cpFaqToggle(this)"><div class="faq-q"><span class="faq-num">2</span><h4>What are shades and tints?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p><strong>Shades</strong> are darker versions (mixed with black). <strong>Tints</strong> are lighter versions (mixed with white). Both are useful for creating design systems.</p></div></div>
+    <div class="faq-item" onclick="cpFaqToggle(this)"><div class="faq-q"><span class="faq-num">3</span><h4>How do I copy a color?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>Click on any color value (HEX, RGB, HSL) to copy it to clipboard. Click on palette swatches to set them as active color.</p></div></div>
+</div></div></section>
+
+<footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>&copy; 2025 PDFTools. All rights reserved.</p><div class="footer-links"><a href="../../index.html">Home</a><a href="../../privacy.html">Privacy</a><a href="../../terms.html">Terms</a><a href="../../about.html">About</a><a href="../../contact.html">Contact</a></div></div></div></footer>
+
+<script>
+var currentColor={r:249,g:115,b:22};
+var savedColors=[];
+var colorHistory=[];
+
+function hexToRgb(hex){
+    hex=hex.replace('#','');
+    if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    return{r:parseInt(hex.substring(0,2),16),g:parseInt(hex.substring(2,4),16),b:parseInt(hex.substring(4,6),16)};
+}
+
+function rgbToHex(r,g,b){
+    return '#'+[r,g,b].map(function(x){var h=x.toString(16);return h.length===1?'0'+h:h;}).join('').toUpperCase();
+}
+
+function rgbToHsl(r,g,b){
+    r/=255;g/=255;b/=255;
+    var max=Math.max(r,g,b),min=Math.min(r,g,b);
+    var h,s,l=(max+min)/2;
+    if(max===min){h=s=0;}else{
+        var d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);
+        switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}
+    }
+    return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+}
+
+function hslToRgb(h,s,l){
+    h/=360;s/=100;l/=100;
+    var r,g,b;
+    if(s===0){r=g=b=l;}else{
+        function hue2rgb(p,q,t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}
+        var q=l<0.5?l*(1+s):l+s-l*s;var p=2*l-q;
+        r=hue2rgb(p,q,h+1/3);g=hue2rgb(p,q,h);b=hue2rgb(p,q,h-1/3);
+    }
+    return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)};
+}
+
+function setColor(r,g,b){
+    currentColor={r:r,g:g,b:b};
+    var hex=rgbToHex(r,g,b);
+    var hsl=rgbToHsl(r,g,b);
+
+    document.getElementById('colorHero').style.background=hex;
+    document.getElementById('heroHex').textContent=hex;
+    document.getElementById('heroHex').onclick=function(){quickCopy(hex);};
+    document.getElementById('colorPicker').value=hex;
+    document.getElementById('hexInput').value=hex;
+
+    // Determine text color
+    var lum=(0.299*r+0.587*g+0.114*b)/255;
+    var txtColor=lum>0.5?'rgba(0,0,0,0.8)':'rgba(255,255,255,0.9)';
+    document.getElementById('heroHex').style.color=txtColor;
+
+    // Color values
+    var vals=[
+        {label:'HEX',val:hex},
+        {label:'RGB',val:'rgb('+r+', '+g+', '+b+')'},
+        {label:'HSL',val:'hsl('+hsl.h+', '+hsl.s+'%, '+hsl.l+'%)'},
+        {label:'CSS',val:'rgba('+r+', '+g+', '+b+', 1)'}
+    ];
+    var vHtml='';
+    for(var i=0;i<vals.length;i++){
+        vHtml+='<div class="cv-item" onclick="quickCopy(\''+vals[i].val+'\')"><span class="cv-label">'+vals[i].label+'</span><span class="cv-val">'+vals[i].val+'</span><span class="cv-copy"><i class="fas fa-copy"></i></span></div>';
+    }
+    document.getElementById('colorValues').innerHTML=vHtml;
+
+    // Palettes
+    buildShades(r,g,b);
+    buildTints(r,g,b);
+    buildComplementary(hsl);
+    buildAnalogous(hsl);
+    buildTriadic(hsl);
+
+    // History
+    addHistory(hex);
+}
+
+function buildShades(r,g,b){
+    var html='';
+    for(var i=9;i>=1;i--){
+        var f=i/10;
+        var sr=Math.round(r*f),sg=Math.round(g*f),sb=Math.round(b*f);
+        var hex=rgbToHex(sr,sg,sb);
+        html+='<div class="palette-swatch" style="background:'+hex+'" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
+    }
+    document.getElementById('shadesRow').innerHTML=html;
+}
+
+function buildTints(r,g,b){
+    var html='';
+    for(var i=1;i<=9;i++){
+        var f=i/10;
+        var tr=Math.round(r+(255-r)*f),tg=Math.round(g+(255-g)*f),tb=Math.round(b+(255-b)*f);
+        var hex=rgbToHex(tr,tg,tb);
+        html+='<div class="palette-swatch" style="background:'+hex+'" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
+    }
+    document.getElementById('tintsRow').innerHTML=html;
+}
+
+function buildComplementary(hsl){
+    var html='';
+    var angles=[0,180];
+    for(var i=0;i<angles.length;i++){
+        var h=(hsl.h+angles[i])%360;
+        var rgb=hslToRgb(h,hsl.s,hsl.l);
+        var hex=rgbToHex(rgb.r,rgb.g,rgb.b);
+        html+='<div class="palette-swatch" style="background:'+hex+';flex:1" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
+    }
+    document.getElementById('compRow').innerHTML=html;
+}
+
+function buildAnalogous(hsl){
+    var html='';
+    var angles=[-30,-15,0,15,30];
+    for(var i=0;i<angles.length;i++){
+        var h=(hsl.h+angles[i]+360)%360;
+        var rgb=hslToRgb(h,hsl.s,hsl.l);
+        var hex=rgbToHex(rgb.r,rgb.g,rgb.b);
+        html+='<div class="palette-swatch" style="background:'+hex+'" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
+    }
+    document.getElementById('analogRow').innerHTML=html;
+}
+
+function buildTriadic(hsl){
+    var html='';
+    var angles=[0,120,240];
+    for(var i=0;i<angles.length;i++){
+        var h=(hsl.h+angles[i])%360;
+        var rgb=hslToRgb(h,hsl.s,hsl.l);
+        var hex=rgbToHex(rgb.r,rgb.g,rgb.b);
+        html+='<div class="palette-swatch" style="background:'+hex+';flex:1" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
+    }
+    document.getElementById('triadRow').innerHTML=html;
+}
+
+function onPickerChange(hex){
+    var rgb=hexToRgb(hex);
+    setColor(rgb.r,rgb.g,rgb.b);
+}
+
+function applyHex(){
+    var hex=document.getElementById('hexInput').value.trim();
+    if(!/^#?[0-9a-fA-F]{3,6}$/.test(hex)){alert('Invalid HEX color');return;}
+    if(hex[0]!=='#')hex='#'+hex;
+    onPickerChange(hex);
+}
+
+function randomColor(){
+    var r=Math.floor(Math.random()*256);
+    var g=Math.floor(Math.random()*256);
+    var b=Math.floor(Math.random()*256);
+    setColor(r,g,b);
+}
+
+function quickCopy(text){
+    if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){alert('Copied: '+text);});}
+    else{prompt('Copy:',text);}
+}
+
+function saveColor(){
+    var hex=rgbToHex(currentColor.r,currentColor.g,currentColor.b);
+    if(savedColors.indexOf(hex)<0){savedColors.push(hex);renderSaved();}
+}
+
+function clearSaved(){savedColors=[];renderSaved();}
+
+function renderSaved(){
+    var c=document.getElementById('savedColors');
+    if(savedColors.length===0){c.innerHTML='<span style="color:var(--text-light);font-size:12px;">No saved colors yet</span>';return;}
+    var html='';
+    for(var i=0;i<savedColors.length;i++){
+        html+='<div class="saved-dot" style="background:'+savedColors[i]+'" onclick="onPickerChange(\''+savedColors[i]+'\')" title="'+savedColors[i]+'"></div>';
+    }
+    c.innerHTML=html;
+}
+
+function addHistory(hex){
+    var idx=colorHistory.indexOf(hex);
+    if(idx>=0)colorHistory.splice(idx,1);
+    colorHistory.unshift(hex);
+    if(colorHistory.length>20)colorHistory.pop();
+    renderHistory();
+}
+
+function renderHistory(){
+    var c=document.getElementById('historyRow');
+    var html='';
+    for(var i=0;i<colorHistory.length;i++){
+        html+='<div class="hist-dot" style="background:'+colorHistory[i]+'" onclick="onPickerChange(\''+colorHistory[i]+'\')" title="'+colorHistory[i]+'"></div>';
+    }
+    c.innerHTML=html;
+}
+
+// Init
+setColor(249,115,22);
+
+function cpFaqToggle(el){var a=el.classList.contains('active');var items=document.querySelectorAll('.cp-faq .faq-item');for(var i=0;i<items.length;i++)items[i].classList.remove('active');if(!a)el.classList.add('active');}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open');};}
+</script>
 <script src="../../js/tool-page.js"></script>
-<script src="../../js/color-picker.js"></script>
+<script src="../../js/adsense.js"></script>
 </body>
 </html>

@@ -54,31 +54,20 @@
         .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
         .privacy-note i{color:#22c55e;margin-right:4px}
 
-        /* Related Tools */
-        .related-tools{padding:50px 0}
-        .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-top:24px}
-        .related-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 14px;background:rgba(255,255,255,0.5);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:16px;text-decoration:none;color:var(--text-dark);transition:all .2s;text-align:center}
-        .related-card:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,0.08);background:rgba(255,255,255,0.7)}
-        .related-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
-        .related-card h4{font-size:13px;font-weight:600;margin:0}
-
-      /* FAQ */
-.faq-section{padding:50px 0}
-.faq-list{max-width:750px;margin:0 auto}
-.faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-.faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
-.faq-item.open{background:rgba(255,255,255,0.85);border-color:rgba(99,102,241,0.2)}
-.faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
-.faq-question h4{font-size:15px;font-weight:600;color:var(--text-dark);margin:0;flex:1}
-.faq-item.open .faq-question h4{color:#6366f1}
-.faq-question i{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
-.faq-item.open .faq-question i{transform:rotate(180deg);color:#6366f1}
-.faq-answer{max-height:0;overflow:hidden;transition:max-height .4s ease,opacity .3s ease;opacity:0}
-.faq-item.open .faq-answer{max-height:300px;opacity:1}
-.faq-answer-inner{padding:0 22px 18px}
-.faq-answer-inner p{font-size:14px;line-height:1.7;color:var(--text-medium);margin:0}
-.faq-num{width:28px;height:28px;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-.faq-item.open .faq-num{background:#6366f1;color:#fff}
+        /* ═══ FAQ OVERRIDE — fixes answer visibility ═══ */
+        .age-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .age-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
+        .age-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(249,115,22,0.25)}
+        .age-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
+        .age-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .age-faq .faq-item.active .faq-q h4{color:#f97316}
+        .age-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
+        .age-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#f97316}
+        .age-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(249,115,22,0.1);color:#f97316;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .age-faq .faq-item.active .faq-q .faq-num{background:#f97316;color:#fff}
+        .age-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(249,115,22,0.1);margin:0 22px}
+        .age-faq .faq-item.active .faq-a{display:block}
+        .age-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
 
         @media(max-width:768px){
             .date-row{grid-template-columns:1fr}
@@ -86,11 +75,10 @@
             .age-box .ab-num{font-size:22px}
             .detail-grid{grid-template-columns:1fr}
             .age-big{font-size:48px}
-            .related-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
         }
         @media(max-width:480px){
             .zodiac-row{flex-direction:column;align-items:center}
-            .faq-question{padding:14px}
+            .age-faq .faq-q{padding:14px 16px}
         }
     </style>
 </head>
@@ -287,8 +275,7 @@
                 </div>
             </div>
 
-        </div><!-- end resultArea -->
-
+        </div>
     </div>
 </section>
 
@@ -349,75 +336,67 @@
     </div>
 </section>
 
-<!-- FAQ -->
+<!-- FAQ — CUSTOM CLASS TO AVOID CONFLICT -->
 <section class="faq-section">
     <div class="container">
         <div class="section-header"><h2>Frequently Asked Questions</h2></div>
-        <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)">
-    <div class="faq-question">
-        <span class="faq-num">1</span>
-        <h4>How accurate is this calculator?</h4>
-        <i class="fas fa-chevron-down"></i>
-    </div>
-    <div class="faq-answer">
-        <div class="faq-answer-inner">
-            <p>Accurate to the second, accounting for leap years and varying month lengths.</p>
-        </div>
-    </div>
-</div>
+        <div class="age-faq">
 
-<div class="faq-item glass" onclick="toggleFaq(this)">
-    <div class="faq-question">
-        <span class="faq-num">2</span>
-        <h4>Can I calculate age at a specific date?</h4>
-        <i class="fas fa-chevron-down"></i>
-    </div>
-    <div class="faq-answer">
-        <div class="faq-answer-inner">
-            <p>Yes! Fill in the "Age at Date" field to calculate age at any past or future date.</p>
-        </div>
-    </div>
-</div>
+            <div class="faq-item" onclick="ageFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">1</span>
+                    <h4>How accurate is this calculator?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>Accurate to the second, accounting for leap years and varying month lengths. The live seconds counter updates in real-time.</p>
+                </div>
+            </div>
 
-<div class="faq-item glass" onclick="toggleFaq(this)">
-    <div class="faq-question">
-        <span class="faq-num">3</span>
-        <h4>Does it handle leap years?</h4>
-        <i class="fas fa-chevron-down"></i>
-    </div>
-    <div class="faq-answer">
-        <div class="faq-answer-inner">
-            <p>Yes, all calculations properly handle leap years including Feb 29 birthdays.</p>
-        </div>
-    </div>
-</div>
+            <div class="faq-item" onclick="ageFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">2</span>
+                    <h4>Can I calculate age at a specific date?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>Yes! Fill in the "Age at Date" field to calculate your age at any past or future date instead of today.</p>
+                </div>
+            </div>
 
-<div class="faq-item glass" onclick="toggleFaq(this)">
-    <div class="faq-question">
-        <span class="faq-num">4</span>
-        <h4>Is my data stored anywhere?</h4>
-        <i class="fas fa-chevron-down"></i>
-    </div>
-    <div class="faq-answer">
-        <div class="faq-answer-inner">
-            <p>No! Everything runs in your browser. Your date of birth is never sent to any server. 100% private.</p>
-        </div>
-    </div>
-</div>
+            <div class="faq-item" onclick="ageFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">3</span>
+                    <h4>Does it handle leap years?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>Yes, all calculations properly handle leap years including February 29 birthdays.</p>
+                </div>
+            </div>
 
-<div class="faq-item glass" onclick="toggleFaq(this)">
-    <div class="faq-question">
-        <span class="faq-num">5</span>
-        <h4>What is the zodiac sign based on?</h4>
-        <i class="fas fa-chevron-down"></i>
-    </div>
-    <div class="faq-answer">
-        <div class="faq-answer-inner">
-            <p>Western tropical astrology is used for zodiac signs. Chinese zodiac follows the traditional 12-year animal cycle.</p>
-        </div>
-    </div>
-</div>
+            <div class="faq-item" onclick="ageFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">4</span>
+                    <h4>Is my data stored anywhere?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>No! Everything runs entirely in your browser. Your date of birth is never sent to any server. 100% private and secure.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="ageFaqToggle(this)">
+                <div class="faq-q">
+                    <span class="faq-num">5</span>
+                    <h4>What is the zodiac sign based on?</h4>
+                    <i class="fas fa-chevron-down faq-arrow"></i>
+                </div>
+                <div class="faq-a">
+                    <p>Western tropical astrology is used for zodiac signs. Chinese zodiac follows the traditional 12-year animal cycle based on birth year.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
@@ -672,11 +651,18 @@ function hideE() {
     if (el) el.style.display = 'none';
 }
 
-// ===== FAQ =====
-function toggleFaq(el) {
-    var isOpen = el.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
-    if (!isOpen) el.classList.add('open');
+// ===== FAQ TOGGLE — NEW FUNCTION (no conflict) =====
+function ageFaqToggle(el) {
+    var isActive = el.classList.contains('active');
+    // Close all
+    var items = document.querySelectorAll('.age-faq .faq-item');
+    for (var i = 0; i < items.length; i++) {
+        items[i].classList.remove('active');
+    }
+    // Open clicked if not already open
+    if (!isActive) {
+        el.classList.add('active');
+    }
 }
 
 // ===== MOBILE MENU =====

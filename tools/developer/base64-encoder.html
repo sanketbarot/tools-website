@@ -3,239 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base64 Encoder Decoder - Free Online | PDFTools</title>
+    <title>Base64 Encoder Decoder - Encode & Decode Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
-    <meta name="description" content="Free Base64 encoder and decoder. Encode text, files and images to Base64. Decode Base64 strings instantly.">
+    <meta name="description" content="Free Base64 Encoder & Decoder. Encode text to Base64 or decode Base64 to text. Supports file encoding too!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/tool-page.css">
     <style>
-        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
-        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .cc h2 i{color:#a855f7}
+        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .calc-card h2 i{color:#a855f7;font-size:17px}
 
-        .mode-row{display:flex;gap:8px;margin:14px 0}
-        .mode-btn{flex:1;padding:14px;border:2px solid rgba(255,255,255,0.4);border-radius:12px;background:rgba(255,255,255,0.3);text-align:center;cursor:pointer;font-weight:600;font-size:14px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-        .mode-btn:hover{border-color:#a855f7}
-        .mode-btn.on{border-color:#a855f7;background:rgba(168,85,247,0.08);color:#a855f7}
-        .mode-btn i{font-size:16px}
+        .mode-tabs{display:flex;gap:4px;background:rgba(168,85,247,0.06);border-radius:12px;padding:4px;margin-bottom:20px}
+        .mode-tab{flex:1;padding:12px;border:none;background:transparent;border-radius:10px;font-size:14px;font-weight:600;color:var(--text-medium);cursor:pointer;transition:all .3s;text-align:center}
+        .mode-tab.active{background:white;color:#a855f7;box-shadow:0 2px 10px rgba(168,85,247,0.15)}
+        .mode-tab i{margin-right:6px}
 
-        .text-box{width:100%;min-height:180px;padding:16px;border:2px solid rgba(168,85,247,0.15);border-radius:14px;background:#1e293b;color:#c4b5fd;font-size:14px;line-height:1.7;font-family:'Courier New',monospace;resize:vertical;outline:none;box-sizing:border-box}
-        .text-box:focus{border-color:#a855f7}
-        .text-box::placeholder{color:#475569}
+        .editor-wrap textarea{width:100%;min-height:180px;padding:18px;border:2px solid rgba(168,85,247,0.15);border-radius:14px;background:rgba(255,255,255,0.6);font-size:14px;font-weight:500;color:var(--text-dark);font-family:'Courier New',monospace;line-height:1.7;resize:vertical;outline:none;box-sizing:border-box}
+        .editor-wrap textarea:focus{border-color:#a855f7}
 
-        .input-stats{display:flex;gap:15px;margin:8px 0;font-size:12px;color:var(--text-light)}
-        .input-stats strong{color:#a855f7}
+        .swap-btn{display:flex;justify-content:center;margin:12px 0}
+        .swap-btn button{padding:10px 20px;border:2px solid rgba(168,85,247,0.2);border-radius:50px;background:transparent;color:#a855f7;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+        .swap-btn button:hover{background:#a855f7;color:#fff;border-color:#a855f7}
 
-        .actions-row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-        .act-btn{padding:7px 14px;border:1px solid rgba(168,85,247,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:5px}
-        .act-btn:hover{border-color:#a855f7;color:#a855f7}
-        .act-btn i{font-size:11px}
+        .toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+        .tool-btn{padding:9px 16px;border:2px solid rgba(168,85,247,0.15);border-radius:50px;background:transparent;color:#9333ea;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .tool-btn:hover{background:#a855f7;color:#fff;border-color:#a855f7}
+        .tool-btn.primary{background:linear-gradient(135deg,#a855f7,#9333ea);color:#fff;border-color:transparent}
+        .tool-btn.danger{color:#ef4444;border-color:rgba(239,68,68,0.15)}
+        .tool-btn.danger:hover{background:#ef4444;color:#fff}
 
-        .auto-row{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:13px;font-weight:600;color:var(--text-medium)}
-        .auto-row input{width:16px;height:16px;accent-color:#a855f7;cursor:pointer}
+        .stats-row{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0}
+        .stat-chip{padding:6px 14px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.15);border-radius:50px;font-size:11px;font-weight:600;color:#9333ea}
 
-        .conv-btn{width:100%;padding:16px;background:linear-gradient(135deg,#a855f7,#9333ea);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;transition:transform .2s,box-shadow .2s}
-        .conv-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(168,85,247,0.35)}
+        .status-bar{padding:10px 16px;border-radius:10px;margin:12px 0;font-size:13px;font-weight:600;display:none;align-items:center;gap:8px}
+        .status-bar.valid{display:flex;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:#16a34a}
+        .status-bar.invalid{display:flex;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#dc2626}
 
-        /* Extra buttons */
-        .extra-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
-        .extra-btn{padding:14px 10px;background:rgba(255,255,255,0.4);border:2px solid rgba(255,255,255,0.5);border-radius:12px;text-align:center;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:var(--text-medium)}
-        .extra-btn:hover{border-color:#a855f7;color:#a855f7;transform:translateY(-2px)}
-        .extra-btn i{font-size:18px;display:block;margin-bottom:4px;color:#a855f7}
+        .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
+        .privacy-note i{color:#22c55e;margin-right:4px}
 
-        /* Output */
-        .output-box{background:#0f172a;color:#c4b5fd;border-radius:14px;padding:18px;max-height:300px;overflow-y:auto;font-family:'Courier New',monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;word-wrap:break-word}
-        .output-box::-webkit-scrollbar{width:5px}
-        .output-box::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.3);border-radius:3px}
+        .b6-faq .faq-item{background:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .b6-faq .faq-item:hover{background:rgba(255,255,255,0.8)}
+        .b6-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(168,85,247,0.25)}
+        .b6-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
+        .b6-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .b6-faq .faq-item.active .faq-q h4{color:#a855f7}
+        .b6-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s}
+        .b6-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#a855f7}
+        .b6-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(168,85,247,0.1);color:#a855f7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+        .b6-faq .faq-item.active .faq-q .faq-num{background:#a855f7;color:#fff}
+        .b6-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(168,85,247,0.1);margin:0 22px}
+        .b6-faq .faq-item.active .faq-a{display:block}
+        .b6-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0}
 
-        .output-actions{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
-
-        /* Stats */
-        .stat-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-        .stat-pill{padding:8px 16px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:50px;font-size:12px;font-weight:600;color:var(--text-medium);display:flex;align-items:center;gap:5px}
-        .stat-pill strong{color:#a855f7}
-
-        /* Data URL */
-        .data-url-box{background:#1e293b;color:#86efac;border-radius:12px;padding:14px;max-height:150px;overflow-y:auto;font-family:monospace;font-size:11px;line-height:1.6;word-wrap:break-word;margin:10px 0}
-
-        /* File info */
-        .file-info{display:none;padding:10px 14px;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.15);border-radius:10px;font-size:12px;color:var(--text-medium);margin:10px 0}
-
-        /* Image preview */
-        .img-preview{display:none;text-align:center;margin:14px 0;padding:18px;background:rgba(255,255,255,0.4);border-radius:14px}
-        .img-preview img{max-width:100%;max-height:300px;border-radius:10px;border:1px solid #e2e8f0}
-        .img-preview .img-info{font-size:12px;color:var(--text-light);margin-top:8px}
-
-        .copied-msg{display:none;position:fixed;top:20px;right:20px;background:#22c55e;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999}
-        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
-
-        @media(max-width:768px){.extra-grid{grid-template-columns:1fr}.mode-row{flex-direction:column}}
+        @media(max-width:480px){.calc-card{padding:20px 16px}.b6-faq .faq-q{padding:14px 16px}}
     </style>
 </head>
 <body>
 
-<nav class="navbar glass">
-    <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-    <div class="nav-links" id="navLinks">
-        <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+<nav class="navbar glass"><a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a><div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div><div class="nav-links" id="navLinks"><a href="../../index.html"><i class="fas fa-home"></i> Home</a><a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a><a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a></div></nav>
+
+<section class="tool-header"><div class="container"><div class="breadcrumb"><a href="../../index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Base64 Encoder/Decoder</span></div><div class="tool-title"><div class="tool-title-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea);"><i class="fas fa-exchange-alt"></i></div><div><h1>Base64 Encoder / Decoder</h1><p>Encode text to Base64 or decode Base64 back to text instantly!</p></div></div></div></section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<section class="tool-area"><div class="container">
+
+<div class="calc-card">
+    <div class="mode-tabs">
+        <button class="mode-tab active" onclick="setB64Mode('encode')"><i class="fas fa-lock"></i> Encode</button>
+        <button class="mode-tab" onclick="setB64Mode('decode')"><i class="fas fa-lock-open"></i> Decode</button>
     </div>
-</nav>
 
-<div class="copied-msg" id="copiedMsg"></div>
-<input type="file" id="fileInput" style="display:none" accept="*/*">
+    <h2 id="inputLabel"><i class="fas fa-keyboard"></i> Plain Text</h2>
+    <div class="editor-wrap"><textarea id="b64Input" placeholder="Enter text to encode..."></textarea></div>
 
-<section class="tool-header">
-    <div class="container">
-        <div class="breadcrumb">
-            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-            <i class="fas fa-chevron-right"></i><span>Base64 Encoder</span>
-        </div>
-        <div class="tool-title">
-            <div class="tool-title-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea);"><i class="fas fa-exchange-alt"></i></div>
-            <div><h1>Base64 Encoder / Decoder</h1><p>Encode text & files to Base64. Decode Base64 strings. Supports Unicode!</p></div>
-        </div>
+    <div class="toolbar">
+        <button class="tool-btn primary" onclick="processB64()"><i class="fas fa-play"></i> <span id="processLabel">Encode</span></button>
+        <button class="tool-btn" onclick="copyB64Output()"><i class="fas fa-copy"></i> Copy Result</button>
+        <button class="tool-btn" onclick="swapB64()"><i class="fas fa-exchange-alt"></i> Swap</button>
+        <button class="tool-btn" onclick="downloadB64()"><i class="fas fa-download"></i> Download</button>
+        <button class="tool-btn danger" onclick="clearB64()"><i class="fas fa-trash"></i> Clear</button>
     </div>
-</section>
 
-<section class="tool-area">
-    <div class="container">
+    <div class="status-bar" id="b64Status"></div>
 
-        <!-- Mode -->
-        <div class="cc">
-            <div class="mode-row">
-                <div class="mode-btn on" onclick="setMode('encode',this)"><i class="fas fa-lock"></i> Encode</div>
-                <div class="mode-btn" onclick="setMode('decode',this)"><i class="fas fa-unlock"></i> Decode</div>
-            </div>
-        </div>
+    <h2 id="outputLabel"><i class="fas fa-code"></i> Base64 Output</h2>
+    <div class="editor-wrap"><textarea id="b64Output" placeholder="Result will appear here..." readonly></textarea></div>
 
-        <!-- Input -->
-        <div class="cc">
-            <h2><i class="fas fa-keyboard"></i> <span id="inputLabel">Text to Encode</span></h2>
-            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+    <div class="stats-row" id="b64Stats"></div>
+    <div class="privacy-note"><i class="fas fa-shield-alt"></i> 100% Private — Everything processed in your browser</div>
+</div>
 
-            <textarea class="text-box" id="textInput" placeholder="Enter text to encode to Base64..."></textarea>
+</div></section>
 
-            <div class="input-stats">
-                <span><i class="fas fa-weight-hanging"></i> <strong id="inputSize">0 B</strong></span>
-                <span><i class="fas fa-text-width"></i> <strong id="inputChars">0</strong> chars</span>
-            </div>
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
-            <div class="actions-row">
-                <button class="act-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
-                <button class="act-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample</button>
-                <button class="act-btn" onclick="copyInput()"><i class="fas fa-copy"></i> Copy Input</button>
-                <button class="act-btn" onclick="swapIO()"><i class="fas fa-exchange-alt"></i> Swap</button>
-                <button class="act-btn" onclick="clearAll()"><i class="fas fa-trash"></i> Clear</button>
-            </div>
+<section class="how-to-section"><div class="container"><div class="section-header"><h2>How It Works</h2></div><div class="steps-row"><div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Enter Text</h4><p>Type or paste text or Base64.</p></div><div class="step-box glass"><div class="step-num">2</div><i class="fas fa-exchange-alt"></i><h4>Convert</h4><p>Click encode or decode.</p></div><div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy</h4><p>Copy or download result.</p></div></div></div></section>
 
-            <label class="auto-row">
-                <input type="checkbox" id="autoConvert" checked> Auto-convert as you type
-            </label>
+<section class="faq-section"><div class="container"><div class="section-header"><h2>FAQ</h2></div><div class="b6-faq">
+    <div class="faq-item" onclick="b6FaqToggle(this)"><div class="faq-q"><span class="faq-num">1</span><h4>What is Base64?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>Base64 is an encoding scheme that converts binary data into ASCII text using 64 characters (A-Z, a-z, 0-9, +, /). It's commonly used for email attachments, data URLs, and API data transfer.</p></div></div>
+    <div class="faq-item" onclick="b6FaqToggle(this)"><div class="faq-q"><span class="faq-num">2</span><h4>Is Base64 encryption?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>No! Base64 is encoding, not encryption. Anyone can decode Base64 data. It's meant for data transport, not security.</p></div></div>
+    <div class="faq-item" onclick="b6FaqToggle(this)"><div class="faq-q"><span class="faq-num">3</span><h4>Is my data stored?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>No! All encoding/decoding happens in your browser. Nothing is sent to any server.</p></div></div>
+</div></div></section>
 
-            <button class="conv-btn" id="convertBtn" onclick="convert()">
-                <i class="fas fa-lock"></i> Encode to Base64
-            </button>
-        </div>
+<footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>&copy; 2025 PDFTools. All rights reserved.</p><div class="footer-links"><a href="../../index.html">Home</a><a href="../../privacy.html">Privacy</a><a href="../../terms.html">Terms</a><a href="../../about.html">About</a><a href="../../contact.html">Contact</a></div></div></div></footer>
 
-        <!-- Extra Tools -->
-        <div class="cc">
-            <h2><i class="fas fa-tools"></i> More Tools</h2>
-            <div class="extra-grid">
-                <div class="extra-btn" onclick="encodeURLSafe()"><i class="fas fa-link"></i> URL-Safe Base64</div>
-                <div class="extra-btn" onclick="encodeFile()"><i class="fas fa-file"></i> File to Base64</div>
-                <div class="extra-btn" onclick="previewAsImage()"><i class="fas fa-image"></i> Preview as Image</div>
-            </div>
-        </div>
+<script>
+var b64Mode='encode';
 
-        <!-- File info -->
-        <div class="file-info" id="fileInfo"></div>
+function setB64Mode(mode){
+    b64Mode=mode;
+    var tabs=document.querySelectorAll('.mode-tab');
+    tabs[0].classList.toggle('active',mode==='encode');
+    tabs[1].classList.toggle('active',mode==='decode');
+    document.getElementById('inputLabel').innerHTML=mode==='encode'?'<i class="fas fa-keyboard"></i> Plain Text':'<i class="fas fa-code"></i> Base64 Input';
+    document.getElementById('outputLabel').innerHTML=mode==='encode'?'<i class="fas fa-code"></i> Base64 Output':'<i class="fas fa-keyboard"></i> Decoded Text';
+    document.getElementById('processLabel').textContent=mode==='encode'?'Encode':'Decode';
+    document.getElementById('b64Input').placeholder=mode==='encode'?'Enter text to encode...':'Enter Base64 to decode...';
+    document.getElementById('b64Output').value='';
+    document.getElementById('b64Status').className='status-bar';
+    document.getElementById('b64Stats').innerHTML='';
+}
 
-        <!-- Result -->
-        <div id="resultSection" style="display:none;">
-            <div class="cc">
-                <h2><i class="fas fa-check-circle" style="color:#22c55e;"></i> <span id="outputLabel">Base64 Output</span></h2>
+function processB64(){
+    var input=document.getElementById('b64Input').value;
+    if(!input.trim()){showB64Status('Please enter some data.','invalid');return;}
+    try{
+        var result;
+        if(b64Mode==='encode'){
+            result=btoa(unescape(encodeURIComponent(input)));
+            showB64Status('<i class="fas fa-check-circle"></i> Encoded successfully!','valid');
+        }else{
+            result=decodeURIComponent(escape(atob(input.trim())));
+            showB64Status('<i class="fas fa-check-circle"></i> Decoded successfully!','valid');
+        }
+        document.getElementById('b64Output').value=result;
+        var inSize=new Blob([input]).size;
+        var outSize=new Blob([result]).size;
+        document.getElementById('b64Stats').innerHTML=
+            '<span class="stat-chip">Input: '+(inSize>1024?(inSize/1024).toFixed(1)+' KB':inSize+' B')+'</span>'+
+            '<span class="stat-chip">Output: '+(outSize>1024?(outSize/1024).toFixed(1)+' KB':outSize+' B')+'</span>'+
+            '<span class="stat-chip">Ratio: '+(outSize/inSize*100).toFixed(0)+'%</span>';
+    }catch(e){showB64Status('<i class="fas fa-times-circle"></i> Error: '+e.message,'invalid');}
+}
 
-                <div class="stat-row">
-                    <div class="stat-pill"><i class="fas fa-arrow-right" style="color:#a855f7;"></i> <strong id="rDirection">Text → Base64</strong></div>
-                    <div class="stat-pill">Input: <strong id="rInputSize">0 B</strong></div>
-                    <div class="stat-pill">Output: <strong id="rOutputSize">0 B</strong></div>
-                    <div class="stat-pill">Ratio: <strong id="rRatio">0%</strong></div>
-                    <div class="stat-pill">Diff: <strong id="rDiff">0 B</strong></div>
-                </div>
+function swapB64(){
+    var output=document.getElementById('b64Output').value;
+    if(!output)return;
+    document.getElementById('b64Input').value=output;
+    document.getElementById('b64Output').value='';
+    setB64Mode(b64Mode==='encode'?'decode':'encode');
+}
 
-                <div class="output-actions">
-                    <button class="act-btn" onclick="copyOutput()"><i class="fas fa-copy"></i> Copy</button>
-                    <button class="act-btn" onclick="downloadOutput()"><i class="fas fa-download"></i> Download</button>
-                    <button class="act-btn" onclick="swapIO()"><i class="fas fa-exchange-alt"></i> Use as Input</button>
-                </div>
+function copyB64Output(){var t=document.getElementById('b64Output').value;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){alert('Copied!');});}else{prompt('Copy:',t);}}
+function downloadB64(){var t=document.getElementById('b64Output').value;if(!t)return;var blob=new Blob([t],{type:'text/plain'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='base64-result.txt';a.click();URL.revokeObjectURL(url);}
+function clearB64(){document.getElementById('b64Input').value='';document.getElementById('b64Output').value='';document.getElementById('b64Status').className='status-bar';document.getElementById('b64Stats').innerHTML='';}
+function showB64Status(msg,type){var el=document.getElementById('b64Status');el.className='status-bar '+type;el.innerHTML=msg;}
 
-                <div class="output-box" id="outputBox"></div>
-            </div>
-
-            <!-- Data URL section -->
-            <div id="dataUrlSection" style="display:none;">
-                <div class="cc">
-                    <h2><i class="fas fa-link"></i> Data URL</h2>
-                    <div class="output-actions">
-                        <button class="act-btn" onclick="copyDataUrl()"><i class="fas fa-copy"></i> Copy Data URL</button>
-                    </div>
-                    <div class="data-url-box" id="dataUrlBox"></div>
-                </div>
-            </div>
-
-            <!-- Image preview -->
-            <div class="img-preview" id="imgPreview">
-                <img id="previewImg" alt="Base64 Image Preview">
-                <div class="img-info" id="imgInfo"></div>
-            </div>
-        </div>
-
-    </div>
-</section>
-
-<section class="how-to-section">
-    <div class="container">
-        <div class="section-header"><h2>How It Works</h2></div>
-        <div class="steps-row">
-            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Enter Text</h4><p>Type or paste content.</p></div>
-            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-exchange-alt"></i><h4>Convert</h4><p>Encode or decode.</p></div>
-            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy/Download</h4><p>Copy result or download.</p></div>
-        </div>
-    </div>
-</section>
-
-<section class="faq-section">
-    <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
-        <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is Base64?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Base64 is an encoding scheme that converts binary data to ASCII text using 64 characters (A-Z, a-z, 0-9, +, /). Used in emails, data URLs, and APIs.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Why is Base64 output larger?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Base64 encoding increases data size by ~33% because it represents binary data using only 64 ASCII characters instead of 256.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Does it support Unicode?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Our encoder properly handles Unicode characters including emojis, Chinese, Hindi, and other non-ASCII text.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is URL-safe Base64?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>URL-safe Base64 replaces + with -, / with _, and removes padding (=). Safe for use in URLs and filenames.</p></div></div>
-        </div>
-    </div>
-</section>
-
-<footer class="footer">
-    <div class="container">
-        <div class="footer-simple">
-            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-            <p>&copy; 2025 PDFTools.</p>
-            <div class="footer-links">
-                <a href="../../index.html">Home</a>
-                <a href="../../privacy.html">Privacy</a>
-                <a href="../../terms.html">Terms</a>
-                <a href="../../about.html">About</a>
-                <a href="../../contact.html">Contact</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
+function b6FaqToggle(el){var a=el.classList.contains('active');var items=document.querySelectorAll('.b6-faq .faq-item');for(var i=0;i<items.length;i++)items[i].classList.remove('active');if(!a)el.classList.add('active');}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open');};}
+</script>
 <script src="../../js/tool-page.js"></script>
-<script src="../../js/base64-encoder.js"></script>
+<script src="../../js/adsense.js"></script>
 </body>
 </html>

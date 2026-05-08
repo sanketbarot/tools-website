@@ -3,209 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Counter - Count Words & Characters | PDFTools</title>
+    <title>Word Counter - Count Words, Characters, Sentences Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
-    <meta name="description" content="Free word counter tool. Count words, characters, sentences, paragraphs. Get reading time, readability score and word frequency.">
+    <meta name="description" content="Free Word Counter. Count words, characters, sentences, paragraphs, reading time, speaking time. Keyword density, readability score & more!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/tool-page.css">
     <style>
-        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
-        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .cc h2 i{color:#06b6d4}
-        .text-box{width:100%;min-height:220px;padding:18px;border:2px solid rgba(6,182,212,0.2);border-radius:14px;background:rgba(255,255,255,0.7);font-size:15px;line-height:1.8;color:var(--text-dark);outline:none;font-family:inherit;resize:vertical;box-sizing:border-box;transition:border-color .2s}
-        .text-box:focus{border-color:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,0.1)}
-        .text-box::placeholder{color:#94a3b8}
-        .text-actions{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
-        .ta-btn{padding:7px 14px;border:1px solid rgba(6,182,212,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:12px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:5px}
-        .ta-btn:hover{border-color:#06b6d4;color:#06b6d4;background:rgba(6,182,212,0.08)}
-        .ta-btn i{font-size:12px}
+        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .calc-card h2 i{color:#3b82f6;font-size:17px}
 
-        /* Stats grid */
-        .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
-        .stat-card{padding:18px 14px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:14px;text-align:center;transition:transform .15s}
-        .stat-card:hover{transform:translateY(-3px)}
-        .stat-card .sc-num{font-size:30px;font-weight:800;margin-bottom:3px;background:linear-gradient(135deg,#06b6d4,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .stat-card .sc-label{font-size:11px;color:var(--text-light);font-weight:600}
-        .stat-card.main{background:linear-gradient(135deg,rgba(6,182,212,0.08),rgba(6,182,212,0.03));border-color:rgba(6,182,212,0.2)}
-        .stat-card.main .sc-num{font-size:38px}
+        /* Stats Bar */
+        .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+        .stat-pill{padding:14px 10px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:14px;text-align:center;transition:transform .2s}
+        .stat-pill:hover{transform:translateY(-2px)}
+        .stat-pill .sp-val{font-size:24px;font-weight:900;display:block;line-height:1;margin-bottom:4px}
+        .stat-pill .sp-label{font-size:10px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px}
+        .sp-blue{color:#3b82f6}.sp-green{color:#22c55e}.sp-orange{color:#f97316}.sp-purple{color:#8b5cf6}.sp-pink{color:#ec4899}.sp-teal{color:#14b8a6}.sp-red{color:#ef4444}.sp-yellow{color:#eab308}
 
-        /* Detail grid */
-        .detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
-        .detail-item{display:flex;align-items:center;gap:12px;padding:13px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px}
-        .detail-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
-        .detail-data h4{font-size:16px;font-weight:800;color:var(--text-dark);margin-bottom:1px}
-        .detail-data p{font-size:10px;color:var(--text-light)}
+        /* Textarea */
+        .text-area-wrap{position:relative}
+        .text-area-wrap textarea{width:100%;min-height:250px;padding:18px 20px;border:2px solid rgba(59,130,246,0.15);border-radius:16px;background:rgba(255,255,255,0.6);font-size:15px;font-weight:500;color:var(--text-dark);outline:none;resize:vertical;font-family:inherit;line-height:1.8;transition:border-color .2s;box-sizing:border-box}
+        .text-area-wrap textarea:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+        .text-area-wrap textarea::placeholder{color:var(--text-light);font-weight:400}
+
+        /* Toolbar */
+        .toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+        .tool-btn{padding:7px 14px;border:1.5px solid rgba(59,130,246,0.15);border-radius:50px;background:transparent;color:#3b82f6;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .tool-btn:hover{background:#3b82f6;color:#fff;border-color:#3b82f6}
+        .tool-btn.danger{color:#ef4444;border-color:rgba(239,68,68,0.15)}
+        .tool-btn.danger:hover{background:#ef4444;color:#fff;border-color:#ef4444}
+
+        /* Detail Stats Grid */
+        .detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+        .detail-item{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;transition:all .2s}
+        .detail-item:hover{transform:translateX(2px);background:rgba(59,130,246,0.04)}
+        .detail-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+        .detail-info h4{font-size:18px;font-weight:800;color:var(--text-dark);margin-bottom:2px}
+        .detail-info p{font-size:11px;color:var(--text-light);font-weight:500}
+
+        /* Keyword Density */
+        .keyword-wrap{max-height:300px;overflow-y:auto}
+        .kw-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,0.35);border-radius:10px;margin-bottom:5px;transition:all .2s}
+        .kw-item:hover{background:rgba(59,130,246,0.06)}
+        .kw-rank{width:26px;height:26px;border-radius:8px;background:rgba(59,130,246,0.1);color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+        .kw-word{flex:1;font-size:14px;font-weight:600;color:var(--text-dark)}
+        .kw-count{font-size:13px;font-weight:700;color:#3b82f6}
+        .kw-bar-wrap{width:80px;height:6px;background:rgba(59,130,246,0.1);border-radius:4px;overflow:hidden;flex-shrink:0}
+        .kw-bar{height:100%;background:linear-gradient(135deg,#3b82f6,#2563eb);border-radius:4px;transition:width .3s}
+        .kw-pct{font-size:11px;color:var(--text-light);font-weight:600;min-width:35px;text-align:right}
 
         /* Readability */
-        .read-card{text-align:center;padding:18px}
-        .read-score{font-size:48px;font-weight:800;margin-bottom:3px}
-        .read-label{font-size:16px;font-weight:700;margin-bottom:10px}
-        .read-bar-wrap{max-width:350px;margin:0 auto;height:10px;background:rgba(0,0,0,0.06);border-radius:5px;overflow:hidden}
-        .read-bar{height:100%;border-radius:5px;transition:width .5s,background .5s}
-        .read-scale{display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);margin-top:4px;max-width:350px;margin-left:auto;margin-right:auto}
+        .read-score{text-align:center;padding:20px}
+        .rs-big{font-size:56px;font-weight:900;line-height:1;margin-bottom:6px}
+        .rs-label{font-size:16px;font-weight:700;margin-bottom:4px}
+        .rs-sub{font-size:13px;color:var(--text-light)}
+        .rs-bar{height:12px;border-radius:8px;background:linear-gradient(to right,#ef4444,#f97316,#eab308,#22c55e,#3b82f6);margin:16px 0;position:relative}
+        .rs-pointer{position:absolute;top:-5px;width:4px;height:22px;background:#1e293b;border-radius:3px;transform:translateX(-50%);transition:left .5s;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+        .rs-labels{display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--text-light)}
 
-        /* Top words */
-        .tw-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,0.35);border-radius:10px;margin-bottom:6px;transition:background .15s}
-        .tw-item:hover{background:rgba(6,182,212,0.06)}
-        .tw-rank{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-        .tw-info{flex:1;min-width:0}
-        .tw-word{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:3px}
-        .tw-bar-wrap{height:5px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
-        .tw-bar{height:100%;background:linear-gradient(90deg,#06b6d4,#0891b2);border-radius:3px;transition:width .5s}
-        .tw-count{font-size:14px;font-weight:800;color:#06b6d4;min-width:30px;text-align:right}
+        /* Social Limits */
+        .social-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+        .social-item{padding:12px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;display:flex;align-items:center;gap:10px}
+        .social-item .si-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0}
+        .social-item .si-name{font-size:12px;font-weight:600;color:var(--text-dark);display:block}
+        .social-item .si-limit{font-size:11px;color:var(--text-light);font-weight:500}
+        .social-item .si-status{font-size:11px;font-weight:700;margin-left:auto}
+        .si-ok{color:#22c55e}.si-warn{color:#f97316}.si-over{color:#ef4444}
 
         /* Share */
-        .shr{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-        .shr button{padding:8px 16px;border:2px solid rgba(6,182,212,0.25);border-radius:50px;background:transparent;color:#0891b2;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
-        .shr button:hover{background:#06b6d4;color:#fff;border-color:#06b6d4}
+        .share-row{display:flex;gap:8px;justify-content:center;margin-top:15px;flex-wrap:wrap}
+        .share-btn{padding:8px 16px;border:2px solid rgba(59,130,246,0.25);border-radius:50px;background:transparent;color:#2563eb;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .share-btn:hover{background:#3b82f6;color:#fff;border-color:#3b82f6}
 
-        @media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr)}.detail-grid{grid-template-columns:1fr}.stat-card.main .sc-num{font-size:32px}}
-        @media(max-width:480px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+        /* Privacy */
+        .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
+        .privacy-note i{color:#22c55e;margin-right:4px}
+
+        /* FAQ Override */
+        .wc-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .wc-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
+        .wc-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(59,130,246,0.25)}
+        .wc-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
+        .wc-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .wc-faq .faq-item.active .faq-q h4{color:#3b82f6}
+        .wc-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
+        .wc-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#3b82f6}
+        .wc-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(59,130,246,0.1);color:#3b82f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .wc-faq .faq-item.active .faq-q .faq-num{background:#3b82f6;color:#fff}
+        .wc-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(59,130,246,0.1);margin:0 22px}
+        .wc-faq .faq-item.active .faq-a{display:block}
+        .wc-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
+
+        @media(max-width:768px){
+            .stats-bar{grid-template-columns:repeat(4,1fr);gap:6px}
+            .stat-pill{padding:10px 6px}
+            .stat-pill .sp-val{font-size:20px}
+            .detail-grid{grid-template-columns:1fr}
+            .social-grid{grid-template-columns:1fr}
+        }
+        @media(max-width:480px){
+            .calc-card{padding:20px 16px}
+            .stats-bar{grid-template-columns:repeat(2,1fr)}
+            .stat-pill .sp-val{font-size:22px}
+            .wc-faq .faq-q{padding:14px 16px}
+            .toolbar{gap:4px}
+            .tool-btn{font-size:10px;padding:6px 10px}
+        }
     </style>
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar glass">
     <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
     <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
     <div class="nav-links" id="navLinks">
         <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
     </div>
 </nav>
 
+<!-- HEADER -->
 <section class="tool-header">
     <div class="container">
         <div class="breadcrumb">
             <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-            <i class="fas fa-chevron-right"></i><span>Word Counter</span>
+            <i class="fas fa-chevron-right"></i>
+            <span>Word Counter</span>
         </div>
         <div class="tool-title">
-            <div class="tool-title-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2);"><i class="fas fa-font"></i></div>
-            <div><h1>Word Counter</h1><p>Count words, characters, sentences & get readability analysis in real-time!</p></div>
+            <div class="tool-title-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb);">
+                <i class="fas fa-file-word"></i>
+            </div>
+            <div>
+                <h1>Word Counter</h1>
+                <p>Count words, characters, sentences, paragraphs, reading time, keyword density & more!</p>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- TOP AD -->
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<!-- TOOL AREA -->
 <section class="tool-area">
     <div class="container">
 
-        <!-- Main Stats (always visible) -->
-        <div class="stats-grid">
-            <div class="stat-card main"><div class="sc-num" id="rWords">0</div><div class="sc-label">Words</div></div>
-            <div class="stat-card main"><div class="sc-num" id="rChars">0</div><div class="sc-label">Characters</div></div>
-            <div class="stat-card main"><div class="sc-num" id="rSentences">0</div><div class="sc-label">Sentences</div></div>
-        </div>
+        <!-- MAIN CARD -->
+        <div class="calc-card">
 
-        <!-- Text Input -->
-        <div class="cc">
-            <h2><i class="fas fa-keyboard"></i> Type or Paste Your Text</h2>
-            <textarea class="text-box" id="textInput" placeholder="Start typing or paste your text here... Word count updates in real-time as you type."></textarea>
-            <div class="text-actions">
-                <button class="ta-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
-                <button class="ta-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample Text</button>
-                <button class="ta-btn" onclick="clearText()"><i class="fas fa-trash"></i> Clear</button>
-                <button class="ta-btn" onclick="copyStats()"><i class="fas fa-copy"></i> Copy Stats</button>
+            <!-- Live Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-pill"><span class="sp-val sp-blue" id="liveWords">0</span><span class="sp-label">Words</span></div>
+                <div class="stat-pill"><span class="sp-val sp-green" id="liveChars">0</span><span class="sp-label">Characters</span></div>
+                <div class="stat-pill"><span class="sp-val sp-orange" id="liveSentences">0</span><span class="sp-label">Sentences</span></div>
+                <div class="stat-pill"><span class="sp-val sp-purple" id="liveParagraphs">0</span><span class="sp-label">Paragraphs</span></div>
+            </div>
+
+            <!-- Textarea -->
+            <div class="text-area-wrap">
+                <textarea id="textInput" placeholder="Type or paste your text here to start counting..." oninput="analyzeText()"></textarea>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <button class="tool-btn" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
+                <button class="tool-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
+                <button class="tool-btn" onclick="toUpperCase()"><i class="fas fa-arrow-up"></i> UPPER</button>
+                <button class="tool-btn" onclick="toLowerCase()"><i class="fas fa-arrow-down"></i> lower</button>
+                <button class="tool-btn" onclick="toTitleCase()"><i class="fas fa-font"></i> Title</button>
+                <button class="tool-btn" onclick="toSentenceCase()"><i class="fas fa-paragraph"></i> Sentence</button>
+                <button class="tool-btn" onclick="removeExtraSpaces()"><i class="fas fa-compress-alt"></i> Trim</button>
+                <button class="tool-btn danger" onclick="clearText()"><i class="fas fa-trash"></i> Clear</button>
+            </div>
+
+            <div class="privacy-note">
+                <i class="fas fa-shield-alt"></i> 100% Private — Text never leaves your browser
             </div>
         </div>
 
-        <!-- More Stats -->
-        <div class="cc">
+        <!-- DETAILED STATS -->
+        <div class="calc-card" id="detailCard">
             <h2><i class="fas fa-chart-bar"></i> Detailed Statistics</h2>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="sc-num" id="rCharsNoSpace">0</div><div class="sc-label">Chars (no spaces)</div></div>
-                <div class="stat-card"><div class="sc-num" id="rParagraphs">0</div><div class="sc-label">Paragraphs</div></div>
-                <div class="stat-card"><div class="sc-num" id="rLines">0</div><div class="sc-label">Lines</div></div>
-            </div>
-
             <div class="detail-grid">
                 <div class="detail-item">
-                    <div class="detail-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"><i class="fas fa-book-open"></i></div>
-                    <div class="detail-data"><h4 id="rReadTime">0 sec</h4><p>Reading Time (200 wpm)</p></div>
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb)"><i class="fas fa-file-word"></i></div>
+                    <div class="detail-info"><h4 id="dWords">0</h4><p>Total Words</p></div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a);"><i class="fas fa-microphone"></i></div>
-                    <div class="detail-data"><h4 id="rSpeakTime">0 sec</h4><p>Speaking Time (150 wpm)</p></div>
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><i class="fas fa-text-width"></i></div>
+                    <div class="detail-info"><h4 id="dCharsSpace">0</h4><p>Characters (with spaces)</p></div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-icon" style="background:linear-gradient(135deg,#f97316,#ea580c);"><i class="fas fa-text-width"></i></div>
-                    <div class="detail-data"><h4 id="rAvgWord">0 chars</h4><p>Avg Word Length</p></div>
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#14b8a6,#0d9488)"><i class="fas fa-text-height"></i></div>
+                    <div class="detail-info"><h4 id="dCharsNoSpace">0</h4><p>Characters (no spaces)</p></div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea);"><i class="fas fa-align-left"></i></div>
-                    <div class="detail-data"><h4 id="rAvgSent">0 words</h4><p>Avg Sentence Length</p></div>
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#f97316,#ea580c)"><i class="fas fa-comment-dots"></i></div>
+                    <div class="detail-info"><h4 id="dSentences">0</h4><p>Sentences</p></div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-icon" style="background:linear-gradient(135deg,#ec4899,#db2777);"><i class="fas fa-music"></i></div>
-                    <div class="detail-data"><h4 id="rSyllables">0</h4><p>Syllables</p></div>
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-align-left"></i></div>
+                    <div class="detail-info"><h4 id="dParagraphs">0</h4><p>Paragraphs</p></div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-icon" style="background:linear-gradient(135deg,#475569,#334155);"><i class="fas fa-trophy"></i></div>
-                    <div class="detail-data"><h4 id="rLongest">-</h4><p>Longest Word</p></div>
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#ec4899,#db2777)"><i class="fas fa-book-open"></i></div>
+                    <div class="detail-info"><h4 id="dPages">0</h4><p>Pages (approx.)</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#eab308,#ca8a04)"><i class="fas fa-glasses"></i></div>
+                    <div class="detail-info"><h4 id="dReadTime">0 min</h4><p>Reading Time</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)"><i class="fas fa-microphone"></i></div>
+                    <div class="detail-info"><h4 id="dSpeakTime">0 min</h4><p>Speaking Time</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2)"><i class="fas fa-ruler"></i></div>
+                    <div class="detail-info"><h4 id="dAvgWord">0</h4><p>Avg Word Length</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#84cc16,#65a30d)"><i class="fas fa-list-ol"></i></div>
+                    <div class="detail-info"><h4 id="dAvgSentence">0</h4><p>Avg Sentence Length</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea)"><i class="fas fa-spell-check"></i></div>
+                    <div class="detail-info"><h4 id="dUniqueWords">0</h4><p>Unique Words</p></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon" style="background:linear-gradient(135deg,#f43f5e,#e11d48)"><i class="fas fa-hashtag"></i></div>
+                    <div class="detail-info"><h4 id="dLines">0</h4><p>Lines</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- Readability -->
-        <div class="cc">
-            <h2><i class="fas fa-glasses"></i> Readability Score</h2>
-            <div class="read-card">
-                <div class="read-score" id="rReadScore">0</div>
-                <div class="read-label" id="rReadLabel">-</div>
-                <div class="read-bar-wrap"><div class="read-bar" id="readBar" style="width:0%;background:#94a3b8;"></div></div>
-                <div class="read-scale"><span>Hard</span><span>Standard</span><span>Easy</span></div>
+        <!-- READABILITY -->
+        <div class="calc-card" id="readabilityCard">
+            <h2><i class="fas fa-book-reader"></i> Readability Score</h2>
+            <div class="read-score">
+                <div class="rs-big" id="rsScore" style="color:#22c55e">0</div>
+                <div class="rs-label" id="rsLevel">Enter text to analyze</div>
+                <div class="rs-sub" id="rsGrade">—</div>
             </div>
-            <p style="font-size:11px;color:var(--text-light);text-align:center;margin-top:10px;">Based on Flesch-Kincaid readability formula. Higher score = easier to read.</p>
+            <div class="rs-bar">
+                <div class="rs-pointer" id="rsPointer" style="left:50%"></div>
+            </div>
+            <div class="rs-labels">
+                <span>Very Hard</span>
+                <span>Hard</span>
+                <span>Average</span>
+                <span>Easy</span>
+                <span>Very Easy</span>
+            </div>
         </div>
 
-        <!-- Top Words -->
-        <div class="cc">
-            <h2><i class="fas fa-chart-pie"></i> Word Frequency (Top 10)</h2>
-            <div id="topWords">
-                <p style="color:var(--text-light);font-size:12px;text-align:center;">Start typing to see word frequency</p>
+        <!-- KEYWORD DENSITY -->
+        <div class="calc-card" id="keywordCard">
+            <h2><i class="fas fa-key"></i> Top Keywords</h2>
+            <div class="keyword-wrap" id="keywordList">
+                <div style="text-align:center;padding:30px;color:var(--text-light);font-size:13px;">
+                    <i class="fas fa-keyboard" style="font-size:24px;margin-bottom:8px;display:block;opacity:.3"></i>
+                    Start typing to see keyword density
+                </div>
             </div>
         </div>
 
-        <!-- Share -->
-        <div class="cc" style="text-align:center;">
-            <h2 style="justify-content:center;"><i class="fas fa-share-alt"></i> Share</h2>
-            <div class="shr">
-                <button onclick="copyStats()"><i class="fas fa-copy"></i> Copy Stats</button>
+        <!-- SOCIAL MEDIA LIMITS -->
+        <div class="calc-card" id="socialCard">
+            <h2><i class="fas fa-share-alt"></i> Social Media Limits</h2>
+            <div class="social-grid" id="socialGrid"></div>
+        </div>
+
+        <!-- SHARE -->
+        <div class="calc-card" style="text-align:center;">
+            <h2 style="justify-content:center;"><i class="fas fa-share-alt"></i> Share Stats</h2>
+            <div class="share-row">
+                <button class="share-btn" onclick="copyStats()"><i class="fas fa-copy"></i> Copy Stats</button>
+                <button class="share-btn" onclick="shareStatsWA()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="share-btn" onclick="shareStatsTW()"><i class="fab fa-twitter"></i> Twitter</button>
             </div>
         </div>
 
     </div>
 </section>
 
+<!-- MIDDLE AD -->
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
+
+<!-- HOW IT WORKS -->
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How It Works</h2></div>
         <div class="steps-row">
-            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Type/Paste</h4><p>Enter your text.</p></div>
-            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-magic"></i><h4>Auto Count</h4><p>Real-time analysis.</p></div>
-            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-chart-bar"></i><h4>View Stats</h4><p>Words, reading time & more.</p></div>
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Type or Paste</h4><p>Type or paste your text in the box.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-chart-bar"></i><h4>Live Analysis</h4><p>Stats update instantly as you type.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-check-circle"></i><h4>View Results</h4><p>See words, keywords, readability & more.</p></div>
         </div>
     </div>
 </section>
 
+<!-- RELATED TOOLS -->
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="../text/character-counter.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><i class="fas fa-text-width"></i></div>
+                <h4>Character Counter</h4>
+            </a>
+            <a href="../text/case-converter.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#f97316,#ea580c)"><i class="fas fa-font"></i></div>
+                <h4>Case Converter</h4>
+            </a>
+            <a href="../text/lorem-generator.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-align-justify"></i></div>
+                <h4>Lorem Generator</h4>
+            </a>
+            <a href="../calculator/age-calculator.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#ec4899,#db2777)"><i class="fas fa-birthday-cake"></i></div>
+                <h4>Age Calculator</h4>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
 <section class="faq-section">
     <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
-        <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How does word counting work?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Words are counted by splitting text on whitespace (spaces, tabs, newlines). Numbers and hyphenated words count as single words.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is reading time?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Reading time is based on average reading speed of 200 words per minute. Speaking time uses 150 wpm.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is Flesch-Kincaid score?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>It measures text readability on a 0-100 scale. Higher = easier. Based on average sentence length and syllable count per word.</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Does it work with other languages?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Word and character counting works for all languages. Readability and syllable counting are optimized for English.</p></div></div>
+        <div class="section-header"><h2>Frequently Asked Questions</h2></div>
+        <div class="wc-faq">
+            <div class="faq-item" onclick="wcFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">1</span><h4>How are words counted?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p>Words are counted by splitting text on spaces and line breaks. Consecutive spaces are treated as one separator. Numbers and hyphenated words each count as one word.</p></div>
+            </div>
+            <div class="faq-item" onclick="wcFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">2</span><h4>What is reading time based on?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p>Reading time is calculated at <strong>200 words per minute</strong> (average adult reading speed). Speaking time uses <strong>130 words per minute</strong> (average speaking pace).</p></div>
+            </div>
+            <div class="faq-item" onclick="wcFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">3</span><h4>What is the readability score?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p>The Flesch Reading Ease score ranges from 0-100. Higher scores mean easier text. 60-70 is standard, 80-90 is easy, below 30 is very difficult (academic/legal).</p></div>
+            </div>
+            <div class="faq-item" onclick="wcFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">4</span><h4>What is keyword density?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p>Keyword density shows how frequently each word appears in your text as a percentage. It helps with SEO optimization — ideally keep primary keywords between 1-3%.</p></div>
+            </div>
+            <div class="faq-item" onclick="wcFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">5</span><h4>Is my text stored?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p>No! Everything runs in your browser. Your text is never sent to any server. 100% private and secure.</p></div>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-simple">
             <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-            <p>&copy; 2025 PDFTools.</p>
+            <p>&copy; 2025 PDFTools. All rights reserved.</p>
             <div class="footer-links">
                 <a href="../../index.html">Home</a>
                 <a href="../../privacy.html">Privacy</a>
@@ -217,7 +377,298 @@
     </div>
 </footer>
 
+<!-- JS -->
+<script>
+// ==========================================
+// WORD COUNTER - COMPLETE
+// ==========================================
+
+var stopWords = ['the','a','an','and','or','but','in','on','at','to','for','of','with','by','is','am','are','was','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','shall','can','this','that','these','those','it','its','i','me','my','we','our','you','your','he','him','his','she','her','they','them','their','not','no','from','as','if','so','than','then'];
+
+function analyzeText() {
+    var text = document.getElementById('textInput').value;
+
+    // Basic counts
+    var chars = text.length;
+    var charsNoSpace = text.replace(/\s/g, '').length;
+    var words = text.trim() === '' ? [] : text.trim().split(/\s+/);
+    var wordCount = words.length;
+    var sentences = text.split(/[.!?]+/).filter(function(s) { return s.trim().length > 0; });
+    var sentenceCount = text.trim() === '' ? 0 : sentences.length;
+    var paragraphs = text.split(/\n\s*\n/).filter(function(p) { return p.trim().length > 0; });
+    var paraCount = text.trim() === '' ? 0 : paragraphs.length;
+    var lines = text.split(/\n/).length;
+    if (text.trim() === '') lines = 0;
+
+    // Live stats bar
+    document.getElementById('liveWords').textContent = wordCount.toLocaleString();
+    document.getElementById('liveChars').textContent = chars.toLocaleString();
+    document.getElementById('liveSentences').textContent = sentenceCount;
+    document.getElementById('liveParagraphs').textContent = paraCount;
+
+    // Detailed stats
+    document.getElementById('dWords').textContent = wordCount.toLocaleString();
+    document.getElementById('dCharsSpace').textContent = chars.toLocaleString();
+    document.getElementById('dCharsNoSpace').textContent = charsNoSpace.toLocaleString();
+    document.getElementById('dSentences').textContent = sentenceCount;
+    document.getElementById('dParagraphs').textContent = paraCount;
+    document.getElementById('dLines').textContent = lines;
+
+    // Pages (250 words per page)
+    var pages = wordCount > 0 ? (wordCount / 250).toFixed(1) : 0;
+    document.getElementById('dPages').textContent = pages;
+
+    // Reading time (200 wpm)
+    var readMin = Math.ceil(wordCount / 200);
+    document.getElementById('dReadTime').textContent = readMin > 0 ? (readMin < 1 ? '< 1 min' : readMin + ' min') : '0 min';
+
+    // Speaking time (130 wpm)
+    var speakMin = Math.ceil(wordCount / 130);
+    document.getElementById('dSpeakTime').textContent = speakMin > 0 ? (speakMin < 1 ? '< 1 min' : speakMin + ' min') : '0 min';
+
+    // Average word length
+    if (wordCount > 0) {
+        var totalWordLen = 0;
+        for (var i = 0; i < words.length; i++) totalWordLen += words[i].replace(/[^a-zA-Z0-9]/g, '').length;
+        document.getElementById('dAvgWord').textContent = (totalWordLen / wordCount).toFixed(1) + ' chars';
+    } else {
+        document.getElementById('dAvgWord').textContent = '0';
+    }
+
+    // Average sentence length
+    document.getElementById('dAvgSentence').textContent = sentenceCount > 0 ? Math.round(wordCount / sentenceCount) + ' words' : '0';
+
+    // Unique words
+    var uniqueSet = {};
+    for (var i = 0; i < words.length; i++) {
+        var w = words[i].toLowerCase().replace(/[^a-zA-Z0-9'-]/g, '');
+        if (w) uniqueSet[w] = true;
+    }
+    var uniqueCount = Object.keys(uniqueSet).length;
+    document.getElementById('dUniqueWords').textContent = uniqueCount.toLocaleString();
+
+    // Keyword density
+    buildKeywords(words, wordCount);
+
+    // Readability
+    calcReadability(words, sentences, wordCount, sentenceCount);
+
+    // Social limits
+    updateSocial(chars, wordCount);
+}
+
+// ===== KEYWORD DENSITY =====
+function buildKeywords(words, total) {
+    var container = document.getElementById('keywordList');
+    if (total === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-light);font-size:13px;"><i class="fas fa-keyboard" style="font-size:24px;margin-bottom:8px;display:block;opacity:.3"></i>Start typing to see keyword density</div>';
+        return;
+    }
+
+    var freq = {};
+    for (var i = 0; i < words.length; i++) {
+        var w = words[i].toLowerCase().replace(/[^a-zA-Z0-9'-]/g, '');
+        if (w.length < 2) continue;
+        if (stopWords.indexOf(w) >= 0) continue;
+        freq[w] = (freq[w] || 0) + 1;
+    }
+
+    var sorted = Object.keys(freq).sort(function(a, b) { return freq[b] - freq[a]; });
+    var top = sorted.slice(0, 15);
+    var maxCount = top.length > 0 ? freq[top[0]] : 1;
+
+    var html = '';
+    for (var i = 0; i < top.length; i++) {
+        var word = top[i];
+        var count = freq[word];
+        var pct = ((count / total) * 100).toFixed(1);
+        var barWidth = Math.round((count / maxCount) * 100);
+        html += '<div class="kw-item">' +
+            '<div class="kw-rank">' + (i + 1) + '</div>' +
+            '<span class="kw-word">' + word + '</span>' +
+            '<span class="kw-count">' + count + 'x</span>' +
+            '<div class="kw-bar-wrap"><div class="kw-bar" style="width:' + barWidth + '%"></div></div>' +
+            '<span class="kw-pct">' + pct + '%</span>' +
+            '</div>';
+    }
+    container.innerHTML = html || '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">No significant keywords found</div>';
+}
+
+// ===== READABILITY (Flesch) =====
+function calcReadability(words, sentences, wordCount, sentenceCount) {
+    if (wordCount < 10 || sentenceCount < 1) {
+        document.getElementById('rsScore').textContent = '—';
+        document.getElementById('rsScore').style.color = '#94a3b8';
+        document.getElementById('rsLevel').textContent = 'Need at least 10 words';
+        document.getElementById('rsGrade').textContent = '—';
+        document.getElementById('rsPointer').style.left = '50%';
+        return;
+    }
+
+    // Count syllables
+    var totalSyllables = 0;
+    for (var i = 0; i < words.length; i++) {
+        totalSyllables += countSyllables(words[i]);
+    }
+
+    var score = 206.835 - (1.015 * (wordCount / sentenceCount)) - (84.6 * (totalSyllables / wordCount));
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    var level, color, grade;
+    if (score >= 90) { level = 'Very Easy'; color = '#3b82f6'; grade = '5th Grade'; }
+    else if (score >= 80) { level = 'Easy'; color = '#22c55e'; grade = '6th Grade'; }
+    else if (score >= 70) { level = 'Fairly Easy'; color = '#22c55e'; grade = '7th Grade'; }
+    else if (score >= 60) { level = 'Standard'; color = '#eab308'; grade = '8th-9th Grade'; }
+    else if (score >= 50) { level = 'Fairly Hard'; color = '#f97316'; grade = '10th-12th Grade'; }
+    else if (score >= 30) { level = 'Hard'; color = '#ef4444'; grade = 'College Level'; }
+    else { level = 'Very Hard'; color = '#991b1b'; grade = 'Professional'; }
+
+    document.getElementById('rsScore').textContent = score;
+    document.getElementById('rsScore').style.color = color;
+    document.getElementById('rsLevel').textContent = level;
+    document.getElementById('rsLevel').style.color = color;
+    document.getElementById('rsGrade').textContent = grade;
+    document.getElementById('rsPointer').style.left = score + '%';
+}
+
+function countSyllables(word) {
+    word = word.toLowerCase().replace(/[^a-z]/g, '');
+    if (word.length <= 3) return 1;
+    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+    word = word.replace(/^y/, '');
+    var matches = word.match(/[aeiouy]{1,2}/g);
+    return matches ? matches.length : 1;
+}
+
+// ===== SOCIAL MEDIA =====
+function updateSocial(chars, words) {
+    var limits = [
+        { name: 'Twitter/X', icon: 'fab fa-twitter', color: '#1DA1F2', limit: 280, type: 'char' },
+        { name: 'Facebook', icon: 'fab fa-facebook', color: '#1877F2', limit: 63206, type: 'char' },
+        { name: 'Instagram', icon: 'fab fa-instagram', color: '#E4405F', limit: 2200, type: 'char' },
+        { name: 'LinkedIn', icon: 'fab fa-linkedin', color: '#0A66C2', limit: 3000, type: 'char' },
+        { name: 'YouTube Title', icon: 'fab fa-youtube', color: '#FF0000', limit: 100, type: 'char' },
+        { name: 'Pinterest', icon: 'fab fa-pinterest', color: '#BD081C', limit: 500, type: 'char' },
+        { name: 'TikTok', icon: 'fab fa-tiktok', color: '#010101', limit: 150, type: 'char' },
+        { name: 'Meta Title', icon: 'fas fa-search', color: '#4285F4', limit: 60, type: 'char' }
+    ];
+
+    var grid = document.getElementById('socialGrid');
+    var html = '';
+    for (var i = 0; i < limits.length; i++) {
+        var s = limits[i];
+        var current = s.type === 'char' ? chars : words;
+        var pct = s.limit > 0 ? Math.round((current / s.limit) * 100) : 0;
+        var statusClass, statusText;
+        if (current === 0) { statusClass = 'si-ok'; statusText = '—'; }
+        else if (current <= s.limit) { statusClass = 'si-ok'; statusText = '✓ ' + current + '/' + s.limit; }
+        else { statusClass = 'si-over'; statusText = '✗ Over by ' + (current - s.limit); }
+
+        html += '<div class="social-item">' +
+            '<div class="si-icon" style="background:' + s.color + '"><i class="' + s.icon + '"></i></div>' +
+            '<div><span class="si-name">' + s.name + '</span><span class="si-limit">Max ' + s.limit.toLocaleString() + ' chars</span></div>' +
+            '<span class="si-status ' + statusClass + '">' + statusText + '</span></div>';
+    }
+    grid.innerHTML = html;
+}
+
+// ===== TEXT TOOLS =====
+function copyText() {
+    var text = document.getElementById('textInput').value;
+    if (!text) return;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() { alert('Text copied!'); });
+    } else { prompt('Copy:', text); }
+}
+
+function pasteText() {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+        navigator.clipboard.readText().then(function(text) {
+            document.getElementById('textInput').value += text;
+            analyzeText();
+        });
+    }
+}
+
+function clearText() {
+    document.getElementById('textInput').value = '';
+    analyzeText();
+}
+
+function toUpperCase() {
+    var el = document.getElementById('textInput');
+    el.value = el.value.toUpperCase();
+    analyzeText();
+}
+
+function toLowerCase() {
+    var el = document.getElementById('textInput');
+    el.value = el.value.toLowerCase();
+    analyzeText();
+}
+
+function toTitleCase() {
+    var el = document.getElementById('textInput');
+    el.value = el.value.toLowerCase().replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+    analyzeText();
+}
+
+function toSentenceCase() {
+    var el = document.getElementById('textInput');
+    el.value = el.value.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, function(c) { return c.toUpperCase(); });
+    analyzeText();
+}
+
+function removeExtraSpaces() {
+    var el = document.getElementById('textInput');
+    el.value = el.value.replace(/  +/g, ' ').replace(/\n\s*\n\s*\n/g, '\n\n').trim();
+    analyzeText();
+}
+
+// ===== SHARE =====
+function getStatsText() {
+    var w = document.getElementById('liveWords').textContent;
+    var c = document.getElementById('liveChars').textContent;
+    var s = document.getElementById('liveSentences').textContent;
+    return 'My text: ' + w + ' words, ' + c + ' characters, ' + s + ' sentences 📝';
+}
+
+function copyStats() {
+    var text = getStatsText();
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() { alert('Stats copied!'); });
+    } else { prompt('Copy:', text); }
+}
+
+function shareStatsWA() {
+    window.open('https://wa.me/?text=' + encodeURIComponent(getStatsText() + ' | PDFTools Word Counter'), '_blank');
+}
+
+function shareStatsTW() {
+    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(getStatsText() + ' #WordCounter #PDFTools'), '_blank');
+}
+
+// ===== FAQ =====
+function wcFaqToggle(el) {
+    var isActive = el.classList.contains('active');
+    var items = document.querySelectorAll('.wc-faq .faq-item');
+    for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+    if (!isActive) el.classList.add('active');
+}
+
+// ===== MOBILE MENU =====
+if (typeof toggleMobileMenu === 'undefined') {
+    window.toggleMobileMenu = function() {
+        document.getElementById('navLinks').classList.toggle('open');
+    };
+}
+
+// Init social
+updateSocial(0, 0);
+</script>
+
 <script src="../../js/tool-page.js"></script>
-<script src="../../js/word-counter.js"></script>
+<script src="../../js/adsense.js"></script>
+
 </body>
 </html>

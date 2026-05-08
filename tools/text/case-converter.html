@@ -3,190 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Case Converter - Change Text Case Online | PDFTools</title>
+    <title>Case Converter - Convert Text Case Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
-    <meta name="description" content="Free online case converter. Convert text to uppercase, lowercase, title case, camelCase, snake_case and more.">
+    <meta name="description" content="Free Case Converter. Convert text to UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, kebab-case & more!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/tool-page.css">
     <style>
-        .cc{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
-        .cc h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .cc h2 i{color:#8b5cf6}
-        .text-box{width:100%;min-height:180px;padding:16px;border:2px solid rgba(139,92,246,0.2);border-radius:14px;background:rgba(255,255,255,0.7);font-size:15px;line-height:1.8;color:var(--text-dark);outline:none;font-family:inherit;resize:vertical;box-sizing:border-box;transition:border-color .2s}
-        .text-box:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,0.1)}
-        .text-stats{display:flex;gap:15px;margin:8px 0;font-size:12px;color:var(--text-light);font-weight:600}
-        .text-stats span{display:flex;align-items:center;gap:4px}
-        .text-stats i{color:#8b5cf6;font-size:11px}
-        .text-actions{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
-        .ta-btn{padding:7px 13px;border:1px solid rgba(139,92,246,0.2);border-radius:20px;background:rgba(255,255,255,0.4);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-medium);transition:all .15s;display:flex;align-items:center;gap:4px}
-        .ta-btn:hover{border-color:#8b5cf6;color:#8b5cf6;background:rgba(139,92,246,0.08)}
-        .ta-btn i{font-size:11px}
+        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+        .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .calc-card h2 i{color:#f97316;font-size:17px}
 
-        /* Conversion buttons */
-        .conv-section{margin-top:12px}
-        .conv-label{font-size:12px;font-weight:700;color:var(--text-medium);margin:14px 0 8px;display:flex;align-items:center;gap:6px}
-        .conv-label i{color:#8b5cf6;font-size:12px}
-        .conv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px}
-        .conv-btn{padding:14px 10px;background:rgba(255,255,255,0.4);border:2px solid rgba(255,255,255,0.5);border-radius:12px;text-align:center;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:var(--text-medium)}
-        .conv-btn:hover{border-color:#8b5cf6;color:#8b5cf6;transform:translateY(-2px);box-shadow:0 5px 15px rgba(139,92,246,0.12)}
-        .conv-btn:active{transform:translateY(0)}
-        .conv-btn .cb-preview{font-size:14px;font-weight:800;color:#8b5cf6;margin-bottom:4px;display:block}
-        .conv-btn .cb-name{font-size:10px;color:var(--text-light)}
+        /* Stats Bar */
+        .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+        .stat-pill{padding:12px 8px;background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.6);border-radius:12px;text-align:center;transition:transform .2s}
+        .stat-pill:hover{transform:translateY(-2px)}
+        .stat-pill .sp-val{font-size:22px;font-weight:900;display:block;line-height:1;margin-bottom:3px}
+        .stat-pill .sp-label{font-size:9px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px}
+        .sp-orange{color:#f97316}.sp-blue{color:#3b82f6}.sp-green{color:#22c55e}.sp-purple{color:#8b5cf6}
 
-        /* Preview */
-        .preview-card{padding:18px;margin-top:15px;background:linear-gradient(135deg,rgba(139,92,246,0.06),rgba(236,72,153,0.04));border:1px solid rgba(139,92,246,0.15);border-radius:14px}
-        .preview-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-        .preview-title{display:flex;align-items:center;gap:8px}
-        .preview-title .pt-badge{font-size:13px;font-weight:700;color:#8b5cf6}
-        .preview-title .pt-desc{font-size:11px;color:var(--text-light)}
-        .preview-text{background:rgba(255,255,255,0.6);padding:14px;border-radius:10px;font-size:14px;line-height:1.7;color:var(--text-dark);max-height:200px;overflow-y:auto;white-space:pre-wrap;word-wrap:break-word;font-family:monospace}
-        .preview-text::-webkit-scrollbar{width:5px}
-        .preview-text::-webkit-scrollbar-thumb{background:rgba(139,92,246,0.25);border-radius:3px}
+        /* Textarea */
+        .text-wrap{position:relative;margin-bottom:14px}
+        .text-wrap textarea{width:100%;min-height:200px;padding:18px 20px;border:2px solid rgba(249,115,22,0.15);border-radius:16px;background:rgba(255,255,255,0.6);font-size:15px;font-weight:500;color:var(--text-dark);outline:none;resize:vertical;font-family:inherit;line-height:1.8;transition:border-color .2s;box-sizing:border-box}
+        .text-wrap textarea:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,0.1)}
+        .text-wrap textarea::placeholder{color:var(--text-light);font-weight:400}
+        .text-wrap .char-count{position:absolute;bottom:12px;right:16px;font-size:11px;color:var(--text-light);font-weight:500;pointer-events:none}
 
-        .emsg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:14px;display:none}
+        /* Case Buttons Grid */
+        .case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+        .case-btn{padding:14px 10px;border:2px solid rgba(249,115,22,0.12);border-radius:14px;background:rgba(255,255,255,0.4);cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+        .case-btn:hover{border-color:#f97316;background:rgba(249,115,22,0.06);transform:translateY(-2px)}
+        .case-btn:active{transform:translateY(0)}
+        .case-btn.active{border-color:#f97316;background:rgba(249,115,22,0.08);box-shadow:0 4px 15px rgba(249,115,22,0.15)}
+        .case-btn .cb-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;margin-bottom:2px}
+        .case-btn .cb-name{font-size:12px;font-weight:700;color:var(--text-dark)}
+        .case-btn .cb-example{font-size:10px;color:var(--text-light);font-weight:500;font-family:monospace}
 
-        @media(max-width:768px){.conv-grid{grid-template-columns:repeat(3,1fr)}}
-        @media(max-width:480px){.conv-grid{grid-template-columns:repeat(2,1fr)}}
+        /* Output Area */
+        .output-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1.5px solid rgba(249,115,22,0.15);border-radius:16px;padding:22px;margin-top:18px;display:none}
+        .output-card.show{display:block;animation:fadeUp .3s ease}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+        .output-header h3{font-size:15px;font-weight:700;color:#f97316;display:flex;align-items:center;gap:6px;margin:0}
+        .output-header h3 i{font-size:14px}
+        .output-badge{padding:4px 12px;background:rgba(249,115,22,0.1);border-radius:50px;font-size:11px;font-weight:700;color:#ea580c}
+        .output-text{width:100%;min-height:150px;padding:16px 18px;border:2px solid rgba(249,115,22,0.1);border-radius:12px;background:rgba(255,255,255,0.5);font-size:15px;font-weight:500;color:var(--text-dark);font-family:inherit;line-height:1.8;resize:vertical;outline:none;box-sizing:border-box}
+        .output-text:focus{border-color:#f97316}
+
+        /* Action Buttons */
+        .action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+        .action-btn{padding:9px 16px;border:2px solid rgba(249,115,22,0.2);border-radius:50px;background:transparent;color:#ea580c;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s}
+        .action-btn:hover{background:#f97316;color:#fff;border-color:#f97316}
+        .action-btn.primary{background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border-color:transparent}
+        .action-btn.primary:hover{box-shadow:0 6px 20px rgba(249,115,22,0.3);transform:translateY(-1px)}
+        .action-btn.danger{color:#ef4444;border-color:rgba(239,68,68,0.2)}
+        .action-btn.danger:hover{background:#ef4444;color:#fff;border-color:#ef4444}
+
+        /* Comparison Preview */
+        .compare-card{margin-top:14px;padding:18px;background:linear-gradient(135deg,rgba(249,115,22,0.04),rgba(236,72,153,0.04));border:1px solid rgba(249,115,22,0.12);border-radius:14px}
+        .compare-card h4{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+        .compare-card h4 i{color:#f97316}
+        .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .compare-box{padding:12px;background:rgba(255,255,255,0.5);border-radius:10px}
+        .compare-box .cb-label{font-size:10px;font-weight:600;color:var(--text-light);text-transform:uppercase;margin-bottom:6px;display:block}
+        .compare-box .cb-text{font-size:13px;font-weight:500;color:var(--text-dark);font-family:monospace;word-break:break-all;line-height:1.5;max-height:60px;overflow:hidden}
+        .compare-box.original{border-left:3px solid #ef4444}
+        .compare-box.converted{border-left:3px solid #22c55e}
+
+        /* All Conversions Preview */
+        .all-preview{margin-top:14px}
+        .all-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.35);border-radius:10px;margin-bottom:6px;transition:all .2s;cursor:pointer}
+        .all-item:hover{background:rgba(249,115,22,0.06);transform:translateX(2px)}
+        .all-item .ai-label{font-size:12px;font-weight:700;color:var(--text-medium);min-width:100px}
+        .all-item .ai-text{flex:1;font-size:13px;color:var(--text-dark);font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .all-item .ai-copy{padding:4px 10px;border:1.5px solid rgba(249,115,22,0.2);border-radius:50px;background:transparent;color:#f97316;font-size:10px;font-weight:600;cursor:pointer;transition:all .2s;flex-shrink:0}
+        .all-item .ai-copy:hover{background:#f97316;color:#fff;border-color:#f97316}
+
+        /* Privacy */
+        .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
+        .privacy-note i{color:#22c55e;margin-right:4px}
+
+        /* FAQ Override */
+        .cc-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .cc-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
+        .cc-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(249,115,22,0.25)}
+        .cc-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
+        .cc-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .cc-faq .faq-item.active .faq-q h4{color:#f97316}
+        .cc-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
+        .cc-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#f97316}
+        .cc-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(249,115,22,0.1);color:#f97316;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .cc-faq .faq-item.active .faq-q .faq-num{background:#f97316;color:#fff}
+        .cc-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(249,115,22,0.1);margin:0 22px}
+        .cc-faq .faq-item.active .faq-a{display:block}
+        .cc-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
+
+        @media(max-width:768px){
+            .case-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+            .case-btn{padding:12px 8px}
+            .case-btn .cb-icon{width:32px;height:32px;font-size:11px}
+            .compare-grid{grid-template-columns:1fr}
+            .stats-bar{grid-template-columns:repeat(4,1fr);gap:6px}
+        }
+        @media(max-width:480px){
+            .calc-card{padding:20px 16px}
+            .case-grid{grid-template-columns:repeat(2,1fr)}
+            .stats-bar{grid-template-columns:repeat(2,1fr)}
+            .cc-faq .faq-q{padding:14px 16px}
+            .action-row{gap:6px}
+            .action-btn{font-size:11px;padding:7px 12px}
+        }
     </style>
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar glass">
     <a href="../../index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
     <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
     <div class="nav-links" id="navLinks">
         <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+        <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
     </div>
 </nav>
 
+<!-- HEADER -->
 <section class="tool-header">
     <div class="container">
         <div class="breadcrumb">
             <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
-            <i class="fas fa-chevron-right"></i><span>Case Converter</span>
+            <i class="fas fa-chevron-right"></i>
+            <span>Case Converter</span>
         </div>
         <div class="tool-title">
-            <div class="tool-title-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);"><i class="fas fa-text-height"></i></div>
-            <div><h1>Case Converter</h1><p>Convert text to any case format — upper, lower, title, camel, snake & more!</p></div>
+            <div class="tool-title-icon" style="background:linear-gradient(135deg,#f97316,#ea580c);">
+                <i class="fas fa-font"></i>
+            </div>
+            <div>
+                <h1>Case Converter</h1>
+                <p>Convert text to UPPERCASE, lowercase, Title Case, camelCase, snake_case & more instantly!</p>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- TOP AD -->
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<!-- TOOL AREA -->
 <section class="tool-area">
     <div class="container">
 
-        <!-- Input -->
-        <div class="cc">
-            <h2><i class="fas fa-keyboard"></i> Enter Your Text</h2>
-            <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+        <!-- INPUT CARD -->
+        <div class="calc-card">
 
-            <textarea class="text-box" id="textInput" placeholder="Type or paste your text here to convert..."></textarea>
-
-            <div class="text-stats">
-                <span><i class="fas fa-font"></i> <span id="wordCount">0</span> words</span>
-                <span><i class="fas fa-text-width"></i> <span id="charCount">0</span> characters</span>
+            <!-- Stats -->
+            <div class="stats-bar">
+                <div class="stat-pill"><span class="sp-val sp-orange" id="liveWords">0</span><span class="sp-label">Words</span></div>
+                <div class="stat-pill"><span class="sp-val sp-blue" id="liveChars">0</span><span class="sp-label">Characters</span></div>
+                <div class="stat-pill"><span class="sp-val sp-green" id="liveSentences">0</span><span class="sp-label">Sentences</span></div>
+                <div class="stat-pill"><span class="sp-val sp-purple" id="liveLines">0</span><span class="sp-label">Lines</span></div>
             </div>
 
-            <div class="text-actions">
-                <button class="ta-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
-                <button class="ta-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample</button>
-                <button class="ta-btn" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
-                <button class="ta-btn" onclick="downloadText()"><i class="fas fa-download"></i> Download</button>
-                <button class="ta-btn" onclick="clearText()"><i class="fas fa-trash"></i> Clear</button>
+            <!-- Input -->
+            <div class="text-wrap">
+                <textarea id="textInput" placeholder="Type or paste your text here..." oninput="updateStats()"></textarea>
+                <span class="char-count" id="charCount">0 characters</span>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="action-row" style="margin-bottom:16px">
+                <button class="action-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
+                <button class="action-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample Text</button>
+                <button class="action-btn danger" onclick="clearAll()"><i class="fas fa-trash"></i> Clear</button>
+            </div>
+
+            <!-- Case Buttons -->
+            <h2><i class="fas fa-exchange-alt"></i> Choose Case</h2>
+            <div class="case-grid">
+                <div class="case-btn" onclick="convertCase('upper')" id="btn-upper">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)">AB</div>
+                    <span class="cb-name">UPPERCASE</span>
+                    <span class="cb-example">HELLO WORLD</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('lower')" id="btn-lower">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">ab</div>
+                    <span class="cb-name">lowercase</span>
+                    <span class="cb-example">hello world</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('title')" id="btn-title">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)">Ab</div>
+                    <span class="cb-name">Title Case</span>
+                    <span class="cb-example">Hello World</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('sentence')" id="btn-sentence">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#f97316,#ea580c)">Aa</div>
+                    <span class="cb-name">Sentence case</span>
+                    <span class="cb-example">Hello world</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('camel')" id="btn-camel">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">aB</div>
+                    <span class="cb-name">camelCase</span>
+                    <span class="cb-example">helloWorld</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('pascal')" id="btn-pascal">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#ec4899,#db2777)">AB</div>
+                    <span class="cb-name">PascalCase</span>
+                    <span class="cb-example">HelloWorld</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('snake')" id="btn-snake">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#14b8a6,#0d9488)">a_b</div>
+                    <span class="cb-name">snake_case</span>
+                    <span class="cb-example">hello_world</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('kebab')" id="btn-kebab">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">a-b</div>
+                    <span class="cb-name">kebab-case</span>
+                    <span class="cb-example">hello-world</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('constant')" id="btn-constant">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#eab308,#ca8a04)">A_B</div>
+                    <span class="cb-name">CONSTANT_CASE</span>
+                    <span class="cb-example">HELLO_WORLD</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('dot')" id="btn-dot">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#64748b,#475569)">a.b</div>
+                    <span class="cb-name">dot.case</span>
+                    <span class="cb-example">hello.world</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('path')" id="btn-path">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#a855f7,#9333ea)">a/b</div>
+                    <span class="cb-name">path/case</span>
+                    <span class="cb-example">hello/world</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('toggle')" id="btn-toggle">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#f43f5e,#e11d48)">aB</div>
+                    <span class="cb-name">tOGGLE cASE</span>
+                    <span class="cb-example">hELLO wORLD</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('alternating')" id="btn-alternating">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#84cc16,#65a30d)">Ab</div>
+                    <span class="cb-name">AlTeRnAtInG</span>
+                    <span class="cb-example">HeLlO wOrLd</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('inverse')" id="btn-inverse">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#78716c,#57534e)">Ba</div>
+                    <span class="cb-name">Inverse</span>
+                    <span class="cb-example">swap case</span>
+                </div>
+                <div class="case-btn" onclick="convertCase('slug')" id="btn-slug">
+                    <div class="cb-icon" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">url</div>
+                    <span class="cb-name">URL Slug</span>
+                    <span class="cb-example">hello-world</span>
+                </div>
+            </div>
+
+            <div class="privacy-note">
+                <i class="fas fa-shield-alt"></i> 100% Private — Text never leaves your browser
             </div>
         </div>
 
-        <!-- Conversion Buttons -->
-        <div class="cc">
-            <h2><i class="fas fa-magic"></i> Convert To</h2>
-
-            <div class="conv-section">
-                <div class="conv-label"><i class="fas fa-text-height"></i> Basic Cases</div>
-                <div class="conv-grid">
-                    <div class="conv-btn" onclick="toUpperCase()"><span class="cb-preview">UPPER</span><span class="cb-name">UPPER CASE</span></div>
-                    <div class="conv-btn" onclick="toLowerCase()"><span class="cb-preview">lower</span><span class="cb-name">lower case</span></div>
-                    <div class="conv-btn" onclick="toTitleCase()"><span class="cb-preview">Title Case</span><span class="cb-name">Title Case</span></div>
-                    <div class="conv-btn" onclick="toSentenceCase()"><span class="cb-preview">Sentence</span><span class="cb-name">Sentence case</span></div>
-                    <div class="conv-btn" onclick="toCapitalizeWords()"><span class="cb-preview">Capitalize</span><span class="cb-name">Capitalize Words</span></div>
-                </div>
+        <!-- OUTPUT -->
+        <div class="output-card" id="outputCard">
+            <div class="output-header">
+                <h3><i class="fas fa-check-circle"></i> Converted Text</h3>
+                <span class="output-badge" id="outputBadge">UPPERCASE</span>
+            </div>
+            <textarea class="output-text" id="outputText" readonly></textarea>
+            <div class="action-row">
+                <button class="action-btn primary" onclick="copyOutput()"><i class="fas fa-copy"></i> Copy Result</button>
+                <button class="action-btn" onclick="downloadOutput()"><i class="fas fa-download"></i> Download</button>
+                <button class="action-btn" onclick="useAsInput()"><i class="fas fa-arrow-up"></i> Use as Input</button>
+                <button class="action-btn" onclick="shareWA()"><i class="fab fa-whatsapp"></i> Share</button>
             </div>
 
-            <div class="conv-section">
-                <div class="conv-label"><i class="fas fa-code"></i> Developer Cases</div>
-                <div class="conv-grid">
-                    <div class="conv-btn" onclick="toCamelCase()"><span class="cb-preview">camelCase</span><span class="cb-name">camelCase</span></div>
-                    <div class="conv-btn" onclick="toPascalCase()"><span class="cb-preview">PascalCase</span><span class="cb-name">PascalCase</span></div>
-                    <div class="conv-btn" onclick="toSnakeCase()"><span class="cb-preview">snake_case</span><span class="cb-name">snake_case</span></div>
-                    <div class="conv-btn" onclick="toKebabCase()"><span class="cb-preview">kebab-case</span><span class="cb-name">kebab-case</span></div>
-                    <div class="conv-btn" onclick="toConstantCase()"><span class="cb-preview">CONSTANT</span><span class="cb-name">CONSTANT_CASE</span></div>
-                    <div class="conv-btn" onclick="toDotCase()"><span class="cb-preview">dot.case</span><span class="cb-name">dot.case</span></div>
-                    <div class="conv-btn" onclick="toSlashCase()"><span class="cb-preview">path/case</span><span class="cb-name">path/case</span></div>
-                </div>
-            </div>
-
-            <div class="conv-section">
-                <div class="conv-label"><i class="fas fa-random"></i> Fun & Utility</div>
-                <div class="conv-grid">
-                    <div class="conv-btn" onclick="toAlternatingCase()"><span class="cb-preview">aLtErNaTe</span><span class="cb-name">aLtErNaTiNg</span></div>
-                    <div class="conv-btn" onclick="toInverseCase()"><span class="cb-preview">iNVERSE</span><span class="cb-name">Inverse Case</span></div>
-                    <div class="conv-btn" onclick="reverseText()"><span class="cb-preview">esreveR</span><span class="cb-name">Reverse Text</span></div>
-                    <div class="conv-btn" onclick="reverseWords()"><span class="cb-preview">Words ↔</span><span class="cb-name">Reverse Words</span></div>
-                    <div class="conv-btn" onclick="removeExtraSpaces()"><span class="cb-preview">Clean</span><span class="cb-name">Remove Spaces</span></div>
-                    <div class="conv-btn" onclick="removeLineBreaks()"><span class="cb-preview">No Lines</span><span class="cb-name">Remove Breaks</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Preview -->
-        <div id="previewArea" style="display:none;">
-            <div class="preview-card">
-                <div class="preview-header">
-                    <div class="preview-title">
-                        <i class="fas fa-check-circle" style="color:#22c55e;font-size:16px;"></i>
-                        <div>
-                            <div class="pt-badge" id="convTitle">-</div>
-                            <div class="pt-desc" id="convDesc">-</div>
-                        </div>
+            <!-- Before / After -->
+            <div class="compare-card">
+                <h4><i class="fas fa-columns"></i> Before & After</h4>
+                <div class="compare-grid">
+                    <div class="compare-box original">
+                        <span class="cb-label">Original</span>
+                        <div class="cb-text" id="compareOriginal">—</div>
                     </div>
-                    <button class="ta-btn" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
+                    <div class="compare-box converted">
+                        <span class="cb-label">Converted</span>
+                        <div class="cb-text" id="compareConverted">—</div>
+                    </div>
                 </div>
-                <div class="preview-text" id="outputPreview"></div>
             </div>
+        </div>
+
+        <!-- ALL CONVERSIONS -->
+        <div class="calc-card" id="allConversionsCard" style="display:none;">
+            <h2><i class="fas fa-list"></i> All Conversions</h2>
+            <div class="all-preview" id="allPreview"></div>
         </div>
 
     </div>
 </section>
 
+<!-- MIDDLE AD -->
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
+
+<!-- HOW IT WORKS -->
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How It Works</h2></div>
         <div class="steps-row">
-            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Enter Text</h4><p>Type or paste text.</p></div>
-            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-magic"></i><h4>Choose Case</h4><p>Click conversion button.</p></div>
-            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy/Download</h4><p>Copy or download result.</p></div>
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-keyboard"></i><h4>Enter Text</h4><p>Type or paste your text.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-mouse-pointer"></i><h4>Choose Case</h4><p>Click any case conversion button.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy Result</h4><p>Copy or download converted text.</p></div>
         </div>
     </div>
 </section>
 
+<!-- RELATED TOOLS -->
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="../text/word-counter.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb)"><i class="fas fa-file-word"></i></div>
+                <h4>Word Counter</h4>
+            </a>
+            <a href="../text/character-counter.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><i class="fas fa-text-width"></i></div>
+                <h4>Character Counter</h4>
+            </a>
+            <a href="../text/lorem-generator.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-align-justify"></i></div>
+                <h4>Lorem Generator</h4>
+            </a>
+            <a href="../text/text-repeater.html" class="related-card glass">
+                <div class="related-icon" style="background:linear-gradient(135deg,#ec4899,#db2777)"><i class="fas fa-redo"></i></div>
+                <h4>Text Repeater</h4>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
 <section class="faq-section">
     <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
-        <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is Title Case?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Title Case capitalizes the first letter of each word. Example: "hello world" → "Hello World".</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is camelCase?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>camelCase joins words with no spaces, first word lowercase, rest capitalized. Used in JavaScript. Example: "hello world" → "helloWorld".</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is snake_case?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>snake_case separates words with underscores, all lowercase. Used in Python/databases. Example: "hello world" → "hello_world".</p></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is kebab-case?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>kebab-case separates words with hyphens, all lowercase. Used in URLs/CSS. Example: "hello world" → "hello-world".</p></div></div>
+        <div class="section-header"><h2>Frequently Asked Questions</h2></div>
+        <div class="cc-faq">
+            <div class="faq-item" onclick="ccFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">1</span><h4>What case conversions are supported?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p>We support 15 case types: UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, dot.case, path/case, tOGGLE cASE, AlTeRnAtInG, Inverse, and URL Slug.</p></div>
+            </div>
+            <div class="faq-item" onclick="ccFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">2</span><h4>What is camelCase vs PascalCase?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p><strong>camelCase</strong> starts with lowercase and capitalizes each subsequent word (e.g., helloWorld). <strong>PascalCase</strong> capitalizes every word including the first (e.g., HelloWorld). Both remove spaces.</p></div>
+            </div>
+            <div class="faq-item" onclick="ccFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">3</span><h4>What is snake_case and kebab-case?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p><strong>snake_case</strong> uses underscores between words (hello_world). <strong>kebab-case</strong> uses hyphens (hello-world). Both are commonly used in programming and URLs.</p></div>
+            </div>
+            <div class="faq-item" onclick="ccFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">4</span><h4>Can I convert multiple paragraphs?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p>Yes! Paste any amount of text and all paragraphs, line breaks, and formatting will be preserved during conversion (except for programmer cases like camelCase which remove spaces).</p></div>
+            </div>
+            <div class="faq-item" onclick="ccFaqToggle(this)">
+                <div class="faq-q"><span class="faq-num">5</span><h4>Is my text stored?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
+                <div class="faq-a"><p>No! Everything runs in your browser. Your text is never sent to any server. 100% private and secure.</p></div>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-simple">
             <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
-            <p>&copy; 2025 PDFTools.</p>
+            <p>&copy; 2025 PDFTools. All rights reserved.</p>
             <div class="footer-links">
                 <a href="../../index.html">Home</a>
                 <a href="../../privacy.html">Privacy</a>
@@ -198,7 +389,283 @@
     </div>
 </footer>
 
+<!-- JS -->
+<script>
+// ==========================================
+// CASE CONVERTER - COMPLETE
+// ==========================================
+
+var currentCase = '';
+var originalText = '';
+
+// ===== UPDATE STATS =====
+function updateStats() {
+    var text = document.getElementById('textInput').value;
+    var chars = text.length;
+    var words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+    var sentences = text.trim() === '' ? 0 : text.split(/[.!?]+/).filter(function(s) { return s.trim().length > 0; }).length;
+    var lines = text.trim() === '' ? 0 : text.split(/\n/).length;
+
+    document.getElementById('liveWords').textContent = words;
+    document.getElementById('liveChars').textContent = chars;
+    document.getElementById('liveSentences').textContent = sentences;
+    document.getElementById('liveLines').textContent = lines;
+    document.getElementById('charCount').textContent = chars + ' characters';
+}
+
+// ===== CONVERT CASE =====
+function convertCase(type) {
+    var text = document.getElementById('textInput').value;
+    if (!text.trim()) { alert('Please enter some text first!'); return; }
+
+    originalText = text;
+    currentCase = type;
+    var result = '';
+
+    // Highlight active button
+    var btns = document.querySelectorAll('.case-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    var activeBtn = document.getElementById('btn-' + type);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    switch (type) {
+        case 'upper': result = text.toUpperCase(); break;
+        case 'lower': result = text.toLowerCase(); break;
+        case 'title': result = toTitle(text); break;
+        case 'sentence': result = toSentence(text); break;
+        case 'camel': result = toCamel(text); break;
+        case 'pascal': result = toPascal(text); break;
+        case 'snake': result = toSnake(text); break;
+        case 'kebab': result = toKebab(text); break;
+        case 'constant': result = toConstant(text); break;
+        case 'dot': result = toDot(text); break;
+        case 'path': result = toPath(text); break;
+        case 'toggle': result = toToggle(text); break;
+        case 'alternating': result = toAlternating(text); break;
+        case 'inverse': result = toInverse(text); break;
+        case 'slug': result = toSlug(text); break;
+        default: result = text;
+    }
+
+    var names = {
+        upper:'UPPERCASE', lower:'lowercase', title:'Title Case', sentence:'Sentence case',
+        camel:'camelCase', pascal:'PascalCase', snake:'snake_case', kebab:'kebab-case',
+        constant:'CONSTANT_CASE', dot:'dot.case', path:'path/case', toggle:'tOGGLE cASE',
+        alternating:'AlTeRnAtInG', inverse:'Inverse', slug:'URL Slug'
+    };
+
+    document.getElementById('outputText').value = result;
+    document.getElementById('outputBadge').textContent = names[type] || type;
+    document.getElementById('compareOriginal').textContent = text.substring(0, 150) + (text.length > 150 ? '...' : '');
+    document.getElementById('compareConverted').textContent = result.substring(0, 150) + (result.length > 150 ? '...' : '');
+    document.getElementById('outputCard').classList.add('show');
+
+    // All conversions
+    showAllConversions(text);
+
+    document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ===== CONVERSION FUNCTIONS =====
+function toTitle(text) {
+    return text.toLowerCase().replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+}
+
+function toSentence(text) {
+    return text.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, function(c) { return c.toUpperCase(); });
+}
+
+function getWords(text) {
+    return text.replace(/[^a-zA-Z0-9\s]/g, ' ').trim().split(/\s+/).filter(function(w) { return w.length > 0; });
+}
+
+function toCamel(text) {
+    var words = getWords(text);
+    return words.map(function(w, i) {
+        w = w.toLowerCase();
+        return i === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1);
+    }).join('');
+}
+
+function toPascal(text) {
+    var words = getWords(text);
+    return words.map(function(w) {
+        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+    }).join('');
+}
+
+function toSnake(text) {
+    return getWords(text).join('_').toLowerCase();
+}
+
+function toKebab(text) {
+    return getWords(text).join('-').toLowerCase();
+}
+
+function toConstant(text) {
+    return getWords(text).join('_').toUpperCase();
+}
+
+function toDot(text) {
+    return getWords(text).join('.').toLowerCase();
+}
+
+function toPath(text) {
+    return getWords(text).join('/').toLowerCase();
+}
+
+function toToggle(text) {
+    return text.split('').map(function(c) {
+        return c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase();
+    }).join('');
+}
+
+function toAlternating(text) {
+    var idx = 0;
+    return text.split('').map(function(c) {
+        if (/[a-zA-Z]/.test(c)) {
+            var result = idx % 2 === 0 ? c.toUpperCase() : c.toLowerCase();
+            idx++;
+            return result;
+        }
+        return c;
+    }).join('');
+}
+
+function toInverse(text) {
+    return text.split('').map(function(c) {
+        return c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase();
+    }).join('');
+}
+
+function toSlug(text) {
+    return text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+}
+
+// ===== ALL CONVERSIONS =====
+function showAllConversions(text) {
+    var card = document.getElementById('allConversionsCard');
+    card.style.display = 'block';
+    var container = document.getElementById('allPreview');
+
+    var conversions = [
+        { name: 'UPPERCASE', fn: function(t) { return t.toUpperCase(); } },
+        { name: 'lowercase', fn: function(t) { return t.toLowerCase(); } },
+        { name: 'Title Case', fn: toTitle },
+        { name: 'Sentence case', fn: toSentence },
+        { name: 'camelCase', fn: toCamel },
+        { name: 'PascalCase', fn: toPascal },
+        { name: 'snake_case', fn: toSnake },
+        { name: 'kebab-case', fn: toKebab },
+        { name: 'CONSTANT', fn: toConstant },
+        { name: 'dot.case', fn: toDot },
+        { name: 'path/case', fn: toPath },
+        { name: 'tOGGLE', fn: toToggle },
+        { name: 'AlTeRnAtInG', fn: toAlternating },
+        { name: 'URL Slug', fn: toSlug }
+    ];
+
+    var html = '';
+    for (var i = 0; i < conversions.length; i++) {
+        var converted = conversions[i].fn(text);
+        var preview = converted.substring(0, 80) + (converted.length > 80 ? '...' : '');
+        html += '<div class="all-item" onclick="quickCopy(\'' + escapeHTML(converted).replace(/'/g, "\\'") + '\')">' +
+            '<span class="ai-label">' + conversions[i].name + '</span>' +
+            '<span class="ai-text">' + escapeHTML(preview) + '</span>' +
+            '<button class="ai-copy" onclick="event.stopPropagation();quickCopy(\'' + escapeHTML(converted).replace(/'/g, "\\'") + '\')"><i class="fas fa-copy"></i></button>' +
+            '</div>';
+    }
+    container.innerHTML = html;
+}
+
+function escapeHTML(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ===== ACTIONS =====
+function copyOutput() {
+    var text = document.getElementById('outputText').value;
+    if (!text) return;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() { alert('Copied to clipboard!'); });
+    } else { prompt('Copy:', text); }
+}
+
+function quickCopy(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() { alert('Copied!'); });
+    } else { prompt('Copy:', text); }
+}
+
+function downloadOutput() {
+    var text = document.getElementById('outputText').value;
+    if (!text) return;
+    var blob = new Blob([text], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'converted-text.txt';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 300);
+}
+
+function useAsInput() {
+    var output = document.getElementById('outputText').value;
+    if (!output) return;
+    document.getElementById('textInput').value = output;
+    updateStats();
+    document.getElementById('outputCard').classList.remove('show');
+    document.getElementById('allConversionsCard').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function pasteText() {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+        navigator.clipboard.readText().then(function(text) {
+            document.getElementById('textInput').value += text;
+            updateStats();
+        });
+    }
+}
+
+function loadSample() {
+    document.getElementById('textInput').value = 'The quick brown fox jumps over the lazy dog. This is a sample text for testing the case converter tool. You can convert this text to any case format you need!';
+    updateStats();
+}
+
+function clearAll() {
+    document.getElementById('textInput').value = '';
+    document.getElementById('outputCard').classList.remove('show');
+    document.getElementById('allConversionsCard').style.display = 'none';
+    var btns = document.querySelectorAll('.case-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    updateStats();
+}
+
+function shareWA() {
+    var text = document.getElementById('outputText').value;
+    if (text) window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
+
+// ===== FAQ =====
+function ccFaqToggle(el) {
+    var isActive = el.classList.contains('active');
+    var items = document.querySelectorAll('.cc-faq .faq-item');
+    for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+    if (!isActive) el.classList.add('active');
+}
+
+// ===== MOBILE MENU =====
+if (typeof toggleMobileMenu === 'undefined') {
+    window.toggleMobileMenu = function() {
+        document.getElementById('navLinks').classList.toggle('open');
+    };
+}
+</script>
+
 <script src="../../js/tool-page.js"></script>
-<script src="../../js/case-converter.js"></script>
+<script src="../../js/adsense.js"></script>
+
 </body>
 </html>
