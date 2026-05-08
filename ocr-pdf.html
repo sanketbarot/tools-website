@@ -5,777 +5,622 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCR PDF - Extract Text from Scanned PDFs | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+    <meta name="description" content="OCR PDF - Extract text from scanned or image-based PDFs. Supports 100+ languages. 100% browser-based!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
-        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#a855f7,#9333ea)}
-        .file-card-info{flex:1;min-width:0}
-        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
-        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
-        .fbadge{background:rgba(168,85,247,0.1);color:#9333ea;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+        *{box-sizing:border-box}
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:12px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        .info-banner{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.18);border-radius:12px;padding:12px 16px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;font-weight:500;line-height:1.6}
+        .success-toast{position:fixed;top:20px;right:20px;background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.2);animation:slideIn .3s ease}
+        @keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:16px 20px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.65);border-radius:16px;margin-bottom:16px}
+        .file-info-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#8b5cf6,#7c3aed)}
+        .file-info-details{flex:1;min-width:0}
+        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;color:#1e293b}
+        .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .file-meta span{font-size:11px;color:#64748b;display:flex;align-items:center;gap:4px;font-weight:500}
+        .size-badge{background:rgba(139,92,246,.1);color:#7c3aed;padding:2px 10px;border-radius:20px;font-weight:600;font-size:11px!important}
 
-        .lang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:10px 0}
-        .lang-chip{padding:10px;background:rgba(255,255,255,0.3);border:2px solid rgba(255,255,255,0.4);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s;font-size:12px;font-weight:600}
-        .lang-chip:hover{border-color:#9333ea}
-        .lang-chip.on{border-color:#9333ea;background:rgba(168,85,247,0.08);color:#9333ea}
-        .lang-chip .flag{font-size:18px;display:block;margin-bottom:3px}
+        .panel-box{padding:16px 20px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.65);border-radius:16px;margin-bottom:16px}
+        .panel-box h5{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#64748b;margin:0 0 12px;display:flex;align-items:center;gap:7px}
+        .opt-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end}
+        .opt-item{flex:1;min-width:130px}
+        .opt-item label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;margin-bottom:6px}
+        .opt-item select{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;font-weight:600;outline:none;background:#fff;color:#1e293b}
+        .opt-item select:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+        .pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+        .pill{padding:8px 16px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.7);color:#1e293b;user-select:none}
+        .pill:hover{border-color:var(--primary)}.pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .pill input{display:none}
 
-        .text-output{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;max-height:400px;overflow-y:auto;font-size:14px;line-height:1.8;color:#333;margin:15px 0;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New',monospace}
-        .text-output::-webkit-scrollbar{width:6px}
-        .text-output::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.3);border-radius:3px}
+        /* OCR Progress */
+        .ocr-progress{margin-bottom:16px}
+        .ocr-step{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;margin-bottom:6px;transition:all .2s}
+        .ocr-step.active{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15)}
+        .ocr-step.done{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.12)}
+        .ocr-step.pending{background:rgba(0,0,0,.02);border:1px solid transparent}
+        .os-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+        .os-icon.pending{background:rgba(148,163,184,.12);color:#94a3b8}
+        .os-icon.active{background:rgba(99,102,241,.15);color:#6366f1;animation:pulse 1s infinite}
+        .os-icon.done{background:rgba(34,197,94,.15);color:#16a34a}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+        .os-info{flex:1}
+        .os-title{font-size:12px;font-weight:700;color:#1e293b}
+        .os-detail{font-size:10px;color:#64748b;margin-top:1px}
+        .os-progress{width:60px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;flex-shrink:0}
+        .os-progress-fill{height:100%;background:#6366f1;border-radius:3px;transition:width .3s}
 
-        .ocr-stats{display:flex;gap:15px;flex-wrap:wrap;margin:15px 0;justify-content:center}
-        .ocr-stat{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
-        .ocr-stat h4{font-size:22px;font-weight:800;color:#9333ea}
-        .ocr-stat p{font-size:11px;color:var(--text-light)}
+        /* Output text area */
+        .text-output{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;overflow:hidden;margin-bottom:16px}
+        .to-header{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #f1f5f9;background:#f8fafc}
+        .to-header h5{font-size:12px;font-weight:700;color:#1e293b;flex:1;margin:0}
+        .to-btn{padding:5px 12px;border-radius:7px;border:1.5px solid #e2e8f0;font-size:10px;font-weight:700;cursor:pointer;background:#fff;color:#1e293b;transition:all .12s;display:flex;align-items:center;gap:4px}
+        .to-btn:hover{border-color:var(--primary);color:var(--primary)}
+        .to-tabs{display:flex;gap:0;border-bottom:1px solid #f1f5f9}
+        .to-tab{padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:none;color:#94a3b8;border-bottom:2px solid transparent;transition:all .2s}
+        .to-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+        .to-body{padding:16px;max-height:400px;overflow-y:auto;font-family:'Courier New',monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:#1e293b}
+        .to-body.formatted{font-family:Georgia,serif;font-size:14px}
+        .page-divider{border:none;border-top:2px dashed #c7d2fe;margin:16px 0;position:relative}
+        .page-divider::after{content:attr(data-page);position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#f8fafc;padding:0 10px;font-size:10px;font-weight:700;color:#6366f1}
 
-        .output-tabs{display:flex;gap:0;margin-bottom:15px;border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,0.4)}
-        .out-tab{flex:1;padding:12px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;background:rgba(255,255,255,0.3);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
-        .out-tab:hover{background:rgba(168,85,247,0.1)}
-        .out-tab.on{background:linear-gradient(135deg,#a855f7,#9333ea);color:#fff}
+        /* Confidence meter */
+        .conf-meter{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:10px 14px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);border-radius:12px}
+        .conf-bar{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+        .conf-fill{height:100%;border-radius:4px;transition:width .5s}
+        .conf-fill.high{background:#22c55e}.conf-fill.med{background:#f59e0b}.conf-fill.low{background:#ef4444}
+        .conf-label{font-size:12px;font-weight:700;min-width:80px}
+        .conf-label.high{color:#16a34a}.conf-label.med{color:#d97706}.conf-label.low{color:#dc2626}
 
-        .page-ocr-item{background:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.4);border-radius:10px;padding:12px 15px;margin-bottom:10px}
-        .page-ocr-item h5{font-size:13px;font-weight:700;color:#9333ea;margin-bottom:5px}
-        .page-ocr-item .conf{font-size:11px;color:var(--text-light)}
-        .conf-bar{height:4px;border-radius:2px;background:rgba(0,0,0,0.06);margin:5px 0;overflow:hidden}
-        .conf-fill{height:100%;border-radius:2px}
+        /* Download actions */
+        .dl-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+        .dl-btn{flex:1;min-width:160px;padding:12px 20px;border-radius:12px;border:none;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;color:#fff}
+        .dl-btn.txt{background:linear-gradient(135deg,#6366f1,#4f46e5);box-shadow:0 4px 14px rgba(99,102,241,.25)}
+        .dl-btn.pdf{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 14px rgba(239,68,68,.25)}
+        .dl-btn.docx{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 14px rgba(59,130,246,.25)}
+        .dl-btn.copy{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 4px 14px rgba(34,197,94,.25)}
+        .dl-btn:hover{transform:translateY(-2px)}
+        .dl-btn i{font-size:16px}
 
-        .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}
+        .result-stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:16px 0}
+        .result-stat{text-align:center;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.65);border-radius:14px;padding:14px 18px;min-width:100px}
+        .result-stat strong{display:block;font-size:22px;color:var(--primary);line-height:1;margin-bottom:4px}
+        .result-stat small{color:#64748b;font-size:11px;font-weight:600;text-transform:uppercase}
 
-        .progress-detail{font-size:12px;color:var(--text-light);text-align:center;margin-top:8px}
+        .back-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+        .back-btn{padding:10px 20px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:13px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.7);color:#1e293b;transition:all .15s;display:flex;align-items:center;gap:6px}
+        .back-btn:hover{border-color:var(--primary);color:var(--primary)}
 
-        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
-        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
-        .sbox h4{font-size:22px;font-weight:800;color:#9333ea}.sbox p{font-size:11px;color:var(--text-light)}
-        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
-
-        @media(max-width:768px){
-            .lang-grid{grid-template-columns:repeat(3,1fr)}
-            .opt-grid{grid-template-columns:1fr}
-        }
+        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,#f97316,#ea580c)}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
+        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
+        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
+        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(99,102,241,.2)}
+        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
+        .faq-question h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .faq-item.open .faq-question h4{color:var(--primary)}
+        .faq-question i{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
+        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary)}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
+        .faq-item.open .faq-answer{max-height:500px;opacity:1}
+        .faq-answer-inner{padding:0 22px 20px}
+        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(99,102,241,.1);padding-top:16px;margin:0 22px;padding-left:0;padding-right:0}
+        .faq-answer-inner p{font-size:14px;line-height:1.7;color:#64748b;margin:0}
+        .faq-answer-inner p strong{color:#1e293b}
+        .faq-num{width:28px;height:28px;background:rgba(99,102,241,.1);color:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .faq-item.open .faq-num{background:var(--primary);color:#fff}
+        @media(max-width:768px){.opt-row{flex-direction:column}.opt-item{min-width:100%}.dl-actions{flex-direction:column}.dl-btn{min-width:100%}.result-stats{gap:10px}.result-stat{min-width:80px}}
+        @media(max-width:480px){.file-info-card{flex-wrap:wrap;padding:14px}.faq-question{padding:14px}}
     </style>
 </head>
 <body>
 
-    <nav class="navbar glass">
-        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-        <div class="nav-links" id="navLinks">
-            <a href="index.html"><i class="fas fa-home"></i> Home</a>
-            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
-        </div>
-    </nav>
+<nav class="navbar glass">
+    <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
 
-    <section class="tool-header">
-        <div class="container">
-            <div class="breadcrumb">
-                <a href="index.html"><i class="fas fa-home"></i> Home</a>
-                <i class="fas fa-chevron-right"></i><span>OCR PDF</span>
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>OCR PDF</span></div>
+        <div class="tool-title">
+            <div class="tool-title-icon icon-purple"><i class="fas fa-eye"></i></div>
+            <div><h1>OCR PDF</h1><p>Extract text from scanned or image-based PDFs using OCR. Supports 100+ languages. Free &amp; private!</p></div>
+        </div>
+    </div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<section class="tool-area">
+<div class="container">
+<div class="tool-wrapper glass">
+
+    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+
+    <!-- UPLOAD -->
+    <div id="uploadSection" data-section>
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-zone-content">
+                <div class="upload-icon" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><i class="fas fa-eye"></i></div>
+                <h2>Upload Scanned PDF</h2>
+                <p>Drop your scanned or image-based PDF here</p>
+                <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF</button>
+                <input type="file" id="fileInput" accept=".pdf,image/jpeg,image/png,.jpg,.jpeg,.png" hidden>
+                <div class="upload-hints">
+                    <span><i class="fas fa-eye"></i> Tesseract OCR</span>
+                    <span><i class="fas fa-lock"></i> 100% Private</span>
+                    <span><i class="fas fa-globe"></i> 100+ Languages</span>
+                </div>
+                <p style="margin-top:12px;font-size:12px;color:var(--text-light)"><i class="fas fa-shield-alt"></i> Files never leave your device! OCR runs in browser.</p>
             </div>
-            <div class="tool-title">
-                <div class="tool-title-icon icon-purple"><i class="fas fa-eye"></i></div>
-                <div>
-                    <h1>OCR PDF</h1>
-                    <p>Extract text from scanned PDFs and images using AI-powered OCR. Supports 100+ languages!</p>
+        </div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div id="optionsSection" data-section style="display:none">
+        <div class="file-info-card">
+            <div class="file-info-icon"><i class="fas fa-file-pdf"></i></div>
+            <div class="file-info-details">
+                <h4 id="fileName">document.pdf</h4>
+                <div class="file-meta">
+                    <span class="size-badge" id="fileSize">0 KB</span>
+                    <span><i class="fas fa-copy"></i> <span id="pageCount">0</span> pages</span>
+                </div>
+            </div>
+            <div class="files-actions"><button class="btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i></button></div>
+        </div>
+
+        <div class="panel-box">
+            <h5><i class="fas fa-sliders-h"></i> OCR Settings</h5>
+            <div class="opt-row">
+                <div class="opt-item">
+                    <label>Language</label>
+                    <select id="ocrLang">
+                        <option value="eng" selected>English</option>
+                        <option value="hin">Hindi (हिन्दी)</option>
+                        <option value="guj">Gujarati (ગુજરાતી)</option>
+                        <option value="mar">Marathi (मराठी)</option>
+                        <option value="tam">Tamil (தமிழ்)</option>
+                        <option value="tel">Telugu (తెలుగు)</option>
+                        <option value="kan">Kannada (ಕನ್ನಡ)</option>
+                        <option value="ben">Bengali (বাংলা)</option>
+                        <option value="pan">Punjabi (ਪੰਜਾਬੀ)</option>
+                        <option value="urd">Urdu (اردو)</option>
+                        <option value="ara">Arabic (العربية)</option>
+                        <option value="fra">French (Français)</option>
+                        <option value="deu">German (Deutsch)</option>
+                        <option value="spa">Spanish (Español)</option>
+                        <option value="por">Portuguese</option>
+                        <option value="ita">Italian (Italiano)</option>
+                        <option value="nld">Dutch (Nederlands)</option>
+                        <option value="rus">Russian (Русский)</option>
+                        <option value="jpn">Japanese (日本語)</option>
+                        <option value="chi_sim">Chinese Simplified</option>
+                        <option value="chi_tra">Chinese Traditional</option>
+                        <option value="kor">Korean (한국어)</option>
+                        <option value="tha">Thai (ไทย)</option>
+                    </select>
+                </div>
+                <div class="opt-item">
+                    <label>Render Scale</label>
+                    <select id="ocrScale">
+                        <option value="2" selected>2× (recommended)</option>
+                        <option value="3">3× (higher accuracy)</option>
+                        <option value="1.5">1.5× (faster)</option>
+                        <option value="1">1× (fastest)</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;display:block;margin-bottom:8px">Output Options</label>
+                <div class="pill-row" style="margin-bottom:0">
+                    <label class="pill active" onclick="setPill(this,'out')"><input type="radio" name="out" value="text" checked>Plain Text</label>
+                    <label class="pill" onclick="setPill(this,'out')"><input type="radio" name="out" value="searchable">Searchable PDF</label>
                 </div>
             </div>
         </div>
-    </section>
 
-    <section class="tool-area">
-        <div class="container">
-            <div class="tool-wrapper glass">
+        <div class="info-banner">
+            <i class="fas fa-info-circle" style="flex-shrink:0;margin-top:2px"></i>
+            <span>OCR uses <strong>Tesseract.js</strong> running entirely in your browser. First run downloads the language model (~2-15MB). Subsequent runs are faster.</span>
+        </div>
 
-                <!-- STEP 1: UPLOAD -->
-                <div id="s1">
-                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(168,85,247,0.3);border-radius:20px;margin:25px;cursor:pointer;"
-                         id="dropBox" onclick="document.getElementById('fi').click()">
-                        <div style="font-size:60px;margin-bottom:20px;color:#9333ea;"><i class="fas fa-eye"></i></div>
-                        <h2 style="font-size:24px;margin-bottom:8px;">Upload Scanned PDF or Image</h2>
-                        <p style="color:var(--text-light);margin-bottom:25px;">AI will extract text using Optical Character Recognition</p>
-                        <button class="upload-btn" style="background:linear-gradient(135deg,#a855f7,#9333ea);"
-                                onclick="event.stopPropagation();document.getElementById('fi').click()">
-                            <i class="fas fa-plus"></i> Select File
-                        </button>
-                        <input type="file" id="fi" accept=".pdf,image/jpeg,image/png,image/webp,image/bmp,.jpg,.jpeg,.png,.webp,.bmp" style="display:none">
-                        <div class="upload-hints" style="margin-top:20px;">
-                            <span><i class="fas fa-robot"></i> AI Powered</span>
-                            <span><i class="fas fa-globe"></i> 100+ Languages</span>
-                            <span><i class="fas fa-file-pdf"></i> PDF & Images</span>
-                        </div>
-                        <div class="accepted-formats" style="margin-top:10px;">
-                            Accepted: <span>PDF</span> <span>JPG</span> <span>PNG</span> <span>WEBP</span> <span>BMP</span>
-                        </div>
-                    </div>
-                </div>
+        <button class="action-btn" onclick="startOCR()"><i class="fas fa-eye"></i> Start OCR</button>
+    </div>
 
-                <!-- STEP 2: OPTIONS -->
-                <div id="s2" style="display:none;">
-                    <div class="files-area">
-                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
-
-                        <div class="file-card">
-                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
-                            <div class="file-card-info">
-                                <h4 id="fn">document.pdf</h4>
-                                <div class="file-card-meta">
-                                    <span class="fbadge" id="fs">0 KB</span>
-                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
-                                    <span id="ftypeLabel"><i class="fas fa-file"></i> PDF</span>
-                                </div>
-                            </div>
-                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
-                        </div>
-
-                        <!-- Language Selection -->
-                        <div class="options-panel glass-light">
-                            <h4><i class="fas fa-globe"></i> Document Language</h4>
-                            <p style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Select language(s) for best accuracy:</p>
-                            <div class="lang-grid">
-                                <div class="lang-chip on" data-lang="eng" onclick="toggleLang(this)"><span class="flag">🇬🇧</span>English</div>
-                                <div class="lang-chip" data-lang="hin" onclick="toggleLang(this)"><span class="flag">🇮🇳</span>Hindi</div>
-                                <div class="lang-chip" data-lang="guj" onclick="toggleLang(this)"><span class="flag">🇮🇳</span>Gujarati</div>
-                                <div class="lang-chip" data-lang="spa" onclick="toggleLang(this)"><span class="flag">🇪🇸</span>Spanish</div>
-                                <div class="lang-chip" data-lang="fra" onclick="toggleLang(this)"><span class="flag">🇫🇷</span>French</div>
-                                <div class="lang-chip" data-lang="deu" onclick="toggleLang(this)"><span class="flag">🇩🇪</span>German</div>
-                                <div class="lang-chip" data-lang="chi_sim" onclick="toggleLang(this)"><span class="flag">🇨🇳</span>Chinese</div>
-                                <div class="lang-chip" data-lang="jpn" onclick="toggleLang(this)"><span class="flag">🇯🇵</span>Japanese</div>
-                                <div class="lang-chip" data-lang="ara" onclick="toggleLang(this)"><span class="flag">🇸🇦</span>Arabic</div>
-                                <div class="lang-chip" data-lang="por" onclick="toggleLang(this)"><span class="flag">🇵🇹</span>Portuguese</div>
-                                <div class="lang-chip" data-lang="rus" onclick="toggleLang(this)"><span class="flag">🇷🇺</span>Russian</div>
-                                <div class="lang-chip" data-lang="kor" onclick="toggleLang(this)"><span class="flag">🇰🇷</span>Korean</div>
-                            </div>
-                        </div>
-
-                        <!-- OCR Options -->
-                        <div class="options-panel glass-light" style="margin-top:15px;">
-                            <h4><i class="fas fa-cog"></i> OCR Options</h4>
-                            <div class="opt-grid">
-                                <div class="option-field">
-                                    <label>Output Type</label>
-                                    <select id="optOutput">
-                                        <option value="text">Text Only (.txt)</option>
-                                        <option value="docx">Word Document (.docx)</option>
-                                        <option value="searchable">Searchable PDF</option>
-                                    </select>
-                                </div>
-                                <div class="option-field">
-                                    <label>Image Enhancement</label>
-                                    <select id="optEnhance">
-                                        <option value="auto">Auto Enhance (Recommended)</option>
-                                        <option value="none">No Enhancement</option>
-                                        <option value="bw">Convert to B&W</option>
-                                        <option value="gray">Grayscale</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.2);border-radius:10px;padding:12px 15px;margin:15px 0;font-size:12px;color:#7c3aed;">
-                            <i class="fas fa-info-circle"></i>
-                            <strong>Note:</strong> OCR engine will be downloaded (~2MB) on first use. This runs entirely in your browser — no data is sent to any server.
-                        </div>
-
-                        <button class="action-btn" style="background:linear-gradient(135deg,#a855f7,#9333ea);" onclick="startOCR()">
-                            <i class="fas fa-eye"></i> Start OCR
-                        </button>
-                    </div>
-                </div>
-
-                <!-- STEP 3: PROCESSING -->
-                <div id="s3" style="display:none;">
-                    <div class="processing-area">
-                        <div class="spinner"></div>
-                        <h3 id="pt">Running OCR...</h3>
-                        <p id="ps">Initializing OCR engine</p>
-                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#a855f7,#9333ea);"></div></div>
-                        <span class="progress-text" id="pp">0%</span>
-                        <div class="progress-detail" id="pDetail"></div>
-                    </div>
-                </div>
-
-                <!-- STEP 4: RESULT -->
-                <div id="s4" style="display:none;">
-                    <div class="result-area" style="text-align:left;max-width:100%;">
-                        <div style="text-align:center;">
-                            <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                            <h2>OCR Complete! 🔍</h2>
-                            <p style="color:var(--text-medium);">Text has been extracted from your document</p>
-                        </div>
-
-                        <!-- Stats -->
-                        <div class="ocr-stats">
-                            <div class="ocr-stat"><h4 id="rPages">0</h4><p>Pages</p></div>
-                            <div class="ocr-stat"><h4 id="rWords">0</h4><p>Words</p></div>
-                            <div class="ocr-stat"><h4 id="rChars">0</h4><p>Characters</p></div>
-                            <div class="ocr-stat"><h4 id="rConf">0%</h4><p>Accuracy</p></div>
-                        </div>
-
-                        <!-- Per-page confidence -->
-                        <div id="pageResults" style="margin:15px 0;"></div>
-
-                        <!-- Extracted Text -->
-                        <div>
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                                <h4 style="font-size:14px;"><i class="fas fa-file-alt" style="color:#9333ea"></i> Extracted Text</h4>
-                                <div style="display:flex;gap:8px;">
-                                    <button class="btn-sm btn-primary-sm" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
-                                    <button class="btn-sm btn-primary-sm" onclick="selectAll()"><i class="fas fa-check-double"></i> Select All</button>
-                                </div>
-                            </div>
-                            <div class="text-output" id="textOutput" contenteditable="true">No text extracted.</div>
-                        </div>
-
-                        <!-- Download Options -->
-                        <div class="result-info glass-light" style="margin-top:15px;">
-                            <div class="info-item"><i class="fas fa-file-alt" style="color:#9333ea"></i> <span id="rfn">ocr_result.txt</span></div>
-                            <div class="info-item"><i class="fas fa-weight-hanging"></i> <span id="rSz">0 KB</span></div>
-                        </div>
-
-                        <button class="download-btn" style="background:linear-gradient(135deg,#a855f7,#9333ea);" onclick="doDownload()">
-                            <i class="fas fa-download"></i> <span id="dlBtnText">Download Text File</span>
-                        </button>
-
-                        <div class="result-actions">
-                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> OCR Another</button>
-                            <button class="btn-outline" onclick="downloadAlt('txt')"><i class="fas fa-file-alt"></i> Save as TXT</button>
-                            <button class="btn-outline" onclick="downloadAlt('docx')"><i class="fas fa-file-word"></i> Save as DOCX</button>
-                        </div>
-                    </div>
-                </div>
-
+    <!-- PROCESSING -->
+    <div id="processingSection" data-section style="display:none">
+        <div class="file-info-card">
+            <div class="file-info-icon"><i class="fas fa-file-pdf"></i></div>
+            <div class="file-info-details">
+                <h4 id="procFileName">document.pdf</h4>
+                <div class="file-meta"><span id="procStatus"><i class="fas fa-spinner fa-spin" style="color:#6366f1"></i> Processing...</span></div>
             </div>
         </div>
-    </section>
-
-    <section class="related-tools">
-        <div class="container">
-            <div class="section-header"><h2>Related Tools</h2></div>
-            <div class="related-grid">
-                <a href="scan-to-pdf.html" class="related-card glass"><div class="related-icon icon-pink"><i class="fas fa-camera"></i></div><h4>Scan to PDF</h4></a>
-                <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
-                <a href="translate-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-language"></i></div><h4>Translate</h4></a>
-                <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit</h4></a>
-                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
-                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
-            </div>
+        <div class="ocr-progress" id="ocrSteps">
+            <div class="ocr-step pending" id="stepLoad"><div class="os-icon pending"><i class="fas fa-file-pdf"></i></div><div class="os-info"><div class="os-title">Load PDF</div><div class="os-detail">Rendering pages to images</div></div><div class="os-progress"><div class="os-progress-fill" id="progLoad" style="width:0%"></div></div></div>
+            <div class="ocr-step pending" id="stepInit"><div class="os-icon pending"><i class="fas fa-cog"></i></div><div class="os-info"><div class="os-title">Initialize OCR Engine</div><div class="os-detail">Loading Tesseract + language model</div></div><div class="os-progress"><div class="os-progress-fill" id="progInit" style="width:0%"></div></div></div>
+            <div class="ocr-step pending" id="stepOCR"><div class="os-icon pending"><i class="fas fa-eye"></i></div><div class="os-info"><div class="os-title">Recognize Text</div><div class="os-detail" id="ocrDetail">Processing pages...</div></div><div class="os-progress"><div class="os-progress-fill" id="progOCR" style="width:0%"></div></div></div>
+            <div class="ocr-step pending" id="stepDone"><div class="os-icon pending"><i class="fas fa-check"></i></div><div class="os-info"><div class="os-title">Complete</div><div class="os-detail">Preparing output</div></div></div>
         </div>
-    </section>
+    </div>
 
-    <section class="how-to-section">
-        <div class="container">
-            <div class="section-header"><h2>How OCR Works</h2></div>
-            <div class="steps-row">
-                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select scanned PDF or image.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-robot"></i><h4>OCR</h4><p>AI reads and extracts text.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get text, DOCX, or searchable PDF.</p></div>
-            </div>
+    <!-- RESULT -->
+    <div id="resultSection" data-section style="display:none">
+        <div style="text-align:center;margin-bottom:16px">
+            <div style="width:64px;height:64px;border-radius:16px;background:rgba(34,197,94,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;color:#16a34a"><i class="fas fa-check-circle"></i></div>
+            <h2 style="font-size:22px;font-weight:800;color:#1e293b;margin-bottom:4px">OCR Complete! 📝</h2>
+            <p style="font-size:14px;color:#64748b">Text extracted from scanned pages</p>
         </div>
-    </section>
 
-    <section class="faq-section">
-        <div class="container">
-            <div class="section-header"><h2>FAQ</h2></div>
-            <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>What is OCR?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>OCR (Optical Character Recognition) converts images of text into actual editable text. It "reads" characters from scanned documents.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Which languages are supported?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100+ languages including English, Hindi, Gujarati, Chinese, Japanese, Arabic, and many more via Tesseract.js.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>How accurate is it?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>95-99% accuracy on clear documents. Quality depends on image resolution, font clarity, and language.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is it secure?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>100% secure. Tesseract.js runs entirely in your browser. No data is sent to any server.</p></div></div>
-            </div>
+        <div class="result-stats">
+            <div class="result-stat"><strong id="rPages">0</strong><small>Pages</small></div>
+            <div class="result-stat"><strong id="rWords">0</strong><small>Words</small></div>
+            <div class="result-stat"><strong id="rChars">0</strong><small>Characters</small></div>
+            <div class="result-stat"><strong id="rConf">0%</strong><small>Confidence</small></div>
         </div>
-    </section>
 
-    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+        <!-- Confidence -->
+        <div class="conf-meter">
+            <span style="font-size:11px;font-weight:700;color:#64748b">Accuracy:</span>
+            <div class="conf-bar"><div class="conf-fill" id="confFill" style="width:0%"></div></div>
+            <span class="conf-label" id="confLabel">0%</span>
+        </div>
 
-    <script src="js/tool-page.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+        <!-- Text output -->
+        <div class="text-output">
+            <div class="to-header">
+                <h5><i class="fas fa-file-alt"></i> Extracted Text</h5>
+                <button class="to-btn" onclick="copyText()"><i class="fas fa-copy"></i> Copy All</button>
+                <button class="to-btn" onclick="selectAllText()"><i class="fas fa-check-double"></i> Select All</button>
+            </div>
+            <div class="to-body" id="textBody" contenteditable="true"></div>
+        </div>
 
-    <script>
-    // ==========================================
-    // OCR PDF - COMPLETE WORKING CODE
-    // PDF.js (render pages) + Tesseract.js (OCR)
-    // ==========================================
+        <!-- Downloads -->
+        <div class="dl-actions">
+            <button class="dl-btn txt" onclick="downloadTxt()"><i class="fas fa-file-alt"></i> Download .TXT</button>
+            <button class="dl-btn pdf" onclick="downloadSearchablePdf()"><i class="fas fa-file-pdf"></i> Searchable PDF</button>
+            <button class="dl-btn copy" onclick="copyText()"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+        </div>
 
-    window.addEventListener('load', function() {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        <div class="back-actions">
+            <button class="back-btn" onclick="resetTool()"><i class="fas fa-redo"></i> OCR Another</button>
+        </div>
+    </div>
+
+</div>
+</div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
+
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="pdf-to-word.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-file-word"></i></div><h4>PDF to Word</h4></a>
+            <a href="pdf-to-image.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-image"></i></div><h4>PDF to Image</h4></a>
+            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+            <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+            <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+            <a href="unlock-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-lock-open"></i></div><h4>Unlock</h4></a>
+        </div>
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How OCR Works</h2><p>3 simple steps</p></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Upload a scanned PDF or image.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-eye"></i><h4>OCR</h4><p>Tesseract.js recognizes text from images.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Get text, searchable PDF, or copy.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>What is OCR?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>OCR (Optical Character Recognition)</strong> converts images of text into actual editable text. It "reads" the text from scanned documents, photos, or screenshots.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Is my data private?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>100% private.</strong> Tesseract.js runs entirely in your browser. No data is sent to any server. The language model is downloaded once and cached.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>What languages are supported?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Over <strong>100 languages</strong> including English, Hindi, Gujarati, Arabic, Chinese, Japanese, Korean, and all major European languages.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>How accurate is it?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Accuracy depends on <strong>image quality</strong>. Clear scans at 300+ DPI typically achieve 90-99% accuracy. Use <strong>3× render scale</strong> for best results.</p></div></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>© 2025 PDFTools. All rights reserved.</p>
+            <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="js/tool-page.js"></script>
+<script src="js/adsense.js"></script>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let rawBytes=null,selectedFile=null,pdfDoc=null,totalPages=0;
+let ocrResults=[]; // [{text,confidence,pageNum}]
+let fullText='',avgConfidence=0;
+let isImage=false; // true if user uploaded image instead of PDF
+
+function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
+function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
+function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function hideError(){document.getElementById('errorBox').style.display='none'}
+function tick(){return new Promise(r=>setTimeout(r,20))}
+function toast(m){const t=document.createElement('div');t.className='success-toast';t.innerHTML='<i class="fas fa-check-circle"></i>'+m;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)},2500)}
+function setPill(el,grp){el.closest('.pill-row').querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');el.querySelector('input').checked=true}
+
+function setStep(id,status,detail){
+    const step=document.getElementById(id);
+    const icon=step.querySelector('.os-icon');
+    step.className='ocr-step '+status;
+    const iconMap={pending:'fas fa-clock',active:'fas fa-spinner fa-spin',done:'fas fa-check-circle'};
+    icon.className='os-icon '+status;
+    icon.innerHTML='<i class="'+(iconMap[status]||'fas fa-clock')+'"></i>';
+    if(detail)step.querySelector('.os-detail').textContent=detail;
+}
+
+const dropZone=document.getElementById('dropZone'),fileInput=document.getElementById('fileInput');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
+
+async function handleFile(file){
+    hideError();selectedFile=file;
+    isImage=['image/jpeg','image/png'].includes(file.type);
+
+    document.getElementById('fileName').textContent=file.name;
+    document.getElementById('fileSize').textContent=szF(file.size);
+
+    if(isImage){
+        totalPages=1;
+        document.getElementById('pageCount').textContent='1 (image)';
+        showSection('optionsSection');
+        return;
+    }
+
+    if(!file.name.toLowerCase().endsWith('.pdf')){showError('Select a PDF or image file.');return}
+    rawBytes=new Uint8Array(await file.arrayBuffer());
+    try{
+        pdfDoc=await pdfjsLib.getDocument({data:rawBytes.slice(0)}).promise;
+        totalPages=pdfDoc.numPages;
+        document.getElementById('pageCount').textContent=totalPages;
+        showSection('optionsSection');
+    }catch(e){showError('Failed to load: '+e.message)}
+}
+
+async function startOCR(){
+    ocrResults=[];fullText='';avgConfidence=0;
+    const lang=document.getElementById('ocrLang').value;
+    const scale=parseFloat(document.getElementById('ocrScale').value)||2;
+
+    showSection('processingSection');
+    document.getElementById('procFileName').textContent=selectedFile.name;
+    ['stepLoad','stepInit','stepOCR','stepDone'].forEach(s=>setStep(s,'pending'));
+
+    try{
+        // Step 1: Render pages to images
+        setStep('stepLoad','active','Rendering pages...');
+        const pageImages=[];
+
+        if(isImage){
+            // Direct image
+            const dataUrl=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(selectedFile)});
+            pageImages.push(dataUrl);
+            document.getElementById('progLoad').style.width='100%';
+        }else{
+            for(let i=1;i<=totalPages;i++){
+                setStep('stepLoad','active',`Rendering page ${i}/${totalPages}...`);
+                document.getElementById('progLoad').style.width=((i/totalPages)*100)+'%';
+
+                const pg=await pdfDoc.getPage(i);
+                const vp=pg.getViewport({scale});
+                const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+                const ctx=c.getContext('2d');
+                ctx.fillStyle='#fff';ctx.fillRect(0,0,vp.width,vp.height);
+                await pg.render({canvasContext:ctx,viewport:vp}).promise;
+                pageImages.push(c.toDataURL('image/png'));
+                await tick();
+            }
+        }
+        setStep('stepLoad','done',totalPages+' page(s) rendered');
+
+        // Step 2: Init Tesseract
+        setStep('stepInit','active','Loading Tesseract.js + '+lang+' model...');
+        document.getElementById('progInit').style.width='50%';
+
+        const worker=await Tesseract.createWorker(lang,1,{
+            logger:m=>{
+                if(m.status==='loading tesseract core')document.getElementById('progInit').style.width='30%';
+                if(m.status==='initializing api')document.getElementById('progInit').style.width='70%';
+                if(m.status==='loading language traineddata')document.getElementById('progInit').style.width='60%';
+            }
+        });
+
+        document.getElementById('progInit').style.width='100%';
+        setStep('stepInit','done','Tesseract ready — '+lang);
+
+        // Step 3: OCR each page
+        setStep('stepOCR','active','Processing pages...');
+        let totalConf=0;
+
+        for(let i=0;i<pageImages.length;i++){
+            const pgNum=i+1;
+            setStep('stepOCR','active',`Recognizing page ${pgNum}/${pageImages.length}...`);
+            document.getElementById('ocrDetail').textContent=`Page ${pgNum}/${pageImages.length}`;
+            document.getElementById('progOCR').style.width=((pgNum/pageImages.length)*100)+'%';
+
+            const result=await worker.recognize(pageImages[i]);
+            const text=result.data.text||'';
+            const conf=result.data.confidence||0;
+
+            ocrResults.push({text,confidence:conf,pageNum:pgNum});
+            totalConf+=conf;
+            await tick();
+        }
+
+        avgConfidence=totalConf/pageImages.length;
+        setStep('stepOCR','done',pageImages.length+' page(s) recognized');
+
+        // Terminate worker
+        await worker.terminate();
+
+        // Step 4: Complete
+        setStep('stepDone','done','OCR complete!');
+        await new Promise(r=>setTimeout(r,500));
+
+        // Build full text
+        fullText=ocrResults.map(r=>r.text.trim()).join('\n\n--- Page Break ---\n\n');
+
+        showResults();
+        toast('OCR complete! '+ocrResults.length+' pages processed.');
+    }catch(e){
+        console.error(e);
+        showSection('optionsSection');
+        showError('OCR failed: '+e.message);
+    }
+}
+
+function showResults(){
+    const words=fullText.split(/\s+/).filter(w=>w.length>0).length;
+    const chars=fullText.length;
+
+    document.getElementById('rPages').textContent=ocrResults.length;
+    document.getElementById('rWords').textContent=words.toLocaleString();
+    document.getElementById('rChars').textContent=chars.toLocaleString();
+    document.getElementById('rConf').textContent=Math.round(avgConfidence)+'%';
+
+    // Confidence meter
+    const confFill=document.getElementById('confFill');
+    const confLabel=document.getElementById('confLabel');
+    confFill.style.width=avgConfidence+'%';
+    confLabel.textContent=Math.round(avgConfidence)+'%';
+    if(avgConfidence>=80){confFill.className='conf-fill high';confLabel.className='conf-label high'}
+    else if(avgConfidence>=60){confFill.className='conf-fill med';confLabel.className='conf-label med'}
+    else{confFill.className='conf-fill low';confLabel.className='conf-label low'}
+
+    // Text output
+    let html='';
+    ocrResults.forEach((r,i)=>{
+        if(i>0)html+=`<hr class="page-divider" data-page="Page ${r.pageNum}">`;
+        html+=escHtml(r.text.trim())||'<span style="color:#94a3b8;font-style:italic">[No text detected on this page]</span>';
     });
+    document.getElementById('textBody').innerHTML=html;
 
-    var O = {
-        rawBytes: null, name: 'document',
-        fileType: 'pdf',    // pdf or image
-        pages: 0,
-        langs: ['eng'],
-        allText: '',
-        pageTexts: [],      // [{text, confidence}]
-        avgConfidence: 0,
-        blob: null,
-        imageDataUrl: null   // if single image uploaded
-    };
+    showSection('resultSection');
+}
 
-    // File input
-    document.getElementById('fi').addEventListener('change', function() {
-        if (this.files && this.files[0]) onFile(this.files[0]);
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function copyText(){
+    navigator.clipboard.writeText(fullText).then(()=>toast('Text copied to clipboard!')).catch(()=>{
+        const ta=document.createElement('textarea');ta.value=fullText;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('Copied!');
     });
+}
 
-    // Drag drop
-    var dropBox = document.getElementById('dropBox');
-    dropBox.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = '#9333ea'; this.style.background = 'rgba(168,85,247,0.05)'; });
-    dropBox.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(168,85,247,0.3)'; this.style.background = ''; });
-    dropBox.addEventListener('drop', function(e) {
-        e.preventDefault(); this.style.borderColor = 'rgba(168,85,247,0.3)'; this.style.background = '';
-        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
-    });
+function selectAllText(){
+    const body=document.getElementById('textBody');
+    const range=document.createRange();range.selectNodeContents(body);
+    const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
+}
 
-    // ===== ON FILE =====
-    async function onFile(file) {
-        hideE();
-        O.name = file.name.replace(/\.[^.]+$/, '');
+function downloadTxt(){
+    const blob=new Blob([fullText],{type:'text/plain;charset=utf-8'});
+    const name=(selectedFile?.name||'ocr').replace(/\.[^.]+$/,'')+'_ocr.txt';
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=name;
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
+    toast('TXT downloaded!');
+}
 
-        var isPDF = file.name.toLowerCase().endsWith('.pdf');
-        var isImage = file.type.startsWith('image/');
+async function downloadSearchablePdf(){
+    try{
+        const{PDFDocument,StandardFonts,rgb}=PDFLib;
+        let doc;
 
-        if (!isPDF && !isImage) {
-            showE('Please select a PDF or image file!');
-            return;
+        if(rawBytes){
+            doc=await PDFDocument.load(rawBytes,{ignoreEncryption:true,throwOnInvalidObject:false});
+        }else{
+            doc=await PDFDocument.create();
+            // Add image as page
+            const imgBytes=new Uint8Array(await selectedFile.arrayBuffer());
+            let img;
+            try{img=await doc.embedJpg(imgBytes)}catch(e){img=await doc.embedPng(imgBytes)}
+            const page=doc.addPage([img.width,img.height]);
+            page.drawImage(img,{x:0,y:0,width:img.width,height:img.height});
         }
 
-        O.fileType = isPDF ? 'pdf' : 'image';
+        const font=await doc.embedFont(StandardFonts.Helvetica);
+        const pages=doc.getPages();
 
-        try {
-            if (isPDF) {
-                var ab = await readF(file);
-                O.rawBytes = new Uint8Array(ab);
-                var pdf = await pdfjsLib.getDocument({ data: O.rawBytes.slice(0) }).promise;
-                O.pages = pdf.numPages;
-                document.getElementById('ftypeLabel').innerHTML = '<i class="fas fa-file-pdf"></i> PDF';
-            } else {
-                O.imageDataUrl = await readAsDataURL(file);
-                O.pages = 1;
-                O.rawBytes = null;
-                document.getElementById('ftypeLabel').innerHTML = '<i class="fas fa-image"></i> Image';
-            }
+        // Add invisible text layer over each page
+        for(let i=0;i<ocrResults.length&&i<pages.length;i++){
+            const pg=pages[i];
+            const{width,height}=pg.getSize();
+            const text=ocrResults[i].text.trim();
+            if(!text)continue;
 
-            document.getElementById('fn').textContent = file.name;
-            document.getElementById('fs').textContent = szF(file.size);
-            document.getElementById('fp').textContent = O.pages;
-
-            goTo('s2');
-        } catch(e) {
-            console.error(e);
-            showE('Cannot read file: ' + e.message);
-        }
-    }
-
-    function readF(f) {
-        return new Promise(function(ok, fail) {
-            var r = new FileReader();
-            r.onload = function() { ok(r.result); };
-            r.onerror = function() { fail(new Error('Read failed')); };
-            r.readAsArrayBuffer(f);
-        });
-    }
-
-    function readAsDataURL(f) {
-        return new Promise(function(ok, fail) {
-            var r = new FileReader();
-            r.onload = function() { ok(r.result); };
-            r.onerror = function() { fail(new Error('Read failed')); };
-            r.readAsDataURL(f);
-        });
-    }
-
-    // ===== LANGUAGE TOGGLE =====
-    function toggleLang(el) {
-        el.classList.toggle('on');
-        O.langs = [];
-        document.querySelectorAll('.lang-chip.on').forEach(function(c) {
-            O.langs.push(c.getAttribute('data-lang'));
-        });
-        if (O.langs.length === 0) {
-            O.langs = ['eng'];
-            document.querySelector('[data-lang="eng"]').classList.add('on');
-        }
-    }
-
-    // ==========================================
-    // ✅ START OCR
-    // ==========================================
-    async function startOCR() {
-        hideE();
-        if (O.pages === 0) { showE('No file loaded!'); return; }
-
-        goTo('s3');
-        O.pageTexts = [];
-        O.allText = '';
-
-        try {
-            var langStr = O.langs.join('+');
-            var enhance = document.getElementById('optEnhance').value;
-
-            prog(3, 'Initializing OCR engine...', 'Loading Tesseract.js (' + langStr + ')');
-            document.getElementById('pDetail').textContent = 'First time may take 10-30 seconds to download language data...';
-
-            // Create Tesseract worker
-            var worker = await Tesseract.createWorker(langStr, 1, {
-                logger: function(m) {
-                    if (m.status === 'recognizing text') {
-                        var p = Math.round(m.progress * 100);
-                        document.getElementById('pDetail').textContent = 'Recognizing: ' + p + '%';
-                    }
-                }
-            });
-
-            prog(15, 'OCR engine ready', 'Processing pages...');
-            document.getElementById('pDetail').textContent = '';
-
-            // Process each page
-            var totalConfidence = 0;
-
-            for (var i = 0; i < O.pages; i++) {
-                var pageNum = i + 1;
-                prog(
-                    15 + Math.round((i / O.pages) * 75),
-                    'Processing page ' + pageNum + '/' + O.pages,
-                    'Running OCR...'
-                );
-
-                // Get image for OCR
-                var imageSource;
-
-                if (O.fileType === 'pdf') {
-                    // Render PDF page to canvas
-                    imageSource = await renderPdfPageToCanvas(pageNum, enhance);
-                } else {
-                    // Use uploaded image
-                    imageSource = await enhanceImageForOCR(O.imageDataUrl, enhance);
-                }
-
-                // Run OCR on this page
-                var result = await worker.recognize(imageSource);
-                var pageText = result.data.text || '';
-                var pageConf = result.data.confidence || 0;
-
-                O.pageTexts.push({
-                    text: pageText.trim(),
-                    confidence: Math.round(pageConf),
-                    pageNum: pageNum
-                });
-
-                O.allText += pageText.trim() + '\n\n';
-                totalConfidence += pageConf;
-            }
-
-            // Cleanup worker
-            await worker.terminate();
-
-            O.allText = O.allText.trim();
-            O.avgConfidence = O.pages > 0 ? Math.round(totalConfidence / O.pages) : 0;
-
-            prog(95, 'Preparing results...', 'Almost done');
-
-            if (O.allText.length < 3) {
-                goTo('s2');
-                showE('No text could be extracted. The image may be too blurry, or the wrong language was selected.');
-                return;
-            }
-
-            // Create download blob
-            createOutputBlob();
-
-            prog(100, 'Done!', 'OCR complete');
-
-            setTimeout(showResults, 400);
-
-        } catch(e) {
-            console.error('OCR error:', e);
-            goTo('s2');
-            showE('OCR failed: ' + e.message + '. Try a different language or image quality.');
-        }
-    }
-
-    // ===== RENDER PDF PAGE TO CANVAS =====
-    async function renderPdfPageToCanvas(pageNum, enhance) {
-        var pdf = await pdfjsLib.getDocument({ data: O.rawBytes.slice(0) }).promise;
-        var page = await pdf.getPage(pageNum);
-        var vp = page.getViewport({ scale: 2 }); // Higher scale = better OCR
-
-        var canvas = document.createElement('canvas');
-        canvas.width = vp.width;
-        canvas.height = vp.height;
-        var ctx = canvas.getContext('2d');
-
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        await page.render({ canvasContext: ctx, viewport: vp }).promise;
-
-        // Apply enhancement
-        if (enhance !== 'none') {
-            applyEnhancement(ctx, canvas.width, canvas.height, enhance);
-        }
-
-        return canvas;
-    }
-
-    // ===== ENHANCE IMAGE FOR OCR =====
-    async function enhanceImageForOCR(dataUrl, enhance) {
-        return new Promise(function(resolve) {
-            var img = new Image();
-            img.onload = function() {
-                var canvas = document.createElement('canvas');
-                canvas.width = img.naturalWidth;
-                canvas.height = img.naturalHeight;
-                var ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0);
-
-                if (enhance !== 'none') {
-                    applyEnhancement(ctx, canvas.width, canvas.height, enhance);
-                }
-
-                resolve(canvas);
-            };
-            img.src = dataUrl;
-        });
-    }
-
-    // ===== APPLY ENHANCEMENT =====
-    function applyEnhancement(ctx, w, h, mode) {
-        var imageData = ctx.getImageData(0, 0, w, h);
-        var data = imageData.data;
-
-        for (var i = 0; i < data.length; i += 4) {
-            var r = data[i], g = data[i+1], b = data[i+2];
-
-            if (mode === 'bw') {
-                var gray = 0.299*r + 0.587*g + 0.114*b;
-                gray = gray > 140 ? 255 : 0;
-                data[i] = data[i+1] = data[i+2] = gray;
-            } else if (mode === 'gray') {
-                var gray = 0.299*r + 0.587*g + 0.114*b;
-                data[i] = data[i+1] = data[i+2] = gray;
-            } else {
-                // Auto enhance: increase contrast
-                var factor = 1.3;
-                data[i] = Math.min(255, Math.max(0, factor*(r-128)+128+10));
-                data[i+1] = Math.min(255, Math.max(0, factor*(g-128)+128+10));
-                data[i+2] = Math.min(255, Math.max(0, factor*(b-128)+128+10));
+            // Add text as invisible (very small, transparent)
+            const lines=text.split('\n');
+            const lineH=10;
+            let y=height-20;
+            for(const line of lines){
+                if(!line.trim()||y<10)continue;
+                try{
+                    pg.drawText(line.trim().slice(0,200),{
+                        x:10,y,size:1,font,
+                        color:rgb(1,1,1), // white = invisible on white
+                        opacity:0.01,
+                    });
+                }catch(e){}
+                y-=lineH;
             }
         }
 
-        ctx.putImageData(imageData, 0, 0);
+        const outBytes=await doc.save();
+        const blob=new Blob([outBytes],{type:'application/pdf'});
+        const name=(selectedFile?.name||'ocr').replace(/\.[^.]+$/,'')+'_searchable.pdf';
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');a.href=url;a.download=name;
+        document.body.appendChild(a);a.click();
+        setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
+        toast('Searchable PDF downloaded!');
+    }catch(e){
+        console.error(e);showError('Failed to create searchable PDF: '+e.message);
     }
+}
 
-    // ===== CREATE OUTPUT BLOB =====
-    function createOutputBlob() {
-        var outputType = document.getElementById('optOutput').value;
-
-        if (outputType === 'docx') {
-            // Build simple DOCX
-            var body = '';
-            O.pageTexts.forEach(function(pt, idx) {
-                var lines = pt.text.split('\n');
-                lines.forEach(function(line) {
-                    if (!line.trim()) { body += '<w:p/>'; return; }
-                    line = line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                    body += '<w:p><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="24"/></w:rPr>'
-                        + '<w:t xml:space="preserve">' + line + '</w:t></w:r></w:p>';
-                });
-                if (idx < O.pageTexts.length - 1) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
-            });
-
-            var docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-                + '<w:document xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
-                + ' xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
-                + body + '<w:sectPr><w:pgSz w:w="12240" w:h="15840"/>'
-                + '<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>';
-
-            var ct = '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-                + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
-                + '<Default Extension="xml" ContentType="application/xml"/>'
-                + '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
-
-            var rels = '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-                + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
-
-            var wrels = '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>';
-
-            O.blob = new Blob([makeZip([
-                {n:'[Content_Types].xml',d:ct},{n:'_rels/.rels',d:rels},
-                {n:'word/_rels/document.xml.rels',d:wrels},{n:'word/document.xml',d:docXml}
-            ])], {type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-
-        } else {
-            // Plain text
-            var txt = '';
-            O.pageTexts.forEach(function(pt, idx) {
-                txt += '=== Page ' + pt.pageNum + ' (Confidence: ' + pt.confidence + '%) ===\n\n';
-                txt += pt.text + '\n\n';
-            });
-            O.blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
-        }
-    }
-
-    // ZIP builder (same as other tools)
-    function makeZip(files) {
-        var locals=[], cdirs=[], off=0;
-        for(var i=0;i<files.length;i++){
-            var nb=new TextEncoder().encode(files[i].n);
-            var db=new TextEncoder().encode(files[i].d);
-            var c=crc32(db);
-            var lh=new Uint8Array(30+nb.length+db.length);
-            var lv=new DataView(lh.buffer);
-            lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);
-            lv.setUint32(14,c,true);lv.setUint32(18,db.length,true);
-            lv.setUint32(22,db.length,true);lv.setUint16(26,nb.length,true);
-            lh.set(nb,30);lh.set(db,30+nb.length);locals.push(lh);
-            var cd=new Uint8Array(46+nb.length);var cv=new DataView(cd.buffer);
-            cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);
-            cv.setUint32(16,c,true);cv.setUint32(20,db.length,true);cv.setUint32(24,db.length,true);
-            cv.setUint16(28,nb.length,true);cv.setUint32(42,off,true);
-            cd.set(nb,46);cdirs.push(cd);off+=lh.length;
-        }
-        var cdsz=0;for(var i=0;i<cdirs.length;i++)cdsz+=cdirs[i].length;
-        var end=new Uint8Array(22);var ev=new DataView(end.buffer);
-        ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);
-        ev.setUint16(10,files.length,true);ev.setUint32(12,cdsz,true);ev.setUint32(16,off,true);
-        var out=new Uint8Array(off+cdsz+22);var p=0;
-        for(var i=0;i<locals.length;i++){out.set(locals[i],p);p+=locals[i].length;}
-        for(var i=0;i<cdirs.length;i++){out.set(cdirs[i],p);p+=cdirs[i].length;}
-        out.set(end,p);return out;
-    }
-    function crc32(d){var t=[];for(var i=0;i<256;i++){var c=i;for(var j=0;j<8;j++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[i]=c;}var v=0xFFFFFFFF;for(var i=0;i<d.length;i++)v=t[(v^d[i])&0xFF]^(v>>>8);return(v^0xFFFFFFFF)>>>0;}
-
-    // ===== SHOW RESULTS =====
-    function showResults() {
-        var words = O.allText.split(/\s+/).filter(function(w){return w.length>0;}).length;
-
-        document.getElementById('rPages').textContent = O.pages;
-        document.getElementById('rWords').textContent = words.toLocaleString();
-        document.getElementById('rChars').textContent = O.allText.length.toLocaleString();
-        document.getElementById('rConf').textContent = O.avgConfidence + '%';
-
-        // Text output
-        document.getElementById('textOutput').textContent = O.allText;
-
-        // Per-page results
-        var container = document.getElementById('pageResults');
-        container.innerHTML = '';
-        O.pageTexts.forEach(function(pt) {
-            var confColor = pt.confidence >= 90 ? '#22c55e' : pt.confidence >= 70 ? '#f59e0b' : '#ef4444';
-            var div = document.createElement('div');
-            div.className = 'page-ocr-item';
-            div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;">'
-                + '<h5>Page ' + pt.pageNum + '</h5>'
-                + '<span class="conf">' + pt.confidence + '% confidence</span></div>'
-                + '<div class="conf-bar"><div class="conf-fill" style="width:' + pt.confidence + '%;background:' + confColor + ';"></div></div>';
-            container.appendChild(div);
-        });
-
-        // File info
-        var outputType = document.getElementById('optOutput').value;
-        var ext = outputType === 'docx' ? '.docx' : '.txt';
-        document.getElementById('rfn').textContent = O.name + '_ocr' + ext;
-        document.getElementById('rSz').textContent = O.blob ? szF(O.blob.size) : '-';
-        document.getElementById('dlBtnText').textContent = 'Download ' + ext.toUpperCase() + ' File';
-
-        goTo('s4');
-    }
-
-    // ===== DOWNLOAD =====
-    function doDownload() {
-        if (!O.blob) { alert('No file.'); return; }
-        var outputType = document.getElementById('optOutput').value;
-        var ext = outputType === 'docx' ? '.docx' : '.txt';
-        dlBlob(O.blob, O.name + '_ocr' + ext);
-    }
-
-    function downloadAlt(type) {
-        if (type === 'txt') {
-            var txt = '';
-            O.pageTexts.forEach(function(pt) {
-                txt += '=== Page ' + pt.pageNum + ' ===\n\n' + pt.text + '\n\n';
-            });
-            dlBlob(new Blob([txt], {type:'text/plain'}), O.name + '_ocr.txt');
-        } else if (type === 'docx') {
-            // Re-create DOCX output
-            var prevOutput = document.getElementById('optOutput').value;
-            document.getElementById('optOutput').value = 'docx';
-            createOutputBlob();
-            dlBlob(O.blob, O.name + '_ocr.docx');
-            document.getElementById('optOutput').value = prevOutput;
-        }
-    }
-
-    function dlBlob(blob, name) {
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url; a.download = name;
-        a.style.display = 'none';
-        document.body.appendChild(a); a.click();
-        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
-    }
-
-    // ===== COPY & SELECT =====
-    function copyText() {
-        if (!O.allText) { alert('No text.'); return; }
-        navigator.clipboard.writeText(O.allText).then(function() {
-            alert('✅ Copied ' + O.allText.length + ' characters!');
-        }).catch(function() {
-            var ta = document.createElement('textarea');
-            ta.value = O.allText;
-            document.body.appendChild(ta); ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            alert('✅ Copied!');
-        });
-    }
-
-    function selectAll() {
-        var el = document.getElementById('textOutput');
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-
-    // ===== RESET =====
-    function doReset() {
-        O.rawBytes = null; O.name = 'document';
-        O.fileType = 'pdf'; O.pages = 0;
-        O.langs = ['eng']; O.allText = '';
-        O.pageTexts = []; O.avgConfidence = 0;
-        O.blob = null; O.imageDataUrl = null;
-        hideE();
-        document.getElementById('fi').value = '';
-        document.querySelectorAll('.lang-chip').forEach(function(c) { c.classList.remove('on'); });
-        document.querySelector('[data-lang="eng"]').classList.add('on');
-        goTo('s1');
-    }
-
-    // ===== HELPERS =====
-    function goTo(id) {
-        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
-        document.getElementById(id).style.display = 'block';
-    }
-    function prog(p, t, s) {
-        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
-        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
-    }
-    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
-    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
-    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
-
-    console.log('OCR PDF tool loaded');
-    console.log('Libraries: PDF.js + Tesseract.js');
-    </script>
-
+function resetTool(){
+    rawBytes=null;selectedFile=null;pdfDoc=null;totalPages=0;
+    ocrResults=[];fullText='';avgConfidence=0;isImage=false;
+    fileInput.value='';hideError();showSection('uploadSection');
+}
+</script>
 </body>
 </html>

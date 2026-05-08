@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop JPG - Crop Multiple Images Free | PDFTools</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+    <meta name="description" content="Crop multiple JPG/PNG images at once. Same-size crop, auto-fill, aspect ratio lock. 100% browser-based!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <!-- JSZip for batch download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        *{box-sizing:border-box}
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        .info-banner{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+
+        /* ── Image Grid ── */
+        .img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:16px}
+        .img-card{background:#fff;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+        .img-card:hover{border-color:var(--primary,#6366f1);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+        .img-card.active{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.2)}
+        .img-card.cropped{border-color:#22c55e}
+        .img-thumb{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#f1f5f9}
+        .img-info{padding:8px 10px}
+        .img-name{font-size:11px;font-weight:700;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+        .img-dims{font-size:10px;color:var(--text-light);font-weight:600}
+        .img-badge{position:absolute;top:6px;right:6px;padding:2px 8px;border-radius:6px;font-size:9px;font-weight:700;color:#fff}
+        .img-badge.done{background:#22c55e}
+        .img-badge.pending{background:#f59e0b}
+        .img-remove{position:absolute;top:6px;left:6px;width:20px;height:20px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border:2px solid #fff;z-index:2}
+        .img-card:hover .img-remove{display:flex}
+        .img-add-card{background:rgba(99,102,241,.05);border:2px dashed #c7d2fe;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;min-height:160px}
+        .img-add-card:hover{border-color:var(--primary);background:rgba(99,102,241,.1)}
+        .img-add-card i{font-size:24px;color:#a5b4fc;margin-bottom:6px}
+        .img-add-card span{font-size:11px;font-weight:600;color:#818cf8}
+
+        /* ── Crop Workspace ── */
+        .crop-workspace{background:#0f172a;border-radius:16px;overflow:hidden;margin-bottom:16px}
+        .crop-toolbar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+        .tb-group{display:flex;align-items:center;gap:4px}
+        .tb-sep{width:1px;height:24px;background:rgba(255,255,255,.12);margin:0 4px}
+        .tb-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
+        .tb-btn:hover{background:rgba(255,255,255,.16);color:#fff}
+        .tb-btn.active{background:#6366f1;color:#fff}
+        .tb-btn.success{background:#22c55e;color:#fff}
+        .tb-btn.success:hover{background:#16a34a}
+        .tb-btn:disabled{opacity:.3;pointer-events:none}
+        .tb-text{color:rgba(255,255,255,.6);font-size:12px;font-weight:600;min-width:40px;text-align:center}
+        .tb-spacer{flex:1}
+
+        .crop-canvas-scroll{overflow:auto;padding:20px;display:flex;justify-content:center;align-items:flex-start;min-height:300px;max-height:65vh;background:#0f172a}
+        .crop-canvas-con{position:relative;display:inline-block;flex-shrink:0;line-height:0;cursor:crosshair}
+        .crop-canvas-con img{display:block;border-radius:4px;box-shadow:0 4px 30px rgba(0,0,0,.5);max-width:100%;user-select:none;-webkit-user-drag:none}
+
+        /* Crop overlay */
+        .crop-mask{position:absolute;background:rgba(0,0,0,.55);pointer-events:none}
+        .crop-box{position:absolute;border:2px solid #fff;cursor:move;z-index:5;box-shadow:0 0 0 9999px rgba(0,0,0,.5)}
+        .crop-box::after{content:'';position:absolute;inset:0}
+        /* Rule of thirds */
+        .crop-box .thirds-h,.crop-box .thirds-v{position:absolute;background:rgba(255,255,255,.25)}
+        .crop-box .thirds-h{left:0;right:0;height:1px}
+        .crop-box .thirds-v{top:0;bottom:0;width:1px}
+        .crop-box .thirds-h:nth-child(1){top:33.33%}
+        .crop-box .thirds-h:nth-child(2){top:66.66%}
+        .crop-box .thirds-v:nth-child(3){left:33.33%}
+        .crop-box .thirds-v:nth-child(4){left:66.66%}
+
+        .crop-handle{position:absolute;width:14px;height:14px;background:#fff;border:2px solid #6366f1;border-radius:3px;z-index:6}
+        .crop-handle.tl{top:-7px;left:-7px;cursor:nw-resize}
+        .crop-handle.tr{top:-7px;right:-7px;cursor:ne-resize}
+        .crop-handle.bl{bottom:-7px;left:-7px;cursor:sw-resize}
+        .crop-handle.br{bottom:-7px;right:-7px;cursor:se-resize}
+        .crop-handle.tm{top:-7px;left:50%;transform:translateX(-50%);cursor:n-resize}
+        .crop-handle.bm{bottom:-7px;left:50%;transform:translateX(-50%);cursor:s-resize}
+        .crop-handle.ml{top:50%;left:-7px;transform:translateY(-50%);cursor:w-resize}
+        .crop-handle.mr{top:50%;right:-7px;transform:translateY(-50%);cursor:e-resize}
+
+        .crop-dims-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);background:rgba(99,102,241,.9);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:7}
+
+        /* ── Options ── */
+        .opt-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end}
+        .opt-item{flex:1;min-width:120px}
+        .opt-item label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:6px}
+        .opt-item select,.opt-item input[type=number]{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:13px;font-weight:600;outline:none;transition:border-color .2s;background:#fff}
+        .opt-item select:focus,.opt-item input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+
+        .aspect-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+        .ar-pill{padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6);color:var(--text-dark);user-select:none}
+        .ar-pill:hover{border-color:var(--primary)}
+        .ar-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .ar-pill input{display:none}
+
+        /* Output options */
+        .output-pills{display:flex;gap:6px;flex-wrap:wrap}
+        .out-pill{padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6);color:var(--text-dark);user-select:none}
+        .out-pill:hover{border-color:var(--primary)}
+        .out-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .out-pill input{display:none}
+
+        /* Batch scope */
+        .batch-scope{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+        .bs-pill{padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6);color:var(--text-dark);user-select:none;display:flex;align-items:center;gap:4px}
+        .bs-pill:hover{border-color:var(--primary)}
+        .bs-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .bs-pill input{display:none}
+
+        /* Result */
+        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:12px;padding:13px 16px;min-width:100px}
+        .result-stat strong{display:block;font-size:20px;color:var(--primary);line-height:1;margin-bottom:4px}
+        .result-stat small{color:var(--text-light);font-size:11px;font-weight:600;text-transform:uppercase}
+
+        /* Result grid */
+        .result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:16px}
+        .res-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;text-align:center}
+        .res-card img{width:100%;aspect-ratio:1;object-fit:contain;background:#f8fafc;display:block}
+        .res-card-info{padding:8px 10px;font-size:11px;color:var(--text-light);font-weight:600}
+        .res-card-dl{display:block;padding:6px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;text-decoration:none;border-radius:0 0 10px 10px;transition:background .15s;cursor:pointer;border:none;width:100%}
+        .res-card-dl:hover{background:#4f46e5}
+
+        .progress-detail{font-size:12px;color:var(--text-light);margin-top:8px;text-align:center}
+        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,#f97316,#ea580c)}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
+
+        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
+        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
+        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(99,102,241,.2)}
+        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
+        .faq-question h4{font-size:15px;font-weight:600;color:var(--text-dark);margin:0;flex:1}
+        .faq-item.open .faq-question h4{color:var(--primary)}
+        .faq-question i{font-size:13px;color:var(--text-light);transition:transform .35s;flex-shrink:0}
+        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary)}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
+        .faq-item.open .faq-answer{max-height:400px;opacity:1}
+        .faq-answer-inner{padding:0 22px 20px}
+        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(99,102,241,.1);padding-top:16px;margin:0 22px;padding-left:0;padding-right:0}
+        .faq-answer-inner p{font-size:14px;line-height:1.7;color:var(--text-light);margin:0}
+        .faq-answer-inner p strong{color:var(--text-dark)}
+        .faq-num{width:28px;height:28px;background:rgba(99,102,241,.1);color:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .faq-item.open .faq-num{background:var(--primary);color:#fff}
+
+        @media(max-width:768px){
+            .img-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+            .opt-row{flex-direction:column}.opt-item{min-width:100%}
+            .result-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+            .result-stats{gap:10px}.result-stat{min-width:80px}
+        }
+        @media(max-width:480px){
+            .faq-question{padding:14px}
+            .faq-item{border-radius:10px;margin-bottom:8px}
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Crop JPG</span></div>
+        <div class="tool-title">
+            <div class="tool-title-icon icon-purple"><i class="fas fa-crop-alt"></i></div>
+            <div><h1>Crop JPG</h1><p>Crop multiple images at once. Same-size crop, auto-fill, aspect ratio lock. Free!</p></div>
+        </div>
+    </div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<section class="tool-area">
+<div class="container">
+<div class="tool-wrapper glass">
+
+    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+
+    <!-- UPLOAD -->
+    <div id="uploadSection" data-section>
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-zone-content">
+                <div class="upload-icon"><i class="fas fa-crop-alt"></i></div>
+                <h2>Upload Images to Crop</h2>
+                <p>Drop your JPG, PNG, or WebP images here</p>
+                <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select Images</button>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple hidden>
+                <div class="upload-hints">
+                    <span><i class="fas fa-images"></i> Multiple files</span>
+                    <span><i class="fas fa-lock"></i> 100% Private</span>
+                    <span><i class="fas fa-crop-alt"></i> Batch Crop</span>
+                </div>
+                <p style="margin-top:12px;font-size:12px;color:var(--text-light)"><i class="fas fa-shield-alt"></i> Files never leave your device!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDITOR -->
+    <div id="editorSection" data-section style="display:none">
+
+        <div class="info-banner">
+            <i class="fas fa-info-circle" style="flex-shrink:0;margin-top:2px"></i>
+            <span>Click an image to select it for cropping. Drag the crop handles on the preview. Use <strong>"Apply to All"</strong> to crop all images with the same settings.</span>
+        </div>
+
+        <!-- Image Grid -->
+        <div class="img-grid" id="imgGrid">
+            <!-- filled by JS -->
+        </div>
+
+        <!-- Crop Options -->
+        <div class="options-panel glass-light" style="margin-bottom:16px">
+            <h4 style="margin-bottom:12px"><i class="fas fa-sliders-h"></i> Crop Settings</h4>
+
+            <!-- Aspect Ratio -->
+            <div style="margin-bottom:14px">
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px"><i class="fas fa-expand-alt"></i> Aspect Ratio</label>
+                <div class="aspect-pills">
+                    <label class="ar-pill active" onclick="setAR(this)"><input type="radio" name="ar" value="free" checked>Free</label>
+                    <label class="ar-pill" onclick="setAR(this)"><input type="radio" name="ar" value="1:1">1:1</label>
+                    <label class="ar-pill" onclick="setAR(this)"><input type="radio" name="ar" value="4:3">4:3</label>
+                    <label class="ar-pill" onclick="setAR(this)"><input type="radio" name="ar" value="3:2">3:2</label>
+                    <label class="ar-pill" onclick="setAR(this)"><input type="radio" name="ar" value="16:9">16:9</label>
+                    <label class="ar-pill" onclick="setAR(this)"><input type="radio" name="ar" value="9:16">9:16</label>
+                    <label class="ar-pill" onclick="setAR(this)"><input type="radio" name="ar" value="2:3">2:3</label>
+                    <label class="ar-pill" onclick="setAR(this)"><input type="radio" name="ar" value="custom">Custom</label>
+                </div>
+                <div id="customARRow" style="display:none;margin-top:8px">
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <input type="number" id="arW" value="4" min="1" max="100" style="width:60px;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;text-align:center;font-size:13px">
+                        <span style="color:var(--text-light);font-weight:700">:</span>
+                        <input type="number" id="arH" value="3" min="1" max="100" style="width:60px;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;text-align:center;font-size:13px">
+                        <button class="tb-btn" style="background:var(--primary);color:#fff;font-size:12px;padding:6px 12px" onclick="applyCustomAR()">Apply</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed size output -->
+            <div class="opt-row">
+                <div class="opt-item">
+                    <label>Output Width (px) <small style="text-transform:none;letter-spacing:0;font-weight:500">(0 = auto)</small></label>
+                    <input type="number" id="outW" value="0" min="0" max="10000" onchange="updateCropFromSize()">
+                </div>
+                <div class="opt-item">
+                    <label>Output Height (px) <small style="text-transform:none;letter-spacing:0;font-weight:500">(0 = auto)</small></label>
+                    <input type="number" id="outH" value="0" min="0" max="10000" onchange="updateCropFromSize()">
+                </div>
+                <div class="opt-item">
+                    <label>Quality (%)</label>
+                    <input type="number" id="quality" value="92" min="10" max="100">
+                </div>
+            </div>
+
+            <!-- Output format -->
+            <div style="margin-bottom:14px">
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px"><i class="fas fa-file-image"></i> Output Format</label>
+                <div class="output-pills">
+                    <label class="out-pill active" onclick="setOutFmt(this)"><input type="radio" name="outfmt" value="same" checked>Same as Input</label>
+                    <label class="out-pill" onclick="setOutFmt(this)"><input type="radio" name="outfmt" value="jpeg">JPEG</label>
+                    <label class="out-pill" onclick="setOutFmt(this)"><input type="radio" name="outfmt" value="png">PNG</label>
+                    <label class="out-pill" onclick="setOutFmt(this)"><input type="radio" name="outfmt" value="webp">WebP</label>
+                </div>
+            </div>
+
+            <!-- Apply scope -->
+            <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px"><i class="fas fa-clone"></i> Apply Crop To</label>
+                <div class="batch-scope">
+                    <label class="bs-pill active" onclick="setBatch(this)"><input type="radio" name="batch" value="single" checked><i class="fas fa-image"></i> Current Image</label>
+                    <label class="bs-pill" onclick="setBatch(this)"><input type="radio" name="batch" value="all"><i class="fas fa-images"></i> All Images (Same Crop)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crop Workspace -->
+        <div class="crop-workspace" id="cropWorkspace">
+            <div class="crop-toolbar">
+                <div class="tb-group">
+                    <button class="tb-btn" onclick="resetCrop()" title="Reset crop"><i class="fas fa-undo"></i> Reset</button>
+                    <button class="tb-btn" onclick="centerCrop()" title="Center crop box"><i class="fas fa-crosshairs"></i> Center</button>
+                    <button class="tb-btn" onclick="maxCrop()" title="Maximum crop area"><i class="fas fa-expand"></i> Max</button>
+                </div>
+                <div class="tb-sep"></div>
+                <div class="tb-group">
+                    <button class="tb-btn success" onclick="applyCrop()"><i class="fas fa-check"></i> Apply Crop</button>
+                    <button class="tb-btn success" onclick="applyToAll()"><i class="fas fa-check-double"></i> Apply to All</button>
+                </div>
+                <div class="tb-spacer"></div>
+                <div class="tb-group">
+                    <button class="tb-btn" onclick="navPrev()" id="navPrevBtn" disabled><i class="fas fa-chevron-left"></i></button>
+                    <span class="tb-text" id="navText">1 / 1</span>
+                    <button class="tb-btn" onclick="navNext()" id="navNextBtn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div class="crop-canvas-scroll" id="canvasScroll">
+                <div class="crop-canvas-con" id="canvasCon">
+                    <img id="cropImg" draggable="false">
+                    <div class="crop-box" id="cropBox">
+                        <div class="thirds-h"></div>
+                        <div class="thirds-h"></div>
+                        <div class="thirds-v"></div>
+                        <div class="thirds-v"></div>
+                        <div class="crop-handle tl" data-dir="tl"></div>
+                        <div class="crop-handle tr" data-dir="tr"></div>
+                        <div class="crop-handle bl" data-dir="bl"></div>
+                        <div class="crop-handle br" data-dir="br"></div>
+                        <div class="crop-handle tm" data-dir="tm"></div>
+                        <div class="crop-handle bm" data-dir="bm"></div>
+                        <div class="crop-handle ml" data-dir="ml"></div>
+                        <div class="crop-handle mr" data-dir="mr"></div>
+                        <div class="crop-dims-label" id="cropDimsLabel">0 × 0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="action-btn" id="downloadAllBtn" onclick="downloadAll()">
+            <i class="fas fa-download"></i> Download All Cropped Images
+        </button>
+    </div>
+
+    <!-- PROCESSING -->
+    <div id="processingSection" data-section style="display:none">
+        <div class="processing-area">
+            <div class="spinner"></div>
+            <h3 id="processTitle">Processing...</h3>
+            <p id="processSubtitle">Cropping images</p>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <span class="progress-text" id="progressText">0%</span>
+            <div class="progress-detail" id="progressDetail"></div>
+        </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="resultSection" data-section style="display:none">
+        <div class="result-area">
+            <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+            <h2>Images Cropped! ✂️</h2>
+            <p>All images have been cropped and are ready to download</p>
+
+            <div class="result-stats">
+                <div class="result-stat"><strong id="rCount">0</strong><small>Images</small></div>
+                <div class="result-stat"><strong id="rDims">0×0</strong><small>Crop Size</small></div>
+                <div class="result-stat"><strong id="rSize">0 KB</strong><small>Total Size</small></div>
+            </div>
+
+            <div class="result-grid" id="resultGrid"></div>
+
+            <button class="download-btn" onclick="downloadZip()"><i class="fas fa-file-archive"></i> Download All as ZIP</button>
+            <div class="result-actions">
+                <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Crop More Images</button>
+                <button class="btn-outline" onclick="goBackEdit()"><i class="fas fa-edit"></i> Adjust Crops</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
+
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
+            <a href="pdf-to-image.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-image"></i></div><h4>PDF to Image</h4></a>
+            <a href="image-to-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-file-pdf"></i></div><h4>Image to PDF</h4></a>
+            <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
+            <a href="watermark.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-tint"></i></div><h4>Watermark</h4></a>
+            <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-pen-fancy"></i></div><h4>Edit PDF</h4></a>
+        </div>
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How to Crop Images</h2><p>Simple 3-step process</p></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload Images</h4><p>Select one or multiple images to crop.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-crop-alt"></i><h4>Adjust Crop</h4><p>Drag handles or use presets to define the crop area.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download individual images or all as a ZIP.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>Frequently Asked Questions</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>Can I crop all images to the same size?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Set your crop area on one image, then click <strong>"Apply to All"</strong>. All images will be cropped with the same dimensions. Use <strong>Output Width/Height</strong> for exact pixel sizes.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>What is auto-fill crop?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>When you apply the same crop to multiple images of different sizes, the tool <strong>auto-centers the crop</strong> and fills the area. If the image is smaller than the crop, it's centered with white fill.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Are my images uploaded to a server?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! <strong>100% browser-based</strong>. Images never leave your device.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>What formats are supported?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>JPG, JPEG, PNG, and WebP are supported. You can also <strong>convert the output format</strong> (e.g., crop a PNG and save as JPEG).</p></div></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>© 2025 PDFTools. All rights reserved.</p>
+            <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="js/tool-page.js"></script>
+<script src="js/adsense.js"></script>
+
+<script>
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let images=[];        // [{file,img(HTMLImage),w,h,dataUrl,cropped:null|dataUrl,cropRect:{x,y,w,h}}]
+let activeIdx=0;
+let arRatio=null;     // null=free, number=w/h
+let displayScale=1;
+let dragType=null,dragSX=0,dragSY=0;
+let initCrop={x:0,y:0,w:0,h:0};
+let resultBlobs=[];
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
+function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
+function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
+function setProgress(p,t,s,d){const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');if(f)f.style.width=p+'%';if(pt)pt.textContent=Math.round(p)+'%';if(t)document.getElementById('processTitle').textContent=t;if(s)document.getElementById('processSubtitle').textContent=s;if(d!==undefined)document.getElementById('progressDetail').textContent=d}
+function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function hideError(){document.getElementById('errorBox').style.display='none'}
+function tick(){return new Promise(r=>setTimeout(r,20))}
+
+function setAR(el){document.querySelectorAll('.ar-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');el.querySelector('input').checked=true;const v=el.querySelector('input').value;document.getElementById('customARRow').style.display=v==='custom'?'block':'none';if(v==='free')arRatio=null;else if(v==='custom')applyCustomAR();else{const[w,h]=v.split(':').map(Number);arRatio=w/h}enforceAR()}
+function applyCustomAR(){const w=parseInt(document.getElementById('arW').value)||4;const h=parseInt(document.getElementById('arH').value)||3;arRatio=w/h;enforceAR()}
+function setOutFmt(el){document.querySelectorAll('.out-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');el.querySelector('input').checked=true}
+function setBatch(el){document.querySelectorAll('.bs-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');el.querySelector('input').checked=true}
+
+/* ═══════════════════════════════════════
+   FILE HANDLING
+═══════════════════════════════════════ */
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('fileInput');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files.length)addFiles(e.dataTransfer.files)});
+fileInput.addEventListener('change',()=>{if(fileInput.files.length)addFiles(fileInput.files)});
+
+async function addFiles(files){
+    hideError();
+    const validTypes=['image/jpeg','image/png','image/webp'];
+    for(const file of files){
+        if(!validTypes.includes(file.type)){showError(`"${file.name}" is not a supported image format.`);continue}
+        const dataUrl=await readFile(file);
+        const img=await loadImage(dataUrl);
+        images.push({
+            file,img,w:img.naturalWidth,h:img.naturalHeight,dataUrl,
+            cropped:null,
+            cropRect:{x:0,y:0,w:img.naturalWidth,h:img.naturalHeight}
+        });
+    }
+    if(images.length===0)return;
+    activeIdx=images.length===1?0:activeIdx;
+    showSection('editorSection');
+    renderGrid();
+    selectImage(activeIdx);
+}
+
+function readFile(file){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(file)})}
+function loadImage(src){return new Promise((r,j)=>{const img=new Image();img.onload=()=>r(img);img.onerror=()=>j(new Error('Failed to load image'));img.src=src})}
+
+function removeImage(idx,e){
+    e.stopPropagation();
+    images.splice(idx,1);
+    if(images.length===0){resetTool();return}
+    if(activeIdx>=images.length)activeIdx=images.length-1;
+    renderGrid();selectImage(activeIdx);
+}
+
+/* ═══════════════════════════════════════
+   IMAGE GRID
+═══════════════════════════════════════ */
+function renderGrid(){
+    const grid=document.getElementById('imgGrid');
+    grid.innerHTML=images.map((im,i)=>`
+        <div class="img-card ${i===activeIdx?'active':''} ${im.cropped?'cropped':''}" onclick="selectImage(${i})">
+            <div class="img-remove" onclick="removeImage(${i},event)">×</div>
+            ${im.cropped?'<div class="img-badge done">✓ Cropped</div>':''}
+            <img class="img-thumb" src="${im.cropped||im.dataUrl}" alt="${im.file.name}">
+            <div class="img-info">
+                <div class="img-name">${im.file.name}</div>
+                <div class="img-dims">${im.w}×${im.h} px · ${szF(im.file.size)}</div>
+            </div>
+        </div>
+    `).join('')+`
+        <div class="img-add-card" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-plus-circle"></i>
+            <span>Add More</span>
+        </div>
+    `;
+}
+
+/* ═══════════════════════════════════════
+   SELECT & DISPLAY IMAGE
+═══════════════════════════════════════ */
+function selectImage(idx){
+    activeIdx=idx;
+    const im=images[idx];
+
+    // Display image
+    const cropImg=document.getElementById('cropImg');
+    cropImg.src=im.dataUrl;
+
+    // Wait for image load then set crop
+    cropImg.onload=()=>{
+        const scroll=document.getElementById('canvasScroll');
+        displayScale=Math.min((scroll.clientWidth-40)/im.w,1);
+        cropImg.style.width=(im.w*displayScale)+'px';
+        cropImg.style.height=(im.h*displayScale)+'px';
+        document.getElementById('canvasCon').style.width=(im.w*displayScale)+'px';
+        document.getElementById('canvasCon').style.height=(im.h*displayScale)+'px';
+
+        setCropBox(im.cropRect);
+        updateNav();
+        renderGrid();
+    };
+}
+
+/* ═══════════════════════════════════════
+   CROP BOX RENDERING
+═══════════════════════════════════════ */
+function setCropBox(rect){
+    const box=document.getElementById('cropBox');
+    const cx=rect.x*displayScale;
+    const cy=rect.y*displayScale;
+    const cw=rect.w*displayScale;
+    const ch=rect.h*displayScale;
+    box.style.left=cx+'px';box.style.top=cy+'px';
+    box.style.width=Math.max(cw,20)+'px';box.style.height=Math.max(ch,20)+'px';
+    updateDimsLabel();
+}
+
+function getCropFromBox(){
+    const box=document.getElementById('cropBox');
+    return{
+        x:parseFloat(box.style.left)/displayScale,
+        y:parseFloat(box.style.top)/displayScale,
+        w:parseFloat(box.style.width)/displayScale,
+        h:parseFloat(box.style.height)/displayScale
+    };
+}
+
+function updateDimsLabel(){
+    const r=getCropFromBox();
+    document.getElementById('cropDimsLabel').textContent=Math.round(r.w)+' × '+Math.round(r.h)+' px';
+}
+
+function updateNav(){
+    document.getElementById('navText').textContent=(activeIdx+1)+' / '+images.length;
+    document.getElementById('navPrevBtn').disabled=activeIdx<=0;
+    document.getElementById('navNextBtn').disabled=activeIdx>=images.length-1;
+}
+
+function navPrev(){if(activeIdx>0)selectImage(activeIdx-1)}
+function navNext(){if(activeIdx<images.length-1)selectImage(activeIdx+1)}
+
+/* ═══════════════════════════════════════
+   DRAG INTERACTION
+═══════════════════════════════════════ */
+const canCon=document.getElementById('canvasCon');
+
+canCon.addEventListener('mousedown',dragStart);
+document.addEventListener('mousemove',dragMove);
+document.addEventListener('mouseup',dragEnd);
+
+canCon.addEventListener('touchstart',e=>{if(e.target.closest('.crop-handle')||e.target.closest('.crop-box')){e.preventDefault();dragStart(e.touches[0],e.target)}},{passive:false});
+document.addEventListener('touchmove',e=>{if(dragType){e.preventDefault();dragMove(e.touches[0])}},{passive:false});
+document.addEventListener('touchend',()=>{if(dragType)dragEnd()});
+
+function dragStart(e,target){
+    const t=target||e.target;
+    const handle=t.closest('.crop-handle');
+    const box=t.closest('.crop-box');
+    if(handle)dragType=handle.dataset.dir;
+    else if(box)dragType='move';
+    else return;
+    dragSX=e.clientX;dragSY=e.clientY;
+    const b=document.getElementById('cropBox');
+    initCrop={x:parseFloat(b.style.left),y:parseFloat(b.style.top),w:parseFloat(b.style.width),h:parseFloat(b.style.height)};
+}
+
+function dragMove(e){
+    if(!dragType)return;
+    const dx=e.clientX-dragSX;
+    const dy=e.clientY-dragSY;
+    const im=images[activeIdx];
+    const maxW=im.w*displayScale;
+    const maxH=im.h*displayScale;
+    const b=document.getElementById('cropBox');
+    let{x,y,w,h}=initCrop;
+
+    if(dragType==='move'){
+        x+=dx;y+=dy;
+        x=Math.max(0,Math.min(x,maxW-w));
+        y=Math.max(0,Math.min(y,maxH-h));
+    }else{
+        if(dragType.includes('l')){x+=dx;w-=dx}
+        if(dragType.includes('r')){w+=dx}
+        if(dragType.includes('t')){y+=dy;h-=dy}
+        if(dragType.includes('b')){h+=dy}
+        if(dragType==='tm'){y+=dy;h-=dy}
+        if(dragType==='bm'){h+=dy}
+        if(dragType==='ml'){x+=dx;w-=dx}
+        if(dragType==='mr'){w+=dx}
+
+        // Enforce AR
+        if(arRatio&&!dragType.includes('m')){
+            if(Math.abs(dx)>Math.abs(dy)){h=w/arRatio}else{w=h*arRatio}
+        }
+
+        w=Math.max(20,w);h=Math.max(20,h);
+        x=Math.max(0,x);y=Math.max(0,y);
+        if(x+w>maxW)w=maxW-x;
+        if(y+h>maxH)h=maxH-y;
+    }
+
+    b.style.left=x+'px';b.style.top=y+'px';
+    b.style.width=w+'px';b.style.height=h+'px';
+    updateDimsLabel();
+}
+
+function dragEnd(){
+    if(!dragType)return;
+    dragType=null;
+    images[activeIdx].cropRect=getCropFromBox();
+}
+
+/* ═══════════════════════════════════════
+   CROP CONTROLS
+═══════════════════════════════════════ */
+function resetCrop(){
+    const im=images[activeIdx];
+    im.cropRect={x:0,y:0,w:im.w,h:im.h};
+    setCropBox(im.cropRect);
+}
+
+function centerCrop(){
+    const im=images[activeIdx];
+    const r=getCropFromBox();
+    r.x=(im.w-r.w)/2;
+    r.y=(im.h-r.h)/2;
+    im.cropRect=r;
+    setCropBox(r);
+}
+
+function maxCrop(){
+    const im=images[activeIdx];
+    if(!arRatio){im.cropRect={x:0,y:0,w:im.w,h:im.h};setCropBox(im.cropRect);return}
+    let w=im.w,h=w/arRatio;
+    if(h>im.h){h=im.h;w=h*arRatio}
+    const x=(im.w-w)/2,y=(im.h-h)/2;
+    im.cropRect={x,y,w,h};
+    setCropBox(im.cropRect);
+}
+
+function enforceAR(){
+    if(!arRatio)return;
+    const im=images[activeIdx];
+    const r=getCropFromBox();
+    r.h=r.w/arRatio;
+    if(r.h>im.h){r.h=im.h;r.w=r.h*arRatio}
+    if(r.x+r.w>im.w)r.x=im.w-r.w;
+    if(r.y+r.h>im.h)r.y=im.h-r.h;
+    im.cropRect=r;
+    setCropBox(r);
+}
+
+function updateCropFromSize(){
+    const ow=parseInt(document.getElementById('outW').value)||0;
+    const oh=parseInt(document.getElementById('outH').value)||0;
+    if(ow>0&&oh>0){arRatio=ow/oh;enforceAR()}
+}
+
+/* ═══════════════════════════════════════
+   APPLY CROP
+═══════════════════════════════════════ */
+function applyCrop(){
+    const im=images[activeIdx];
+    im.cropRect=getCropFromBox();
+    im.cropped=cropImageToDataUrl(im);
+    renderGrid();
+}
+
+function applyToAll(){
+    const ref=getCropFromBox();
+    images[activeIdx].cropRect=ref;
+
+    for(let i=0;i<images.length;i++){
+        const im=images[i];
+        // Auto-fill: center crop on each image
+        let cx=ref.x,cy=ref.y,cw=ref.w,ch=ref.h;
+
+        // If crop is larger than image or positioned outside, auto-center
+        if(cw>im.w){cx=0;cw=im.w}else{cx=Math.max(0,Math.min((im.w-cw)/2,im.w-cw))}
+        if(ch>im.h){cy=0;ch=im.h}else{cy=Math.max(0,Math.min((im.h-ch)/2,im.h-ch))}
+
+        im.cropRect={x:cx,y:cy,w:cw,h:ch};
+        im.cropped=cropImageToDataUrl(im);
+    }
+    renderGrid();
+}
+
+function cropImageToDataUrl(im){
+    const r=im.cropRect;
+    const ow=parseInt(document.getElementById('outW').value)||0;
+    const oh=parseInt(document.getElementById('outH').value)||0;
+    const quality=(parseInt(document.getElementById('quality').value)||92)/100;
+    const fmt=document.querySelector('input[name="outfmt"]:checked')?.value||'same';
+
+    const canvas=document.createElement('canvas');
+    const ctx=canvas.getContext('2d');
+
+    // Output dimensions
+    let outW=Math.round(r.w),outH=Math.round(r.h);
+    if(ow>0&&oh>0){outW=ow;outH=oh}
+    else if(ow>0){outW=ow;outH=Math.round(ow*(r.h/r.w))}
+    else if(oh>0){outH=oh;outW=Math.round(oh*(r.w/r.h))}
+
+    canvas.width=outW;canvas.height=outH;
+
+    // White fill (for auto-fill when crop > image)
+    ctx.fillStyle='#ffffff';
+    ctx.fillRect(0,0,outW,outH);
+
+    // Draw cropped region
+    ctx.drawImage(im.img,
+        Math.round(r.x),Math.round(r.y),Math.round(r.w),Math.round(r.h),
+        0,0,outW,outH
+    );
+
+    // Output format
+    let mimeType='image/jpeg';
+    if(fmt==='png')mimeType='image/png';
+    else if(fmt==='webp')mimeType='image/webp';
+    else if(fmt==='same'){
+        if(im.file.type==='image/png')mimeType='image/png';
+        else if(im.file.type==='image/webp')mimeType='image/webp';
+    }
+
+    return canvas.toDataURL(mimeType,quality);
+}
+
+/* ═══════════════════════════════════════
+   DOWNLOAD ALL
+═══════════════════════════════════════ */
+async function downloadAll(){
+    // Ensure all images are cropped
+    let allCropped=true;
+    for(let i=0;i<images.length;i++){
+        if(!images[i].cropped){
+            images[i].cropRect=getCropFromBox();
+            // Auto-center for non-active images
+            const ref=images[activeIdx].cropRect;
+            if(i!==activeIdx){
+                let cx=(images[i].w-ref.w)/2,cy=(images[i].h-ref.h)/2;
+                let cw=ref.w,ch=ref.h;
+                if(cw>images[i].w){cx=0;cw=images[i].w}
+                if(ch>images[i].h){cy=0;ch=images[i].h}
+                cx=Math.max(0,cx);cy=Math.max(0,cy);
+                images[i].cropRect={x:cx,y:cy,w:cw,h:ch};
+            }
+            images[i].cropped=cropImageToDataUrl(images[i]);
+        }
+    }
+
+    if(images.length===1){
+        // Single image — direct download
+        downloadSingle(0);
+        return;
+    }
+
+    // Multiple — show result
+    showSection('processingSection');
+    setProgress(10,'Processing...','Cropping images','');
+    await tick();
+
+    resultBlobs=[];
+    let totalSize=0;
+    const resultGrid=document.getElementById('resultGrid');
+    resultGrid.innerHTML='';
+
+    for(let i=0;i<images.length;i++){
+        setProgress(10+((i/images.length)*80),'Processing...','Image '+(i+1)+' of '+images.length,'');
+        await tick();
+
+        const dataUrl=images[i].cropped;
+        const blob=dataUrlToBlob(dataUrl);
+        resultBlobs.push(blob);
+        totalSize+=blob.size;
+    }
+
+    setProgress(100,'Done!','All images cropped!','');
+    await new Promise(r=>setTimeout(r,400));
+
+    // Build result grid
+    const r0=images[0].cropRect;
+    document.getElementById('rCount').textContent=images.length;
+    document.getElementById('rDims').textContent=Math.round(r0.w)+'×'+Math.round(r0.h);
+    document.getElementById('rSize').textContent=szF(totalSize);
+
+    resultGrid.innerHTML=images.map((im,i)=>`
+        <div class="res-card">
+            <img src="${im.cropped}" alt="${im.file.name}">
+            <div class="res-card-info">${im.file.name.replace(/\.[^.]+$/,'')}_cropped · ${szF(resultBlobs[i].size)}</div>
+            <button class="res-card-dl" onclick="downloadSingle(${i})"><i class="fas fa-download"></i> Download</button>
+        </div>
+    `).join('');
+
+    showSection('resultSection');
+}
+
+function downloadSingle(idx){
+    const im=images[idx];
+    const dataUrl=im.cropped;
+    const ext=getOutputExt(im);
+    const name=im.file.name.replace(/\.[^.]+$/,'')+'_cropped.'+ext;
+    const a=document.createElement('a');
+    a.href=dataUrl;a.download=name;
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>document.body.removeChild(a),200);
+}
+
+async function downloadZip(){
+    const zip=new JSZip();
+    for(let i=0;i<images.length;i++){
+        const im=images[i];
+        const ext=getOutputExt(im);
+        const name=im.file.name.replace(/\.[^.]+$/,'')+'_cropped.'+ext;
+        const blob=resultBlobs[i]||dataUrlToBlob(im.cropped);
+        zip.file(name,blob);
+    }
+    const zipBlob=await zip.generateAsync({type:'blob',compression:'DEFLATE'});
+    const url=URL.createObjectURL(zipBlob);
+    const a=document.createElement('a');
+    a.href=url;a.download='cropped_images.zip';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
+}
+
+function getOutputExt(im){
+    const fmt=document.querySelector('input[name="outfmt"]:checked')?.value||'same';
+    if(fmt==='jpeg')return'jpg';if(fmt==='png')return'png';if(fmt==='webp')return'webp';
+    const origExt=im.file.name.split('.').pop().toLowerCase();
+    return origExt==='jpeg'?'jpg':origExt;
+}
+
+function dataUrlToBlob(dataUrl){
+    const parts=dataUrl.split(',');
+    const mime=parts[0].match(/:(.*?);/)[1];
+    const b64=atob(parts[1]);
+    const buf=new Uint8Array(b64.length);
+    for(let i=0;i<b64.length;i++)buf[i]=b64.charCodeAt(i);
+    return new Blob([buf],{type:mime});
+}
+
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+function goBackEdit(){
+    showSection('editorSection');
+    renderGrid();selectImage(activeIdx);
+}
+
+function resetTool(){
+    images=[];activeIdx=0;arRatio=null;resultBlobs=[];
+    fileInput.value='';
+    hideError();setProgress(0,'','','');
+    showSection('uploadSection');
+}
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+    if(e.key==='ArrowLeft')navPrev();
+    if(e.key==='ArrowRight')navNext();
+});
+
+// Resize
+let rT;window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(()=>{if(images.length)selectImage(activeIdx)},300)});
+</script>
+</body>
+</html>

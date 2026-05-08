@@ -3,729 +3,723 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organize PDF - Rearrange, Delete & Manage Pages | PDFTools</title>
+    <title>Organize PDF - Rearrange PDF Pages Free | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+    <meta name="description" content="Organize PDF pages online for free. Drag to reorder, delete, duplicate, reverse pages. 100% browser-based!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <style>
-        .file-card{display:flex;align-items:center;gap:15px;padding:16px 20px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:12px;margin-bottom:15px}
-        .file-card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#14b8a6,#0d9488)}
-        .file-card-info{flex:1;min-width:0}
-        .file-card-info h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .file-card-meta{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
-        .file-card-meta span{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:4px}
-        .fbadge{background:rgba(20,184,166,0.1);color:#0d9488;padding:2px 10px;border-radius:20px;font-weight:600;position:static}
+        *{box-sizing:border-box}
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        .info-banner{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:15px 18px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:16px}
+        .file-info-icon{width:50px;height:50px;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        .file-info-details{flex:1;min-width:0}
+        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--text-dark,#1e293b)}
+        .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:flex;align-items:center;gap:4px}
+        .size-badge{background:rgba(99,102,241,.1);color:#6366f1;padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
 
         /* Toolbar */
-        .org-toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:12px 15px;background:rgba(30,41,59,0.95);border-radius:12px;margin-bottom:15px;align-items:center}
-        .org-toolbar .tb-group{display:flex;gap:4px;padding-right:10px;border-right:1px solid rgba(255,255,255,0.15)}
-        .org-toolbar .tb-group:last-child{border:none;margin-left:auto}
-        .tb-btn{padding:7px 12px;border:none;border-radius:8px;background:rgba(255,255,255,0.1);color:#94a3b8;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
-        .tb-btn:hover{background:rgba(255,255,255,0.2);color:#e2e8f0}
-        .tb-btn.danger:hover{background:rgba(239,68,68,0.3);color:#fca5a5}
-        .tb-btn.success{background:rgba(34,197,94,0.2);color:#86efac}
-        .tb-btn.success:hover{background:rgba(34,197,94,0.3)}
+        .org-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;align-items:center;padding:12px 16px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:12px}
+        .ot-btn{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:9px;border:1.5px solid #e2e8f0;cursor:pointer;font-size:12px;font-weight:700;background:rgba(255,255,255,.7);color:var(--text-dark);transition:all .15s}
+        .ot-btn:hover{border-color:var(--primary);background:rgba(99,102,241,.06)}
+        .ot-btn:active{transform:scale(.96)}
+        .ot-btn.danger{color:#dc2626;border-color:#fecaca}.ot-btn.danger:hover{background:rgba(239,68,68,.08);border-color:#ef4444}
+        .ot-btn:disabled{opacity:.35;pointer-events:none}
+        .ot-sep{width:1px;height:28px;background:#e2e8f0;margin:0 4px}
+        .ot-spacer{flex:1}
+        .ot-count{font-size:12px;font-weight:700;color:var(--text-light);display:flex;align-items:center;gap:4px}
+        .ot-count strong{color:var(--primary);font-size:14px}
 
-        /* Page Grid */
-        .page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin:15px 0;max-height:550px;overflow-y:auto;padding:5px}
-        .page-grid::-webkit-scrollbar{width:6px}
-        .page-grid::-webkit-scrollbar-thumb{background:rgba(20,184,166,0.3);border-radius:3px}
+        /* Page Grid — sortable */
+        .page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:16px;min-height:100px}
+        .page-card{background:#fff;border:2px solid #e2e8f0;border-radius:12px;overflow:visible;cursor:grab;transition:all .15s;position:relative;user-select:none}
+        .page-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+        .page-card.selected{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+        .page-card.dragging{opacity:.4;transform:scale(.95)}
+        .page-card.drag-over{border-color:#22c55e;border-style:dashed;background:rgba(34,197,94,.05)}
+        .page-card.duplicate-badge{border-color:#f59e0b}
 
-        .pg-card{position:relative;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;cursor:grab;transition:all .2s;background:#fff}
-        .pg-card:hover{border-color:#0d9488;box-shadow:0 5px 15px rgba(20,184,166,0.15);transform:translateY(-2px)}
-        .pg-card.selected{border-color:#0d9488;box-shadow:0 0 0 3px rgba(20,184,166,0.2)}
-        .pg-card.dragging{opacity:0.4;transform:scale(0.95)}
-        .pg-card.drag-over{border-color:#f97316;border-style:dashed}
-        .pg-card.deleted{opacity:0.3;border-color:#ef4444;pointer-events:none}
+        .page-thumb{width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;background:#f8fafc;overflow:hidden;position:relative;border-radius:10px 10px 0 0}
+        .page-thumb canvas{max-width:100%;max-height:100%;display:block}
+        .page-num-badge{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:6px}
+        .page-orig-badge{position:absolute;top:6px;left:6px;background:rgba(99,102,241,.85);color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:4px}
+        .dup-badge{position:absolute;top:6px;right:6px;background:#f59e0b;color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:4px;display:none}
+        .page-card.duplicate-badge .dup-badge{display:block}
 
-        .pg-card canvas{width:100%;display:block}
-        .pg-card .pg-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:transparent;transition:background .15s}
-        .pg-card:hover .pg-overlay{background:rgba(0,0,0,0.03)}
+        /* Selection checkbox */
+        .page-sel{position:absolute;top:6px;left:6px;width:20px;height:20px;border-radius:6px;border:2px solid rgba(255,255,255,.8);background:rgba(0,0,0,.25);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;transition:all .15s}
+        .page-sel.checked{background:var(--primary);border-color:var(--primary)}
+        .page-sel.checked::after{content:'✓';color:#fff;font-size:11px;font-weight:800}
 
-        .pg-card .pg-num{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));color:#fff;padding:15px 10px 6px;font-size:12px;font-weight:600;text-align:center}
+        /* Page controls */
+        .page-controls{padding:6px 8px;display:flex;align-items:center;justify-content:center;gap:4px;border-top:1px solid #f1f5f9}
+        .pc-btn{width:28px;height:28px;border-radius:6px;border:1px solid #e2e8f0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-light);background:#fff;transition:all .12s}
+        .pc-btn:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,.06)}
+        .pc-btn.del:hover{border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,.06)}
 
-        .pg-card .pg-check{position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;opacity:0;transition:opacity .15s;cursor:pointer;z-index:2}
-        .pg-card:hover .pg-check{opacity:1}
-        .pg-card.selected .pg-check{opacity:1;background:#0d9488}
+        /* Drag ghost */
+        .drag-ghost{position:fixed;z-index:9999;pointer-events:none;opacity:.85;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.2);transform:rotate(3deg)}
 
-        .pg-card .pg-rot-badge{position:absolute;top:6px;right:6px;background:rgba(168,85,247,0.9);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;display:none}
-        .pg-card.rotated .pg-rot-badge{display:block}
+        /* Drop indicator */
+        .drop-indicator{width:4px;background:var(--primary);border-radius:2px;position:absolute;top:0;bottom:0;z-index:10;pointer-events:none;display:none}
 
-        /* Page action buttons on hover */
-        .pg-actions{position:absolute;bottom:25px;left:0;right:0;display:flex;justify-content:center;gap:4px;opacity:0;transition:opacity .15s;z-index:2}
-        .pg-card:hover .pg-actions{opacity:1}
-        .pg-act{width:28px;height:28px;border:none;border-radius:50%;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .15s}
-        .pg-act.rot{background:rgba(168,85,247,0.85);color:#fff}
-        .pg-act.dup{background:rgba(59,130,246,0.85);color:#fff}
-        .pg-act.del{background:rgba(239,68,68,0.85);color:#fff}
-        .pg-act:hover{transform:scale(1.2)}
+        /* Result */
+        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:12px;padding:13px 16px;min-width:100px}
+        .result-stat strong{display:block;font-size:20px;color:var(--primary);line-height:1;margin-bottom:4px}
+        .result-stat small{color:var(--text-light);font-size:11px;font-weight:600;text-transform:uppercase}
+        .progress-detail{font-size:12px;color:var(--text-light);margin-top:8px;text-align:center}
 
-        /* Stats bar */
-        .stats-bar{display:flex;gap:15px;flex-wrap:wrap;align-items:center;padding:10px 15px;background:rgba(255,255,255,0.3);border-radius:10px;margin-bottom:15px;font-size:12px;color:var(--text-medium)}
-        .stats-bar .stat{font-weight:600}
-        .stats-bar .stat span{color:#0d9488;font-weight:800}
-        .stats-bar .changes{margin-left:auto;color:#f59e0b;font-weight:600}
+        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,#f97316,#ea580c)}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
 
-        .srow{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin:20px 0}
-        .sbox{padding:12px 20px;background:rgba(255,255,255,0.4);border-radius:10px;text-align:center}
-        .sbox h4{font-size:22px;font-weight:800;color:#0d9488}.sbox p{font-size:11px;color:var(--text-light)}
-        .emsg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 18px;color:#dc2626;font-size:13px;margin-bottom:15px;display:none}
+        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
+        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
+        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(99,102,241,.2)}
+        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;gap:12px}
+        .faq-question h4{font-size:14px;font-weight:600;color:var(--text-dark);margin:0;flex:1}
+        .faq-item.open .faq-question h4{color:var(--primary)}
+        .faq-question i{font-size:12px;color:var(--text-light);transition:transform .3s;flex-shrink:0}
+        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary)}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
+        .faq-item.open .faq-answer{max-height:400px;opacity:1}
+        .faq-answer-inner{padding:0 20px 18px}
+        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(99,102,241,.1);padding-top:14px;margin:0 20px;padding-left:0;padding-right:0}
+        .faq-answer-inner p{font-size:13px;line-height:1.7;color:var(--text-light);margin:0}
+        .faq-answer-inner p strong{color:var(--text-dark)}
+        .faq-num{width:26px;height:26px;background:rgba(99,102,241,.1);color:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+        .faq-item.open .faq-num{background:var(--primary);color:#fff}
 
-        @media(max-width:768px){
-            .page-grid{grid-template-columns:repeat(3,1fr);gap:8px}
-            .org-toolbar{gap:4px;padding:8px 10px}
-            .tb-btn{padding:5px 8px;font-size:11px}
-            .tb-btn span{display:none}
-        }
-        @media(max-width:480px){
-            .page-grid{grid-template-columns:repeat(2,1fr)}
-        }
+        @media(max-width:768px){.page-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}.org-toolbar{gap:4px;padding:10px 12px}.ot-btn{padding:6px 10px;font-size:11px}.result-stats{gap:10px}.result-stat{min-width:80px}}
+        @media(max-width:480px){.page-grid{grid-template-columns:repeat(2,1fr)}.file-info-card{flex-wrap:wrap}.faq-question{padding:14px}.faq-item{border-radius:10px;margin-bottom:8px}}
     </style>
 </head>
 <body>
 
-    <nav class="navbar glass">
-        <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
-        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-        <div class="nav-links" id="navLinks">
-            <a href="index.html"><i class="fas fa-home"></i> Home</a>
-            <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
-        </div>
-    </nav>
+<nav class="navbar glass">
+    <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
 
-    <section class="tool-header">
-        <div class="container">
-            <div class="breadcrumb">
-                <a href="index.html"><i class="fas fa-home"></i> Home</a>
-                <i class="fas fa-chevron-right"></i><span>Organize PDF</span>
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Organize PDF</span></div>
+        <div class="tool-title">
+            <div class="tool-title-icon icon-purple"><i class="fas fa-sort"></i></div>
+            <div><h1>Organize PDF</h1><p>Drag to reorder, delete, duplicate &amp; reverse PDF pages. Free &amp; 100% private!</p></div>
+        </div>
+    </div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<section class="tool-area">
+<div class="container">
+<div class="tool-wrapper glass">
+
+    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+
+    <!-- UPLOAD -->
+    <div id="uploadSection" data-section>
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-zone-content">
+                <div class="upload-icon"><i class="fas fa-sort"></i></div>
+                <h2>Upload PDF to Organize</h2>
+                <p>Drop your PDF here or click to browse</p>
+                <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF</button>
+                <input type="file" id="fileInput" accept=".pdf" hidden>
+                <div class="upload-hints">
+                    <span><i class="fas fa-lock"></i> 100% Private</span>
+                    <span><i class="fas fa-sort"></i> Drag & Drop</span>
+                    <span><i class="fas fa-laptop"></i> Browser Only</span>
+                </div>
+                <p style="margin-top:12px;font-size:12px;color:var(--text-light)"><i class="fas fa-shield-alt"></i> Files never leave your device!</p>
             </div>
-            <div class="tool-title">
-                <div class="tool-title-icon icon-teal"><i class="fas fa-th-large"></i></div>
-                <div>
-                    <h1>Organize PDF</h1>
-                    <p>Rearrange, delete, duplicate, and rotate PDF pages with drag & drop!</p>
+        </div>
+    </div>
+
+    <!-- EDITOR -->
+    <div id="editorSection" data-section style="display:none">
+
+        <div class="file-info-card">
+            <div class="file-info-icon"><i class="fas fa-file-pdf"></i></div>
+            <div class="file-info-details">
+                <h4 id="fileName">document.pdf</h4>
+                <div class="file-meta">
+                    <span class="size-badge" id="fileSize">0 KB</span>
+                    <span><i class="fas fa-copy"></i> Original: <span id="origCount">0</span> pages</span>
                 </div>
             </div>
+            <div class="files-actions"><button class="btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i></button></div>
         </div>
-    </section>
 
-    <section class="tool-area">
-        <div class="container">
-            <div class="tool-wrapper glass">
+        <div class="info-banner">
+            <i class="fas fa-arrows-alt" style="flex-shrink:0;margin-top:2px"></i>
+            <span><strong>Drag &amp; drop</strong> page thumbnails to reorder. Use the toolbar to select, delete, duplicate, or reverse pages. Each page shows its <strong>original page number</strong>.</span>
+        </div>
 
-                <!-- STEP 1: UPLOAD -->
-                <div id="s1">
-                    <div style="padding:50px 30px;text-align:center;border:3px dashed rgba(20,184,166,0.3);border-radius:20px;margin:25px;cursor:pointer;"
-                         id="dropBox" onclick="document.getElementById('fi').click()">
-                        <div style="font-size:60px;margin-bottom:20px;color:#0d9488;"><i class="fas fa-th-large"></i></div>
-                        <h2 style="font-size:24px;margin-bottom:8px;">Upload PDF to Organize</h2>
-                        <p style="color:var(--text-light);margin-bottom:25px;">Drag pages to reorder, delete, duplicate, or rotate</p>
-                        <button class="upload-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);"
-                                onclick="event.stopPropagation();document.getElementById('fi').click()">
-                            <i class="fas fa-plus"></i> Select PDF File
-                        </button>
-                        <input type="file" id="fi" accept=".pdf" style="display:none">
-                        <div class="upload-hints" style="margin-top:20px;">
-                            <span><i class="fas fa-arrows-alt"></i> Drag & Drop</span>
-                            <span><i class="fas fa-trash"></i> Delete Pages</span>
-                            <span><i class="fas fa-copy"></i> Duplicate</span>
-                            <span><i class="fas fa-sync-alt"></i> Rotate</span>
-                        </div>
-                    </div>
-                </div>
+        <!-- Toolbar -->
+        <div class="org-toolbar">
+            <button class="ot-btn" onclick="selectAll()"><i class="fas fa-check-double"></i> Select All</button>
+            <button class="ot-btn" onclick="deselectAll()"><i class="fas fa-times"></i> Deselect</button>
+            <button class="ot-btn" onclick="invertSelection()"><i class="fas fa-exchange-alt"></i> Invert</button>
+            <div class="ot-sep"></div>
+            <button class="ot-btn" onclick="deleteSelected()" id="delBtn" disabled><i class="fas fa-trash"></i> Delete Selected</button>
+            <button class="ot-btn" onclick="duplicateSelected()" id="dupBtn" disabled><i class="fas fa-clone"></i> Duplicate</button>
+            <div class="ot-sep"></div>
+            <button class="ot-btn" onclick="reverseAll()"><i class="fas fa-sort-amount-down-alt"></i> Reverse All</button>
+            <button class="ot-btn" onclick="moveSelectedToStart()" id="moveStartBtn" disabled><i class="fas fa-arrow-up"></i> Move to Start</button>
+            <button class="ot-btn" onclick="moveSelectedToEnd()" id="moveEndBtn" disabled><i class="fas fa-arrow-down"></i> Move to End</button>
+            <div class="ot-sep"></div>
+            <button class="ot-btn" onclick="undoAction()" id="undoBtn" disabled><i class="fas fa-undo"></i> Undo</button>
+            <div class="ot-spacer"></div>
+            <span class="ot-count"><i class="fas fa-file-alt"></i> <strong id="currentCount">0</strong> pages</span>
+        </div>
 
-                <!-- STEP 2: ORGANIZE -->
-                <div id="s2" style="display:none;">
-                    <div class="files-area">
-                        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i> <span id="et"></span></div>
+        <!-- Page Grid -->
+        <div class="page-grid" id="pageGrid"></div>
 
-                        <div class="file-card">
-                            <div class="file-card-icon"><i class="fas fa-file-pdf"></i></div>
-                            <div class="file-card-info">
-                                <h4 id="fn">document.pdf</h4>
-                                <div class="file-card-meta">
-                                    <span class="fbadge" id="fs">0 KB</span>
-                                    <span><i class="fas fa-copy"></i> <span id="fp">0</span> pages</span>
-                                </div>
-                            </div>
-                            <button class="btn-sm btn-danger-sm" onclick="doReset()"><i class="fas fa-times"></i></button>
-                        </div>
+        <button class="action-btn" id="applyBtn" onclick="doApply()"><i class="fas fa-check-circle"></i> Apply &amp; Download</button>
+    </div>
 
-                        <!-- Toolbar -->
-                        <div class="org-toolbar">
-                            <div class="tb-group">
-                                <button class="tb-btn" onclick="selectAll()"><i class="fas fa-check-double"></i> <span>All</span></button>
-                                <button class="tb-btn" onclick="selectNone()"><i class="fas fa-times"></i> <span>None</span></button>
-                                <button class="tb-btn" onclick="invertSel()"><i class="fas fa-exchange-alt"></i> <span>Invert</span></button>
-                            </div>
-                            <div class="tb-group">
-                                <button class="tb-btn" onclick="rotateSelected(90)"><i class="fas fa-redo"></i> <span>Rotate 90°</span></button>
-                                <button class="tb-btn" onclick="duplicateSelected()"><i class="fas fa-copy"></i> <span>Duplicate</span></button>
-                                <button class="tb-btn danger" onclick="deleteSelected()"><i class="fas fa-trash"></i> <span>Delete</span></button>
-                            </div>
-                            <div class="tb-group">
-                                <button class="tb-btn" onclick="reverseAll()"><i class="fas fa-sort-amount-down"></i> <span>Reverse</span></button>
-                                <button class="tb-btn" onclick="undoAction()"><i class="fas fa-undo"></i> <span>Undo</span></button>
-                            </div>
-                            <div class="tb-group">
-                                <button class="tb-btn success" onclick="saveOrganized()"><i class="fas fa-download"></i> <span>Save PDF</span></button>
-                            </div>
-                        </div>
+    <!-- PROCESSING -->
+    <div id="processingSection" data-section style="display:none">
+        <div class="processing-area">
+            <div class="spinner"></div>
+            <h3 id="processTitle">Organizing PDF...</h3>
+            <p id="processSubtitle">Rebuilding</p>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <span class="progress-text" id="progressText">0%</span>
+        </div>
+    </div>
 
-                        <!-- Stats -->
-                        <div class="stats-bar">
-                            <div class="stat">Pages: <span id="statPages">0</span></div>
-                            <div class="stat">Selected: <span id="statSelected">0</span></div>
-                            <div class="changes" id="statChanges">No changes</div>
-                        </div>
-
-                        <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">
-                            <i class="fas fa-info-circle" style="color:var(--primary)"></i>
-                            Drag pages to reorder • Click to select • Hover for actions
-                        </p>
-
-                        <!-- Page Grid -->
-                        <div class="page-grid" id="pageGrid"></div>
-
-                        <!-- Save Button -->
-                        <button class="action-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);margin-top:15px;" onclick="saveOrganized()">
-                            <i class="fas fa-save"></i> Save Organized PDF
-                        </button>
-                    </div>
-                </div>
-
-                <!-- STEP 3: PROCESSING -->
-                <div id="s3" style="display:none;">
-                    <div class="processing-area">
-                        <div class="spinner"></div>
-                        <h3 id="pt">Saving organized PDF...</h3>
-                        <p id="ps">Applying changes</p>
-                        <div class="progress-bar"><div class="progress-fill" id="pb" style="background:linear-gradient(90deg,#14b8a6,#0d9488);"></div></div>
-                        <span class="progress-text" id="pp">0%</span>
-                    </div>
-                </div>
-
-                <!-- STEP 4: RESULT -->
-                <div id="s4" style="display:none;">
-                    <div class="result-area">
-                        <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-                        <h2>PDF Organized! 📑</h2>
-
-                        <div class="srow">
-                            <div class="sbox"><h4 id="rPages">0</h4><p>Final Pages</p></div>
-                            <div class="sbox"><h4 id="rChanges">0</h4><p>Changes Made</p></div>
-                            <div class="sbox"><h4 id="rSz">0 KB</h4><p>File Size</p></div>
-                        </div>
-
-                        <div class="result-info glass-light" style="margin-top:15px;">
-                            <div class="info-item"><i class="fas fa-file-pdf" style="color:#0d9488"></i> <span id="rfn">organized.pdf</span></div>
-                        </div>
-
-                        <button class="download-btn" style="background:linear-gradient(135deg,#14b8a6,#0d9488);" onclick="doDownload()">
-                            <i class="fas fa-download"></i> Download Organized PDF
-                        </button>
-
-                        <div class="result-actions">
-                            <button class="btn-outline" onclick="doReset()"><i class="fas fa-redo"></i> Organize Another</button>
-                            <button class="btn-outline" onclick="goTo('s2')"><i class="fas fa-pen"></i> Continue Editing</button>
-                        </div>
-                    </div>
-                </div>
-
+    <!-- RESULT -->
+    <div id="resultSection" data-section style="display:none">
+        <div class="result-area">
+            <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+            <h2>PDF Organized! 📑</h2>
+            <p>Your PDF pages have been reorganized</p>
+            <div class="result-stats">
+                <div class="result-stat"><strong id="rOrig">0</strong><small>Original</small></div>
+                <div class="result-stat"><strong id="rFinal">0</strong><small>Final</small></div>
+                <div class="result-stat"><strong id="rSize">0 KB</strong><small>File Size</small></div>
+            </div>
+            <div class="result-info glass-light">
+                <div class="info-item"><i class="fas fa-file-pdf" style="color:#dc2626"></i><span id="rFileName">document_organized.pdf</span></div>
+                <div class="info-item"><i class="fas fa-check-circle" style="color:#16a34a"></i><span>Pages reorganized successfully</span></div>
+            </div>
+            <button class="download-btn" onclick="doDownload()"><i class="fas fa-download"></i> Download Organized PDF</button>
+            <div class="result-actions">
+                <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Organize Another</button>
+                <button class="btn-outline" onclick="goBackEdit()"><i class="fas fa-edit"></i> Adjust Order</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="related-tools">
-        <div class="container">
-            <div class="section-header"><h2>Related Tools</h2></div>
-            <div class="related-grid">
-                <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
-                <a href="split-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-cut"></i></div><h4>Split</h4></a>
-                <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-sync-alt"></i></div><h4>Rotate</h4></a>
-                <a href="page-numbers.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-list-ol"></i></div><h4>Page Numbers</h4></a>
-                <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
-                <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop</h4></a>
-            </div>
+</div>
+</div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
+
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge PDF</h4></a>
+            <a href="split-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-cut"></i></div><h4>Split PDF</h4></a>
+            <a href="rotate-pdf.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-sync-alt"></i></div><h4>Rotate PDF</h4></a>
+            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress PDF</h4></a>
+            <a href="page-numbers.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-list-ol"></i></div><h4>Page Numbers</h4></a>
+            <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-teal"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="how-to-section">
-        <div class="container">
-            <div class="section-header"><h2>How to Organize PDF</h2></div>
-            <div class="steps-row">
-                <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select your PDF.</p></div>
-                <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-arrows-alt"></i><h4>Organize</h4><p>Drag, delete, rotate, duplicate.</p></div>
-                <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Save</h4><p>Download organized PDF.</p></div>
-            </div>
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How to Organize PDF</h2><p>3 simple steps</p></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload PDF</h4><p>Select the PDF to organize.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-sort"></i><h4>Rearrange</h4><p>Drag pages, delete, duplicate, reverse.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download the reorganized PDF.</p></div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="faq-section">
-        <div class="container">
-            <div class="section-header"><h2>FAQ</h2></div>
-            <div class="faq-list">
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I reorder pages by dragging?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Just click and drag any page thumbnail to a new position. The order updates instantly.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I delete specific pages?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Hover over a page and click the red × button, or select multiple pages and click Delete in the toolbar.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Can I duplicate a page?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Hover and click the blue copy button, or select pages and click Duplicate in the toolbar.</p></div></div>
-                <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><h4>Is there an undo feature?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! Click the Undo button in the toolbar to reverse your last action.</p></div></div>
-            </div>
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>Can I reorder pages by dragging?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Simply <strong>click and drag</strong> any page thumbnail to a new position. The page order updates instantly.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Can I delete specific pages?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Select pages using checkboxes, then click <strong>"Delete Selected"</strong>. Or click the trash icon on individual page cards.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Can I duplicate pages?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Select pages and click <strong>"Duplicate"</strong>. The copies are inserted right after the original. Duplicated pages are marked with a yellow badge.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>Is there undo support?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Click <strong>"Undo"</strong> or press <strong>Ctrl+Z</strong> to reverse the last action (reorder, delete, duplicate, etc.).</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">5</span><h4>Is my PDF uploaded to a server?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>No!</strong> Everything runs in your browser. Your PDF never leaves your device.</p></div></div></div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer class="footer"><div class="container"><div class="footer-simple"><div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div><p>© 2025 PDFTools.</p><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></div></footer>
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>© 2025 PDFTools. All rights reserved.</p>
+            <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
+        </div>
+    </div>
+</footer>
 
-    <script src="js/tool-page.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="js/tool-page.js"></script>
+<script src="js/adsense.js"></script>
 
-    <script>
-    // ==========================================
-    // ORGANIZE PDF - COMPLETE WORKING CODE
-    // PDF.js (thumbnails) + pdf-lib (save)
-    // ==========================================
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    window.addEventListener('load', function() {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+let rawBytes=null,selectedFile=null,pdfDoc=null,origPageCount=0;
+// pages: [{origIdx (0-based), thumbDataUrl, selected, isDuplicate}]
+let pages=[];
+let undoStack=[];
+let resultBlob=null;
+let dragIdx=-1,dragOverIdx=-1,dragGhost=null;
+
+/* ═══════════════════════════════════
+   HELPERS
+═══════════════════════════════════ */
+function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
+function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
+function setProgress(p,t,s){const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');if(f)f.style.width=p+'%';if(pt)pt.textContent=Math.round(p)+'%';if(t)document.getElementById('processTitle').textContent=t;if(s)document.getElementById('processSubtitle').textContent=s}
+function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function hideError(){document.getElementById('errorBox').style.display='none'}
+function tick(){return new Promise(r=>setTimeout(r,15))}
+
+/* ═══════════════════════════════════
+   FILE
+═══════════════════════════════════ */
+const dropZone=document.getElementById('dropZone'),fileInput=document.getElementById('fileInput');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
+
+async function handleFile(file){
+    hideError();
+    if(!file.name.toLowerCase().endsWith('.pdf')){showError('Select a PDF file.');return}
+    selectedFile=file;rawBytes=new Uint8Array(await file.arrayBuffer());
+    document.getElementById('fileName').textContent=file.name;
+    document.getElementById('fileSize').textContent=szF(file.size);
+    try{
+        pdfDoc=await pdfjsLib.getDocument({data:rawBytes.slice(0)}).promise;
+        origPageCount=pdfDoc.numPages;
+        document.getElementById('origCount').textContent=origPageCount;
+        pages=[];undoStack=[];
+        showSection('editorSection');
+        await renderAllThumbs();
+        updateUI();
+    }catch(e){showError('Failed to load: '+e.message)}
+}
+
+/* ═══════════════════════════════════
+   RENDER THUMBNAILS
+═══════════════════════════════════ */
+async function renderAllThumbs(){
+    pages=[];
+    for(let i=0;i<origPageCount;i++){
+        const pg=await pdfDoc.getPage(i+1);
+        const vp=pg.getViewport({scale:.4});
+        const c=document.createElement('canvas');
+        c.width=vp.width;c.height=vp.height;
+        const ctx=c.getContext('2d');
+        ctx.fillStyle='#fff';ctx.fillRect(0,0,vp.width,vp.height);
+        await pg.render({canvasContext:ctx,viewport:vp}).promise;
+        pages.push({origIdx:i,thumbDataUrl:c.toDataURL('image/jpeg',.7),selected:false,isDuplicate:false});
+        await tick();
+    }
+    renderGrid();
+}
+
+/* ═══════════════════════════════════
+   RENDER GRID
+═══════════════════════════════════ */
+function renderGrid(){
+    const grid=document.getElementById('pageGrid');
+    grid.innerHTML='';
+    pages.forEach((pg,idx)=>{
+        const card=document.createElement('div');
+        card.className='page-card'+(pg.selected?' selected':'')+(pg.isDuplicate?' duplicate-badge':'');
+        card.dataset.idx=idx;
+        card.draggable=true;
+
+        // Selection checkbox
+        const sel=document.createElement('div');
+        sel.className='page-sel'+(pg.selected?' checked':'');
+        sel.onclick=e=>{e.stopPropagation();toggleSel(idx)};
+        card.appendChild(sel);
+
+        // Duplicate badge
+        const dup=document.createElement('div');
+        dup.className='dup-badge';dup.textContent='Copy';
+        card.appendChild(dup);
+
+        // Thumbnail
+        const thumbWrap=document.createElement('div');
+        thumbWrap.className='page-thumb';
+        const img=document.createElement('img');
+        img.src=pg.thumbDataUrl;img.style.cssText='max-width:100%;max-height:100%';img.draggable=false;
+        thumbWrap.appendChild(img);
+
+        const numBadge=document.createElement('div');
+        numBadge.className='page-num-badge';
+        numBadge.textContent=(idx+1);
+        thumbWrap.appendChild(numBadge);
+
+        const origBadge=document.createElement('div');
+        origBadge.className='page-orig-badge';
+        origBadge.textContent='P'+(pg.origIdx+1);
+        origBadge.style.display=pg.origIdx!==idx||pg.isDuplicate?'block':'none';
+        thumbWrap.appendChild(origBadge);
+
+        card.appendChild(thumbWrap);
+
+        // Controls
+        const controls=document.createElement('div');
+        controls.className='page-controls';
+
+        const moveL=document.createElement('button');moveL.className='pc-btn';moveL.title='Move left';moveL.innerHTML='<i class="fas fa-arrow-left"></i>';
+        moveL.onclick=e=>{e.stopPropagation();movePage(idx,-1)};moveL.disabled=idx===0;
+
+        const dupBtn=document.createElement('button');dupBtn.className='pc-btn';dupBtn.title='Duplicate';dupBtn.innerHTML='<i class="fas fa-clone"></i>';
+        dupBtn.onclick=e=>{e.stopPropagation();duplicatePage(idx)};
+
+        const delBtn=document.createElement('button');delBtn.className='pc-btn del';delBtn.title='Delete';delBtn.innerHTML='<i class="fas fa-trash"></i>';
+        delBtn.onclick=e=>{e.stopPropagation();deletePage(idx)};
+
+        const moveR=document.createElement('button');moveR.className='pc-btn';moveR.title='Move right';moveR.innerHTML='<i class="fas fa-arrow-right"></i>';
+        moveR.onclick=e=>{e.stopPropagation();movePage(idx,1)};moveR.disabled=idx===pages.length-1;
+
+        controls.appendChild(moveL);controls.appendChild(dupBtn);controls.appendChild(delBtn);controls.appendChild(moveR);
+        card.appendChild(controls);
+
+        // Drag events
+        card.addEventListener('dragstart',e=>onDragStart(e,idx));
+        card.addEventListener('dragover',e=>onDragOver(e,idx));
+        card.addEventListener('dragleave',e=>onDragLeave(e,idx));
+        card.addEventListener('drop',e=>onDrop(e,idx));
+        card.addEventListener('dragend',onDragEnd);
+
+        // Touch drag
+        card.addEventListener('touchstart',e=>onTouchStart(e,idx),{passive:false});
+
+        grid.appendChild(card);
     });
+    updateUI();
+}
 
-    var O = {
-        rawBytes: null, name: 'document',
-        originalPages: 0,
-        // Each page: {origIdx, rotation, selected, canvasDataUrl}
-        pages: [],
-        undoHistory: [],
-        changeCount: 0,
-        blob: null
-    };
+/* ═══════════════════════════════════
+   DRAG & DROP (Mouse)
+═══════════════════════════════════ */
+function onDragStart(e,idx){
+    dragIdx=idx;
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain',idx);
+    setTimeout(()=>{
+        const card=document.querySelector(`[data-idx="${idx}"]`);
+        if(card)card.classList.add('dragging');
+    },0);
+}
 
-    // File input
-    document.getElementById('fi').addEventListener('change', function() {
-        if (this.files && this.files[0]) onFile(this.files[0]);
-    });
+function onDragOver(e,idx){
+    e.preventDefault();e.dataTransfer.dropEffect='move';
+    if(idx===dragIdx)return;
+    const cards=document.querySelectorAll('.page-card');
+    cards.forEach(c=>c.classList.remove('drag-over'));
+    const card=document.querySelector(`[data-idx="${idx}"]`);
+    if(card)card.classList.add('drag-over');
+    dragOverIdx=idx;
+}
 
-    // Drag drop
-    var dropBox = document.getElementById('dropBox');
-    dropBox.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = '#0d9488'; this.style.background = 'rgba(20,184,166,0.05)'; });
-    dropBox.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(20,184,166,0.3)'; this.style.background = ''; });
-    dropBox.addEventListener('drop', function(e) {
-        e.preventDefault(); this.style.borderColor = 'rgba(20,184,166,0.3)'; this.style.background = '';
-        if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
-    });
+function onDragLeave(e,idx){
+    const card=document.querySelector(`[data-idx="${idx}"]`);
+    if(card)card.classList.remove('drag-over');
+}
 
-    // ===== LOAD PDF =====
-    async function onFile(file) {
-        hideE();
-        if (!file.name.toLowerCase().endsWith('.pdf')) { showE('Please select a PDF!'); return; }
-        O.name = file.name.replace(/\.pdf$/i, '');
+function onDrop(e,idx){
+    e.preventDefault();
+    document.querySelectorAll('.page-card').forEach(c=>c.classList.remove('drag-over','dragging'));
+    if(dragIdx<0||dragIdx===idx)return;
+    saveUndo();
+    const item=pages.splice(dragIdx,1)[0];
+    pages.splice(idx,0,item);
+    dragIdx=-1;dragOverIdx=-1;
+    renderGrid();
+}
 
-        try {
-            var ab = await readF(file);
-            O.rawBytes = new Uint8Array(ab);
+function onDragEnd(){
+    dragIdx=-1;dragOverIdx=-1;
+    document.querySelectorAll('.page-card').forEach(c=>c.classList.remove('drag-over','dragging'));
+}
 
-            var pdf = await pdfjsLib.getDocument({ data: O.rawBytes.slice(0) }).promise;
-            O.originalPages = pdf.numPages;
-            O.pages = [];
-            O.undoHistory = [];
-            O.changeCount = 0;
+/* ═══════════════════════════════════
+   TOUCH DRAG
+═══════════════════════════════════ */
+let touchDragIdx=-1,touchGhost=null,touchStartY=0;
 
-            document.getElementById('fn').textContent = file.name;
-            document.getElementById('fs').textContent = szF(file.size);
-            document.getElementById('fp').textContent = O.originalPages;
-
-            // Render thumbnails
-            for (var i = 0; i < pdf.numPages; i++) {
-                var page = await pdf.getPage(i + 1);
-                var vp = page.getViewport({ scale: 0.4 });
-                var canvas = document.createElement('canvas');
-                canvas.width = vp.width;
-                canvas.height = vp.height;
-                await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-
-                O.pages.push({
-                    origIdx: i,
-                    rotation: 0,
-                    selected: false,
-                    thumb: canvas.toDataURL('image/jpeg', 0.7)
-                });
-            }
-
-            renderGrid();
-            goTo('s2');
-        } catch(e) {
-            console.error(e);
-            showE('Cannot read PDF: ' + e.message);
-        }
-    }
-
-    function readF(f) {
-        return new Promise(function(ok, fail) {
-            var r = new FileReader();
-            r.onload = function() { ok(r.result); };
-            r.onerror = function() { fail(new Error('Read failed')); };
-            r.readAsArrayBuffer(f);
-        });
-    }
-
-    // ===== RENDER PAGE GRID =====
-    function renderGrid() {
-        var grid = document.getElementById('pageGrid');
-        grid.innerHTML = '';
-
-        for (var i = 0; i < O.pages.length; i++) {
-            var pg = O.pages[i];
-            var card = document.createElement('div');
-            card.className = 'pg-card' + (pg.selected ? ' selected' : '') + (pg.rotation !== 0 ? ' rotated' : '');
-            card.draggable = true;
-            card.dataset.idx = i;
-
-            var img = document.createElement('img');
-            img.src = pg.thumb;
-            img.style.width = '100%';
-            img.style.display = 'block';
-            img.draggable = false;
-            if (pg.rotation !== 0) {
-                img.style.transform = 'rotate(' + pg.rotation + 'deg)';
-                if (pg.rotation === 90 || pg.rotation === 270) {
-                    img.style.maxWidth = '75%';
-                    img.style.margin = '12% auto';
-                }
-            }
-            card.appendChild(img);
-
-            // Overlay
-            var overlay = document.createElement('div');
-            overlay.className = 'pg-overlay';
-            card.appendChild(overlay);
-
-            // Page number
-            var num = document.createElement('div');
-            num.className = 'pg-num';
-            num.textContent = 'Page ' + (i + 1) + ' (was ' + (pg.origIdx + 1) + ')';
-            card.appendChild(num);
-
-            // Checkbox
-            var check = document.createElement('div');
-            check.className = 'pg-check';
-            check.innerHTML = '<i class="fas fa-check"></i>';
-            check.dataset.idx = i;
-            check.addEventListener('click', function(e) {
-                e.stopPropagation();
-                var idx = parseInt(this.dataset.idx);
-                toggleSelect(idx);
-            });
-            card.appendChild(check);
-
-            // Rotation badge
-            var rotBadge = document.createElement('div');
-            rotBadge.className = 'pg-rot-badge';
-            rotBadge.textContent = pg.rotation + '°';
-            card.appendChild(rotBadge);
-
-            // Action buttons
-            var actions = document.createElement('div');
-            actions.className = 'pg-actions';
-
-            var rotBtn = document.createElement('button');
-            rotBtn.className = 'pg-act rot';
-            rotBtn.innerHTML = '<i class="fas fa-redo"></i>';
-            rotBtn.title = 'Rotate 90°';
-            rotBtn.dataset.idx = i;
-            rotBtn.addEventListener('click', function(e) { e.stopPropagation(); rotatePage(parseInt(this.dataset.idx)); });
-
-            var dupBtn = document.createElement('button');
-            dupBtn.className = 'pg-act dup';
-            dupBtn.innerHTML = '<i class="fas fa-copy"></i>';
-            dupBtn.title = 'Duplicate';
-            dupBtn.dataset.idx = i;
-            dupBtn.addEventListener('click', function(e) { e.stopPropagation(); duplicatePage(parseInt(this.dataset.idx)); });
-
-            var delBtn = document.createElement('button');
-            delBtn.className = 'pg-act del';
-            delBtn.innerHTML = '<i class="fas fa-times"></i>';
-            delBtn.title = 'Delete';
-            delBtn.dataset.idx = i;
-            delBtn.addEventListener('click', function(e) { e.stopPropagation(); deletePage(parseInt(this.dataset.idx)); });
-
-            actions.appendChild(rotBtn);
-            actions.appendChild(dupBtn);
-            actions.appendChild(delBtn);
-            card.appendChild(actions);
-
-            // Click to select
-            card.addEventListener('click', function() {
-                toggleSelect(parseInt(this.dataset.idx));
-            });
-
-            // Drag events
-            card.addEventListener('dragstart', onDragStart);
-            card.addEventListener('dragover', onDragOver);
-            card.addEventListener('dragleave', onDragLeave);
-            card.addEventListener('drop', onDrop);
-            card.addEventListener('dragend', onDragEnd);
-
-            grid.appendChild(card);
-        }
-
-        updateStats();
-    }
-
-    // ===== DRAG REORDER =====
-    var dragIdx = null;
-
-    function onDragStart(e) {
-        dragIdx = parseInt(this.dataset.idx);
-        this.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-    }
-    function onDragOver(e) { e.preventDefault(); this.classList.add('drag-over'); }
-    function onDragLeave() { this.classList.remove('drag-over'); }
-    function onDrop(e) {
+function onTouchStart(e,idx){
+    // Long press to start drag
+    const touch=e.touches[0];
+    touchDragIdx=idx;touchStartY=touch.clientY;
+    const timer=setTimeout(()=>{
         e.preventDefault();
-        this.classList.remove('drag-over');
-        var dropIdx = parseInt(this.dataset.idx);
-        if (dragIdx !== null && dragIdx !== dropIdx) {
-            saveUndo();
-            var item = O.pages.splice(dragIdx, 1)[0];
-            O.pages.splice(dropIdx, 0, item);
-            O.changeCount++;
-            renderGrid();
+        // Create ghost
+        const card=document.querySelector(`[data-idx="${idx}"]`);
+        if(!card)return;
+        card.classList.add('dragging');
+        touchGhost=card.cloneNode(true);
+        touchGhost.className='drag-ghost';
+        touchGhost.style.width=card.offsetWidth+'px';
+        touchGhost.style.left=touch.clientX-40+'px';
+        touchGhost.style.top=touch.clientY-40+'px';
+        document.body.appendChild(touchGhost);
+
+        document.addEventListener('touchmove',onTouchMove,{passive:false});
+        document.addEventListener('touchend',onTouchEnd);
+    },300);
+
+    document.addEventListener('touchend',()=>clearTimeout(timer),{once:true});
+    document.addEventListener('touchmove',()=>clearTimeout(timer),{once:true});
+}
+
+function onTouchMove(e){
+    e.preventDefault();
+    const touch=e.touches[0];
+    if(touchGhost){
+        touchGhost.style.left=touch.clientX-40+'px';
+        touchGhost.style.top=touch.clientY-40+'px';
+    }
+    // Find card under touch
+    const el=document.elementFromPoint(touch.clientX,touch.clientY);
+    const card=el?.closest('.page-card');
+    document.querySelectorAll('.page-card').forEach(c=>c.classList.remove('drag-over'));
+    if(card){
+        card.classList.add('drag-over');
+        touchDragIdx!==-1&&(dragOverIdx=parseInt(card.dataset.idx));
+    }
+}
+
+function onTouchEnd(){
+    document.removeEventListener('touchmove',onTouchMove);
+    document.removeEventListener('touchend',onTouchEnd);
+    if(touchGhost){touchGhost.remove();touchGhost=null}
+    document.querySelectorAll('.page-card').forEach(c=>c.classList.remove('drag-over','dragging'));
+
+    if(touchDragIdx>=0&&dragOverIdx>=0&&touchDragIdx!==dragOverIdx){
+        saveUndo();
+        const item=pages.splice(touchDragIdx,1)[0];
+        pages.splice(dragOverIdx,0,item);
+        renderGrid();
+    }
+    touchDragIdx=-1;dragOverIdx=-1;
+}
+
+/* ═══════════════════════════════════
+   SELECTION
+═══════════════════════════════════ */
+function toggleSel(idx){
+    pages[idx].selected=!pages[idx].selected;
+    renderGrid();
+}
+
+function selectAll(){pages.forEach(p=>p.selected=true);renderGrid()}
+function deselectAll(){pages.forEach(p=>p.selected=false);renderGrid()}
+function invertSelection(){pages.forEach(p=>p.selected=!p.selected);renderGrid()}
+
+function updateUI(){
+    const sel=pages.filter(p=>p.selected).length;
+    document.getElementById('delBtn').disabled=sel===0;
+    document.getElementById('dupBtn').disabled=sel===0;
+    document.getElementById('moveStartBtn').disabled=sel===0;
+    document.getElementById('moveEndBtn').disabled=sel===0;
+    document.getElementById('undoBtn').disabled=undoStack.length===0;
+    document.getElementById('currentCount').textContent=pages.length;
+}
+
+/* ═══════════════════════════════════
+   UNDO
+═══════════════════════════════════ */
+function saveUndo(){
+    undoStack.push(JSON.parse(JSON.stringify(pages)));
+    if(undoStack.length>20)undoStack.shift();
+}
+
+function undoAction(){
+    if(undoStack.length===0)return;
+    pages=undoStack.pop();
+    renderGrid();
+}
+
+/* ═══════════════════════════════════
+   PAGE ACTIONS
+═══════════════════════════════════ */
+function movePage(idx,dir){
+    const newIdx=idx+dir;
+    if(newIdx<0||newIdx>=pages.length)return;
+    saveUndo();
+    [pages[idx],pages[newIdx]]=[pages[newIdx],pages[idx]];
+    renderGrid();
+}
+
+function deletePage(idx){
+    if(pages.length<=1){showError('Cannot delete the last page.');return}
+    saveUndo();
+    pages.splice(idx,1);
+    renderGrid();
+}
+
+function duplicatePage(idx){
+    saveUndo();
+    const copy={...pages[idx],selected:false,isDuplicate:true};
+    pages.splice(idx+1,0,copy);
+    renderGrid();
+}
+
+function deleteSelected(){
+    const sel=pages.filter(p=>p.selected);
+    if(sel.length===0)return;
+    if(sel.length===pages.length){showError('Cannot delete all pages. Keep at least one.');return}
+    saveUndo();
+    pages=pages.filter(p=>!p.selected);
+    renderGrid();
+}
+
+function duplicateSelected(){
+    const sel=[];
+    pages.forEach((p,i)=>{if(p.selected)sel.push(i)});
+    if(sel.length===0)return;
+    saveUndo();
+    // Insert duplicates after each selected (in reverse to keep indices stable)
+    for(let i=sel.length-1;i>=0;i--){
+        const copy={...pages[sel[i]],selected:false,isDuplicate:true};
+        pages.splice(sel[i]+1,0,copy);
+    }
+    renderGrid();
+}
+
+function reverseAll(){
+    saveUndo();
+    pages.reverse();
+    renderGrid();
+}
+
+function moveSelectedToStart(){
+    const sel=[],rest=[];
+    pages.forEach(p=>{if(p.selected){p.selected=false;sel.push(p)}else rest.push(p)});
+    if(sel.length===0)return;
+    saveUndo();
+    pages=[...sel,...rest];
+    renderGrid();
+}
+
+function moveSelectedToEnd(){
+    const sel=[],rest=[];
+    pages.forEach(p=>{if(p.selected){p.selected=false;sel.push(p)}else rest.push(p)});
+    if(sel.length===0)return;
+    saveUndo();
+    pages=[...rest,...sel];
+    renderGrid();
+}
+
+/* ═══════════════════════════════════
+   APPLY — pdf-lib rebuild
+═══════════════════════════════════ */
+async function doApply(){
+    if(pages.length===0){showError('No pages to save.');return}
+    document.getElementById('applyBtn').disabled=true;
+    hideError();showSection('processingSection');
+    setProgress(10,'Rebuilding PDF...','');
+    await tick();
+
+    try{
+        const srcDoc=await PDFLib.PDFDocument.load(rawBytes,{ignoreEncryption:true});
+        const newDoc=await PDFLib.PDFDocument.create();
+
+        for(let i=0;i<pages.length;i++){
+            const pct=10+((i/pages.length)*80);
+            if(i%5===0){setProgress(pct,'Copying page '+(i+1)+'...','');await tick()}
+            const origIdx=pages[i].origIdx;
+            const [copied]=await newDoc.copyPages(srcDoc,[origIdx]);
+            newDoc.addPage(copied);
         }
+
+        setProgress(95,'Saving...','');
+        await tick();
+
+        const outBytes=await newDoc.save();
+        resultBlob=new Blob([outBytes],{type:'application/pdf'});
+
+        setProgress(100,'Done!','');
+        await new Promise(r=>setTimeout(r,500));
+
+        document.getElementById('rOrig').textContent=origPageCount;
+        document.getElementById('rFinal').textContent=pages.length;
+        document.getElementById('rSize').textContent=szF(resultBlob.size);
+        document.getElementById('rFileName').textContent=selectedFile.name.replace(/\.pdf$/i,'')+'_organized.pdf';
+        showSection('resultSection');
+    }catch(e){
+        console.error(e);showSection('editorSection');
+        document.getElementById('applyBtn').disabled=false;
+        showError('Failed: '+e.message);
     }
-    function onDragEnd() {
-        this.classList.remove('dragging');
-        dragIdx = null;
-        document.querySelectorAll('.pg-card').forEach(function(c) { c.classList.remove('drag-over'); });
-    }
+}
 
-    // ===== SELECT/DESELECT =====
-    function toggleSelect(idx) {
-        O.pages[idx].selected = !O.pages[idx].selected;
-        var cards = document.querySelectorAll('.pg-card');
-        if (cards[idx]) cards[idx].classList.toggle('selected');
-        updateStats();
-    }
+/* ═══════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════ */
+function doDownload(){
+    if(!resultBlob)return;
+    const name=selectedFile?selectedFile.name.replace(/\.pdf$/i,'')+'_organized.pdf':'organized.pdf';
+    const url=URL.createObjectURL(resultBlob);
+    const a=document.createElement('a');a.href=url;a.download=name;
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
+}
 
-    function selectAll() {
-        O.pages.forEach(function(p) { p.selected = true; });
-        document.querySelectorAll('.pg-card').forEach(function(c) { c.classList.add('selected'); });
-        updateStats();
-    }
+/* ═══════════════════════════════════
+   NAV
+═══════════════════════════════════ */
+function goBackEdit(){
+    resultBlob=null;document.getElementById('applyBtn').disabled=false;
+    showSection('editorSection');
+}
 
-    function selectNone() {
-        O.pages.forEach(function(p) { p.selected = false; });
-        document.querySelectorAll('.pg-card').forEach(function(c) { c.classList.remove('selected'); });
-        updateStats();
-    }
+function resetTool(){
+    rawBytes=null;selectedFile=null;pdfDoc=null;origPageCount=0;
+    pages=[];undoStack=[];resultBlob=null;
+    fileInput.value='';document.getElementById('pageGrid').innerHTML='';
+    hideError();showSection('uploadSection');
+}
 
-    function invertSel() {
-        O.pages.forEach(function(p) { p.selected = !p.selected; });
-        document.querySelectorAll('.pg-card').forEach(function(c) { c.classList.toggle('selected'); });
-        updateStats();
-    }
-
-    // ===== PAGE OPERATIONS =====
-    function rotatePage(idx) {
-        saveUndo();
-        O.pages[idx].rotation = (O.pages[idx].rotation + 90) % 360;
-        O.changeCount++;
-        renderGrid();
-    }
-
-    function duplicatePage(idx) {
-        saveUndo();
-        var copy = JSON.parse(JSON.stringify(O.pages[idx]));
-        copy.selected = false;
-        O.pages.splice(idx + 1, 0, copy);
-        O.changeCount++;
-        renderGrid();
-    }
-
-    function deletePage(idx) {
-        if (O.pages.length <= 1) { showE('Cannot delete the last page!'); return; }
-        saveUndo();
-        O.pages.splice(idx, 1);
-        O.changeCount++;
-        renderGrid();
-    }
-
-    // Batch operations
-    function rotateSelected(deg) {
-        var any = O.pages.some(function(p) { return p.selected; });
-        if (!any) { showE('Select pages first!'); return; }
-        hideE();
-        saveUndo();
-        O.pages.forEach(function(p) {
-            if (p.selected) p.rotation = (p.rotation + deg) % 360;
-        });
-        O.changeCount++;
-        renderGrid();
-    }
-
-    function duplicateSelected() {
-        var any = O.pages.some(function(p) { return p.selected; });
-        if (!any) { showE('Select pages first!'); return; }
-        hideE();
-        saveUndo();
-        var newPages = [];
-        O.pages.forEach(function(p) {
-            newPages.push(p);
-            if (p.selected) {
-                var copy = JSON.parse(JSON.stringify(p));
-                copy.selected = false;
-                newPages.push(copy);
-            }
-        });
-        O.pages = newPages;
-        O.changeCount++;
-        renderGrid();
-    }
-
-    function deleteSelected() {
-        var selected = O.pages.filter(function(p) { return p.selected; });
-        if (selected.length === 0) { showE('Select pages first!'); return; }
-        var remaining = O.pages.filter(function(p) { return !p.selected; });
-        if (remaining.length === 0) { showE('Cannot delete all pages!'); return; }
-        hideE();
-        saveUndo();
-        O.pages = remaining;
-        O.changeCount++;
-        renderGrid();
-    }
-
-    function reverseAll() {
-        saveUndo();
-        O.pages.reverse();
-        O.changeCount++;
-        renderGrid();
-    }
-
-    // ===== UNDO =====
-    function saveUndo() {
-        O.undoHistory.push(JSON.parse(JSON.stringify(O.pages)));
-        if (O.undoHistory.length > 20) O.undoHistory.shift();
-    }
-
-    function undoAction() {
-        if (O.undoHistory.length === 0) { showE('Nothing to undo!'); return; }
-        hideE();
-        O.pages = O.undoHistory.pop();
-        O.changeCount = Math.max(0, O.changeCount - 1);
-        renderGrid();
-    }
-
-    // ===== UPDATE STATS =====
-    function updateStats() {
-        var sel = O.pages.filter(function(p) { return p.selected; }).length;
-        document.getElementById('statPages').textContent = O.pages.length;
-        document.getElementById('statSelected').textContent = sel;
-        document.getElementById('statChanges').textContent = O.changeCount > 0
-            ? O.changeCount + ' change' + (O.changeCount !== 1 ? 's' : '')
-            : 'No changes';
-    }
-
-    // ==========================================
-    // ✅ SAVE ORGANIZED PDF
-    // ==========================================
-    async function saveOrganized() {
-        if (O.changeCount === 0 && O.pages.length === O.originalPages) {
-            showE('No changes made. Rearrange, delete, or rotate pages first.');
-            return;
-        }
-        hideE();
-        goTo('s3');
-
-        try {
-            prog(10, 'Loading PDF...', 'Preparing document');
-
-            var srcPdf = await PDFLib.PDFDocument.load(O.rawBytes.slice(0), { ignoreEncryption: true });
-            var newPdf = await PDFLib.PDFDocument.create();
-
-            newPdf.setCreator('PDFTools - PDF Organizer');
-
-            for (var i = 0; i < O.pages.length; i++) {
-                prog(
-                    10 + Math.round((i / O.pages.length) * 75),
-                    'Page ' + (i + 1) + '/' + O.pages.length,
-                    'Adding page ' + (O.pages[i].origIdx + 1)
-                );
-
-                var pg = O.pages[i];
-                var copiedPages = await newPdf.copyPages(srcPdf, [pg.origIdx]);
-                var copiedPage = copiedPages[0];
-
-                // Apply rotation
-                if (pg.rotation !== 0) {
-                    var currentRot = copiedPage.getRotation().angle;
-                    copiedPage.setRotation(PDFLib.degrees((currentRot + pg.rotation) % 360));
-                }
-
-                newPdf.addPage(copiedPage);
-                await sleep(5);
-            }
-
-            prog(90, 'Saving...', 'Generating PDF');
-
-            var savedBytes = await newPdf.save();
-            O.blob = new Blob([savedBytes], { type: 'application/pdf' });
-
-            prog(100, 'Done!', 'PDF organized');
-
-            document.getElementById('rPages').textContent = O.pages.length;
-            document.getElementById('rChanges').textContent = O.changeCount;
-            document.getElementById('rSz').textContent = szF(O.blob.size);
-            document.getElementById('rfn').textContent = O.name + '_organized.pdf';
-
-            setTimeout(function() { goTo('s4'); }, 400);
-
-        } catch(e) {
-            console.error(e);
-            goTo('s2');
-            showE('Save failed: ' + e.message);
-        }
-    }
-
-    // ===== DOWNLOAD =====
-    function doDownload() {
-        if (!O.blob) { alert('No file.'); return; }
-        var url = URL.createObjectURL(O.blob);
-        var a = document.createElement('a');
-        a.href = url; a.download = O.name + '_organized.pdf';
-        a.style.display = 'none';
-        document.body.appendChild(a); a.click();
-        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
-    }
-
-    // ===== RESET =====
-    function doReset() {
-        O.rawBytes = null; O.name = 'document';
-        O.originalPages = 0; O.pages = [];
-        O.undoHistory = []; O.changeCount = 0;
-        O.blob = null;
-        hideE();
-        document.getElementById('fi').value = '';
-        document.getElementById('pageGrid').innerHTML = '';
-        goTo('s1');
-    }
-
-    // ===== HELPERS =====
-    function goTo(id) {
-        ['s1','s2','s3','s4'].forEach(function(s) { document.getElementById(s).style.display = 'none'; });
-        document.getElementById(id).style.display = 'block';
-    }
-    function prog(p, t, s) {
-        var b=document.getElementById('pb'),pt=document.getElementById('pp'),tt=document.getElementById('pt'),ss=document.getElementById('ps');
-        if(b)b.style.width=p+'%';if(pt)pt.textContent=p+'%';if(tt&&t)tt.textContent=t;if(ss&&s)ss.textContent=s;
-    }
-    function showE(m){var e=document.getElementById('em'),t=document.getElementById('et');if(e&&t){t.textContent=m;e.style.display='block';}setTimeout(hideE,10000);}
-    function hideE(){var e=document.getElementById('em');if(e)e.style.display='none';}
-    function szF(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB','GB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
-    function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
-
-    console.log('Organize PDF tool loaded');
-    </script>
-
+// Keyboard
+document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT')return;
+    if(e.ctrlKey&&e.key==='z'){e.preventDefault();undoAction()}
+    if(e.ctrlKey&&e.key==='a'){e.preventDefault();selectAll()}
+    if(e.key==='Delete'){const sel=pages.filter(p=>p.selected).length;if(sel>0)deleteSelected()}
+});
+</script>
 </body>
 </html>

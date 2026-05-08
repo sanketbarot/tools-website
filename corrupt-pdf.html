@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrupt PDF - Create Damaged PDF for Testing | PDFTools</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+    <meta name="description" content="Create corrupted/damaged PDF files for testing. Corrupt header, xref, pages, streams. For developers and QA testing.">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <style>
+        *{box-sizing:border-box}
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:12px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        .warn-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:12px;padding:14px 18px;color:#92400e;font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;font-weight:500;line-height:1.6}
+        .info-banner{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.18);border-radius:12px;padding:12px 16px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;font-weight:500;line-height:1.6}
+        .success-toast{position:fixed;top:20px;right:20px;background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.2);animation:toastIn .3s ease}
+        @keyframes toastIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:16px 20px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.65);border-radius:16px;margin-bottom:16px;backdrop-filter:blur(8px)}
+        .file-info-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#ef4444,#dc2626)}
+        .file-info-details{flex:1;min-width:0}
+        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;color:#1e293b}
+        .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .file-meta span{font-size:11px;color:#64748b;display:flex;align-items:center;gap:4px;font-weight:500}
+        .size-badge{background:rgba(239,68,68,.1);color:#dc2626;padding:2px 10px;border-radius:20px;font-weight:600;font-size:11px!important}
+
+        /* Corruption Options */
+        .panel-box{padding:16px 20px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.65);border-radius:16px;margin-bottom:16px;backdrop-filter:blur(6px)}
+        .panel-box h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#64748b;margin:0 0 14px;display:flex;align-items:center;gap:7px}
+
+        .corrupt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .corrupt-opt{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(255,255,255,.5);border:2px solid #e2e8f0;border-radius:14px;cursor:pointer;transition:all .2s;user-select:none;position:relative}
+        .corrupt-opt:hover{border-color:#ef4444;background:rgba(239,68,68,.03)}
+        .corrupt-opt.active{border-color:#ef4444;background:rgba(239,68,68,.06);box-shadow:0 0 0 3px rgba(239,68,68,.1)}
+        .corrupt-opt input[type=checkbox]{width:18px;height:18px;accent-color:#ef4444;cursor:pointer;flex-shrink:0;margin-top:2px}
+        .co-info{flex:1;min-width:0}
+        .co-title{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+        .co-desc{font-size:11px;color:#64748b;line-height:1.5}
+        .co-severity{position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px}
+        .co-severity.low{background:rgba(245,158,11,.15);color:#d97706}
+        .co-severity.med{background:rgba(249,115,22,.15);color:#ea580c}
+        .co-severity.high{background:rgba(239,68,68,.15);color:#dc2626}
+        .co-severity.extreme{background:rgba(127,29,29,.15);color:#7f1d1d}
+
+        /* Intensity slider */
+        .intensity-row{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 16px;background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.12);border-radius:12px}
+        .intensity-row label{font-size:11px;font-weight:700;color:#dc2626;min-width:70px;text-transform:uppercase;letter-spacing:.5px}
+        .intensity-row input[type=range]{flex:1;accent-color:#ef4444}
+        .intensity-val{font-size:13px;font-weight:800;color:#dc2626;min-width:40px;text-align:right}
+
+        /* Preview panel */
+        .preview-box{background:#1e293b;border-radius:14px;padding:16px;margin-bottom:16px;overflow:hidden}
+        .preview-box h5{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.5);margin:0 0 10px;display:flex;align-items:center;gap:6px}
+        .hex-preview{font-family:'Courier New',monospace;font-size:11px;color:#94a3b8;line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre;padding:8px 12px;background:rgba(0,0,0,.3);border-radius:8px}
+        .hex-preview .corrupted{color:#ef4444;font-weight:700;background:rgba(239,68,68,.15);border-radius:2px;padding:0 2px}
+        .hex-preview .ok{color:#22c55e}
+
+        /* Corruption summary */
+        .corrupt-summary{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+        .cs-item{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700}
+        .cs-item.active{background:rgba(239,68,68,.1);color:#dc2626}
+        .cs-item.inactive{background:rgba(148,163,184,.1);color:#94a3b8}
+
+        /* Result */
+        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:14px;padding:14px 18px;min-width:100px}
+        .result-stat strong{display:block;font-size:22px;color:#ef4444;line-height:1;margin-bottom:4px}
+        .result-stat small{color:#64748b;font-size:11px;font-weight:600;text-transform:uppercase}
+
+        .damage-log{margin-bottom:16px}
+        .dl-item{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12px;font-weight:600;border-radius:8px;margin-bottom:4px;background:rgba(239,68,68,.06);color:#dc2626}
+        .dl-item i{font-size:11px;flex-shrink:0}
+
+        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,#f97316,#ea580c)}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
+
+        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
+        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
+        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(239,68,68,.2)}
+        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
+        .faq-question h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
+        .faq-item.open .faq-question h4{color:#ef4444}
+        .faq-question i{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
+        .faq-item.open .faq-question i{transform:rotate(180deg);color:#ef4444}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
+        .faq-item.open .faq-answer{max-height:500px;opacity:1}
+        .faq-answer-inner{padding:0 22px 20px}
+        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(239,68,68,.1);padding-top:16px;margin:0 22px;padding-left:0;padding-right:0}
+        .faq-answer-inner p{font-size:14px;line-height:1.7;color:#64748b;margin:0}
+        .faq-answer-inner p strong{color:#1e293b}
+        .faq-num{width:28px;height:28px;background:rgba(239,68,68,.1);color:#ef4444;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .faq-item.open .faq-num{background:#ef4444;color:#fff}
+
+        @media(max-width:768px){.corrupt-grid{grid-template-columns:1fr}.result-stats{gap:10px}.result-stat{min-width:80px}}
+        @media(max-width:480px){.file-info-card{flex-wrap:wrap;padding:14px}.faq-question{padding:14px}.faq-item{border-radius:10px;margin-bottom:8px}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Corrupt PDF</span></div>
+        <div class="tool-title">
+            <div class="tool-title-icon icon-red"><i class="fas fa-virus"></i></div>
+            <div><h1>Corrupt PDF</h1><p>Intentionally damage a PDF file for testing. Corrupt header, xref, pages, streams. For developers &amp; QA.</p></div>
+        </div>
+    </div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<section class="tool-area">
+<div class="container">
+<div class="tool-wrapper glass">
+
+    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+
+    <!-- UPLOAD -->
+    <div id="uploadSection" data-section>
+        <div class="warn-box">
+            <i class="fas fa-exclamation-triangle" style="flex-shrink:0;margin-top:2px;font-size:16px"></i>
+            <div>
+                <strong>⚠️ Developer Tool:</strong> This tool intentionally corrupts PDF files for testing repair tools, error handling, and robustness testing. <strong>Do NOT use on important files.</strong> Always keep a backup of your original PDF.
+            </div>
+        </div>
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-zone-content">
+                <div class="upload-icon" style="background:linear-gradient(135deg,#ef4444,#991b1b)"><i class="fas fa-virus"></i></div>
+                <h2>Upload PDF to Corrupt</h2>
+                <p>Select a healthy PDF to intentionally damage</p>
+                <button class="upload-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626)" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF</button>
+                <input type="file" id="fileInput" accept=".pdf" hidden>
+                <div class="upload-hints">
+                    <span><i class="fas fa-lock"></i> Private</span>
+                    <span><i class="fas fa-virus"></i> Intentional Damage</span>
+                    <span><i class="fas fa-laptop"></i> Browser Only</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDITOR -->
+    <div id="editorSection" data-section style="display:none">
+
+        <div class="file-info-card">
+            <div class="file-info-icon"><i class="fas fa-file-pdf"></i></div>
+            <div class="file-info-details">
+                <h4 id="fileName">document.pdf</h4>
+                <div class="file-meta">
+                    <span class="size-badge" id="fileSize">0 KB</span>
+                    <span><i class="fas fa-check-circle" style="color:#22c55e"></i> <span id="fileStatus">Healthy</span></span>
+                </div>
+            </div>
+            <div class="files-actions"><button class="btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i></button></div>
+        </div>
+
+        <!-- Corruption Options -->
+        <div class="panel-box">
+            <h5><i class="fas fa-virus" style="color:#ef4444"></i> Select Corruption Types</h5>
+            <div class="corrupt-grid">
+
+                <label class="corrupt-opt active" onclick="toggleOpt(this)">
+                    <input type="checkbox" id="optHeader" checked>
+                    <div class="co-info">
+                        <div class="co-title"><i class="fas fa-file-code" style="color:#ef4444"></i> Corrupt Header</div>
+                        <div class="co-desc">Destroy the %PDF-1.x header signature. Most readers will reject the file.</div>
+                    </div>
+                    <div class="co-severity med">Medium</div>
+                </label>
+
+                <label class="corrupt-opt active" onclick="toggleOpt(this)">
+                    <input type="checkbox" id="optXref" checked>
+                    <div class="co-info">
+                        <div class="co-title"><i class="fas fa-sitemap" style="color:#f97316"></i> Corrupt Xref Table</div>
+                        <div class="co-desc">Randomize xref byte offsets. Readers can't find objects.</div>
+                    </div>
+                    <div class="co-severity high">High</div>
+                </label>
+
+                <label class="corrupt-opt" onclick="toggleOpt(this)">
+                    <input type="checkbox" id="optTrailer">
+                    <div class="co-info">
+                        <div class="co-title"><i class="fas fa-flag-checkered" style="color:#dc2626"></i> Remove Trailer</div>
+                        <div class="co-desc">Delete trailer dictionary and startxref. Critical structure damage.</div>
+                    </div>
+                    <div class="co-severity high">High</div>
+                </label>
+
+                <label class="corrupt-opt" onclick="toggleOpt(this)">
+                    <input type="checkbox" id="optEOF">
+                    <div class="co-info">
+                        <div class="co-title"><i class="fas fa-stop-circle" style="color:#f59e0b"></i> Remove %%EOF</div>
+                        <div class="co-desc">Strip end-of-file marker. Some readers may still open it.</div>
+                    </div>
+                    <div class="co-severity low">Low</div>
+                </label>
+
+                <label class="corrupt-opt" onclick="toggleOpt(this)">
+                    <input type="checkbox" id="optStreams">
+                    <div class="co-info">
+                        <div class="co-title"><i class="fas fa-stream" style="color:#8b5cf6"></i> Corrupt Streams</div>
+                        <div class="co-desc">Inject random bytes into content streams. Pages will render with artifacts or blank.</div>
+                    </div>
+                    <div class="co-severity high">High</div>
+                </label>
+
+                <label class="corrupt-opt" onclick="toggleOpt(this)">
+                    <input type="checkbox" id="optTruncate">
+                    <div class="co-info">
+                        <div class="co-title"><i class="fas fa-cut" style="color:#dc2626"></i> Truncate File</div>
+                        <div class="co-desc">Cut off the end of the file. Simulates incomplete download.</div>
+                    </div>
+                    <div class="co-severity extreme">Extreme</div>
+                </label>
+
+                <label class="corrupt-opt" onclick="toggleOpt(this)">
+                    <input type="checkbox" id="optRandomBytes">
+                    <div class="co-info">
+                        <div class="co-title"><i class="fas fa-random" style="color:#991b1b"></i> Random Byte Injection</div>
+                        <div class="co-desc">Insert random garbage bytes at random positions throughout the file.</div>
+                    </div>
+                    <div class="co-severity extreme">Extreme</div>
+                </label>
+
+                <label class="corrupt-opt" onclick="toggleOpt(this)">
+                    <input type="checkbox" id="optPageTree">
+                    <div class="co-info">
+                        <div class="co-title"><i class="fas fa-tree" style="color:#16a34a"></i> Break Page Tree</div>
+                        <div class="co-desc">Corrupt /Type /Pages and /Type /Page references. Page count becomes wrong.</div>
+                    </div>
+                    <div class="co-severity med">Medium</div>
+                </label>
+
+            </div>
+
+            <!-- Intensity -->
+            <div class="intensity-row">
+                <label><i class="fas fa-fire"></i> Intensity</label>
+                <input type="range" id="intensity" min="1" max="10" value="5" oninput="document.getElementById('intVal').textContent=this.value+'/10'">
+                <span class="intensity-val" id="intVal">5/10</span>
+            </div>
+        </div>
+
+        <!-- Preview before corruption -->
+        <div class="preview-box" id="previewBox">
+            <h5><i class="fas fa-code"></i> File Hex Preview (first 256 bytes)</h5>
+            <div class="hex-preview" id="hexPreview"></div>
+        </div>
+
+        <button class="action-btn" style="background:linear-gradient(135deg,#ef4444,#991b1b)" onclick="doCorrupt()">
+            <i class="fas fa-virus"></i> Corrupt PDF
+        </button>
+    </div>
+
+    <!-- PROCESSING -->
+    <div id="processingSection" data-section style="display:none">
+        <div class="processing-area">
+            <div class="spinner" style="border-top-color:#ef4444"></div>
+            <h3 id="processTitle">Corrupting PDF...</h3>
+            <p id="processSubtitle">Applying damage</p>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="background:linear-gradient(90deg,#ef4444,#991b1b)"></div></div>
+            <span class="progress-text" id="progressText">0%</span>
+        </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="resultSection" data-section style="display:none">
+        <div class="result-area">
+            <div class="result-icon" style="background:rgba(239,68,68,.15)"><i class="fas fa-virus" style="color:#ef4444;font-size:32px"></i></div>
+            <h2>PDF Corrupted! 💀</h2>
+            <p>The file has been intentionally damaged</p>
+            <div class="result-stats">
+                <div class="result-stat"><strong id="rCorruptions">0</strong><small>Corruptions</small></div>
+                <div class="result-stat"><strong id="rOrigSize">0 KB</strong><small>Original</small></div>
+                <div class="result-stat"><strong id="rNewSize">0 KB</strong><small>Damaged</small></div>
+            </div>
+
+            <!-- Damage Log -->
+            <div class="damage-log" id="damageLog"></div>
+
+            <!-- After/Before Hex -->
+            <div class="preview-box">
+                <h5><i class="fas fa-code"></i> Corrupted Hex Preview</h5>
+                <div class="hex-preview" id="hexCorrupted"></div>
+            </div>
+
+            <div class="result-info glass-light">
+                <div class="info-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i><span id="rFileName">document_corrupted.pdf</span></div>
+                <div class="info-item"><i class="fas fa-virus" style="color:#ef4444"></i><span>Intentionally damaged — for testing only</span></div>
+            </div>
+            <button class="download-btn" style="background:linear-gradient(135deg,#ef4444,#991b1b)" onclick="doDownload()"><i class="fas fa-download"></i> Download Corrupted PDF</button>
+            <div class="result-actions">
+                <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Corrupt Another</button>
+                <a href="repair-pdf.html" class="btn-outline"><i class="fas fa-wrench"></i> Test Repair Tool</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
+
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="repair-pdf.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-wrench"></i></div><h4>Repair PDF</h4></a>
+            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+            <a href="unlock-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-lock-open"></i></div><h4>Unlock</h4></a>
+            <a href="merge-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-object-group"></i></div><h4>Merge</h4></a>
+            <a href="split-pdf.html" class="related-card glass"><div class="related-icon icon-blue"><i class="fas fa-cut"></i></div><h4>Split</h4></a>
+            <a href="edit-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-pen-fancy"></i></div><h4>Edit</h4></a>
+        </div>
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How It Works</h2><p>3 steps to create a damaged PDF</p></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-cloud-upload-alt"></i><h4>Upload</h4><p>Select a healthy, working PDF file.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-virus"></i><h4>Configure</h4><p>Choose corruption types and intensity level.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download the intentionally corrupted PDF.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>Why would I corrupt a PDF?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Developers and QA teams need <strong>corrupted test files</strong> to test error handling in their PDF viewers, parsers, repair tools, and upload validators. This creates realistic corruption scenarios.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>What corruption types are available?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>8 types:</strong> Header destruction, xref table corruption, trailer removal, EOF removal, stream corruption, file truncation, random byte injection, and page tree damage. Each can be combined.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>What does intensity control?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Intensity (1-10) controls <strong>how severe</strong> each corruption is. Low = minor damage (some readers may still open). High = severe damage (most readers will reject the file).</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>Can I repair the corrupted PDF?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Use our <strong><a href="repair-pdf.html" style="color:#6366f1">Repair PDF</a></strong> tool to test if it can recover the damaged file. That's the whole point of this tool — creating test cases for repair tools.</p></div></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>© 2025 PDFTools. All rights reserved.</p>
+            <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="js/tool-page.js"></script>
+<script src="js/adsense.js"></script>
+
+<script>
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+let rawBytes=null,selectedFile=null,resultBlob=null;
+let damageLog=[];
+
+/* ═══════════════════════════════════
+   HELPERS
+═══════════════════════════════════ */
+function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
+function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
+function setProgress(p,t,s){const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');if(f)f.style.width=p+'%';if(pt)pt.textContent=Math.round(p)+'%';if(t)document.getElementById('processTitle').textContent=t;if(s)document.getElementById('processSubtitle').textContent=s}
+function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function hideError(){document.getElementById('errorBox').style.display='none'}
+function tick(){return new Promise(r=>setTimeout(r,30))}
+function toast(m){const t=document.createElement('div');t.className='success-toast';t.style.background='#ef4444';t.innerHTML='<i class="fas fa-virus"></i>'+m;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)},2500)}
+
+function toggleOpt(el){
+    const cb=el.querySelector('input[type=checkbox]');
+    // Toggle is handled by checkbox click, just update visual
+    setTimeout(()=>{el.classList.toggle('active',cb.checked)},0);
+}
+
+/* ═══════════════════════════════════
+   HEX PREVIEW
+═══════════════════════════════════ */
+function renderHexPreview(bytes,targetId,highlights){
+    const el=document.getElementById(targetId);
+    let html='';
+    const len=Math.min(bytes.length,256);
+    for(let i=0;i<len;i+=16){
+        // Address
+        html+='<span style="color:#475569">'+i.toString(16).padStart(6,'0')+'</span>  ';
+        // Hex
+        for(let j=0;j<16;j++){
+            if(i+j<len){
+                const b=bytes[i+j];
+                const isCorrupt=highlights&&highlights.has(i+j);
+                html+=isCorrupt?'<span class="corrupted">'+b.toString(16).padStart(2,'0')+'</span> ':'<span class="ok">'+b.toString(16).padStart(2,'0')+'</span> ';
+            }else html+='   ';
+        }
+        // ASCII
+        html+=' |';
+        for(let j=0;j<16&&(i+j)<len;j++){
+            const b=bytes[i+j];
+            const c=(b>=32&&b<127)?String.fromCharCode(b):'.';
+            const isCorrupt=highlights&&highlights.has(i+j);
+            html+=isCorrupt?'<span class="corrupted">'+c+'</span>':c;
+        }
+        html+='|\n';
+    }
+    if(bytes.length>256)html+='\n... ('+szF(bytes.length)+' total)';
+    el.innerHTML=html;
+}
+
+/* ═══════════════════════════════════
+   FILE
+═══════════════════════════════════ */
+const dropZone=document.getElementById('dropZone'),fileInput=document.getElementById('fileInput');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
+
+async function handleFile(file){
+    hideError();
+    if(!file.name.toLowerCase().endsWith('.pdf')){showError('Select a PDF file.');return}
+    selectedFile=file;rawBytes=new Uint8Array(await file.arrayBuffer());
+    document.getElementById('fileName').textContent=file.name;
+    document.getElementById('fileSize').textContent=szF(file.size);
+    damageLog=[];
+    showSection('editorSection');
+    renderHexPreview(rawBytes,'hexPreview');
+}
+
+/* ═══════════════════════════════════
+   CORRUPT PDF
+═══════════════════════════════════ */
+async function doCorrupt(){
+    const opts={
+        header:document.getElementById('optHeader').checked,
+        xref:document.getElementById('optXref').checked,
+        trailer:document.getElementById('optTrailer').checked,
+        eof:document.getElementById('optEOF').checked,
+        streams:document.getElementById('optStreams').checked,
+        truncate:document.getElementById('optTruncate').checked,
+        randomBytes:document.getElementById('optRandomBytes').checked,
+        pageTree:document.getElementById('optPageTree').checked,
+    };
+
+    const anySelected=Object.values(opts).some(v=>v);
+    if(!anySelected){showError('Select at least one corruption type.');return}
+
+    const intensity=parseInt(document.getElementById('intensity').value)||5;
+    damageLog=[];
+    const corruptedPositions=new Set();
+
+    showSection('processingSection');
+    setProgress(5,'Corrupting...','Preparing damage');
+    await tick();
+
+    // Work on a copy
+    let bytes=new Uint8Array(rawBytes);
+    const txt=new TextDecoder('latin1').decode(bytes);
+
+    // 1. Corrupt Header
+    if(opts.header){
+        setProgress(10,'Corrupting header...','Destroying %PDF signature');
+        await tick();
+        const garbageLen=Math.min(5+intensity,bytes.length);
+        for(let i=0;i<garbageLen;i++){
+            bytes[i]=Math.floor(Math.random()*256);
+            corruptedPositions.add(i);
+        }
+        damageLog.push('Header: Replaced first '+garbageLen+' bytes with random data');
+    }
+
+    // 2. Corrupt Xref
+    if(opts.xref){
+        setProgress(20,'Corrupting xref...','Randomizing object offsets');
+        await tick();
+        const xrefIdx=txt.lastIndexOf('xref');
+        if(xrefIdx>0){
+            const corruptRange=Math.min(50*intensity,bytes.length-xrefIdx);
+            for(let i=xrefIdx+5;i<xrefIdx+5+corruptRange&&i<bytes.length;i++){
+                if(bytes[i]>=48&&bytes[i]<=57){// only corrupt digit chars
+                    bytes[i]=48+Math.floor(Math.random()*10);
+                    corruptedPositions.add(i);
+                }
+            }
+            damageLog.push('Xref: Randomized '+corruptRange+' bytes of xref table offsets');
+        }else{
+            damageLog.push('Xref: No xref found to corrupt');
+        }
+    }
+
+    // 3. Remove Trailer
+    if(opts.trailer){
+        setProgress(30,'Removing trailer...','Deleting trailer dictionary');
+        await tick();
+        const trailerIdx=txt.lastIndexOf('trailer');
+        if(trailerIdx>0){
+            const endIdx=Math.min(trailerIdx+200*intensity/5,bytes.length);
+            for(let i=trailerIdx;i<endIdx;i++){
+                bytes[i]=32; // replace with spaces
+                corruptedPositions.add(i);
+            }
+            damageLog.push('Trailer: Blanked '+(endIdx-trailerIdx)+' bytes of trailer dictionary');
+        }
+    }
+
+    // 4. Remove %%EOF
+    if(opts.eof){
+        setProgress(40,'Removing %%EOF...','');
+        await tick();
+        const eofIdx=txt.lastIndexOf('%%EOF');
+        if(eofIdx>0){
+            for(let i=eofIdx;i<eofIdx+5&&i<bytes.length;i++){
+                bytes[i]=32;
+                corruptedPositions.add(i);
+            }
+            damageLog.push('EOF: Removed %%EOF marker at position '+eofIdx);
+        }
+    }
+
+    // 5. Corrupt Streams
+    if(opts.streams){
+        setProgress(50,'Corrupting streams...','Injecting random data into content streams');
+        await tick();
+        let streamCount=0;
+        let searchPos=0;
+        const maxStreams=intensity*2;
+        while(searchPos<txt.length&&streamCount<maxStreams){
+            const idx=txt.indexOf('stream\n',searchPos);
+            if(idx<0)break;
+            const endIdx=txt.indexOf('endstream',idx+7);
+            if(endIdx<0)break;
+
+            // Corrupt middle portion of stream
+            const streamLen=endIdx-(idx+7);
+            const corruptStart=idx+7+Math.floor(streamLen*0.2);
+            const corruptLen=Math.min(Math.floor(streamLen*intensity/15),streamLen-10);
+            for(let i=0;i<corruptLen;i++){
+                const pos=corruptStart+i;
+                if(pos<bytes.length){
+                    bytes[pos]=Math.floor(Math.random()*256);
+                    corruptedPositions.add(pos);
+                }
+            }
+            streamCount++;
+            searchPos=endIdx+9;
+        }
+        damageLog.push('Streams: Corrupted '+streamCount+' content stream(s)');
+    }
+
+    // 6. Truncate
+    if(opts.truncate){
+        setProgress(60,'Truncating file...','Cutting off end of file');
+        await tick();
+        const cutPercent=30+(intensity*5); // 35%-80%
+        const cutPoint=Math.floor(bytes.length*(cutPercent/100));
+        bytes=bytes.slice(0,cutPoint);
+        damageLog.push('Truncate: Cut file to '+cutPercent+'% ('+szF(bytes.length)+')');
+    }
+
+    // 7. Random Byte Injection
+    if(opts.randomBytes){
+        setProgress(70,'Injecting random bytes...','Inserting garbage data');
+        await tick();
+        const injections=intensity*20;
+        for(let i=0;i<injections;i++){
+            const pos=Math.floor(Math.random()*bytes.length);
+            const origByte=bytes[pos];
+            bytes[pos]=Math.floor(Math.random()*256);
+            if(bytes[pos]!==origByte)corruptedPositions.add(pos);
+        }
+        damageLog.push('Random: Injected '+injections+' random bytes at random positions');
+    }
+
+    // 8. Break Page Tree
+    if(opts.pageTree){
+        setProgress(80,'Breaking page tree...','Corrupting page references');
+        await tick();
+        let count=0;
+        const maxReplacements=intensity;
+        // Find /Type /Page and corrupt
+        let sIdx=0;
+        while(sIdx<txt.length-15&&count<maxReplacements){
+            const pIdx=txt.indexOf('/Type /Page',sIdx);
+            if(pIdx<0)break;
+            // Replace 'Page' with 'Xage'
+            if(pIdx+11<bytes.length){
+                bytes[pIdx+6]=88; // 'X' instead of 'P'
+                corruptedPositions.add(pIdx+6);
+                count++;
+            }
+            sIdx=pIdx+11;
+        }
+        damageLog.push('Page Tree: Corrupted '+count+' /Type /Page reference(s)');
+    }
+
+    setProgress(95,'Building output...','');
+    await tick();
+
+    resultBlob=new Blob([bytes],{type:'application/pdf'});
+
+    setProgress(100,'Done!','');
+    await new Promise(r=>setTimeout(r,400));
+
+    // Show result
+    document.getElementById('rCorruptions').textContent=damageLog.length;
+    document.getElementById('rOrigSize').textContent=szF(rawBytes.length);
+    document.getElementById('rNewSize').textContent=szF(bytes.length);
+    document.getElementById('rFileName').textContent=selectedFile.name.replace(/\.pdf$/i,'')+'_corrupted.pdf';
+
+    // Damage log
+    document.getElementById('damageLog').innerHTML=damageLog.map(d=>
+        `<div class="dl-item"><i class="fas fa-virus"></i>${d}</div>`
+    ).join('');
+
+    // Corrupted hex preview
+    renderHexPreview(bytes,'hexCorrupted',corruptedPositions);
+
+    showSection('resultSection');
+    toast('PDF corrupted!');
+}
+
+/* ═══════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════ */
+function doDownload(){
+    if(!resultBlob)return;
+    const name=selectedFile?selectedFile.name.replace(/\.pdf$/i,'')+'_corrupted.pdf':'corrupted.pdf';
+    const url=URL.createObjectURL(resultBlob);
+    const a=document.createElement('a');a.href=url;a.download=name;
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
+}
+
+function resetTool(){
+    rawBytes=null;selectedFile=null;resultBlob=null;damageLog=[];
+    fileInput.value='';hideError();showSection('uploadSection');
+}
+</script>
+</body>
+</html>

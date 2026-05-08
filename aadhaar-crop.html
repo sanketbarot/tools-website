@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aadhaar Card Cropper - Split Front & Back | PDFTools</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+    <meta name="description" content="Crop multiple Aadhaar cards into front and back JPGs. Auto-fill, batch processing. 100% browser-based!">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tool-page.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        *{box-sizing:border-box}
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        .info-banner{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        .privacy-banner{background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#15803d;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        .warn-banner{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#92400e;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:15px 18px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:16px}
+        .file-info-icon{width:50px;height:50px;background:linear-gradient(135deg,#f97316,#ea580c);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        .file-info-details{flex:1;min-width:0}
+        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--text-dark,#1e293b)}
+        .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:flex;align-items:center;gap:4px}
+        .size-badge{background:rgba(249,115,22,.1);color:#ea580c;padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
+
+        /* Image list */
+        .img-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+        .img-card{background:#fff;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+        .img-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+        .img-card.active{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+        .img-card.done{border-color:#22c55e}
+        .img-card-thumb{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:#f1f5f9}
+        .img-card-info{padding:6px 8px}
+        .img-card-name{font-size:10px;font-weight:700;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .img-card-meta{font-size:9px;color:var(--text-light);font-weight:600}
+        .img-card-badge{position:absolute;top:4px;right:4px;padding:1px 6px;border-radius:4px;font-size:8px;font-weight:700;color:#fff}
+        .img-card-badge.done-b{background:#22c55e}
+        .img-card-badge.cur-b{background:var(--primary)}
+        .img-card-del{position:absolute;top:4px;left:4px;width:18px;height:18px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:9px;cursor:pointer;border:2px solid #fff;z-index:2}
+        .img-card:hover .img-card-del{display:flex}
+        .img-add{background:rgba(99,102,241,.04);border:2px dashed #c7d2fe;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;min-height:100px;transition:all .2s}
+        .img-add:hover{border-color:var(--primary);background:rgba(99,102,241,.08)}
+        .img-add i{font-size:20px;color:#a5b4fc;margin-bottom:4px}
+        .img-add span{font-size:10px;font-weight:600;color:#818cf8}
+
+        /* Layout */
+        .layout-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+        .layout-card{background:rgba(255,255,255,.65);border:2px solid #e2e8f0;border-radius:12px;padding:14px 12px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+        .layout-card:hover{border-color:var(--primary);transform:translateY(-1px)}
+        .layout-card.active{border-color:var(--primary);background:rgba(99,102,241,.08);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+        .layout-card input{display:none}
+        .layout-visual{width:100%;height:70px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+        .lv-box{border:2px solid var(--primary);border-radius:6px;overflow:hidden;position:relative}
+        .lv-half{position:absolute;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#fff}
+        .lv-half.front{background:rgba(34,197,94,.5)}.lv-half.back{background:rgba(59,130,246,.5)}
+        .lv-half.detail{background:rgba(245,158,11,.5)}.lv-half.skip{background:rgba(0,0,0,.06)}
+        .lv-div{position:absolute;background:var(--primary);z-index:2}
+        .layout-title{font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:2px}
+        .layout-desc{font-size:10px;color:var(--text-light);line-height:1.4}
+        .layout-tag{position:absolute;top:6px;right:6px;padding:1px 6px;border-radius:4px;font-size:8px;font-weight:700;background:rgba(99,102,241,.15);color:var(--primary)}
+
+        /* Workspace */
+        .workspace{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:16px}
+        .ws-toolbar{display:flex;align-items:center;gap:5px;padding:8px 12px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+        .tb-btn{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
+        .tb-btn:hover{background:rgba(255,255,255,.16);color:#fff}
+        .tb-btn.active{background:#6366f1;color:#fff}
+        .tb-btn.green{background:#22c55e;color:#fff}.tb-btn.green:hover{background:#16a34a}
+        .tb-btn:disabled{opacity:.3;pointer-events:none}
+        .tb-text{color:rgba(255,255,255,.5);font-size:11px;font-weight:600}
+        .tb-spacer{flex:1}
+        .tb-sep{width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 3px}
+        .ws-scroll{overflow:auto;padding:16px;display:flex;justify-content:center;align-items:flex-start;max-height:500px;min-height:240px}
+        .ws-con{position:relative;display:inline-block;line-height:0}
+        .ws-con img{display:block;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.5);user-select:none;-webkit-user-drag:none}
+
+        /* Crop boxes */
+        .c-rect{position:absolute;border:3px solid;cursor:move;z-index:4;border-radius:3px}
+        .c-rect.front-r{border-color:#22c55e}
+        .c-rect.back-r{border-color:#3b82f6}
+        .c-rect-label{position:absolute;top:-22px;left:0;font-size:9px;font-weight:700;color:#fff;padding:2px 7px;border-radius:3px;white-space:nowrap;pointer-events:none}
+        .c-rect.front-r .c-rect-label{background:#22c55e}
+        .c-rect.back-r .c-rect-label{background:#3b82f6}
+        .c-rect-dims{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;color:#fff;padding:1px 5px;border-radius:3px;white-space:nowrap;pointer-events:none;background:rgba(0,0,0,.6)}
+        .c-handle{position:absolute;width:12px;height:12px;background:#fff;border:2px solid;border-radius:2px;z-index:6}
+        .front-r .c-handle{border-color:#22c55e}
+        .back-r .c-handle{border-color:#3b82f6}
+        .c-handle.tl{top:-6px;left:-6px;cursor:nw-resize}
+        .c-handle.tr{top:-6px;right:-6px;cursor:ne-resize}
+        .c-handle.bl{bottom:-6px;left:-6px;cursor:sw-resize}
+        .c-handle.br{bottom:-6px;right:-6px;cursor:se-resize}
+
+        /* Options */
+        .opt-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:flex-end}
+        .opt-item{flex:1;min-width:110px}
+        .opt-item label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:5px}
+        .opt-item select,.opt-item input[type=number]{width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;font-weight:600;outline:none;background:#fff}
+        .opt-item select:focus,.opt-item input:focus{border-color:var(--primary)}
+
+        /* Result */
+        .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+        .r-card{background:#fff;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;transition:all .2s}
+        .r-card:hover{border-color:var(--primary);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+        .r-card-head{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:12px;font-weight:700;color:var(--text-dark)}
+        .r-badge{padding:2px 6px;border-radius:5px;font-size:9px;font-weight:700;color:#fff;margin-left:auto}
+        .r-badge.fb{background:#22c55e}.r-badge.bb{background:#3b82f6}
+        .r-card img{width:100%;display:block;background:#f8fafc}
+        .r-card-foot{padding:8px 12px;display:flex;align-items:center;justify-content:space-between}
+        .r-card-meta{font-size:10px;color:var(--text-light);font-weight:600}
+        .r-card-dl{padding:5px 12px;border-radius:7px;border:none;background:var(--primary);color:#fff;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px}
+        .r-card-dl:hover{background:#4f46e5}
+
+        .result-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:16px 0}
+        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:10px;padding:11px 14px;min-width:90px}
+        .result-stat strong{display:block;font-size:18px;color:var(--primary);line-height:1;margin-bottom:3px}
+        .result-stat small{color:var(--text-light);font-size:10px;font-weight:600;text-transform:uppercase}
+
+        /* Multi result section */
+        .multi-results{margin-bottom:16px}
+        .mr-item{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);border-radius:12px;margin-bottom:12px;overflow:hidden}
+        .mr-item-head{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,.4);border-bottom:1px solid rgba(0,0,0,.04);font-size:13px;font-weight:700;color:var(--text-dark)}
+        .mr-item-head .mr-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .mr-item-body{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,#f97316,#ea580c)}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
+        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
+        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
+        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(99,102,241,.2)}
+        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;gap:12px}
+        .faq-question h4{font-size:14px;font-weight:600;color:var(--text-dark);margin:0;flex:1}
+        .faq-item.open .faq-question h4{color:var(--primary)}
+        .faq-question i{font-size:12px;color:var(--text-light);transition:transform .3s;flex-shrink:0}
+        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary)}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
+        .faq-item.open .faq-answer{max-height:400px;opacity:1}
+        .faq-answer-inner{padding:0 20px 18px}
+        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(99,102,241,.1);padding-top:14px;margin:0 20px;padding-left:0;padding-right:0}
+        .faq-answer-inner p{font-size:13px;line-height:1.7;color:var(--text-light);margin:0}
+        .faq-answer-inner p strong{color:var(--text-dark)}
+        .faq-num{width:26px;height:26px;background:rgba(99,102,241,.1);color:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+        .faq-item.open .faq-num{background:var(--primary);color:#fff}
+        @media(max-width:768px){.layout-grid{grid-template-columns:1fr 1fr}.result-grid,.mr-item-body{grid-template-columns:1fr}.opt-row{flex-direction:column}.opt-item{min-width:100%}}
+        @media(max-width:480px){.layout-grid{grid-template-columns:1fr}.img-list{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar glass">
+    <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
+        <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+    </div>
+</nav>
+
+<section class="tool-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Home</a><i class="fas fa-chevron-right"></i><span>Aadhaar Card Cropper</span></div>
+        <div class="tool-title">
+            <div class="tool-title-icon icon-orange"><i class="fas fa-id-card"></i></div>
+            <div><h1>Aadhaar Card Cropper</h1><p>Upload <strong>multiple</strong> Aadhaar scans → auto-crop <strong>Front (Photo)</strong> &amp; <strong>Back (Details)</strong> as same-size JPGs</p></div>
+        </div>
+    </div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
+
+<section class="tool-area">
+<div class="container">
+<div class="tool-wrapper glass">
+
+    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+
+    <!-- UPLOAD -->
+    <div id="uploadSection" data-section>
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-zone-content">
+                <div class="upload-icon"><i class="fas fa-id-card"></i></div>
+                <h2>Upload Aadhaar Card Images</h2>
+                <p>Drop one or <strong>multiple</strong> scanned Aadhaar images (JPG/PNG)</p>
+                <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select Images</button>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple hidden>
+                <div class="upload-hints">
+                    <span><i class="fas fa-images"></i> Multiple Files</span>
+                    <span><i class="fas fa-lock"></i> 100% Private</span>
+                    <span><i class="fas fa-magic"></i> Auto Crop</span>
+                </div>
+                <p style="margin-top:12px;font-size:12px;color:var(--text-light)"><i class="fas fa-shield-alt"></i> Your Aadhaar data never leaves your device!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDITOR -->
+    <div id="editorSection" data-section style="display:none">
+
+        <div class="privacy-banner">
+            <i class="fas fa-shield-alt" style="flex-shrink:0;margin-top:2px"></i>
+            <span><strong>100% Secure:</strong> All processing runs in your browser. No images are uploaded anywhere.</span>
+        </div>
+
+        <!-- Image List -->
+        <div class="img-list" id="imgList"></div>
+
+        <!-- Layout -->
+        <div class="options-panel glass-light" style="margin-bottom:14px">
+            <h4 style="margin-bottom:10px"><i class="fas fa-th-large"></i> Layout</h4>
+            <div class="layout-grid">
+                <label class="layout-card active" onclick="setLayout(this,'top-bottom')">
+                    <input type="radio" name="layout" value="top-bottom" checked>
+                    <div class="layout-tag">Common</div>
+                    <div class="layout-visual"><div class="lv-box" style="width:55px;height:65px">
+                        <div class="lv-half front" style="top:0;left:0;right:0;height:46%"><span>FRONT</span></div>
+                        <div class="lv-div" style="top:46%;left:0;right:0;height:8%"></div>
+                        <div class="lv-half back" style="bottom:0;left:0;right:0;height:46%"><span>BACK</span></div>
+                    </div></div>
+                    <div class="layout-title">Top–Bottom</div>
+                    <div class="layout-desc">Front top, Back bottom</div>
+                </label>
+                <label class="layout-card" onclick="setLayout(this,'left-right')">
+                    <input type="radio" name="layout" value="left-right">
+                    <div class="layout-visual"><div class="lv-box" style="width:75px;height:45px">
+                        <div class="lv-half front" style="top:0;bottom:0;left:0;width:46%"><span>FRONT</span></div>
+                        <div class="lv-div" style="left:46%;top:0;bottom:0;width:8%"></div>
+                        <div class="lv-half back" style="top:0;bottom:0;right:0;width:46%"><span>BACK</span></div>
+                    </div></div>
+                    <div class="layout-title">Left–Right</div>
+                    <div class="layout-desc">Front left, Back right</div>
+                </label>
+                <label class="layout-card" onclick="setLayout(this,'bottom-only')">
+                    <input type="radio" name="layout" value="bottom-only">
+                    <div class="layout-visual"><div class="lv-box" style="width:55px;height:65px">
+                        <div class="lv-half skip" style="top:0;left:0;right:0;height:46%"><span style="color:#94a3b8;font-size:6px">SKIP</span></div>
+                        <div class="lv-div" style="top:46%;left:0;right:0;height:8%"></div>
+                        <div class="lv-half detail" style="bottom:0;left:0;right:0;height:46%"><span>DETAILS</span></div>
+                    </div></div>
+                    <div class="layout-title">Bottom Only</div>
+                    <div class="layout-desc">Details/address only</div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Output -->
+        <div class="options-panel glass-light" style="margin-bottom:14px">
+            <h4 style="margin-bottom:8px"><i class="fas fa-sliders-h"></i> Output</h4>
+            <div class="opt-row">
+                <div class="opt-item"><label>Width (px)</label><input type="number" id="outWidth" value="1000" min="200" max="4000"></div>
+                <div class="opt-item"><label>Quality (%)</label><input type="number" id="outQuality" value="95" min="50" max="100"></div>
+                <div class="opt-item"><label>Format</label><select id="outFormat"><option value="jpeg">JPEG</option><option value="png">PNG</option></select></div>
+            </div>
+        </div>
+
+        <!-- Workspace -->
+        <div class="workspace" id="workspaceWrap">
+            <div class="ws-toolbar">
+                <span class="tb-text" id="wsTitle"><i class="fas fa-crop-alt"></i> Editing: —</span>
+                <div class="tb-sep"></div>
+                <button class="tb-btn" onclick="autoFit()"><i class="fas fa-magic"></i> Auto Fit</button>
+                <button class="tb-btn" onclick="resetBoxes()"><i class="fas fa-undo"></i> Reset</button>
+                <button class="tb-btn" id="lockBtn" onclick="toggleLock()"><i class="fas fa-lock" id="lockIcon"></i> Linked</button>
+                <div class="tb-spacer"></div>
+                <button class="tb-btn green" onclick="applyCurrent()"><i class="fas fa-check"></i> Apply</button>
+                <button class="tb-btn green" onclick="applyToAllImages()"><i class="fas fa-check-double"></i> Apply All</button>
+                <div class="tb-sep"></div>
+                <button class="tb-btn" onclick="navPrev()" id="navPrev" disabled><i class="fas fa-chevron-left"></i></button>
+                <span class="tb-text" id="navInfo">1/1</span>
+                <button class="tb-btn" onclick="navNext()" id="navNext"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="ws-scroll" id="wsScroll">
+                <div class="ws-con" id="wsCon">
+                    <img id="wsImg" draggable="false">
+                    <div class="c-rect front-r" id="frontRect">
+                        <div class="c-rect-label"><i class="fas fa-user"></i> Front</div>
+                        <div class="c-rect-dims" id="frontDims">0×0</div>
+                        <div class="c-handle tl" data-box="front" data-dir="tl"></div>
+                        <div class="c-handle tr" data-box="front" data-dir="tr"></div>
+                        <div class="c-handle bl" data-box="front" data-dir="bl"></div>
+                        <div class="c-handle br" data-box="front" data-dir="br"></div>
+                    </div>
+                    <div class="c-rect back-r" id="backRect">
+                        <div class="c-rect-label"><i class="fas fa-address-card"></i> Back</div>
+                        <div class="c-rect-dims" id="backDims">0×0</div>
+                        <div class="c-handle tl" data-box="back" data-dir="tl"></div>
+                        <div class="c-handle tr" data-box="back" data-dir="tr"></div>
+                        <div class="c-handle bl" data-box="back" data-dir="bl"></div>
+                        <div class="c-handle br" data-box="back" data-dir="br"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="warn-banner">
+            <i class="fas fa-hand-pointer" style="flex-shrink:0;margin-top:2px"></i>
+            <span>Drag <span style="color:#22c55e;font-weight:700">green box</span> on <strong>front side (photo)</strong>. Drag <span style="color:#3b82f6;font-weight:700">blue box</span> on <strong>back side (details)</strong>. Resize corners to fit. Click <strong>Apply All</strong> to batch process all images with same box positions.</span>
+        </div>
+
+        <button class="action-btn" id="cropBtn" onclick="cropAndDownload()">
+            <i class="fas fa-download"></i> <span id="cropBtnText">Crop &amp; Download All</span>
+        </button>
+    </div>
+
+    <!-- PROCESSING -->
+    <div id="processingSection" data-section style="display:none">
+        <div class="processing-area">
+            <div class="spinner"></div>
+            <h3 id="processTitle">Processing...</h3>
+            <p id="processSubtitle">Cropping</p>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <span class="progress-text" id="progressText">0%</span>
+        </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="resultSection" data-section style="display:none">
+        <div class="result-area">
+            <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
+            <h2>All Cards Cropped! ✂️</h2>
+            <p id="resultSub">Front &amp; back sides ready</p>
+            <div class="result-stats" id="resultStats"></div>
+            <div class="multi-results" id="multiResults"></div>
+            <button class="download-btn" onclick="downloadZip()"><i class="fas fa-file-archive"></i> Download All as ZIP</button>
+            <div class="result-actions">
+                <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Start Over</button>
+                <button class="btn-outline" onclick="goBackEdit()"><i class="fas fa-edit"></i> Adjust</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</section>
+
+<div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
+
+<section class="related-tools">
+    <div class="container">
+        <div class="section-header"><h2>Related Tools</h2></div>
+        <div class="related-grid">
+            <a href="crop-jpg.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-crop-alt"></i></div><h4>Crop JPG</h4></a>
+            <a href="compress-pdf.html" class="related-card glass"><div class="related-icon icon-green"><i class="fas fa-compress-arrows-alt"></i></div><h4>Compress</h4></a>
+            <a href="image-to-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-file-pdf"></i></div><h4>Image to PDF</h4></a>
+            <a href="pdf-to-image.html" class="related-card glass"><div class="related-icon icon-orange"><i class="fas fa-image"></i></div><h4>PDF to Image</h4></a>
+            <a href="crop-pdf.html" class="related-card glass"><div class="related-icon icon-purple"><i class="fas fa-crop-alt"></i></div><h4>Crop PDF</h4></a>
+            <a href="redact-pdf.html" class="related-card glass"><div class="related-icon icon-red"><i class="fas fa-eraser"></i></div><h4>Redact PDF</h4></a>
+        </div>
+    </div>
+</section>
+
+<section class="how-to-section">
+    <div class="container">
+        <div class="section-header"><h2>How It Works</h2></div>
+        <div class="steps-row">
+            <div class="step-box glass"><div class="step-num">1</div><i class="fas fa-images"></i><h4>Upload</h4><p>Upload one or multiple Aadhaar card scans.</p></div>
+            <div class="step-box glass"><div class="step-num">2</div><i class="fas fa-crop-alt"></i><h4>Position</h4><p>Drag green &amp; blue boxes. Click Auto Fit or Apply All.</p></div>
+            <div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download all cropped front &amp; back images as ZIP.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="faq-list">
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>Is it safe?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>100% safe.</strong> Everything runs locally in your browser. Nothing is uploaded.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Can I crop multiple Aadhaar cards at once?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Upload multiple images, set crop on one, click <strong>Apply All</strong>, then download everything as a ZIP.</p></div></div></div>
+            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Are both outputs exactly the same size?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes, when <strong>Size Linked</strong> is on. Both front and back output identical pixel dimensions.</p></div></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-simple">
+            <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
+            <p>© 2025 PDFTools. All rights reserved.</p>
+            <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="js/tool-page.js"></script>
+<script src="js/adsense.js"></script>
+
+<script>
+/* ═════════════════════════════════════
+   STATE
+═════════════════════════════════════ */
+let images=[];    // [{file,img,w,h,dataUrl,frontBox,backBox,resultF,resultB}]
+let activeIdx=0;
+let layout='top-bottom';
+let sizeLocked=true;
+let ds=1; // display scale
+
+let dragTarget=null,dragSM={x:0,y:0},dragSB={x:0,y:0,w:0,h:0},dragSOther={x:0,y:0,w:0,h:0};
+
+const CARD_RATIO=85.6/53.98;
+
+/* ═════════════════════════════════════
+   HELPERS
+═════════════════════════════════════ */
+function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
+if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
+function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
+function setProgress(p,t,s){const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');if(f)f.style.width=p+'%';if(pt)pt.textContent=Math.round(p)+'%';if(t)document.getElementById('processTitle').textContent=t;if(s)document.getElementById('processSubtitle').textContent=s}
+function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function hideError(){document.getElementById('errorBox').style.display='none'}
+function tick(){return new Promise(r=>setTimeout(r,20))}
+function clamp(v,mn,mx){return Math.max(mn,Math.min(mx,v))}
+function readFile(f){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(f)})}
+function loadImg(src){return new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>j();i.src=src})}
+
+/* ═════════════════════════════════════
+   FILE
+═════════════════════════════════════ */
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('fileInput');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files.length)addFiles(e.dataTransfer.files)});
+fileInput.addEventListener('change',()=>{if(fileInput.files.length)addFiles(fileInput.files)});
+
+async function addFiles(files){
+    hideError();
+    for(const file of files){
+        if(!['image/jpeg','image/png','image/webp'].includes(file.type)){showError(file.name+' is not supported.');continue}
+        const dataUrl=await readFile(file);
+        const img=await loadImg(dataUrl);
+        const w=img.naturalWidth,h=img.naturalHeight;
+        images.push({file,img,w,h,dataUrl,frontBox:null,backBox:null,resultF:null,resultB:null});
+    }
+    if(!images.length)return;
+    showSection('editorSection');
+    selectImage(images.length>1?activeIdx:0);
+    renderImgList();
+}
+
+function removeImage(idx,e){
+    e.stopPropagation();
+    images.splice(idx,1);
+    if(!images.length){resetTool();return}
+    if(activeIdx>=images.length)activeIdx=images.length-1;
+    selectImage(activeIdx);
+    renderImgList();
+}
+
+/* ═════════════════════════════════════
+   IMAGE LIST
+═════════════════════════════════════ */
+function renderImgList(){
+    document.getElementById('imgList').innerHTML=images.map((im,i)=>`
+        <div class="img-card ${i===activeIdx?'active':''} ${im.resultF||im.resultB?'done':''}" onclick="selectImage(${i})">
+            <div class="img-card-del" onclick="removeImage(${i},event)">×</div>
+            ${i===activeIdx?'<div class="img-card-badge cur-b">Editing</div>':im.resultF?'<div class="img-card-badge done-b">✓</div>':''}
+            <img class="img-card-thumb" src="${im.dataUrl}" alt="${im.file.name}">
+            <div class="img-card-info"><div class="img-card-name">${im.file.name}</div><div class="img-card-meta">${im.w}×${im.h}</div></div>
+        </div>
+    `).join('')+`
+        <div class="img-add" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus-circle"></i><span>Add More</span></div>
+    `;
+    document.getElementById('navInfo').textContent=(activeIdx+1)+'/'+images.length;
+    document.getElementById('navPrev').disabled=activeIdx<=0;
+    document.getElementById('navNext').disabled=activeIdx>=images.length-1;
+}
+
+/* ═════════════════════════════════════
+   SELECT IMAGE
+═════════════════════════════════════ */
+function selectImage(idx){
+    activeIdx=idx;
+    const im=images[idx];
+    const wsImg=document.getElementById('wsImg');
+    wsImg.src=im.dataUrl;
+    wsImg.onload=()=>{
+        const scroll=document.getElementById('wsScroll');
+        ds=Math.min((scroll.clientWidth-40)/im.w,(scroll.clientHeight||450)/im.h,1);
+        wsImg.style.width=(im.w*ds)+'px';wsImg.style.height=(im.h*ds)+'px';
+        document.getElementById('wsCon').style.width=(im.w*ds)+'px';
+        document.getElementById('wsCon').style.height=(im.h*ds)+'px';
+        if(!im.frontBox)initBoxes(im);
+        renderBoxes(im);
+        renderImgList();
+    };
+    document.getElementById('wsTitle').innerHTML=`<i class="fas fa-crop-alt"></i> ${im.file.name}`;
+    updateFrontRectDisplay();
+}
+
+/* ═════════════════════════════════════
+   LAYOUT
+═════════════════════════════════════ */
+function setLayout(el,val){
+    document.querySelectorAll('.layout-card').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');el.querySelector('input').checked=true;
+    layout=val;
+    images.forEach(im=>{im.frontBox=null;im.backBox=null;im.resultF=null;im.resultB=null});
+    updateFrontRectDisplay();
+    if(images.length)selectImage(activeIdx);
+}
+
+function updateFrontRectDisplay(){
+    document.getElementById('frontRect').style.display=layout==='bottom-only'?'none':'block';
+    document.getElementById('cropBtnText').textContent=layout==='bottom-only'?'Crop Details & Download':'Crop & Download All';
+}
+
+function toggleLock(){
+    sizeLocked=!sizeLocked;
+    document.getElementById('lockIcon').className=sizeLocked?'fas fa-lock':'fas fa-lock-open';
+    document.getElementById('lockBtn').classList.toggle('active',sizeLocked);
+}
+
+/* ═════════════════════════════════════
+   INIT BOXES — auto positioned
+═════════════════════════════════════ */
+function initBoxes(im){
+    let bw,bh;
+    if(layout==='top-bottom'){
+        bw=im.w*.88;bh=bw/CARD_RATIO;
+        if(bh>im.h*.44){bh=im.h*.44;bw=bh*CARD_RATIO}
+        const cx=(im.w-bw)/2;
+        im.frontBox={x:cx,y:im.h*.02,w:bw,h:bh};
+        im.backBox={x:cx,y:im.h-.02*im.h-bh,w:bw,h:bh};
+    }else if(layout==='left-right'){
+        bw=im.w*.44;bh=bw/CARD_RATIO;
+        if(bh>im.h*.90){bh=im.h*.90;bw=bh*CARD_RATIO}
+        const cy=(im.h-bh)/2;
+        im.frontBox={x:im.w*.02,y:cy,w:bw,h:bh};
+        im.backBox={x:im.w-im.w*.02-bw,y:cy,w:bw,h:bh};
+    }else{
+        bw=im.w*.88;bh=bw/CARD_RATIO;
+        if(bh>im.h*.46){bh=im.h*.46;bw=bh*CARD_RATIO}
+        im.backBox={x:(im.w-bw)/2,y:im.h-im.h*.02-bh,w:bw,h:bh};
+        im.frontBox={x:0,y:0,w:0,h:0};
+    }
+}
+
+function resetBoxes(){
+    const im=images[activeIdx];
+    im.frontBox=null;im.backBox=null;
+    initBoxes(im);renderBoxes(im);
+}
+
+/* ═════════════════════════════════════
+   AUTO FIT — detect content
+═════════════════════════════════════ */
+function autoFit(){
+    const im=images[activeIdx];
+    const c=document.createElement('canvas'),ctx=c.getContext('2d');
+    const sc=Math.min(1,500/Math.max(im.w,im.h));
+    c.width=Math.round(im.w*sc);c.height=Math.round(im.h*sc);
+    ctx.drawImage(im.img,0,0,c.width,c.height);
+    const d=ctx.getImageData(0,0,c.width,c.height).data;
+    const w=c.width,h=c.height,th=235;
+
+    // Content bounds
+    let t=0,b=h-1,l=0,r=w-1;
+    f1:for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4;if((d[i]+d[i+1]+d[i+2])/3<th){t=y;break f1}}
+    f2:for(let y=h-1;y>=0;y--)for(let x=0;x<w;x++){const i=(y*w+x)*4;if((d[i]+d[i+1]+d[i+2])/3<th){b=y;break f2}}
+    f3:for(let x=0;x<w;x++)for(let y=0;y<h;y++){const i=(y*w+x)*4;if((d[i]+d[i+1]+d[i+2])/3<th){l=x;break f3}}
+    f4:for(let x=w-1;x>=0;x--)for(let y=0;y<h;y++){const i=(y*w+x)*4;if((d[i]+d[i+1]+d[i+2])/3<th){r=x;break f4}}
+
+    const sT=t/sc,sB=b/sc,sL=l/sc,sR=r/sc;
+    const cW=sR-sL,cH=sB-sT;
+
+    if(layout==='left-right'){
+        let bestX=Math.round(w/2),bestS=0;
+        for(let x=Math.round(w*.3);x<Math.round(w*.7);x++){
+            let s=0;for(let y=t;y<=b;y++){const i=(y*w+x)*4;if((d[i]+d[i+1]+d[i+2])/3>th)s++}
+            if(s>bestS){bestS=s;bestX=x}
+        }
+        const splitX=bestX/sc;
+        let fw=splitX-sL-4,fh=fw/CARD_RATIO;
+        if(fh>cH*.95){fh=cH*.95;fw=fh*CARD_RATIO}
+        im.frontBox={x:sL+2,y:sT+(cH-fh)/2,w:fw,h:fh};
+        let bw=sR-splitX-4,bbh=bw/CARD_RATIO;
+        if(bbh>cH*.95){bbh=cH*.95;bw=bbh*CARD_RATIO}
+        im.backBox={x:splitX+2,y:sT+(cH-bbh)/2,w:bw,h:bbh};
+        if(sizeLocked){const mw=Math.min(fw,bw),mh=Math.min(fh,bbh);im.frontBox.w=mw;im.frontBox.h=mh;im.backBox.w=mw;im.backBox.h=mh}
+    }else{
+        let bestY=Math.round(h/2),bestS=0;
+        for(let y=Math.round(h*.3);y<Math.round(h*.7);y++){
+            let s=0;for(let x=l;x<=r;x++){const i=(y*w+x)*4;if((d[i]+d[i+1]+d[i+2])/3>th)s++}
+            if(s>bestS){bestS=s;bestY=y}
+        }
+        const splitY=bestY/sc;
+        let bxW=cW*.92,bxH=bxW/CARD_RATIO;
+        if(layout==='top-bottom'){
+            if(bxH>(splitY-sT)*.92){bxH=(splitY-sT)*.92;bxW=bxH*CARD_RATIO}
+            const cx=sL+(cW-bxW)/2;
+            im.frontBox={x:cx,y:sT+2,w:bxW,h:bxH};
+            let bH2=bxH;if(bH2>(sB-splitY)*.92){bH2=(sB-splitY)*.92}
+            let bW2=sizeLocked?bxW:bH2*CARD_RATIO;
+            im.backBox={x:sL+(cW-bW2)/2,y:splitY+2,w:bW2,h:sizeLocked?bxH:bH2};
+        }else{
+            if(bxH>(sB-splitY)*.92){bxH=(sB-splitY)*.92;bxW=bxH*CARD_RATIO}
+            im.backBox={x:sL+(cW-bxW)/2,y:splitY+2,w:bxW,h:bxH};
+        }
+    }
+    renderBoxes(im);
+}
+
+/* ═════════════════════════════════════
+   RENDER BOXES
+═════════════════════════════════════ */
+function renderBoxes(im){
+    if(!im)im=images[activeIdx];
+    const fr=document.getElementById('frontRect');
+    const br=document.getElementById('backRect');
+
+    if(layout!=='bottom-only'&&im.frontBox){
+        fr.style.display='block';
+        fr.style.left=(im.frontBox.x*ds)+'px';fr.style.top=(im.frontBox.y*ds)+'px';
+        fr.style.width=(im.frontBox.w*ds)+'px';fr.style.height=(im.frontBox.h*ds)+'px';
+        document.getElementById('frontDims').textContent=Math.round(im.frontBox.w)+'×'+Math.round(im.frontBox.h);
+    }else{fr.style.display='none'}
+
+    if(im.backBox){
+        br.style.left=(im.backBox.x*ds)+'px';br.style.top=(im.backBox.y*ds)+'px';
+        br.style.width=(im.backBox.w*ds)+'px';br.style.height=(im.backBox.h*ds)+'px';
+        document.getElementById('backDims').textContent=Math.round(im.backBox.w)+'×'+Math.round(im.backBox.h);
+    }
+}
+
+/* ═════════════════════════════════════
+   DRAG
+═════════════════════════════════════ */
+const wsCon=document.getElementById('wsCon');
+wsCon.addEventListener('mousedown',dDown);
+document.addEventListener('mousemove',dMove);
+document.addEventListener('mouseup',dUp);
+wsCon.addEventListener('touchstart',e=>{const t=e.target;if(t.closest('.c-handle')||t.closest('.c-rect')){e.preventDefault();dDown({target:t,clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})}},{passive:false});
+document.addEventListener('touchmove',e=>{if(dragTarget){e.preventDefault();dMove({clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})}},{passive:false});
+document.addEventListener('touchend',dUp);
+
+function dDown(e){
+    const h=e.target.closest('.c-handle');
+    const r=e.target.closest('.c-rect');
+    if(!h&&!r)return;
+    const im=images[activeIdx];
+    if(h)dragTarget=h.dataset.box+'-'+h.dataset.dir;
+    else dragTarget=(r.id==='frontRect'?'front':'back')+'-move';
+    dragSM={x:e.clientX,y:e.clientY};
+    const which=dragTarget.split('-')[0];
+    dragSB={...(which==='front'?im.frontBox:im.backBox)};
+    dragSOther={...(which==='front'?im.backBox:im.frontBox)};
+}
+
+function dMove(e){
+    if(!dragTarget)return;
+    const dx=(e.clientX-dragSM.x)/ds,dy=(e.clientY-dragSM.y)/ds;
+    const parts=dragTarget.split('-');
+    const which=parts[0],act=parts[1];
+    const im=images[activeIdx];
+    const box=which==='front'?im.frontBox:im.backBox;
+    const other=which==='front'?im.backBox:im.frontBox;
+
+    if(act==='move'){
+        box.x=clamp(dragSB.x+dx,0,im.w-box.w);
+        box.y=clamp(dragSB.y+dy,0,im.h-box.h);
+    }else{
+        let{x,y,w,h}={...dragSB};
+        if(act==='br'){w+=dx;h+=dy}
+        else if(act==='bl'){x+=dx;w-=dx;h+=dy}
+        else if(act==='tr'){w+=dx;y+=dy;h-=dy}
+        else if(act==='tl'){x+=dx;w-=dx;y+=dy;h-=dy}
+        w=Math.max(30,w);h=Math.max(20,h);
+        x=clamp(x,0,im.w-30);y=clamp(y,0,im.h-20);
+        if(x+w>im.w)w=im.w-x;if(y+h>im.h)h=im.h-y;
+        box.x=x;box.y=y;box.w=w;box.h=h;
+        if(sizeLocked&&layout!=='bottom-only'){
+            other.w=w;other.h=h;
+            other.x=clamp(other.x,0,im.w-w);other.y=clamp(other.y,0,im.h-h);
+        }
+    }
+    renderBoxes(im);
+}
+
+function dUp(){dragTarget=null}
+
+/* ═════════════════════════════════════
+   APPLY CROP
+═════════════════════════════════════ */
+function exactCrop(imgEl,box){
+    const outW=parseInt(document.getElementById('outWidth').value)||1000;
+    const ar=box.w/box.h;
+    const fW=outW,fH=Math.round(outW/ar);
+    const q=(parseInt(document.getElementById('outQuality').value)||95)/100;
+    const fmt=document.getElementById('outFormat').value;
+    const mime=fmt==='png'?'image/png':'image/jpeg';
+    const c=document.createElement('canvas');c.width=fW;c.height=fH;
+    const ctx=c.getContext('2d');
+    if(fmt==='jpeg'){ctx.fillStyle='#fff';ctx.fillRect(0,0,fW,fH)}
+    ctx.drawImage(imgEl,Math.round(box.x),Math.round(box.y),Math.round(box.w),Math.round(box.h),0,0,fW,fH);
+    return{dataUrl:c.toDataURL(mime,q),w:fW,h:fH};
+}
+
+function applyCurrent(){
+    const im=images[activeIdx];
+    if(layout!=='bottom-only')im.resultF=exactCrop(im.img,im.frontBox);
+    im.resultB=exactCrop(im.img,im.backBox);
+    renderImgList();
+}
+
+function applyToAllImages(){
+    const ref=images[activeIdx];
+    if(!ref.frontBox)initBoxes(ref);
+
+    for(let i=0;i<images.length;i++){
+        const im=images[i];
+        // Auto-center same box size on each image
+        if(layout!=='bottom-only'){
+            const fw=ref.frontBox.w,fh=ref.frontBox.h;
+            let fx,fy;
+            if(layout==='left-right'){
+                fx=clamp(ref.frontBox.x/ref.w*im.w,0,im.w-fw);
+                fy=clamp((im.h-fh)/2,0,im.h-fh);
+            }else{
+                fx=clamp((im.w-fw)/2,0,im.w-fw);
+                fy=clamp(ref.frontBox.y/ref.h*im.h,0,im.h-fh);
+            }
+            im.frontBox={x:fx,y:fy,w:fw,h:fh};
+            im.resultF=exactCrop(im.img,im.frontBox);
+        }
+        const bw=ref.backBox.w,bh=ref.backBox.h;
+        let bx,by;
+        if(layout==='left-right'){
+            bx=clamp(ref.backBox.x/ref.w*im.w,0,im.w-bw);
+            by=clamp((im.h-bh)/2,0,im.h-bh);
+        }else{
+            bx=clamp((im.w-bw)/2,0,im.w-bw);
+            by=clamp(ref.backBox.y/ref.h*im.h,0,im.h-bh);
+        }
+        im.backBox={x:bx,y:by,w:bw,h:bh};
+        im.resultB=exactCrop(im.img,im.backBox);
+    }
+    renderImgList();
+    if(images[activeIdx])renderBoxes(images[activeIdx]);
+}
+
+/* ═════════════════════════════════════
+   CROP & DOWNLOAD
+═════════════════════════════════════ */
+async function cropAndDownload(){
+    // Ensure all are cropped
+    for(let i=0;i<images.length;i++){
+        const im=images[i];
+        if(!im.resultB){
+            if(!im.frontBox)initBoxes(im);
+            // Auto-position based on first image
+            const ref=images[0];
+            if(i>0){
+                if(layout!=='bottom-only'){
+                    im.frontBox={...ref.frontBox};
+                    im.frontBox.x=clamp((im.w-im.frontBox.w)/2,0,im.w-im.frontBox.w);
+                    im.frontBox.y=clamp(ref.frontBox.y/ref.h*im.h,0,im.h-im.frontBox.h);
+                }
+                im.backBox={...ref.backBox};
+                im.backBox.x=clamp(ref.backBox.x/ref.w*im.w,0,im.w-im.backBox.w);
+                im.backBox.y=clamp(ref.backBox.y/ref.h*im.h,0,im.h-im.backBox.h);
+            }
+            if(layout!=='bottom-only')im.resultF=exactCrop(im.img,im.frontBox);
+            im.resultB=exactCrop(im.img,im.backBox);
+        }
+    }
+
+    if(images.length===1&&layout!=='bottom-only'){
+        // Single image — direct download both
+        dlSingle(0,'front');
+        setTimeout(()=>dlSingle(0,'back'),500);
+        return;
+    }
+    if(images.length===1&&layout==='bottom-only'){
+        dlSingle(0,'back');return;
+    }
+
+    // Multiple — show results
+    showSection('processingSection');
+    setProgress(10,'Processing...','Preparing');
+    await tick();
+
+    setProgress(100,'Done!','');
+    await new Promise(r=>setTimeout(r,300));
+    showResults();
+}
+
+function showResults(){
+    const total=layout==='bottom-only'?images.length:images.length*2;
+    document.getElementById('resultSub').textContent=`${total} images from ${images.length} Aadhaar card${images.length>1?'s':''}`;
+    document.getElementById('resultStats').innerHTML=`
+        <div class="result-stat"><strong>${images.length}</strong><small>Cards</small></div>
+        <div class="result-stat"><strong>${total}</strong><small>Images</small></div>
+        <div class="result-stat"><strong>${images[0].resultB?.w||0}×${images[0].resultB?.h||0}</strong><small>Size</small></div>
+    `;
+
+    let html='';
+    images.forEach((im,i)=>{
+        const name=im.file.name.replace(/\.[^.]+$/,'');
+        html+=`<div class="mr-item">
+            <div class="mr-item-head"><i class="fas fa-id-card" style="color:#f97316"></i><span class="mr-name">${im.file.name}</span>
+                <span style="font-size:10px;color:var(--text-light)">${im.w}×${im.h}</span>
+            </div>
+            <div class="mr-item-body">
+                ${im.resultF?`<div class="r-card">
+                    <div class="r-card-head"><i class="fas fa-user" style="color:#22c55e"></i> Front<span class="r-badge fb">Front</span></div>
+                    <img src="${im.resultF.dataUrl}">
+                    <div class="r-card-foot"><div class="r-card-meta">${im.resultF.w}×${im.resultF.h}</div><button class="r-card-dl" onclick="dlSingle(${i},'front')"><i class="fas fa-download"></i></button></div>
+                </div>`:''}
+                <div class="r-card">
+                    <div class="r-card-head"><i class="fas fa-address-card" style="color:#3b82f6"></i> Back<span class="r-badge bb">Back</span></div>
+                    <img src="${im.resultB.dataUrl}">
+                    <div class="r-card-foot"><div class="r-card-meta">${im.resultB.w}×${im.resultB.h}</div><button class="r-card-dl" onclick="dlSingle(${i},'back')"><i class="fas fa-download"></i></button></div>
+                </div>
+            </div>
+        </div>`;
+    });
+    document.getElementById('multiResults').innerHTML=html;
+    showSection('resultSection');
+}
+
+/* ═════════════════════════════════════
+   DOWNLOAD
+═════════════════════════════════════ */
+function dlSingle(idx,side){
+    const im=images[idx];
+    const ext=document.getElementById('outFormat').value==='png'?'png':'jpg';
+    const base=im.file.name.replace(/\.[^.]+$/,'');
+    const data=side==='front'?im.resultF:im.resultB;
+    if(!data)return;
+    const a=document.createElement('a');a.href=data.dataUrl;
+    a.download=`${base}_${side}.${ext}`;
+    document.body.appendChild(a);a.click();setTimeout(()=>document.body.removeChild(a),200);
+}
+
+async function downloadZip(){
+    const zip=new JSZip();
+    const ext=document.getElementById('outFormat').value==='png'?'png':'jpg';
+    for(let i=0;i<images.length;i++){
+        const base=images[i].file.name.replace(/\.[^.]+$/,'');
+        if(images[i].resultF)zip.file(`${base}_front.${ext}`,dataUrlToBlob(images[i].resultF.dataUrl));
+        if(images[i].resultB)zip.file(`${base}_back.${ext}`,dataUrlToBlob(images[i].resultB.dataUrl));
+    }
+    const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='aadhaar_cropped.zip';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
+}
+
+function dataUrlToBlob(du){
+    const p=du.split(',');const m=p[0].match(/:(.*?);/)[1];
+    const b=atob(p[1]);const buf=new Uint8Array(b.length);
+    for(let i=0;i<b.length;i++)buf[i]=b.charCodeAt(i);
+    return new Blob([buf],{type:m});
+}
+
+/* ═════════════════════════════════════
+   NAV
+═════════════════════════════════════ */
+function navPrev(){if(activeIdx>0)selectImage(activeIdx-1)}
+function navNext(){if(activeIdx<images.length-1)selectImage(activeIdx+1)}
+function goBackEdit(){showSection('editorSection');renderImgList();if(images.length)selectImage(activeIdx)}
+function resetTool(){
+    images=[];activeIdx=0;layout='top-bottom';sizeLocked=true;
+    fileInput.value='';hideError();showSection('uploadSection');
+}
+
+document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+    if(e.key==='ArrowLeft')navPrev();if(e.key==='ArrowRight')navNext();
+});
+let rT;window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(()=>{if(images.length)selectImage(activeIdx)},300)});
+</script>
+</body>
+</html>
