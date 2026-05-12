@@ -3,188 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Coming Soon | PDFTools</title>
+    <title>Login | PDFTools</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/tool-page.css">
     <style>
         .page-wrap {
-            max-width: 480px;
+            max-width: 450px;
             margin: 0 auto;
-            padding: 25px 20px 60px;
+            padding: 40px 20px 80px;
             min-height: 80vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--primary, #6366f1);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            transition: color 0.2s;
-            position: absolute;
-            top: 90px;
-            left: 20px;
-        }
-        .back-btn:hover { color: #4f46e5; }
-
-        .login-hero {
+        .login-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
             text-align: center;
-            padding: 20px 20px 10px;
         }
-        .login-hero .hero-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #a855f7));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 18px;
-            font-size: 32px;
-            color: #fff;
-            box-shadow: 0 12px 35px rgba(99,102,241,0.3);
+
+        .login-header {
+            margin-bottom: 32px;
         }
-        .login-hero h1 {
+
+        .login-header h1 {
             font-size: 28px;
             font-weight: 800;
             margin-bottom: 8px;
+            color: #1e293b;
         }
-        .login-hero h1 span {
+
+        .login-header h1 span {
             background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #a855f7));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .login-hero p {
-            font-size: 14px;
+
+        .login-header p {
+            font-size: 15px;
             color: #64748b;
-            line-height: 1.6;
         }
 
-        .dev-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 16px;
-            background: rgba(34,197,94,0.08);
-            border: 1px solid rgba(34,197,94,0.2);
-            border-radius: 50px;
-            font-size: 12px;
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
             font-weight: 600;
-            color: #16a34a;
-            margin-top: 12px;
+            color: #475569;
+            margin-bottom: 8px;
+            margin-left: 4px;
         }
 
-        .coming-card {
-            background: rgba(255,255,255,0.55);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.55);
-            border-radius: 20px;
-            padding: 32px 24px;
-            margin-top: 22px;
-            text-align: center;
-            box-shadow: 0 12px 35px rgba(99,102,241,0.12);
+        .input-wrapper {
+            position: relative;
         }
 
-        .coming-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 16px;
         }
 
-        .coming-icon {
-            width: 68px;
-            height: 68px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(168,85,247,0.14));
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 15px;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary, #6366f1);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .forgot-pass {
+            display: block;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 600;
             color: var(--primary, #6366f1);
-            font-size: 28px;
+            text-decoration: none;
+            margin-top: -12px;
+            margin-bottom: 24px;
         }
 
-        .coming-content h2 {
-            font-size: 22px;
-            font-weight: 800;
-            color: #1e293b;
-            margin: 0;
-        }
-
-        .coming-content p {
-            font-size: 14px;
-            color: #64748b;
-            line-height: 1.7;
-            margin: 0;
-            max-width: 320px;
-        }
-
-        .home-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 6px;
-            padding: 13px 24px;
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
             background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #a855f7));
             color: #fff;
-            text-decoration: none;
-            border-radius: 12px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
-            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 24px;
         }
 
-        .home-btn:hover {
+        .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(99,102,241,0.35);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
         }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .feature-item {
+        .divider {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 16px;
+            margin-bottom: 24px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             padding: 12px;
-            background: rgba(255,255,255,0.5);
-            border: 1px solid rgba(255,255,255,0.6);
             border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .social-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .signup-prompt {
+            font-size: 14px;
             color: #64748b;
         }
 
-        .feature-item i {
+        .signup-prompt a {
             color: var(--primary, #6366f1);
-            font-size: 14px;
-            flex-shrink: 0;
+            font-weight: 700;
+            text-decoration: none;
         }
 
         @media (max-width: 480px) {
-            .coming-card { padding: 24px 18px; }
-            .login-hero h1 { font-size: 24px; }
-            .coming-content h2 { font-size: 20px; }
-            .features-grid { grid-template-columns: 1fr; }
+            .login-card { padding: 32px 20px; }
+            .login-header h1 { font-size: 24px; }
         }
     </style>
-</head>
-<body>
+    </head>
+    <body>
 
-<nav class="navbar glass">
+    <nav class="navbar glass">
     <a href="index.html" class="logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</a>
     <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
     <div class="nav-links" id="navLinks">
@@ -192,61 +201,74 @@
         <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
         <a href="login.html" class="nav-btn active"><i class="fas fa-user"></i> Login</a>
     </div>
-</nav>
+    </nav>
 
 
-<div class="page-wrap">
+    <div class="page-wrap">
 
-    <div class="login-hero">
-        <div class="hero-icon">
-            <i class="fas fa-clock"></i>
+    <div class="login-card">
+        <div class="login-header">
+            <h1 id="authTitle">Welcome <span>Back</span></h1>
+            <p id="authDesc">Log in to your account to continue</p>
         </div>
-        <h1><span>Coming Soon</span></h1>
-        <p>The login feature is currently under development and will be available soon.</p>
-        <div class="dev-badge">
-            <i class="fas fa-tools"></i>
-            Under Development
-        </div>
-    </div>
 
-    <div class="coming-card">
-        <div class="coming-content">
-            <div class="coming-icon">
-                <i class="fas fa-user-lock"></i>
+        <form id="loginForm" onsubmit="handleAuth(event)">
+            <div id="nameFields" style="display: none;">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="firstName" placeholder="John">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="lastName" placeholder="Doe">
+                    </div>
+                </div>
             </div>
 
-            <h2>Login Page Coming Soon</h2>
-            <p>
-                We are building a secure and smooth login experience for you. 
-                Please check back again soon.
-            </p>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="name@example.com" required>
+                </div>
+            </div>
 
-            <a href="index.html" class="home-btn">
-                <i class="fas fa-home"></i>
-                Go to Home
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <a href="#" class="forgot-pass" id="forgotPass">Forgot password?</a>
+
+            <button type="submit" class="login-btn" id="submitBtn">Sign In</button>
+        </form>
+
+        <div class="divider">or continue with</div>
+
+        <div class="social-login">
+            <a href="javascript:void(0)" class="social-btn" onclick="socialAuth('Google')">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                Google
             </a>
         </div>
 
-        <div class="features-grid">
-            <div class="feature-item">
-                <i class="fas fa-lock"></i> Secure Login
-            </div>
-            <div class="feature-item">
-                <i class="fab fa-google"></i> Google Sign-in
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-history"></i> Save History
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-cloud"></i> Cloud Storage
-            </div>
+        <div class="signup-prompt">
+            <span id="promptText">Don't have an account?</span> <a href="javascript:void(0)" id="toggleAuth" onclick="toggleAuthMode()">Sign up for free</a>
         </div>
-    </div>
+        </div>
 
-</div>
+        </div>
 
-<footer class="footer">
-    <div class="container">
+        <footer class="footer">
+        <div class="container">
         <div class="footer-simple">
             <div class="footer-logo"><i class="fas fa-file-pdf"></i><span>PDF</span>Tools</div>
             <p>&copy; 2025 PDFTools. All rights reserved.</p>
@@ -257,14 +279,94 @@
                 <a href="contact.html">Contact</a>
             </div>
         </div>
-    </div>
-</footer>
+        </div>
+        </footer>
 
-<script>
-    function toggleMobileMenu() {
-        document.getElementById('navLinks').classList.toggle('open');
-    }
-</script>
+        <script>
+        let isLogin = true;
 
+        function toggleMobileMenu() {
+        document.getElementById('navLinks').classList.toggle('active');
+        document.getElementById('hamburger').classList.toggle('active');
+        }
+
+        function toggleAuthMode() {
+        isLogin = !isLogin;
+        const title = document.getElementById('authTitle');
+        const desc = document.getElementById('authDesc');
+        const submitBtn = document.getElementById('submitBtn');
+        const promptText = document.getElementById('promptText');
+        const toggleBtn = document.getElementById('toggleAuth');
+        const forgotPass = document.getElementById('forgotPass');
+        const nameFields = document.getElementById('nameFields');
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+
+        if (isLogin) {
+            title.innerHTML = 'Welcome <span>Back</span>';
+            desc.innerText = 'Log in to your account to continue';
+            submitBtn.innerText = 'Sign In';
+            promptText.innerText = "Don't have an account?";
+            toggleBtn.innerText = 'Sign up for free';
+            forgotPass.style.display = 'block';
+            nameFields.style.display = 'none';
+            firstName.required = false;
+            lastName.required = false;
+        } else {
+            title.innerHTML = 'Create <span>Account</span>';
+            desc.innerText = 'Start managing your PDFs effectively';
+            submitBtn.innerText = 'Create Account';
+            promptText.innerText = 'Already have an account?';
+            toggleBtn.innerText = 'Log in here';
+            forgotPass.style.display = 'none';
+            nameFields.style.display = 'block';
+            firstName.required = true;
+            lastName.required = true;
+        }
+        }
+
+        function handleAuth(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Get all users from localStorage
+        let users = JSON.parse(localStorage.getItem('pdfToolsUsers')) || [];
+
+        if (isLogin) {
+            // LOGIN LOGIC
+            const user = users.find(u => u.email === email && u.password === password);
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                alert(`Welcome back, ${user.firstName}!`);
+                window.location.href = 'index.html';
+            } else {
+                alert('Invalid email or password. Please try again.');
+            }
+        } else {
+            // SIGNUP LOGIC
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+
+            // Check if user already exists
+            if (users.some(u => u.email === email)) {
+                alert('User with this email already exists!');
+                return;
+            }
+
+            const newUser = { firstName, lastName, email, password };
+            users.push(newUser);
+            localStorage.setItem('pdfToolsUsers', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+
+            alert('Account created successfully!');
+            window.location.href = 'index.html';
+        }
+        }
+
+        function socialAuth(provider) {
+        alert(`${provider} login is coming soon!`);
+        }
+        </script>
 </body>
 </html>

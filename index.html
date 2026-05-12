@@ -1228,7 +1228,32 @@
     // PDFTOOLS HOMEPAGE JS - OPTIMIZED
     // ==========================================
 
-    // Auto-update copyright year
+    // ===== USER AUTH CHECK =====
+    function checkUserAuth() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const navLoginBtn = document.getElementById('navLoginBtn');
+        const navLoginText = document.getElementById('navLoginText');
+
+        if (currentUser) {
+            // Update button to show name and change link to a logout action
+            navLoginText.textContent = currentUser.firstName;
+            navLoginBtn.href = 'javascript:void(0)';
+            navLoginBtn.onclick = function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    localStorage.removeItem('currentUser');
+                    window.location.reload();
+                }
+            };
+            
+            // Add a title for logout hint
+            navLoginBtn.title = 'Click to Logout';
+        }
+    }
+
+    // Call checkUserAuth on load
+    window.addEventListener('load', checkUserAuth);
+
+    // ===== FOOTER DATE =====
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
     // ===== MOBILE MENU =====
