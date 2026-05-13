@@ -2,22 +2,89 @@
 // PDF TOOLS - HOMEPAGE JS - FIXED & FAST
 // ==========================================
 
-// ========== MOBILE MENU ==========
+// ========== MOBILE MENU TOGGLE ==========
 function toggleMenu() {
-    var navLinks = document.getElementById('navLinks');
-    var hamburger = document.getElementById('hamburger');
-    navLinks.classList.toggle('active');
-    hamburger.classList.toggle('active');
-    document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+    const navLinks = document.getElementById("navLinks");
+    const hamburger = document.getElementById("hamburger");
+
+    const isOpen = navLinks.classList.toggle("active");
+    hamburger.classList.toggle("active");
+    hamburger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+    // Jyare menu close thay tyare badha dropdowns pan close karo
+    if (!isOpen) {
+        document.querySelectorAll(".ndrop").forEach(drop => {
+            drop.classList.remove("open");
+            const btn = drop.querySelector(".ndrop-btn");
+            if (btn) btn.setAttribute("aria-expanded", "false");
+        });
+    }
 }
 
-// Close menu on link click
-document.querySelectorAll('.nav-links a').forEach(function(link) {
-    link.addEventListener('click', function() {
-        document.getElementById('navLinks').classList.remove('active');
-        document.getElementById('hamburger').classList.remove('active');
-        document.body.style.overflow = '';
+// ========== DROPDOWN TOGGLE ==========
+function ddToggle(id) {
+    const current = document.getElementById(id);
+    const currentBtn = current.querySelector(".ndrop-btn");
+    const willOpen = !current.classList.contains("open");
+
+    // Pehla badha band karo
+    document.querySelectorAll(".ndrop").forEach(drop => {
+        drop.classList.remove("open");
+        const btn = drop.querySelector(".ndrop-btn");
+        if (btn) btn.setAttribute("aria-expanded", "false");
     });
+
+    // Selected open karo
+    if (willOpen) {
+        current.classList.add("open");
+        currentBtn.setAttribute("aria-expanded", "true");
+    }
+}
+
+// ========== OUTSIDE CLICK - DROPDOWN CLOSE ==========
+document.addEventListener("click", function(e) {
+    // Jo click navbar ni bahar che to badhu close karo
+    if (!e.target.closest(".ndrop") && !e.target.closest(".hamburger")) {
+        document.querySelectorAll(".ndrop").forEach(drop => {
+            drop.classList.remove("open");
+            const btn = drop.querySelector(".ndrop-btn");
+            if (btn) btn.setAttribute("aria-expanded", "false");
+        });
+    }
+});
+
+// ========== MOBILE MENU CLOSE ON LINK CLICK (Single listener - duplicates removed) ==========
+document.querySelectorAll("#navLinks a").forEach(link => {
+    link.addEventListener("click", function() {
+        if (window.innerWidth <= 768) {
+            const navLinks = document.getElementById("navLinks");
+            const hamburger = document.getElementById("hamburger");
+
+            navLinks.classList.remove("active");
+            hamburger.classList.remove("active");
+            hamburger.setAttribute("aria-expanded", "false");
+
+            document.querySelectorAll(".ndrop").forEach(drop => {
+                drop.classList.remove("open");
+                const btn = drop.querySelector(".ndrop-btn");
+                if (btn) btn.setAttribute("aria-expanded", "false");
+            });
+        }
+    });
+});
+
+// ========== WINDOW RESIZE - DESKTOP PAR MOBILE MENU CLOSE ==========
+window.addEventListener("resize", function() {
+    if (window.innerWidth > 768) {
+        const navLinks = document.getElementById("navLinks");
+        const hamburger = document.getElementById("hamburger");
+
+        if (navLinks) navLinks.classList.remove("active");
+        if (hamburger) {
+            hamburger.classList.remove("active");
+            hamburger.setAttribute("aria-expanded", "false");
+        }
+    }
 });
 
 // ========== SEARCH TOOLS ==========
@@ -66,13 +133,14 @@ function filterTools(category, btn) {
     btn.classList.add('active');
 
     // Clear search
-    document.getElementById('searchInput').value = '';
+    var searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = '';
 
     // Hide no results
     var noResults = document.getElementById('noResults');
     if (noResults) noResults.style.display = 'none';
 
-    // ✅ Simple show/hide - NO delay, NO animation lag
+    // Show/hide cards
     cards.forEach(function(card) {
         if (category === 'all' || card.getAttribute('data-category') === category) {
             card.style.display = '';
@@ -93,7 +161,7 @@ window.addEventListener('scroll', function() {
         navbar.style.background = 'rgba(255,255,255,0.25)';
         navbar.style.boxShadow = '0 4px 20px rgba(31,38,135,0.06)';
     }
-}, { passive: true }); // ✅ passive:true = smooth scroll
+}, { passive: true });
 
 // ========== KEYBOARD SHORTCUTS ==========
 document.addEventListener('keydown', function(e) {
@@ -103,20 +171,29 @@ document.addEventListener('keydown', function(e) {
         var searchInput = document.getElementById('searchInput');
         if (searchInput) searchInput.focus();
     }
-    // 'Escape' = close menu
+
+    // 'Escape' = close menu + dropdowns
     if (e.key === 'Escape') {
-        document.getElementById('navLinks').classList.remove('active');
-        document.getElementById('hamburger').classList.remove('active');
-        document.body.style.overflow = '';
+        const navLinks = document.getElementById('navLinks');
+        const hamburger = document.getElementById('hamburger');
+
+        if (navLinks) navLinks.classList.remove('active');
+        if (hamburger) {
+            hamburger.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+        }
+
+        document.querySelectorAll(".ndrop").forEach(drop => {
+            drop.classList.remove("open");
+            const btn = drop.querySelector(".ndrop-btn");
+            if (btn) btn.setAttribute("aria-expanded", "false");
+        });
     }
 });
 
-// ========== STATS - SIMPLE (No animation jank) ==========
-// ✅ Static numbers - no requestAnimationFrame loop
+// ========== READY ==========
 document.addEventListener('DOMContentLoaded', function() {
-    // Just show static values - already in HTML
     console.log('✅ PDFTools Homepage Ready');
 });
 
 console.log('✅ PDFTools script.js loaded');
-
