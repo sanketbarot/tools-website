@@ -1014,8 +1014,15 @@
 /* ════════════════════════════════════════
    FOOTER YEAR
 ════════════════════════════════════════ */
-document.getElementById('footerYear').textContent = new Date().getFullYear();
-
+(function() {
+    const year = new Date().getFullYear();
+    // બધા possible IDs try કરે
+    const ids = ['currentYear', 'footerYear', 'year', 'footer-year'];
+    ids.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = year;
+    });
+})();
 /* ════════════════════════════════════════
    PDF.js WORKER
 ════════════════════════════════════════ */

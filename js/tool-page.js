@@ -225,4 +225,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+(function() {
+    const year = new Date().getFullYear();
+    // બધા possible IDs try કરે
+    const ids = ['currentYear', 'footerYear', 'year', 'footer-year'];
+    ids.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = year;
+    });
+})();
+
 console.log('✅ tool-page.js loaded');
