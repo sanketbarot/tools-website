@@ -33,13 +33,56 @@
 .tool-area .ad-container {
     display: none !important;
 }
-.tools-grid .ad-container,
-.tool-cards-grid .ad-container,
-.tool-cards .ad-container {
-    grid-column: 1 / -1;
-    margin: 10px 0;
-    max-width: 100%;
+
+/* ════════════════════════════════════════
+   SIDEBAR ADS - Desktop Only
+════════════════════════════════════════ */
+.ad-sidebar {
+    position: fixed;
+    top: 100px;
+    width: 160px;
+    min-height: 600px;
+    z-index: 99;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px dashed rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(8px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
+
+.ad-sidebar-left {
+    left: 10px;
+}
+
+.ad-sidebar-right {
+    right: 10px;
+}
+
+/* Show only on large desktop screens */
+@media (min-width: 1200px) {
+    .ad-sidebar {
+        display: flex;
+    }
+}
+
+/* Hide on tablet & mobile */
+@media (max-width: 1199px) {
+    .ad-sidebar {
+        display: none !important;
+    }
+}
+
+/* Sidebar ad label */
+.ad-sidebar .ad-label {
+    margin-bottom: 6px;
+    font-size: 8px;
+}
+
+/* Mobile responsive */
 @media (max-width: 768px) {
     .ad-container {
         margin: 14px auto;
@@ -50,12 +93,11 @@
         padding: 8px;
         border-radius: 8px;
     }
-    .ad-label {
-        font-size: 8px;
-    }
 }
+
 @media print {
-    .ad-container {
+    .ad-container,
+    .ad-sidebar {
         display: none !important;
     }
 }
