@@ -235,4 +235,112 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })();
 
+/* ════════════════════════════════════════════════════
+   UNIVERSAL NAVBAR FUNCTIONS
+   Works for both Index & Tool pages
+════════════════════════════════════════════════════ */
+
+/* ── Main Toggle Function ── */
+function toggleNavMenu() {
+    const nav = document.getElementById('navLinks');
+    const ham = document.getElementById('hamburger');
+    if (!nav || !ham) return;
+    
+    const isOpen = nav.classList.toggle('open');
+    ham.classList.toggle('active', isOpen);
+    ham.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+
+    if (!isOpen) {
+        document.querySelectorAll('.ndrop').forEach(d => {
+            d.classList.remove('open');
+            const btn = d.querySelector('.ndrop-btn');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+    }
+}
+
+/* Make both function names work */
+window.toggleMenu = toggleNavMenu;
+window.toggleMobileMenu = toggleNavMenu;
+
+/* ── Dropdown Toggle ── */
+window.ddToggle = function(id) {
+    const dropdown = document.getElementById(id);
+    if (!dropdown) return;
+    
+    const isOpen = dropdown.classList.contains('open');
+    
+    // Close all other dropdowns
+    document.querySelectorAll('.ndrop').forEach(d => {
+        d.classList.remove('open');
+        const btn = d.querySelector('.ndrop-btn');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+    
+    // Toggle current
+    if (!isOpen) {
+        dropdown.classList.add('open');
+        const btn = dropdown.querySelector('.ndrop-btn');
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+    }
+};
+
+/* ── Close menu on Escape key ── */
+
+
+/* ── Close menu when clicking outside ── */
+document.addEventListener('click', function(e) {
+    const nav = document.getElementById('navLinks');
+    const ham = document.getElementById('hamburger');
+    
+    if (nav && ham && nav.classList.contains('open')) {
+        if (!nav.contains(e.target) && !ham.contains(e.target)) {
+            nav.classList.remove('open');
+            ham.classList.remove('active');
+            ham.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+    }
+    
+    document.querySelectorAll('.ndrop.open').forEach(d => {
+        if (!d.contains(e.target)) {
+            d.classList.remove('open');
+            const btn = d.querySelector('.ndrop-btn');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+});
+
+/* ── Close menu when clicking direct nav link ── */
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('#navLinks > a, .ndrop-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            const nav = document.getElementById('navLinks');
+            const ham = document.getElementById('hamburger');
+            if (nav) nav.classList.remove('open');
+            if (ham) {
+                ham.classList.remove('active');
+                ham.setAttribute('aria-expanded', 'false');
+            }
+            document.body.style.overflow = '';
+        });
+    });
+});
+
+/* ── Reset on window resize ── */
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+        const nav = document.getElementById('navLinks');
+        const ham = document.getElementById('hamburger');
+        if (nav) nav.classList.remove('open');
+        if (ham) {
+            ham.classList.remove('active');
+            ham.setAttribute('aria-expanded', 'false');
+        }
+        document.body.style.overflow = '';
+    }
+});
+
 console.log('✅ tool-page.js loaded');
