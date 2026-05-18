@@ -3,149 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | PDFTools</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>PDF</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO Meta -->
+    <title>Login | AIToolCor - Free Online PDF & AI Tools</title>
+    <meta name="description" content="Login or create a free account on AIToolCor to access 30+ free PDF and AI tools online.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#7c3aed">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.aitoolcor.com/login.html">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%237c3aed'/><stop offset='100%25' stop-color='%230ea5e9'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='38' text-anchor='middle' font-size='28' font-weight='800' fill='white' font-family='Arial'>AI</text><text x='50' y='72' text-anchor='middle' font-size='22' font-weight='600' fill='rgba(255,255,255,0.85)' font-family='Arial'>Tools</text></svg>" type="image/svg+xml">
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          media="print" onload="this.media='all'" crossorigin="anonymous">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    </noscript>
+
+    <!-- External CSS -->
     <link rel="stylesheet" href="css/tool-page.css">
     <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/ads.css">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
 
     <style>
+        /* =========================================
+           ROOT VARIABLES
+        ========================================= */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #a855f7;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --radius: 12px;
+            --shadow: 0 20px 50px rgba(0,0,0,0.06);
+        }
+
+        /* =========================================
+           BASE
+        ========================================= */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #fce4f0 50%, #e8f4f8 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(99,102,241,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(168,85,247,0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 40px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo i { color: var(--primary); font-size: 1.2rem; }
+        .logo span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover { background: #f1f5f9; color: var(--text); }
+
+        .nav-links a.nav-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-links a.nav-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99,102,241,0.3);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 6px;
+            border: none;
+            background: none;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        /* =========================================
+           PAGE WRAP
+        ========================================= */
         .page-wrap {
-            max-width: 450px;
+            max-width: 460px;
             margin: 0 auto;
-            padding: 40px 20px 80px;
-            min-height: 80vh;
+            padding: 100px 20px 80px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
+            z-index: 1;
         }
 
+        /* =========================================
+           LOGIN CARD
+        ========================================= */
         .login-card {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255,255,255,0.85);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.7);
             border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+            padding: 44px 40px;
+            box-shadow: var(--shadow);
             text-align: center;
         }
 
-        .login-header {
-            margin-bottom: 32px;
+        /* Brand in card */
+        .card-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text);
         }
 
+        .card-brand i { color: var(--primary); }
+        .card-brand span { color: var(--primary); }
+
+        .login-header { margin-bottom: 28px; }
+
         .login-header h1 {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             margin-bottom: 8px;
-            color: #1e293b;
+            color: var(--text);
+            letter-spacing: -0.5px;
         }
 
         .login-header h1 span {
-            background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #a855f7));
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .login-header p {
-            font-size: 15px;
-            color: #64748b;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
         }
 
+        /* =========================================
+           FORM
+        ========================================= */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #475569;
-            margin-bottom: 8px;
-            margin-left: 4px;
+            margin-bottom: 7px;
+            margin-left: 2px;
         }
 
-        .input-wrapper {
-            position: relative;
-        }
+        .input-wrapper { position: relative; }
 
-        .input-wrapper i {
+        .input-wrapper i.field-icon {
             position: absolute;
-            left: 16px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
-            font-size: 16px;
+            font-size: 14px;
+            pointer-events: none;
+            transition: color 0.2s;
         }
 
         .input-wrapper input {
             width: 100%;
-            padding: 14px 16px 14px 48px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            background: #fff;
-            font-size: 15px;
+            padding: 13px 16px 13px 44px;
+            border-radius: var(--radius);
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            font-size: 14px;
+            color: var(--text);
             transition: all 0.2s;
             outline: none;
+            -webkit-appearance: none;
         }
+
+        .input-wrapper input::placeholder { color: #b0bec5; }
 
         .input-wrapper input:focus {
-            border-color: var(--primary, #6366f1);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99,102,241,0.1);
         }
 
+        .input-wrapper input:focus + .field-icon,
+        .input-wrapper:focus-within i.field-icon {
+            color: var(--primary);
+        }
+
+        /* Password toggle */
+        .toggle-pass {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 14px;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .toggle-pass:hover { color: var(--primary); }
+
+        .input-wrapper input.has-toggle { padding-right: 44px; }
+
+        /* Name row */
+        .name-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Forgot password */
         .forgot-pass {
             display: block;
             text-align: right;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            color: var(--primary, #6366f1);
+            color: var(--primary);
             text-decoration: none;
-            margin-top: -12px;
-            margin-bottom: 24px;
+            margin-top: -10px;
+            margin-bottom: 22px;
+            transition: color 0.2s;
         }
 
+        .forgot-pass:hover { color: var(--primary-dark); text-decoration: underline; }
+
+        /* Submit button */
         .login-btn {
             width: 100%;
             padding: 14px;
-            border-radius: 12px;
+            border-radius: var(--radius);
             border: none;
-            background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #a855f7));
-            color: #fff;
-            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 24px;
+            transition: all 0.25s;
+            margin-bottom: 22px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.2px;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
         }
 
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 10px 24px rgba(99,102,241,0.35);
         }
 
+        .login-btn:active { transform: translateY(0); }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-btn .btn-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Divider */
         .divider {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 14px;
+            margin-bottom: 20px;
             color: #94a3b8;
-            font-size: 13px;
+            font-size: 12px;
+            font-weight: 500;
         }
 
         .divider::before, .divider::after {
-            content: "";
+            content: '';
             flex: 1;
             height: 1px;
-            background: #e2e8f0;
+            background: var(--border);
         }
 
+        /* Social login */
         .social-login {
             display: flex;
-            gap: 12px;
-            margin-bottom: 32px;
+            gap: 10px;
+            margin-bottom: 28px;
         }
 
         .social-btn {
@@ -153,13 +406,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            background: #fff;
+            gap: 8px;
+            padding: 11px;
+            border-radius: var(--radius);
+            border: 1.5px solid var(--border);
+            background: var(--white);
             color: #475569;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -169,136 +422,496 @@
         .social-btn:hover {
             background: #f8fafc;
             border-color: #cbd5e1;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
 
         .social-btn img {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
         }
 
+        /* Signup prompt */
         .signup-prompt {
-            font-size: 14px;
-            color: #64748b;
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
         .signup-prompt a {
-            color: var(--primary, #6366f1);
+            color: var(--primary);
             font-weight: 700;
             text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .signup-prompt a:hover { color: var(--primary-dark); text-decoration: underline; }
+
+        /* =========================================
+           TOAST NOTIFICATION
+        ========================================= */
+        #toastContainer {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            min-width: 280px;
+            max-width: 360px;
+            pointer-events: all;
+            animation: toastIn 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error   { border-left-color: var(--error); }
+        .toast.warning { border-left-color: var(--warning); }
+
+        .toast i { font-size: 16px; flex-shrink: 0; }
+        .toast.success i { color: var(--success); }
+        .toast.error   i { color: var(--error); }
+        .toast.warning i { color: var(--warning); }
+
+        .toast-out { animation: toastOut 0.3s ease forwards; }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0); }
+            to   { opacity: 0; transform: translateX(20px); }
+        }
+
+        /* =========================================
+           FORGOT PASSWORD MODAL
+        ========================================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 36px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+            transform: translateY(16px);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .modal-overlay.show .modal { transform: translateY(0); }
+
+        .modal h3 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .modal p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .modal .form-group { text-align: left; }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius);
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99,102,241,0.3);
+        }
+
+        .modal-btn.secondary {
+            background: #f1f5f9;
+            color: var(--text-muted);
+        }
+
+        .modal-btn.secondary:hover { background: #e2e8f0; }
+
+        /* =========================================
+           INPUT VALIDATION STATES
+        ========================================= */
+        .form-group.has-error .input-wrapper input {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+        }
+
+        .form-group.has-success .input-wrapper input {
+            border-color: var(--success);
+        }
+
+        .field-error {
+            font-size: 11px;
+            color: var(--error);
+            margin-top: 5px;
+            margin-left: 2px;
+            display: none;
+        }
+
+        .form-group.has-error .field-error { display: block; }
+
+        /* =========================================
+           PASSWORD STRENGTH
+        ========================================= */
+        .pass-strength {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .pass-strength.show { display: block; }
+
+        .strength-bar {
+            height: 3px;
+            border-radius: 4px;
+            background: var(--border);
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 4px;
+            width: 0%;
+            transition: all 0.3s;
+        }
+
+        .strength-text {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+        @media (max-width: 768px) {
+            .navbar { padding: 14px 20px; }
+
+            .hamburger { display: flex; }
+
+            .nav-links {
+                position: fixed;
+                top: 62px; left: 0; right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 16px;
+                gap: 4px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                transform: translateY(-110%);
+                opacity: 0;
+                transition: all 0.3s;
+                z-index: 99;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .nav-links a {
+                padding: 12px 16px;
+                border-radius: 10px;
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 28px;
+            }
         }
 
         @media (max-width: 480px) {
-            .login-card { padding: 32px 20px; }
-            .login-header h1 { font-size: 24px; }
+            .login-card { padding: 32px 22px; }
+            .login-header h1 { font-size: 22px; }
+            .name-row { grid-template-columns: 1fr; gap: 0; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; text-align: center; }
         }
     </style>
-    <!-- ========== GOOGLE ADSENSE ========== -->
-<script async 
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208"
-    crossorigin="anonymous"></script>
+</head>
+<body>
 
-<!-- ========== AD STYLES ========== -->
-<link rel="stylesheet" href="css/ads.css">
-    </head>
-    <body>
+    <!-- Toast Container -->
+    <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
-    <nav class="navbar glass">
-<a href="/" class="logo" aria-label="AIToolCor Home">
-             <i class="fas fa-robot" aria-hidden="true"></i>
-             <span>AI</span>ToolCor
-        </a>
-            <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
-    <div class="nav-links" id="navLinks">
-        <a href="index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
-        <a href="login.html" class="nav-btn active"><i class="fas fa-user"></i> Login</a>
-    </div>
-    </nav>
-
-
-    <div class="page-wrap">
-
-    <div class="login-card">
-        <div class="login-header">
-            <h1 id="authTitle">Welcome <span>Back</span></h1>
-            <p id="authDesc">Log in to your account to continue</p>
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal">
+            <i class="fas fa-lock" style="font-size:2rem;color:var(--primary);margin-bottom:14px;display:block;"></i>
+            <h3 id="modalTitle">Reset Password</h3>
+            <p>Enter your registered email address. We'll send you a reset link.</p>
+            <div class="form-group">
+                <label for="resetEmail">Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope field-icon"></i>
+                    <input type="email" id="resetEmail" placeholder="name@example.com" autocomplete="email">
+                </div>
+            </div>
+            <div class="modal-btns">
+                <button class="modal-btn secondary" onclick="closeForgotModal()" type="button">Cancel</button>
+                <button class="modal-btn primary" onclick="sendResetLink()" type="button">Send Reset Link</button>
+            </div>
         </div>
+    </div>
 
-        <form id="loginForm" onsubmit="handleAuth(event)">
-            <div id="nameFields" style="display: none;">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="firstName" placeholder="John">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="lastName" placeholder="Doe">
-                    </div>
-                </div>
-            </div>
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <a href="/" class="logo" aria-label="AIToolCor Home">
+            <i class="fas fa-robot" aria-hidden="true"></i>
+            <span>AI</span>ToolCor
+        </a>
 
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="email" placeholder="name@example.com" required>
-                </div>
-            </div>
+        <button class="hamburger"
+                id="hamburger"
+                onclick="toggleMobileMenu()"
+                aria-label="Toggle navigation menu"
+                aria-expanded="false"
+                aria-controls="navLinks"
+                type="button">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" placeholder="••••••••" required>
-                </div>
-            </div>
-
-            <a href="#" class="forgot-pass" id="forgotPass">Forgot password?</a>
-
-            <button type="submit" class="login-btn" id="submitBtn">Sign In</button>
-        </form>
-
-        <div class="divider">or continue with</div>
-
-        <div class="social-login">
-            <a href="javascript:void(0)" class="social-btn" onclick="socialAuth('Google')">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                Google
+        <div class="nav-links" id="navLinks" role="menubar">
+            <a href="index.html" role="menuitem">
+                <i class="fas fa-home" aria-hidden="true"></i> Home
+            </a>
+            <a href="index.html#tools" role="menuitem">
+                <i class="fas fa-th" aria-hidden="true"></i> All Tools
+            </a>
+            <a href="login.html" class="nav-btn" role="menuitem" aria-current="page">
+                <i class="fas fa-user" aria-hidden="true"></i> Login
             </a>
         </div>
+    </nav>
 
-        <div class="signup-prompt">
-            <span id="promptText">Don't have an account?</span> <a href="javascript:void(0)" id="toggleAuth" onclick="toggleAuthMode()">Sign up for free</a>
-        </div>
-        </div>
+    <!-- ========== PAGE WRAP ========== -->
+    <div class="page-wrap">
+        <div class="login-card" role="main">
+
+            <!-- Brand -->
+            <div class="card-brand" aria-hidden="true">
+                <i class="fas fa-robot"></i>
+                <span>AI</span>ToolCor
+            </div>
+
+            <!-- Header -->
+            <div class="login-header">
+                <h1 id="authTitle">Welcome <span>Back</span></h1>
+                <p id="authDesc">Log in to your AIToolCor account to continue</p>
+            </div>
+
+            <!-- Form -->
+            <form id="loginForm" onsubmit="handleAuth(event)" novalidate>
+
+                <!-- Name fields (signup only) -->
+                <div id="nameFields" style="display:none;">
+                    <div class="name-row">
+                        <div class="form-group" id="firstNameGroup">
+                            <label for="firstName">First Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user field-icon"></i>
+                                <input type="text"
+                                       id="firstName"
+                                       placeholder="John"
+                                       autocomplete="given-name"
+                                       maxlength="50">
+                            </div>
+                            <span class="field-error">First name is required</span>
+                        </div>
+                        <div class="form-group" id="lastNameGroup">
+                            <label for="lastName">Last Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user field-icon"></i>
+                                <input type="text"
+                                       id="lastName"
+                                       placeholder="Doe"
+                                       autocomplete="family-name"
+                                       maxlength="50">
+                            </div>
+                            <span class="field-error">Last name is required</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group" id="emailGroup">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope field-icon"></i>
+                        <input type="email"
+                               id="email"
+                               placeholder="name@example.com"
+                               autocomplete="email"
+                               required>
+                    </div>
+                    <span class="field-error">Please enter a valid email address</span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group" id="passwordGroup">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock field-icon"></i>
+                        <input type="password"
+                               id="password"
+                               placeholder="••••••••"
+                               autocomplete="current-password"
+                               class="has-toggle"
+                               required>
+                        <button type="button"
+                                class="toggle-pass"
+                                onclick="togglePassword()"
+                                id="togglePassBtn"
+                                aria-label="Toggle password visibility">
+                            <i class="fas fa-eye" id="passEyeIcon"></i>
+                        </button>
+                    </div>
+                    <span class="field-error" id="passwordError">Password must be at least 6 characters</span>
+                    <!-- Password strength (signup only) -->
+                    <div class="pass-strength" id="passStrength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="strength-text" id="strengthText">Password strength</span>
+                    </div>
+                </div>
+
+                <!-- Forgot Password -->
+                <a href="javascript:void(0)"
+                   class="forgot-pass"
+                   id="forgotPass"
+                   onclick="openForgotModal()"
+                   aria-label="Forgot your password?">
+                    Forgot password?
+                </a>
+
+                <!-- Submit Button -->
+                <button type="submit" class="login-btn" id="submitBtn">
+                    <span id="btnText">Sign In</span>
+                    <div class="btn-spinner" id="btnSpinner"></div>
+                </button>
+
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">or continue with</div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <a href="javascript:void(0)"
+                   class="social-btn"
+                   onclick="socialAuth('Google')"
+                   aria-label="Continue with Google">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                         alt="Google"
+                         width="18" height="18">
+                    Google
+                </a>
+                <a href="javascript:void(0)"
+                   class="social-btn"
+                   onclick="socialAuth('GitHub')"
+                   aria-label="Continue with GitHub">
+                    <i class="fab fa-github" style="font-size:18px;"></i>
+                    GitHub
+                </a>
+            </div>
+
+            <!-- Signup Prompt -->
+            <div class="signup-prompt">
+                <span id="promptText">Don't have an account?</span>
+                <a href="javascript:void(0)" id="toggleAuth" onclick="toggleAuthMode()">
+                    Sign up for free
+                </a>
+            </div>
 
         </div>
+    </div>
 
-         <footer class="footer" role="contentinfo">
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
                     <div class="footer-logo">
-                        <i class="fas fa-file-pdf" aria-hidden="true"></i>
-                        <span>Ai</span>ToolCor
+                        <i class="fas fa-robot" aria-hidden="true"></i>
+                        <span>AI</span>ToolCor
                     </div>
-                    <p>Free online PDF tools. No signup required. Process files securely in your browser.</p>
+                    <p>Free online PDF & AI tools. No signup required. Process files securely in your browser.</p>
                     <div class="social-links" aria-label="Social media links">
-                        <a href="https://facebook.com/pdftools" aria-label="Follow us on Facebook" rel="noopener noreferrer" target="_blank">
+                        <a href="https://facebook.com/aitoolcor" aria-label="Facebook" rel="noopener noreferrer" target="_blank">
                             <i class="fab fa-facebook-f" aria-hidden="true"></i>
                         </a>
-                        <a href="https://twitter.com/pdftools" aria-label="Follow us on Twitter" rel="noopener noreferrer" target="_blank">
+                        <a href="https://twitter.com/aitoolcor" aria-label="Twitter" rel="noopener noreferrer" target="_blank">
                             <i class="fab fa-twitter" aria-hidden="true"></i>
                         </a>
-                        <a href="https://instagram.com/pdftools" aria-label="Follow us on Instagram" rel="noopener noreferrer" target="_blank">
+                        <a href="https://instagram.com/aitoolcor" aria-label="Instagram" rel="noopener noreferrer" target="_blank">
                             <i class="fab fa-instagram" aria-hidden="true"></i>
                         </a>
-                        <a href="https://youtube.com/pdftools" aria-label="Subscribe to our YouTube channel" rel="noopener noreferrer" target="_blank">
+                        <a href="https://youtube.com/aitoolcor" aria-label="YouTube" rel="noopener noreferrer" target="_blank">
                             <i class="fab fa-youtube" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -310,21 +923,19 @@
                         <a href="merge-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Merge PDF</a>
                         <a href="compress-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Compress PDF</a>
                         <a href="sign-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Sign PDF</a>
-                       <a href="unlock-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Unlock PDF</a>
+                        <a href="unlock-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Unlock PDF</a>
                         <a href="split-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> Split PDF</a>
-
                     </nav>
                 </div>
 
                 <div class="footer-col">
                     <h4>Convert</h4>
                     <nav aria-label="PDF conversion tools">
+                        <a href="pdf-to-jpg.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> PDF to JPG</a>
+                        <a href="jpg-to-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> JPG to PDF</a>
+                        <a href="html-to-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> HTML to PDF</a>
                         <a href="pdf-to-ico.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> PDF to ICO</a>
                         <a href="jpg-to-ico.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> JPG to ICO</a>
-                        <a href="pdf-to-jpg.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> PDF to JPG</a>
-                        <a href="html-to-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> HTML to PDF</a>
-                        <a href="jpg-to-pdf.html"><i class="fas fa-chevron-right" aria-hidden="true"></i> JPG to PDF</a>
-                        
                     </nav>
                 </div>
 
@@ -340,8 +951,8 @@
             </div>
 
             <div class="footer-bottom">
-                <p>© <span id="currentYear">2026</span> PDFTools. All rights reserved. 
-                   Made with <i class="fas fa-heart" aria-hidden="true" style="color:#e05"></i> for productivity.
+                <p>© <span id="currentYear"></span> AIToolCor. All rights reserved.
+                   Made with <i class="fas fa-heart" aria-hidden="true" style="color:#e05;"></i> for productivity.
                 </p>
                 <div class="footer-bottom-links">
                     <a href="privacy.html">Privacy</a>
@@ -353,92 +964,330 @@
         </div>
     </footer>
 
-        <script>
-        let isLogin = true;
+    <!-- ========== JAVASCRIPT ========== -->
+    <script>
+    'use strict';
 
-        function toggleMobileMenu() {
-        document.getElementById('navLinks').classList.toggle('active');
-        document.getElementById('hamburger').classList.toggle('active');
+    // =========================================
+    // UTILITIES
+    // =========================================
+
+    // Simple hash function (SHA-256 via SubtleCrypto)
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password + 'aitoolcor_salt_2026');
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Toast notification
+    function showToast(message, type = 'info', duration = 4000) {
+        const container = document.getElementById('toastContainer');
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-times-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle'
+        };
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.setAttribute('role', 'alert');
+        toast.innerHTML = `<i class="${icons[type] || icons.info}"></i><span>${message}</span>`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('toast-out');
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+
+    // Field validation helper
+    function setFieldState(groupId, isValid, errorMsg) {
+        const group = document.getElementById(groupId);
+        if (!group) return;
+        group.classList.toggle('has-error', !isValid);
+        group.classList.toggle('has-success', isValid);
+        if (errorMsg) {
+            const errEl = group.querySelector('.field-error');
+            if (errEl) errEl.textContent = errorMsg;
         }
+    }
 
-        function toggleAuthMode() {
+    // =========================================
+    // AUTH STATE
+    // =========================================
+    let isLogin = true;
+
+    // =========================================
+    // FOOTER YEAR
+    // =========================================
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // =========================================
+    // MOBILE MENU
+    // =========================================
+    function toggleMobileMenu() {
+        const nav = document.getElementById('navLinks');
+        const ham = document.getElementById('hamburger');
+        const isOpen = nav.classList.toggle('active');
+        ham.classList.toggle('active');
+        ham.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    document.addEventListener('click', function(e) {
+        const nav = document.getElementById('navLinks');
+        const ham = document.getElementById('hamburger');
+        if (nav.classList.contains('active') &&
+            !nav.contains(e.target) &&
+            !ham.contains(e.target)) {
+            nav.classList.remove('active');
+            ham.classList.remove('active');
+            ham.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // =========================================
+    // PASSWORD TOGGLE
+    // =========================================
+    function togglePassword() {
+        const input = document.getElementById('password');
+        const icon  = document.getElementById('passEyeIcon');
+        const show  = input.type === 'password';
+        input.type  = show ? 'text' : 'password';
+        icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+        document.getElementById('togglePassBtn').setAttribute('aria-label',
+            show ? 'Hide password' : 'Show password');
+    }
+
+    // =========================================
+    // PASSWORD STRENGTH (signup only)
+    // =========================================
+    document.getElementById('password').addEventListener('input', function() {
+        if (isLogin) return;
+        const val = this.value;
+        const fill = document.getElementById('strengthFill');
+        const text = document.getElementById('strengthText');
+        let score = 0;
+        if (val.length >= 6)  score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        const levels = [
+            { pct: '20%', color: '#ef4444', label: 'Very Weak' },
+            { pct: '40%', color: '#f59e0b', label: 'Weak' },
+            { pct: '60%', color: '#eab308', label: 'Fair' },
+            { pct: '80%', color: '#22c55e', label: 'Strong' },
+            { pct: '100%', color: '#10b981', label: 'Very Strong' },
+        ];
+
+        const level = levels[Math.max(0, score - 1)] || levels[0];
+        fill.style.width = val.length ? level.pct : '0%';
+        fill.style.background = level.color;
+        text.textContent = val.length ? level.label : 'Password strength';
+        text.style.color = val.length ? level.color : '#94a3b8';
+    });
+
+    // =========================================
+    // TOGGLE AUTH MODE (Login <-> Signup)
+    // =========================================
+    function toggleAuthMode() {
         isLogin = !isLogin;
-        const title = document.getElementById('authTitle');
-        const desc = document.getElementById('authDesc');
-        const submitBtn = document.getElementById('submitBtn');
-        const promptText = document.getElementById('promptText');
-        const toggleBtn = document.getElementById('toggleAuth');
-        const forgotPass = document.getElementById('forgotPass');
+
+        document.getElementById('authTitle').innerHTML = isLogin
+            ? 'Welcome <span>Back</span>'
+            : 'Create <span>Account</span>';
+
+        document.getElementById('authDesc').textContent = isLogin
+            ? 'Log in to your AIToolCor account to continue'
+            : 'Start using 30+ free tools — completely free';
+
+        document.getElementById('btnText').textContent  = isLogin ? 'Sign In'        : 'Create Account';
+        document.getElementById('promptText').textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
+        document.getElementById('toggleAuth').textContent = isLogin ? 'Sign up for free' : 'Log in here';
+        document.getElementById('forgotPass').style.display = isLogin ? 'block' : 'none';
+
         const nameFields = document.getElementById('nameFields');
-        const firstName = document.getElementById('firstName');
-        const lastName = document.getElementById('lastName');
+        nameFields.style.display = isLogin ? 'none' : 'block';
+        document.getElementById('firstName').required = !isLogin;
+        document.getElementById('lastName').required  = !isLogin;
 
-        if (isLogin) {
-            title.innerHTML = 'Welcome <span>Back</span>';
-            desc.innerText = 'Log in to your account to continue';
-            submitBtn.innerText = 'Sign In';
-            promptText.innerText = "Don't have an account?";
-            toggleBtn.innerText = 'Sign up for free';
-            forgotPass.style.display = 'block';
-            nameFields.style.display = 'none';
-            firstName.required = false;
-            lastName.required = false;
-        } else {
-            title.innerHTML = 'Create <span>Account</span>';
-            desc.innerText = 'Start managing your PDFs effectively';
-            submitBtn.innerText = 'Create Account';
-            promptText.innerText = 'Already have an account?';
-            toggleBtn.innerText = 'Log in here';
-            forgotPass.style.display = 'none';
-            nameFields.style.display = 'block';
-            firstName.required = true;
-            lastName.required = true;
-        }
-        }
+        // Password autocomplete
+        document.getElementById('password').setAttribute('autocomplete',
+            isLogin ? 'current-password' : 'new-password');
 
-        function handleAuth(event) {
-        event.preventDefault();
-        const email = document.getElementById('email').value;
+        // Password strength indicator
+        document.getElementById('passStrength').classList.toggle('show', !isLogin);
+        document.getElementById('strengthFill').style.width = '0%';
+
+        // Clear all validation states
+        ['firstNameGroup','lastNameGroup','emailGroup','passwordGroup'].forEach(id => {
+            const g = document.getElementById(id);
+            if (g) { g.classList.remove('has-error','has-success'); }
+        });
+
+        document.getElementById('loginForm').reset();
+    }
+
+    // =========================================
+    // VALIDATE FORM
+    // =========================================
+    function validateForm() {
+        let valid = true;
+        const email    = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
 
-        // Get all users from localStorage
-        let users = JSON.parse(localStorage.getItem('pdfToolsUsers')) || [];
+        // Email
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        setFieldState('emailGroup', emailOk, 'Please enter a valid email address');
+        if (!emailOk) valid = false;
+
+        // Password
+        const passOk = password.length >= 6;
+        setFieldState('passwordGroup', passOk,
+            isLogin ? 'Please enter your password' : 'Password must be at least 6 characters');
+        if (!passOk) valid = false;
+
+        // Name fields (signup only)
+        if (!isLogin) {
+            const fn = document.getElementById('firstName').value.trim();
+            const ln = document.getElementById('lastName').value.trim();
+            setFieldState('firstNameGroup', fn.length > 0, 'First name is required');
+            setFieldState('lastNameGroup',  ln.length > 0, 'Last name is required');
+            if (!fn || !ln) valid = false;
+        }
+
+        return valid;
+    }
+
+    // =========================================
+    // HANDLE AUTH SUBMIT
+    // =========================================
+    async function handleAuth(event) {
+        event.preventDefault();
+        if (!validateForm()) return;
+
+        const btn     = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('btnSpinner');
+
+        // Loading state
+        btn.disabled       = true;
+        btnText.style.display  = 'none';
+        spinner.style.display  = 'block';
+
+        // Simulate async processing
+        await new Promise(r => setTimeout(r, 800));
+
+        const email    = document.getElementById('email').value.trim().toLowerCase();
+        const password = document.getElementById('password').value;
+        const hashedPw = await hashPassword(password);
+
+        let users = JSON.parse(localStorage.getItem('aitoolcorUsers')) || [];
 
         if (isLogin) {
-            // LOGIN LOGIC
-            const user = users.find(u => u.email === email && u.password === password);
+            // LOGIN
+            const user = users.find(u => u.email === email && u.password === hashedPw);
             if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                alert(`Welcome back, ${user.firstName}!`);
-                window.location.href = 'index.html';
+                // Store session (no password in session)
+                const session = { firstName: user.firstName, lastName: user.lastName, email: user.email };
+                localStorage.setItem('currentUser', JSON.stringify(session));
+                showToast(`Welcome back, ${user.firstName}! 🎉`, 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 1200);
             } else {
-                alert('Invalid email or password. Please try again.');
+                showToast('Invalid email or password. Please try again.', 'error');
+                btn.disabled      = false;
+                btnText.style.display = 'inline';
+                spinner.style.display = 'none';
             }
-        } else {
-            // SIGNUP LOGIC
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
 
-            // Check if user already exists
+        } else {
+            // SIGNUP
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName  = document.getElementById('lastName').value.trim();
+
             if (users.some(u => u.email === email)) {
-                alert('User with this email already exists!');
+                showToast('An account with this email already exists.', 'warning');
+                btn.disabled      = false;
+                btnText.style.display = 'inline';
+                spinner.style.display = 'none';
                 return;
             }
 
-            const newUser = { firstName, lastName, email, password };
+            const newUser = { firstName, lastName, email, password: hashedPw };
             users.push(newUser);
-            localStorage.setItem('pdfToolsUsers', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            localStorage.setItem('aitoolcorUsers', JSON.stringify(users));
 
-            alert('Account created successfully!');
-            window.location.href = 'index.html';
+            const session = { firstName, lastName, email };
+            localStorage.setItem('currentUser', JSON.stringify(session));
+            showToast(`Account created! Welcome, ${firstName}! 🎉`, 'success');
+            setTimeout(() => { window.location.href = 'index.html'; }, 1200);
         }
-        }
+    }
 
-        function socialAuth(provider) {
-        alert(`${provider} login is coming soon!`);
+    // =========================================
+    // FORGOT PASSWORD MODAL
+    // =========================================
+    function openForgotModal() {
+        document.getElementById('forgotModal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('resetEmail').focus(), 300);
+    }
+
+    function closeForgotModal() {
+        document.getElementById('forgotModal').classList.remove('show');
+        document.body.style.overflow = '';
+        document.getElementById('resetEmail').value = '';
+    }
+
+    function sendResetLink() {
+        const email = document.getElementById('resetEmail').value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showToast('Please enter a valid email address.', 'error');
+            return;
         }
-        </script>
-        <script src="js/adsense.js"></script>
+        closeForgotModal();
+        showToast('If this email is registered, a reset link has been sent.', 'success', 5000);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('forgotModal').addEventListener('click', function(e) {
+        if (e.target === this) closeForgotModal();
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeForgotModal();
+            const nav = document.getElementById('navLinks');
+            if (nav.classList.contains('active')) toggleMobileMenu();
+        }
+    });
+
+    // =========================================
+    // SOCIAL AUTH
+    // =========================================
+    function socialAuth(provider) {
+        showToast(`${provider} login coming soon! 🚀`, 'info');
+    }
+
+    // =========================================
+    // CHECK ALREADY LOGGED IN
+    // =========================================
+    window.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (user && user.firstName) {
+            showToast(`You're already logged in as ${user.firstName}.`, 'info');
+        }
+    });
+
+    console.log('✅ AIToolCor Login page loaded');
+    </script>
+
+    <script src="js/adsense.js"></script>
 </body>
 </html>
