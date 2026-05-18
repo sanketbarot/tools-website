@@ -19,27 +19,28 @@ const CONFIG = {
     siteUrl: 'https://www.aitoolcor.com',
     sitemapFile: 'sitemap.xml',
     
-    // કયા folders માં HTML files છે
+    // ✅ Tamara actual folders
     scanFolders: [
-        '.',                          // Root folder
-        'tools/calculators',
-        'tools/text',
-        'tools/image',
-        'tools/developer'
+        '.',                           // Root - compress-pdf.html etc.
+        'tools/calculators',           // Age calc, BMI etc.
+        'tools/text',                  // Word counter etc.
+        'tools/image',                 // QR generator etc.
+        'tools/developer'              // Password generator etc.
     ],
     
-    // કઈ files skip કરવી
+    // ✅ Skip these files
     excludeFiles: [
         '404.html',
         '500.html',
         'test.html',
         'login.html',
         'signup.html',
-        'admin.html'
+        'admin.html',
+        'google768f32ab012d5135.html'  // ← tamari Google verification file
     ],
     
-    // કેટલા hours within update થયેલી files ધ્યાનમાં લેવી
-    hoursWithin: 24
+    // 720 hours = 30 days
+    hoursWithin: 720
 };
 
 // ════════════════════════════════════════
