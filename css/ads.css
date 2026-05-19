@@ -1,22 +1,43 @@
 /* ════════════════════════════════════════
-   ADSENSE AD STYLES
+   AIToolCor - DYNAMIC ADSENSE STYLES
+   Auto-Hide Empty Ad Slots
 ════════════════════════════════════════ */
+
+/* Main Container - Default Hidden */
 .ad-container {
     max-width: 900px;
-    margin: 20px auto;
-    padding: 0 16px;
+    margin: 0 auto;
+    padding: 0;
     text-align: center;
-    min-height: 90px;
     overflow: hidden;
     clear: both;
+    display: none; /* Default hidden */
+    transition: all 0.3s ease;
 }
-.ad-container.ad-banner {
+
+/* Show container only when ad is filled */
+.ad-container:has(ins[data-ad-status="filled"]),
+.ad-container.is-filled {
+    display: block;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+.ad-container.ad-banner:has(ins[data-ad-status="filled"]),
+.ad-container.ad-banner.is-filled {
     background: rgba(255, 255, 255, 0.25);
     border-radius: 12px;
-    padding: 10px;
     border: 1px dashed rgba(0, 0, 0, 0.06);
     backdrop-filter: blur(6px);
 }
+
+/* Fallbacks for unfilled status */
+ins.adsbygoogle[data-ad-status="unfilled"],
+ins.adsbygoogle:empty {
+    display: none !important;
+}
+
+/* Advertisement Label */
 .ad-label {
     font-size: 9px;
     color: #94a3b8;
@@ -27,30 +48,31 @@
     display: block;
     text-align: center;
 }
-.adsbygoogle[data-ad-status="unfilled"] {
-    display: none !important;
-}
-.tool-area .ad-container {
-    display: none !important;
-}
 
 /* ════════════════════════════════════════
    SIDEBAR ADS - Desktop Only
 ════════════════════════════════════════ */
 .ad-sidebar {
-    position: fixed;
+    position: absolute;
     top: 100px;
     width: 160px;
     min-height: 600px;
     z-index: 99;
+    display: none; /* Default hidden */
+    transition: all 0.3s ease;
+}
+
+/* Show sidebar only if filled */
+.ad-sidebar:has(ins[data-ad-status="filled"]),
+.ad-sidebar.is-filled {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background: rgba(255, 255, 255, 0.4);
     border-radius: 12px;
     padding: 10px;
     border: 1px dashed rgba(0, 0, 0, 0.08);
     backdrop-filter: blur(8px);
-    display: none;
-    flex-direction: column;
-    align-items: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
@@ -62,42 +84,11 @@
     right: 10px;
 }
 
-/* Show only on large desktop screens */
-@media (min-width: 1200px) {
-    .ad-sidebar {
-        display: flex;
-    }
-}
-
-/* Hide on tablet & mobile */
-@media (max-width: 1199px) {
-    .ad-sidebar {
-        display: none !important;
-    }
-}
-
-/* Sidebar ad label */
-.ad-sidebar .ad-label {
-    margin-bottom: 6px;
-    font-size: 8px;
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-    .ad-container {
-        margin: 14px auto;
-        padding: 0 10px;
-        min-height: 60px;
-    }
-    .ad-container.ad-banner {
-        padding: 8px;
-        border-radius: 8px;
-    }
-}
-
-@media print {
-    .ad-container,
-    .ad-sidebar {
+/* Responsive Hide for Sidebars */
+@media (max-width: 1200px) {
+    .ad-sidebar,
+    .ad-sidebar:has(ins[data-ad-status="filled"]),
+    .ad-sidebar.is-filled {
         display: none !important;
     }
 }

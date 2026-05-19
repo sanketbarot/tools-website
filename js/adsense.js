@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════
    AIToolCor - ADSENSE AUTO LOADER
-   With Sidebar Support
+   With Sidebar Support & Auto-Hide Empty
 ════════════════════════════════════════ */
 
 const ADSENSE_CONFIG = {
@@ -17,19 +17,48 @@ const ADSENSE_CONFIG = {
 (function() {
     'use strict';
 
+    // Observer to check if AdSense successfully loads an ad
+    function observeAdStatus(insElement, wrapper) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'data-ad-status') {
+                    const status = insElement.getAttribute('data-ad-status');
+                    if (status === 'filled') {
+                        wrapper.classList.add('is-filled'); // Shows the box
+                    } else if (status === 'unfilled') {
+                        wrapper.classList.remove('is-filled'); // Hides the box
+                    }
+                }
+            });
+        });
+        observer.observe(insElement, { attributes: true });
+    }
+
     function createAdUnit(slotId, format, extraStyle, className) {
         if (!slotId || slotId === 'XXXXXXXXXX') return null;
+        
         const wrapper = document.createElement('div');
         wrapper.className = className || 'ad-container ad-banner';
         wrapper.setAttribute('aria-hidden', 'true');
-        wrapper.innerHTML = `
-            <span class="ad-label">Advertisement</span>
-            <ins class="adsbygoogle"
-                 style="display:block;${extraStyle || ''}"
-                 data-ad-client="${ADSENSE_CONFIG.publisherId}"
-                 data-ad-slot="${slotId}"
-                 data-ad-format="${format || 'auto'}"
-                 data-full-width-responsive="true"></ins>`;
+        
+        const label = document.createElement('span');
+        label.className = 'ad-label';
+        label.textContent = 'Advertisement';
+        wrapper.appendChild(label);
+
+        const ins = document.createElement('ins');
+        ins.className = 'adsbygoogle';
+        ins.setAttribute('style', `display:block;${extraStyle || ''}`);
+        ins.setAttribute('data-ad-client', ADSENSE_CONFIG.publisherId);
+        ins.setAttribute('data-ad-slot', slotId);
+        ins.setAttribute('data-ad-format', format || 'auto');
+        ins.setAttribute('data-full-width-responsive', 'true');
+
+        wrapper.appendChild(ins);
+        
+        // Attach observer to hide/show box dynamically
+        observeAdStatus(ins, wrapper);
+
         return wrapper;
     }
 
@@ -37,74 +66,62 @@ const ADSENSE_CONFIG = {
         try {
             (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {
-            console.log('Ad push skipped:', e.message);
+            console.warn('AdSense Push Exception skipped safely:', e.message);
         }
     }
 
-    function insertAdBefore(targetSelector, slotKey, format) {
+    function insertAdBefore(targetSelector, slotKey, format, style, className) {
         const target = document.querySelector(targetSelector);
-        const slotId = ADSENSE_CONFIG.slots[slotKey];
-        if (!target || !slotId) return false;
-        const adEl = createAdUnit(slotId, format);
+        if (!target || !target.parentNode) return false;
+        
+        const adEl = createAdUnit(ADSENSE_CONFIG.slots[slotKey], format, style, className);
         if (!adEl) return false;
+        
         target.parentNode.insertBefore(adEl, target);
         pushAd();
         return true;
     }
 
-    function insertAdAfter(targetSelector, slotKey, format) {
+    function insertAdAfter(targetSelector, slotKey, format, style, className) {
         const target = document.querySelector(targetSelector);
-        const slotId = ADSENSE_CONFIG.slots[slotKey];
-        if (!target || !slotId) return false;
-        const adEl = createAdUnit(slotId, format);
+        if (!target || !target.parentNode) return false;
+        
+        const adEl = createAdUnit(ADSENSE_CONFIG.slots[slotKey], format, style, className);
         if (!adEl) return false;
+        
         target.parentNode.insertBefore(adEl, target.nextSibling);
         pushAd();
         return true;
     }
 
-    /* ════════════════════════════════════════
-       SIDEBAR ADS - Desktop only (>= 1200px)
-    ════════════════════════════════════════ */
     function insertSidebarAds() {
-        if (window.innerWidth < 1200) return; // Only desktop
+        if (window.innerWidth < 1200) return;
 
-        const slotId = ADSENSE_CONFIG.slots.sidebar;
-        if (!slotId) return;
+        const toolWrapper = document.querySelector('.tool-wrapper') || document.querySelector('.files-area') || document.querySelector('.container main');
+        if (!toolWrapper || !toolWrapper.parentNode) return;
 
-        // Left Sidebar Ad
-        const leftAd = document.createElement('div');
-        leftAd.className = 'ad-sidebar ad-sidebar-left';
-        leftAd.innerHTML = `
-            <span class="ad-label">Ad</span>
-            <ins class="adsbygoogle"
-                 style="display:block;width:160px;height:600px"
-                 data-ad-client="${ADSENSE_CONFIG.publisherId}"
-                 data-ad-slot="${slotId}"
-                 data-ad-format="vertical"></ins>`;
-        document.body.appendChild(leftAd);
-        pushAd();
+        if (document.querySelector('.ad-sidebar-left')) return;
 
-        // Right Sidebar Ad
-        const rightAd = document.createElement('div');
-        rightAd.className = 'ad-sidebar ad-sidebar-right';
-        rightAd.innerHTML = `
-            <span class="ad-label">Ad</span>
-            <ins class="adsbygoogle"
-                 style="display:block;width:160px;height:600px"
-                 data-ad-client="${ADSENSE_CONFIG.publisherId}"
-                 data-ad-slot="${slotId}"
-                 data-ad-format="vertical"></ins>`;
-        document.body.appendChild(rightAd);
-        pushAd();
+        const leftSidebar = createAdUnit(ADSENSE_CONFIG.slots.sidebar, 'vertical', 'width:160px;height:600px;', 'ad-sidebar ad-sidebar-left');
+        const rightSidebar = createAdUnit(ADSENSE_CONFIG.slots.sidebar, 'vertical', 'width:160px;height:600px;', 'ad-sidebar ad-sidebar-right');
+
+        toolWrapper.parentNode.style.position = 'relative';
+
+        if (leftSidebar) {
+            toolWrapper.parentNode.insertBefore(leftSidebar, toolWrapper);
+            pushAd();
+        }
+        if (rightSidebar) {
+            toolWrapper.parentNode.insertBefore(rightSidebar, toolWrapper.nextSibling);
+            pushAd();
+        }
     }
 
     function autoPlaceAds() {
-        const isToolPage = !!document.querySelector('.tool-area');
+        const isToolPage = !!document.querySelector('.tool-header, .tool-title, [data-section]');
         const isHomePage = !!document.querySelector('.tools-grid, .tool-cards-grid, [data-category]');
 
         if (isHomePage && !isToolPage) {
-            // Homepage - NO middle ad in tools (clean look)
             insertAdAfter('.hero, .hero-section, .tool-header', 'topBanner', 'horizontal');
             insertAdBefore('footer, .footer', 'bottomBanner', 'auto');
         }
@@ -115,7 +132,6 @@ const ADSENSE_CONFIG = {
             insertAdBefore('footer, .footer', 'bottomBanner', 'auto');
         }
 
-        // Sidebar ads on desktop
         insertSidebarAds();
     }
 
@@ -127,7 +143,6 @@ const ADSENSE_CONFIG = {
         setTimeout(autoPlaceAds, 400);
     }
 
-    // Re-check on resize
     let resizeTimer;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimer);
@@ -136,9 +151,15 @@ const ADSENSE_CONFIG = {
             if (window.innerWidth < 1200) {
                 sidebars.forEach(s => s.style.display = 'none');
             } else {
-                sidebars.forEach(s => s.style.display = 'flex');
+                if (sidebars.length === 0) {
+                    insertSidebarAds();
+                } else {
+                    sidebars.forEach(s => {
+                        s.style.display = ''; // Let CSS (.is-filled) handle the display 
+                    });
+                }
             }
-        }, 200);
+        }, 300);
     });
 
 })();
