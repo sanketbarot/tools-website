@@ -861,16 +861,24 @@ body::before {
 @media (max-width: 768px) {
     .navbar { padding: 0 16px; height: 60px; }
     .hamburger { display: flex; }
+    /* ✅ Dropdown style — consistent with index.html */
     .nav-links {
-        display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(255,255,255,0.98); backdrop-filter: blur(25px);
-        flex-direction: column; justify-content: center; align-items: center;
-        gap: 22px; z-index: 999;
+        display: none;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(255,255,255,0.99);
+        backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+        flex-direction: column; align-items: stretch;
+        gap: 3px; padding: 12px 14px 16px;
+        box-shadow: 0 14px 36px rgba(124,58,237,0.13);
+        border-radius: 0 0 18px 18px;
+        max-height: calc(100vh - 60px); overflow-y: auto;
+        z-index: 999; border-top: 1px solid rgba(124,58,237,0.08);
     }
     .nav-links.active, .nav-links.open { display: flex; }
-    .nav-links a { font-size: 17px; }
+    .nav-links > a { padding: 11px 14px; border-radius: 10px; font-size: 14px; }
+    .nav-links > a:hover { background: rgba(124,58,237,0.07); }
     .nav-links a::after { display: none; }
-    .nav-btn { width: 100%; justify-content: center; margin-top: 6px !important; padding: 12px 22px !important; border-radius: 50px !important; }
+    .nav-btn { width: 100%; justify-content: center; margin-top: 4px !important; padding: 12px 22px !important; border-radius: 50px !important; margin-left: 0 !important; }
 
     .tool-title { flex-direction: column; text-align: center; align-items: center; }
     .tool-title h1 { font-size: 22px; }

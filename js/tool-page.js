@@ -132,11 +132,13 @@ document.addEventListener('DOMContentLoaded', function() {
 /* ── FAQ TOGGLE ── */
 function toggleFaq(el) {
     const isActive = el.classList.contains('active');
+    // Close all open items
     document.querySelectorAll('.faq-item.active').forEach(item => {
         if (item !== el) item.classList.remove('active');
     });
     el.classList.toggle('active', !isActive);
 }
+window.toggleFaq = toggleFaq;
 
 /* ── SHOW / HIDE SECTIONS ── */
 function showSection(id) {
@@ -144,16 +146,17 @@ function showSection(id) {
     const el = document.getElementById(id);
     if (el) {
         el.style.display = 'block';
-        // Smooth entrance
+        // Smooth entrance — rAF deferred
         el.style.opacity = '0';
-        el.style.transform = 'translateY(12px)';
-        el.style.transition = 'opacity 0.32s ease, transform 0.32s ease';
-        requestAnimationFrame(() => {
+        el.style.transform = 'translateY(10px)';
+        el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
             el.style.opacity = '1';
             el.style.transform = 'translateY(0)';
-        });
+        }));
     }
 }
+window.showSection = showSection;
 
 /* ── FORMAT FILE SIZE ── */
 function formatSize(bytes) {
@@ -163,6 +166,8 @@ function formatSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 var szF = formatSize;
+window.formatSize = formatSize;
+window.szF = formatSize;
 
 /* ── SIMULATE PROGRESS ── */
 function simulateProcess(callback, speed) {
@@ -277,10 +282,15 @@ function showToast(msg, type) {
 }
 window.showToast = showToast;
 
-/* ── SCROLL ANIMATIONS — IntersectionObserver, idle-deferred ── */
+/* ── SCROLL ANIMATIONS — only init if tool page doesn't define its own ── */
 document.addEventListener('DOMContentLoaded', function() {
+    // Guard: don't init if tool page already called setupScrollAnimations
+    if (window._scrollAnimsInit) return;
+    window._scrollAnimsInit = true;
+
     if (!('IntersectionObserver' in window)) return;
     const els = document.querySelectorAll('.step-box, .related-card, .faq-item, .feature-card');
+    if (!els.length) return;
 
     const obs = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
