@@ -16,451 +16,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
-
-    <style>
-        /* ═══════════════════════════════════════
-           DASHBOARD - MOBILE FIRST RESPONSIVE
-        ═══════════════════════════════════════ */
-
-        /* Welcome Banner */
-        .welcome-banner {
-            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
-            border-radius: 16px;
-            padding: 20px;
-            color: #fff;
-            margin-bottom: 18px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .welcome-banner::before {
-            content: '';
-            position: absolute;
-            width: 250px; height: 250px;
-            background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
-            top: -120px; right: -80px;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .welcome-banner::after {
-            content: '';
-            position: absolute;
-            width: 180px; height: 180px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
-            bottom: -90px; left: 20%;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .welcome-banner-content {
-            position: relative; z-index: 1;
-            flex: 1; min-width: 200px;
-        }
-        .welcome-banner h2 {
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 4px;
-            line-height: 1.2;
-        }
-        .welcome-banner p {
-            font-size: 13px;
-            opacity: 0.95;
-            margin: 0;
-        }
-        .welcome-banner-stats {
-            position: relative; z-index: 1;
-            display: flex; gap: 16px;
-            flex-wrap: wrap;
-            width: 100%;
-            justify-content: space-between;
-        }
-        .welcome-stat {
-            text-align: center;
-            flex: 1;
-            min-width: 70px;
-        }
-        .welcome-stat strong {
-            display: block;
-            font-size: 22px;
-            font-weight: 800;
-            line-height: 1;
-        }
-        .welcome-stat span {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            opacity: 0.9;
-            margin-top: 3px;
-            display: block;
-        }
-
-        /* Live indicator */
-        .live-indicator {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(16,185,129,0.1);
-            color: var(--success);
-            padding: 5px 12px;
-            border-radius: 50px;
-            font-size: 11px;
-            font-weight: 700;
-            border: 1px solid rgba(16,185,129,0.2);
-        }
-        .live-dot {
-            width: 7px; height: 7px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: livePulse 1.5s infinite;
-        }
-        @keyframes livePulse {
-            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(16,185,129,0.7); }
-            50% { opacity: 0.7; transform: scale(1.2); box-shadow: 0 0 0 10px rgba(16,185,129,0); }
-        }
-
-        .live-status-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        .live-status-text {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-        .last-updated-text {
-            font-size: 11px;
-            color: var(--text-light);
-            margin-left: auto;
-        }
-
-        .refresh-btn {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: #fff;
-            border: 1.5px solid var(--border);
-            padding: 7px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-medium);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .refresh-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        .refresh-btn.spinning i { animation: spin 0.6s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Quick Tool Grid */
-        .quick-tool-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 8px;
-            margin-top: 14px;
-        }
-        .quick-tool {
-            background: var(--bg);
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 8px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-dark);
-            transition: all 0.2s;
-        }
-        .quick-tool:hover, .quick-tool:active {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(124,58,237,0.12);
-        }
-        .quick-tool i {
-            font-size: 20px;
-            margin-bottom: 4px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: block;
-        }
-        .quick-tool span {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-        .quick-tool small {
-            font-size: 9px;
-            color: var(--text-light);
-            margin-top: 2px;
-            display: block;
-        }
-
-        /* Donut chart */
-        .donut-center {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            pointer-events: none;
-        }
-        .donut-center strong {
-            display: block;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text-dark);
-            line-height: 1;
-        }
-        .donut-center span {
-            font-size: 11px;
-            color: var(--text-light);
-            margin-top: 3px;
-            display: block;
-        }
-        .donut-wrapper { position: relative; }
-
-        /* Quick action buttons */
-        .quick-action-btn {
-            background: linear-gradient(135deg, #fff, #fafbff);
-            border: 1.5px solid var(--border);
-            padding: 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            color: var(--text-dark);
-            display: flex; align-items: center; gap: 12px;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .quick-action-btn:hover, .quick-action-btn:active {
-            transform: translateX(3px);
-            border-color: var(--primary);
-            box-shadow: 0 6px 16px rgba(124,58,237,0.1);
-        }
-        .quick-action-icon {
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        .quick-action-info { flex: 1; min-width: 0; }
-        .quick-action-info strong {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-        }
-        .quick-action-info small {
-            display: block;
-            font-size: 11px;
-            color: var(--text-light);
-            margin-top: 2px;
-            line-height: 1.3;
-        }
-        .quick-action-btn i.arrow {
-            color: var(--text-light);
-            transition: transform 0.2s;
-            flex-shrink: 0;
-        }
-        .quick-action-btn:hover i.arrow {
-            transform: translateX(3px);
-            color: var(--primary);
-        }
-
-        /* Hourly heatmap */
-        .hourly-grid {
-            display: grid;
-            grid-template-columns: repeat(24, 1fr);
-            gap: 3px;
-            margin-top: 10px;
-        }
-        .hourly-cell {
-            aspect-ratio: 1;
-            border-radius: 3px;
-            background: var(--bg);
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.2s;
-            min-height: 14px;
-        }
-        .hourly-cell:hover {
-            transform: scale(1.2);
-            z-index: 10;
-        }
-        .hourly-cell[data-tooltip]:hover::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%; left: 50%;
-            transform: translateX(-50%);
-            background: var(--text-dark);
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            white-space: nowrap;
-            margin-bottom: 5px;
-            z-index: 100;
-        }
-        .hourly-labels {
-            display: grid;
-            grid-template-columns: repeat(24, 1fr);
-            gap: 3px;
-            margin-top: 4px;
-            font-size: 8px;
-            color: var(--text-light);
-            text-align: center;
-        }
-
-        /* Chart card optimized */
-        .chart-container {
-            position: relative;
-            height: 280px;
-        }
-
-        /* Card header mobile */
-        .card-header {
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .card-title {
-            font-size: 14px !important;
-        }
-
-        /* Activity list mobile */
-        .activity-list {
-            max-height: 380px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* ═══════════════════════════════════════
-           MOBILE BREAKPOINTS
-        ═══════════════════════════════════════ */
-
-        /* Tablet */
-        @media (max-width: 1024px) {
-            .welcome-banner { padding: 18px; }
-            .welcome-banner h2 { font-size: 20px; }
-            .welcome-stat strong { font-size: 20px; }
-            .chart-container { height: 260px; }
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            .page-container { padding: 14px !important; }
-            .welcome-banner {
-                padding: 16px;
-                border-radius: 14px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .welcome-banner h2 { font-size: 18px; }
-            .welcome-banner p { font-size: 12px; }
-            .welcome-banner-stats {
-                gap: 8px;
-                padding-top: 12px;
-                border-top: 1px solid rgba(255,255,255,0.15);
-            }
-            .welcome-stat strong { font-size: 18px; }
-            .welcome-stat span { font-size: 9px; }
-
-            .live-status-bar { gap: 6px; }
-            .live-status-text { font-size: 11px; }
-            .last-updated-text {
-                font-size: 10px;
-                margin-left: 0;
-                width: 100%;
-                order: 5;
-                margin-top: 4px;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 10px !important;
-                margin-bottom: 18px !important;
-            }
-            .stat-card { padding: 14px !important; }
-            .stat-icon { width: 38px !important; height: 38px !important; font-size: 16px !important; }
-            .stat-value { font-size: 22px !important; }
-            .stat-label { font-size: 11px !important; }
-            .stat-trend { font-size: 10px !important; padding: 3px 8px !important; }
-            .stat-card-header { margin-bottom: 10px !important; }
-
-            .grid-2 {
-                grid-template-columns: 1fr !important;
-                gap: 14px !important;
-            }
-
-            .chart-card, .card {
-                padding: 14px !important;
-                border-radius: 12px !important;
-            }
-            .chart-container { height: 230px; }
-
-            .quick-tool-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-            }
-
-            .quick-action-btn { padding: 12px; }
-            .quick-action-icon { width: 36px; height: 36px; font-size: 14px; }
-            .quick-action-info strong { font-size: 12px; }
-            .quick-action-info small { font-size: 10px; }
-
-            .hourly-grid {
-                grid-template-columns: repeat(12, 1fr);
-                gap: 4px;
-            }
-            .hourly-labels { grid-template-columns: repeat(12, 1fr); }
-            .hourly-cell { min-height: 22px; }
-
-            .donut-center strong { font-size: 24px; }
-            .donut-center span { font-size: 10px; }
-        }
-
-        /* Small mobile */
-        @media (max-width: 480px) {
-            .page-container { padding: 12px !important; }
-            .welcome-banner { padding: 14px; }
-            .welcome-banner h2 { font-size: 17px; }
-            .welcome-stat strong { font-size: 16px; }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr !important;
-                gap: 8px !important;
-            }
-            .stat-card { padding: 12px !important; }
-            .stat-value { font-size: 20px !important; }
-
-            .quick-tool-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            .quick-tool { padding: 12px 8px; }
-            .quick-tool i { font-size: 22px; }
-            .quick-tool span { font-size: 11px; }
-
-            .chart-container { height: 220px; }
-
-            .refresh-btn span { display: none; }
-
-            .hourly-cell { min-height: 18px; }
-        }
-
-        /* Extra small */
-        @media (max-width: 360px) {
-            .stats-grid { grid-template-columns: 1fr !important; }
-            .welcome-banner-stats { justify-content: center; }
-        }
-
-        /* Touch optimizations */
-        @media (hover: none) {
-            .quick-tool, .quick-action-btn, .stat-card {
-                -webkit-tap-highlight-color: rgba(124,58,237,0.1);
-            }
-        }
-    </style>
 </head>
 <body>
 
@@ -469,737 +24,691 @@
 <script src="js/admin.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-    if (!AdminAuth.requireAuth()) throw new Error('Not authenticated');
+/* ════════════════════════════════════════
+   AUTH CHECK
+════════════════════════════════════════ */
+if (!AdminAuth.requireAuth()) throw new Error('Not authenticated');
 
-    const user = AdminAuth.getCurrentUser();
-    const firstName = user.name.split(' ')[0];
+const user = AdminAuth.getCurrentUser();
+const firstName = user.name.split(' ')[0];
 
-    function getGreeting() {
-        const h = new Date().getHours();
-        if (h < 12) return 'Good Morning';
-        if (h < 17) return 'Good Afternoon';
-        return 'Good Evening';
-    }
+function getGreeting() {
+    const h = new Date().getHours();
+    if (h < 12) return 'Good Morning';
+    if (h < 17) return 'Good Afternoon';
+    return 'Good Evening';
+}
 
-    document.getElementById('adminWrapper').innerHTML = `
-        ${AdminUI.renderSidebar('dashboard')}
-        <div class="main-content">
-            ${AdminUI.renderTopbar('Dashboard', 'Real-time analytics')}
+/* ════════════════════════════════════════
+   RENDER LAYOUT
+════════════════════════════════════════ */
+document.getElementById('adminWrapper').innerHTML = `
+    ${AdminUI.renderSidebar('dashboard')}
+    <div class="main-content">
+        ${AdminUI.renderTopbar('Dashboard', 'Real-time analytics')}
 
-            <div class="page-container">
+        <div class="page-container">
 
-                <!-- WELCOME BANNER -->
-                <div class="welcome-banner">
-                    <div class="welcome-banner-content">
-                        <h2>${getGreeting()}, ${firstName}! 👋</h2>
-                        <p>Welcome back to <strong>AI ToolCor</strong></p>
+            <!-- WELCOME BANNER -->
+            <div class="welcome-banner">
+                <div class="welcome-banner-content">
+                    <h2>${getGreeting()}, ${firstName}! 👋</h2>
+                    <p>Welcome back to <strong>AI ToolCor</strong> Admin</p>
+                </div>
+                <div class="welcome-banner-stats">
+                    <div class="welcome-stat">
+                        <strong id="bannerVisits">0</strong>
+                        <span>Visits Today</span>
                     </div>
-                    <div class="welcome-banner-stats">
-                        <div class="welcome-stat">
-                            <strong id="bannerVisits">0</strong>
-                            <span>Visits Today</span>
-                        </div>
-                        <div class="welcome-stat">
-                            <strong id="bannerFiles">0</strong>
-                            <span>Files Today</span>
-                        </div>
-                        <div class="welcome-stat">
-                            <strong id="bannerTools">0</strong>
-                            <span>Active Tools</span>
-                        </div>
+                    <div class="welcome-stat">
+                        <strong id="bannerFiles">0</strong>
+                        <span>Files Today</span>
+                    </div>
+                    <div class="welcome-stat">
+                        <strong id="bannerTools">0</strong>
+                        <span>Active Tools</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- LIVE STATUS BAR -->
-                <div class="live-status-bar">
-                    <span class="live-indicator">
-                        <span class="live-dot"></span>
-                        LIVE
-                    </span>
-                    <span class="live-status-text">
-                        Auto-refresh <strong>5s</strong>
-                    </span>
-                    <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">
-                        <i class="fas fa-sync-alt"></i> <span>Refresh</span>
-                    </button>
-                    <span class="last-updated-text">
-                        Last: <strong id="lastUpdated">just now</strong>
-                    </span>
+            <!-- LIVE STATUS BAR -->
+            <div class="live-status-bar">
+                <span class="live-indicator">
+                    <span class="live-dot"></span>
+                    LIVE
+                </span>
+                <span class="live-status-text">Auto-refresh every <strong>5s</strong></span>
+                <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()" type="button" aria-label="Refresh dashboard">
+                    <i class="fas fa-sync-alt"></i> <span>Refresh</span>
+                </button>
+                <span class="last-updated-text">
+                    Updated: <strong id="lastUpdated">just now</strong>
+                </span>
+            </div>
+
+            <!-- STATS CARDS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon bg-primary"><i class="fas fa-toggle-on"></i></div>
+                        <span class="stat-trend up" id="trendTools"><i class="fas fa-check"></i> Active</span>
+                    </div>
+                    <div class="stat-value" id="statTools">0</div>
+                    <div class="stat-label" id="labelTools">Active Tools</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon bg-info"><i class="fas fa-eye"></i></div>
+                        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> Live</span>
+                    </div>
+                    <div class="stat-value" id="statVisits">0</div>
+                    <div class="stat-label">Total Visits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon bg-success"><i class="fas fa-file-alt"></i></div>
+                        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> Real</span>
+                    </div>
+                    <div class="stat-value" id="statFiles">0</div>
+                    <div class="stat-label">Files Processed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon bg-warning"><i class="fas fa-bolt"></i></div>
+                        <span class="stat-trend up"><i class="fas fa-fire"></i> Hot</span>
+                    </div>
+                    <div class="stat-value" id="statActivity">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+            </div>
+
+            <!-- CHARTS ROW 1: Visitor Trends + Activity Feed -->
+            <div class="grid-2">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-chart-area"></i> Visitor Trends</div>
+                        <select class="form-select" id="chartRange" style="width:auto;font-size:11px;padding:5px 8px;">
+                            <option value="30">30 Days</option>
+                            <option value="7">7 Days</option>
+                            <option value="14">14 Days</option>
+                        </select>
+                    </div>
+                    <div class="chart-container"><canvas id="visitsChart"></canvas></div>
                 </div>
 
-                <!-- STATS CARDS -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon bg-primary">
-                                <i class="fas fa-toggle-on"></i>
-                            </div>
-                            <span class="stat-trend up" id="trendTools">
-                                <i class="fas fa-check"></i> Active
-                            </span>
-                        </div>
-                        <div class="stat-value" id="statTools">0</div>
-                        <div class="stat-label" id="labelTools">Active Tools</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon bg-info">
-                                <i class="fas fa-eye"></i>
-                            </div>
-                            <span class="stat-trend up">
-                                <i class="fas fa-arrow-up"></i> Live
-                            </span>
-                        </div>
-                        <div class="stat-value" id="statVisits">0</div>
-                        <div class="stat-label">Total Visits</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon bg-success">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <span class="stat-trend up">
-                                <i class="fas fa-arrow-up"></i> Real
-                            </span>
-                        </div>
-                        <div class="stat-value" id="statFiles">0</div>
-                        <div class="stat-label">Files Processed</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div class="stat-icon bg-warning">
-                                <i class="fas fa-bolt"></i>
-                            </div>
-                            <span class="stat-trend up">
-                                <i class="fas fa-fire"></i> Hot
-                            </span>
-                        </div>
-                        <div class="stat-value" id="statActivity">0</div>
-                        <div class="stat-label">Activities</div>
-                    </div>
-                </div>
-
-                <!-- MAIN CHARTS -->
-                <div class="grid-2">
-                    <div class="chart-card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fas fa-chart-area"></i> Visitor Trends
-                            </div>
-                            <select class="form-select" id="chartRange" style="width:auto;font-size:11px;padding:5px 8px;">
-                                <option value="30">30 Days</option>
-                                <option value="7">7 Days</option>
-                                <option value="14">14 Days</option>
-                            </select>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="visitsChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fas fa-bell"></i> Activity
-                                <span class="badge badge-success" id="activityCount" style="margin-left:4px;font-size:10px;">0</span>
-                            </div>
-                            <button class="btn btn-outline btn-sm" type="button" onclick="clearActivity()" title="Clear">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                        <ul class="activity-list" id="activityList"></ul>
-                    </div>
-                </div>
-
-                <!-- TOOLS USAGE + STATUS DONUT -->
-                <div style="margin-top:18px;" class="grid-2">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fas fa-fire"></i> Top Tools
-                            </div>
-                            <a href="tools.html" style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:600;">Manage →</a>
-                        </div>
-                        <div class="chart-container" style="height:280px;">
-                            <canvas id="toolsChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fas fa-chart-pie"></i> Status
-                            </div>
-                        </div>
-                        <div class="donut-wrapper">
-                            <div class="chart-container" style="height:200px;">
-                                <canvas id="statusChart"></canvas>
-                            </div>
-                            <div class="donut-center">
-                                <strong id="donutTotal">0</strong>
-                                <span>Total</span>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:10px;margin-top:12px;justify-content:center;flex-wrap:wrap;">
-                            <div style="display:flex;align-items:center;gap:5px;font-size:11px;">
-                                <span style="width:10px;height:10px;background:#10b981;border-radius:50%;"></span>
-                                <strong id="donutEnabled">0</strong> Enabled
-                            </div>
-                            <div style="display:flex;align-items:center;gap:5px;font-size:11px;">
-                                <span style="width:10px;height:10px;background:#ef4444;border-radius:50%;"></span>
-                                <strong id="donutDisabled">0</strong> Disabled
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HOURLY HEATMAP + QUICK ACTIONS -->
-                <div style="margin-top:18px;" class="grid-2">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fas fa-clock"></i> Today's Activity
-                            </div>
-                            <span style="font-size:11px;color:var(--text-light);">24h</span>
-                        </div>
-                        <div class="hourly-grid" id="hourlyGrid"></div>
-                        <div class="hourly-labels" id="hourlyLabels"></div>
-
-                        <div style="margin-top:18px;">
-                            <h4 style="font-size:12px;font-weight:700;margin-bottom:10px;color:var(--text-dark);">
-                                <i class="fas fa-layer-group" style="color:var(--primary);"></i> Categories
-                            </h4>
-                            <div id="categoryBreakdown"></div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fas fa-rocket"></i> Quick Actions
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:8px;">
-                            <a href="tools.html" class="quick-action-btn">
-                                <div class="quick-action-icon" style="background:linear-gradient(135deg,#7c3aed,#ec4899);">
-                                    <i class="fas fa-cogs"></i>
-                                </div>
-                                <div class="quick-action-info">
-                                    <strong>Manage Tools</strong>
-                                    <small>Enable/disable tools</small>
-                                </div>
-                                <i class="fas fa-arrow-right arrow"></i>
-                            </a>
-
-                            <a href="${ADMIN_CONFIG.SITE_URL}" target="_blank" class="quick-action-btn">
-                                <div class="quick-action-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </div>
-                                <div class="quick-action-info">
-                                    <strong>View Site</strong>
-                                    <small>Open website</small>
-                                </div>
-                                <i class="fas fa-arrow-right arrow"></i>
-                            </a>
-
-                            <a href="#" onclick="resetAnalytics();return false;" class="quick-action-btn">
-                                <div class="quick-action-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316);">
-                                    <i class="fas fa-redo"></i>
-                                </div>
-                                <div class="quick-action-info">
-                                    <strong>Reset Data</strong>
-                                    <small>Clear analytics</small>
-                                </div>
-                                <i class="fas fa-arrow-right arrow"></i>
-                            </a>
-
-                            <a href="#" onclick="exportData();return false;" class="quick-action-btn">
-                                <div class="quick-action-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);">
-                                    <i class="fas fa-download"></i>
-                                </div>
-                                <div class="quick-action-info">
-                                    <strong>Export Data</strong>
-                                    <small>Download as JSON</small>
-                                </div>
-                                <i class="fas fa-arrow-right arrow"></i>
-                            </a>
-
-                            <a href="#" data-logout class="quick-action-btn" style="border-color:rgba(239,68,68,0.2);">
-                                <div class="quick-action-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </div>
-                                <div class="quick-action-info">
-                                    <strong style="color:var(--danger);">Logout</strong>
-                                    <small>End session</small>
-                                </div>
-                                <i class="fas fa-arrow-right arrow"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ALL TOOLS QUICK ACCESS -->
-                <div class="card" style="margin-top:18px;">
+                <div class="card">
                     <div class="card-header">
                         <div class="card-title">
-                            <i class="fas fa-th"></i> Quick Access
+                            <i class="fas fa-bell"></i> Activity
+                            <span class="badge badge-success" id="activityCount" style="margin-left:4px;font-size:10px;">0</span>
                         </div>
-                        <a href="tools.html" style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:600;">
-                            All →
+                        <button class="btn btn-outline btn-sm" type="button" onclick="clearActivity()" title="Clear activity log">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <ul class="activity-list" id="activityList" style="max-height:340px;overflow-y:auto;" aria-label="Activity log"></ul>
+                </div>
+            </div>
+
+            <!-- CHARTS ROW 2: Top Tools + Status Donut -->
+            <div class="grid-2" style="margin-top:18px;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-fire"></i> Top Tools</div>
+                        <a href="tools.html" style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:700;">Manage →</a>
+                    </div>
+                    <div class="chart-container" style="height:260px;"><canvas id="toolsChart"></canvas></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-chart-pie"></i> Tools Status</div>
+                    </div>
+                    <div class="donut-wrapper">
+                        <div class="chart-container" style="height:190px;"><canvas id="statusChart"></canvas></div>
+                        <div class="donut-center">
+                            <strong id="donutTotal">0</strong>
+                            <span>Total</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;margin-top:12px;justify-content:center;flex-wrap:wrap;">
+                        <div style="display:flex;align-items:center;gap:5px;font-size:12px;">
+                            <span style="width:10px;height:10px;background:#10b981;border-radius:50%;display:inline-block;"></span>
+                            <strong id="donutEnabled">0</strong> Enabled
+                        </div>
+                        <div style="display:flex;align-items:center;gap:5px;font-size:12px;">
+                            <span style="width:10px;height:10px;background:#ef4444;border-radius:50%;display:inline-block;"></span>
+                            <strong id="donutDisabled">0</strong> Disabled
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 3: Hourly Heatmap + Quick Actions -->
+            <div class="grid-2" style="margin-top:18px;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-clock"></i> Today's Activity</div>
+                        <span style="font-size:11px;color:var(--text-light);">24h heatmap</span>
+                    </div>
+                    <div class="hourly-grid" id="hourlyGrid"></div>
+                    <div class="hourly-labels" id="hourlyLabels"></div>
+                    <div style="margin-top:18px;">
+                        <h4 style="font-size:12px;font-weight:700;margin-bottom:10px;color:var(--text-dark);">
+                            <i class="fas fa-layer-group" style="color:var(--primary);"></i> Categories
+                        </h4>
+                        <div id="categoryBreakdown"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-rocket"></i> Quick Actions</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <a href="tools.html" class="quick-action-btn">
+                            <div class="quick-action-icon" style="background:linear-gradient(135deg,#7c3aed,#ec4899);">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="quick-action-info">
+                                <strong>Manage Tools</strong>
+                                <small>Enable / disable tools</small>
+                            </div>
+                            <i class="fas fa-arrow-right arrow"></i>
+                        </a>
+                        <a href="${ADMIN_CONFIG.SITE_URL}" target="_blank" rel="noopener noreferrer" class="quick-action-btn">
+                            <div class="quick-action-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                            <div class="quick-action-info">
+                                <strong>View Site</strong>
+                                <small>Open live website</small>
+                            </div>
+                            <i class="fas fa-arrow-right arrow"></i>
+                        </a>
+                        <a href="#" onclick="resetAnalytics();return false;" class="quick-action-btn">
+                            <div class="quick-action-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316);">
+                                <i class="fas fa-redo"></i>
+                            </div>
+                            <div class="quick-action-info">
+                                <strong>Reset Analytics</strong>
+                                <small>Clear all data</small>
+                            </div>
+                            <i class="fas fa-arrow-right arrow"></i>
+                        </a>
+                        <a href="#" onclick="exportData();return false;" class="quick-action-btn">
+                            <div class="quick-action-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="quick-action-info">
+                                <strong>Export Data</strong>
+                                <small>Download as JSON</small>
+                            </div>
+                            <i class="fas fa-arrow-right arrow"></i>
+                        </a>
+                        <a href="#" data-logout class="quick-action-btn" style="border-color:rgba(239,68,68,0.2);">
+                            <div class="quick-action-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <div class="quick-action-info">
+                                <strong style="color:var(--danger);">Logout</strong>
+                                <small>End session</small>
+                            </div>
+                            <i class="fas fa-arrow-right arrow"></i>
                         </a>
                     </div>
-                    <div class="quick-tool-grid" id="quickToolGrid"></div>
                 </div>
-
-                <!-- FOOTER INFO -->
-                <div style="margin-top:20px;text-align:center;padding:16px 10px;color:var(--text-light);font-size:11px;line-height:1.6;">
-                    <p>
-                        <i class="fas fa-shield-alt" style="color:var(--success);"></i>
-                        Secured · <strong style="color:var(--text-dark);">${user.email}</strong>
-                    </p>
-                    <p style="margin-top:4px;">
-                        Session expires: <strong id="sessionExpiry"></strong>
-                    </p>
-                </div>
-
             </div>
+
+            <!-- QUICK ACCESS TOOLS -->
+            <div class="card" style="margin-top:18px;">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-th"></i> Quick Access</div>
+                    <a href="tools.html" style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:700;">All →</a>
+                </div>
+                <div class="quick-tool-grid" id="quickToolGrid"></div>
+            </div>
+
+            <!-- FOOTER -->
+            <div style="margin-top:20px;text-align:center;padding:14px;color:var(--text-light);font-size:11px;line-height:1.6;">
+                <p>
+                    <i class="fas fa-shield-alt" style="color:var(--success);"></i>
+                    Secured · <strong style="color:var(--text-dark);">${user.email}</strong>
+                </p>
+                <p style="margin-top:4px;">Session expires: <strong id="sessionExpiry">—</strong></p>
+            </div>
+
         </div>
-    `;
+    </div>
+`;
 
-    AdminUI.initSidebar();
-    AdminUI.initUserMenu();
-    AdminUI.startLiveClock();
-    updateToolsBadge();
+AdminUI.initSidebar();
+AdminUI.initUserMenu();
+AdminUI.startLiveClock();
+updateToolsBadge();
 
-    /* Render hourly labels */
-    const labelsEl = document.getElementById('hourlyLabels');
-    if (window.innerWidth <= 768) {
-        labelsEl.innerHTML = ['0h','','','','','','6h','','','','','12h','','','','','18h','','','','','','','23h']
-            .map(l => `<span>${l}</span>`).join('');
-    } else {
-        labelsEl.innerHTML = ['0h','','','','','','6h','','','','','','12h','','','','','','18h','','','','','23h']
-            .map(l => `<span>${l}</span>`).join('');
-    }
+/* ════════════════════════════════════════
+   HOURLY LABELS
+════════════════════════════════════════ */
+const labelsEl = document.getElementById('hourlyLabels');
+const isMobileInit = window.innerWidth <= 768;
+if (isMobileInit) {
+    labelsEl.style.gridTemplateColumns = 'repeat(12, 1fr)';
+    labelsEl.innerHTML = ['0','','','','','6','','','','','12','','','','','18','','','','','','23']
+        .slice(0,12).map(l => `<span>${l}</span>`).join('');
+} else {
+    labelsEl.innerHTML = ['0','','','','','6','','','','','','12','','','','','','18','','','','','23','']
+        .map(l => `<span>${l}</span>`).join('');
+}
 
-    /* Session expiry */
-    const session = AdminStorage.get(ADMIN_CONFIG.SESSION_KEY);
-    if (session) {
-        document.getElementById('sessionExpiry').textContent =
-            new Date(session.expiresAt).toLocaleString();
-    }
+/* SESSION EXPIRY */
+const session = AdminStorage.get(ADMIN_CONFIG.SESSION_KEY);
+if (session && document.getElementById('sessionExpiry')) {
+    document.getElementById('sessionExpiry').textContent = new Date(session.expiresAt).toLocaleString();
+}
 
-    /* ═══════════════════════════════════════
-       CHARTS
-    ═══════════════════════════════════════ */
-    let visitsChart, toolsChart, statusChart;
-    let prevValues = { visits: 0, files: 0, tools: 0, activities: 0, bannerVisits: 0, bannerFiles: 0, bannerTools: 0 };
+/* ════════════════════════════════════════
+   CHARTS INIT
+════════════════════════════════════════ */
+let visitsChart, toolsChart, statusChart;
+let prevValues = { visits:0, files:0, tools:0, activities:0 };
 
-    function initVisitsChart() {
-        const ctx = document.getElementById('visitsChart').getContext('2d');
-        const gradient = ctx.createLinearGradient(0, 0, 0, 280);
-        gradient.addColorStop(0, 'rgba(124,58,237,0.45)');
-        gradient.addColorStop(1, 'rgba(124,58,237,0)');
+function initVisitsChart() {
+    const ctx = document.getElementById('visitsChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+    gradient.addColorStop(0, 'rgba(124,58,237,0.4)');
+    gradient.addColorStop(1, 'rgba(124,58,237,0)');
 
-        visitsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Visits',
-                    data: [],
-                    borderColor: '#7c3aed',
-                    backgroundColor: gradient,
-                    borderWidth: 2.5,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: window.innerWidth <= 768 ? 2 : 3,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#7c3aed',
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 6,
-                }]
+    visitsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Visits',
+                data: [],
+                borderColor: '#7c3aed',
+                backgroundColor: gradient,
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.4,
+                pointRadius: window.innerWidth <= 480 ? 2 : 3,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#7c3aed',
+                pointBorderWidth: 2,
+                pointHoverRadius: 5,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    padding: 9, cornerRadius: 8,
+                    displayColors: false,
+                    bodyFont: { size: 12 },
+                    callbacks: { label: ctx => `  ${ctx.parsed.y} visits` }
+                }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        padding: 10,
-                        cornerRadius: 8,
-                        displayColors: false,
-                        bodyFont: { size: 12 },
-                        callbacks: { label: (ctx) => `  ${ctx.parsed.y} visits` }
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#94a3b8',
+                        font: { size: window.innerWidth <= 480 ? 9 : 10 },
+                        maxRotation: 0, autoSkip: true,
+                        maxTicksLimit: window.innerWidth <= 480 ? 5 : 9
                     }
                 },
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: {
-                            color: '#94a3b8',
-                            font: { size: window.innerWidth <= 480 ? 9 : 10 },
-                            maxRotation: 0,
-                            autoSkip: true,
-                            maxTicksLimit: window.innerWidth <= 480 ? 6 : 10
-                        }
-                    },
-                    y: {
-                        grid: { color: '#f1f5f9' },
-                        beginAtZero: true,
-                        ticks: { color: '#94a3b8', font: { size: 10 }, precision: 0 }
-                    }
+                y: {
+                    grid: { color: '#f1f5f9' },
+                    beginAtZero: true,
+                    ticks: { color: '#94a3b8', font: { size: 10 }, precision: 0 }
                 }
             }
-        });
-    }
-
-    function initToolsChart() {
-        toolsChart = new Chart(document.getElementById('toolsChart').getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [{
-                    data: [],
-                    backgroundColor: ['#7c3aed','#ec4899','#10b981','#f59e0b','#3b82f6','#06b6d4','#8b5cf6','#f43f5e'],
-                    borderRadius: 6,
-                    barThickness: window.innerWidth <= 480 ? 16 : 22
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        padding: 10,
-                        cornerRadius: 8,
-                        displayColors: false,
-                        callbacks: { label: (ctx) => `  ${ctx.parsed.x} uses` }
-                    }
-                },
-                scales: {
-                    x: { grid: { color: '#f1f5f9' }, beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 10 }, precision: 0 } },
-                    y: { grid: { display: false }, ticks: { color: '#475569', font: { size: window.innerWidth <= 480 ? 10 : 11, weight: '600' } } }
-                }
-            }
-        });
-    }
-
-    function initStatusChart() {
-        statusChart = new Chart(document.getElementById('statusChart').getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Enabled', 'Disabled'],
-                datasets: [{
-                    data: [0, 0],
-                    backgroundColor: ['#10b981', '#ef4444'],
-                    borderWidth: 0,
-                    hoverOffset: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '68%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { backgroundColor: '#1e293b', padding: 10, cornerRadius: 8 }
-                }
-            }
-        });
-    }
-
-    initVisitsChart();
-    initToolsChart();
-    initStatusChart();
-
-    /* Re-init charts on resize for mobile/desktop switch */
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            visitsChart?.resize();
-            toolsChart?.resize();
-            statusChart?.resize();
-        }, 250);
+        }
     });
+}
 
-    /* ═══════════════════════════════════════
-       LIVE DATA REFRESH
-    ═══════════════════════════════════════ */
-    function refreshDashboard(animate = true) {
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
-        const activities = AdminStorage.get(ADMIN_CONFIG.ACTIVITY_KEY, []);
-
-        const enabled = tools.filter(t => t.enabled).length;
-        const disabled = tools.length - enabled;
-        const totalVisits = analytics.totalVisits || 0;
-        const totalFiles = analytics.totalFiles || 0;
-        const totalActivities = activities.length;
-
-        const todayKey = new Date().toISOString().split('T')[0];
-        const todayVisits = (analytics.dailyVisits || {})[todayKey] || 0;
-        const todayFiles = activities.filter(a =>
-            new Date(a.time).toISOString().split('T')[0] === todayKey &&
-            a.title?.includes('File')
-        ).length;
-
-        if (animate) {
-            AdminUI.animateValue(document.getElementById('bannerVisits'), prevValues.bannerVisits, todayVisits);
-            AdminUI.animateValue(document.getElementById('bannerFiles'), prevValues.bannerFiles, todayFiles);
-            AdminUI.animateValue(document.getElementById('bannerTools'), prevValues.bannerTools, enabled);
-            AdminUI.animateValue(document.getElementById('statTools'), prevValues.tools, enabled);
-            AdminUI.animateValue(document.getElementById('statVisits'), prevValues.visits, totalVisits);
-            AdminUI.animateValue(document.getElementById('statFiles'), prevValues.files, totalFiles);
-            AdminUI.animateValue(document.getElementById('statActivity'), prevValues.activities, totalActivities);
-        } else {
-            document.getElementById('bannerVisits').textContent = AdminUI.formatNumber(todayVisits);
-            document.getElementById('bannerFiles').textContent = AdminUI.formatNumber(todayFiles);
-            document.getElementById('bannerTools').textContent = AdminUI.formatNumber(enabled);
-            document.getElementById('statTools').textContent = AdminUI.formatNumber(enabled);
-            document.getElementById('statVisits').textContent = AdminUI.formatNumber(totalVisits);
-            document.getElementById('statFiles').textContent = AdminUI.formatNumber(totalFiles);
-            document.getElementById('statActivity').textContent = AdminUI.formatNumber(totalActivities);
+function initToolsChart() {
+    toolsChart = new Chart(document.getElementById('toolsChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: ['#7c3aed','#ec4899','#10b981','#f59e0b','#3b82f6','#06b6d4','#8b5cf6','#f43f5e'],
+                borderRadius: 6,
+                barThickness: window.innerWidth <= 480 ? 14 : 20
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e293b', padding: 9, cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: { label: ctx => `  ${ctx.parsed.x} uses` }
+                }
+            },
+            scales: {
+                x: { grid: { color: '#f1f5f9' }, beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 10 }, precision: 0 } },
+                y: { grid: { display: false }, ticks: { color: '#475569', font: { size: window.innerWidth <= 480 ? 10 : 11, weight: '600' } } }
+            }
         }
+    });
+}
 
-        prevValues = {
-            tools: enabled, visits: totalVisits, files: totalFiles, activities: totalActivities,
-            bannerVisits: todayVisits, bannerFiles: todayFiles, bannerTools: enabled
-        };
-
-        document.getElementById('labelTools').textContent = `of ${tools.length} Tools`;
-        document.getElementById('activityCount').textContent = totalActivities;
-
-        const trendTools = document.getElementById('trendTools');
-        if (enabled === tools.length) {
-            trendTools.className = 'stat-trend up';
-            trendTools.innerHTML = '<i class="fas fa-check"></i> All On';
-        } else if (enabled === 0) {
-            trendTools.className = 'stat-trend down';
-            trendTools.innerHTML = '<i class="fas fa-times"></i> All Off';
-        } else {
-            trendTools.className = 'stat-trend up';
-            trendTools.innerHTML = `<i class="fas fa-info"></i> ${disabled} Off`;
+function initStatusChart() {
+    statusChart = new Chart(document.getElementById('statusChart').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Enabled', 'Disabled'],
+            datasets: [{
+                data: [0, 0],
+                backgroundColor: ['#10b981','#ef4444'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '72%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e293b', padding: 9, cornerRadius: 8,
+                    callbacks: { label: ctx => `  ${ctx.label}: ${ctx.parsed}` }
+                }
+            }
         }
+    });
+}
 
-        const range = parseInt(document.getElementById('chartRange').value) || 30;
-        const dailyVisits = analytics.dailyVisits || {};
-        const labels = [], data = [];
-        for (let i = range - 1; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            const key = d.toISOString().split('T')[0];
-            labels.push(d.toLocaleDateString('en', { month: 'short', day: 'numeric' }));
-            data.push(dailyVisits[key] || 0);
-        }
-        visitsChart.data.labels = labels;
-        visitsChart.data.datasets[0].data = data;
-        visitsChart.update('none');
+initVisitsChart();
+initToolsChart();
+initStatusChart();
 
-        const toolUsage = analytics.toolUsage || {};
-        const toolsData = tools
-            .map(t => ({ name: t.name, count: toolUsage[t.id] || 0 }))
-            .sort((a, b) => b.count - a.count)
-            .slice(0, window.innerWidth <= 480 ? 6 : 8);
-        toolsChart.data.labels = toolsData.map(t => t.name);
-        toolsChart.data.datasets[0].data = toolsData.map(t => t.count);
-        toolsChart.update('none');
+/* ════════════════════════════════════════
+   REFRESH DASHBOARD
+════════════════════════════════════════ */
+function refreshDashboard(animate = true) {
+    const tools      = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const analytics  = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
+    const activities = AdminStorage.get(ADMIN_CONFIG.ACTIVITY_KEY, []);
+    const toolUsage  = analytics.toolUsage || {};
+    const dailyVisits= analytics.dailyVisits || {};
+    const today      = new Date().toISOString().split('T')[0];
 
-        statusChart.data.datasets[0].data = [enabled, disabled];
-        statusChart.update('none');
-        document.getElementById('donutTotal').textContent = tools.length;
-        document.getElementById('donutEnabled').textContent = enabled;
-        document.getElementById('donutDisabled').textContent = disabled;
+    const enabled   = tools.filter(t => t.enabled).length;
+    const disabled  = tools.length - enabled;
+    const todayVisits = dailyVisits[today] || 0;
 
-        const activityHtml = activities.length ? activities.slice(0, 12).map(a => `
-            <li class="activity-item">
-                <div class="activity-icon stat-icon ${a.bg || 'bg-primary'}">
-                    <i class="fas ${a.icon || 'fa-info'}"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">${a.title}</div>
-                    <div class="activity-meta">${a.meta || ''} · ${AdminUI.timeAgo(a.time)}</div>
-                </div>
-            </li>
-        `).join('') : `
-            <li style="text-align:center;padding:30px 16px;color:var(--text-light);">
-                <i class="fas fa-bell-slash" style="font-size:36px;opacity:0.3;margin-bottom:10px;display:block;"></i>
+    // Banner
+    const bannerVisits = document.getElementById('bannerVisits');
+    const bannerFiles  = document.getElementById('bannerFiles');
+    const bannerTools  = document.getElementById('bannerTools');
+
+    if (animate) {
+        AdminUI.animateValue(bannerVisits, prevValues.bannerVisits || 0, todayVisits);
+        AdminUI.animateValue(bannerFiles,  prevValues.bannerFiles  || 0, analytics.totalFiles || 0);
+        AdminUI.animateValue(bannerTools,  prevValues.bannerTools  || 0, enabled);
+        AdminUI.animateValue(document.getElementById('statTools'),    prevValues.tools,      enabled);
+        AdminUI.animateValue(document.getElementById('statVisits'),   prevValues.visits,     analytics.totalVisits || 0);
+        AdminUI.animateValue(document.getElementById('statFiles'),    prevValues.files,      analytics.totalFiles  || 0);
+        AdminUI.animateValue(document.getElementById('statActivity'), prevValues.activities, activities.length);
+    } else {
+        if (bannerVisits) bannerVisits.textContent = AdminUI.formatNumber(todayVisits);
+        if (bannerFiles)  bannerFiles.textContent  = AdminUI.formatNumber(analytics.totalFiles || 0);
+        if (bannerTools)  bannerTools.textContent  = AdminUI.formatNumber(enabled);
+        const sv = document.getElementById('statTools');    if (sv) sv.textContent = AdminUI.formatNumber(enabled);
+        const sv2= document.getElementById('statVisits');   if (sv2) sv2.textContent= AdminUI.formatNumber(analytics.totalVisits || 0);
+        const sv3= document.getElementById('statFiles');    if (sv3) sv3.textContent= AdminUI.formatNumber(analytics.totalFiles  || 0);
+        const sv4= document.getElementById('statActivity'); if (sv4) sv4.textContent= AdminUI.formatNumber(activities.length);
+    }
+
+    prevValues = {
+        tools: enabled, visits: analytics.totalVisits || 0,
+        files: analytics.totalFiles || 0, activities: activities.length,
+        bannerVisits: todayVisits, bannerFiles: analytics.totalFiles || 0, bannerTools: enabled
+    };
+
+    // Activity count badge
+    const acBadge = document.getElementById('activityCount');
+    if (acBadge) acBadge.textContent = activities.length;
+
+    // Label
+    const labelTools = document.getElementById('labelTools');
+    if (labelTools) labelTools.textContent = `${enabled} Active / ${tools.length} Total`;
+
+    // ── Visits chart ──
+    const days    = parseInt(document.getElementById('chartRange')?.value || '30');
+    const labels  = [];
+    const data    = [];
+    const now     = new Date();
+    for (let i = days - 1; i >= 0; i--) {
+        const d   = new Date(now);
+        d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        const isMob = window.innerWidth <= 480;
+        labels.push(isMob ? `${d.getMonth()+1}/${d.getDate()}` : key.slice(5));
+        data.push(dailyVisits[key] || 0);
+    }
+    visitsChart.data.labels = labels;
+    visitsChart.data.datasets[0].data = data;
+    visitsChart.update('none');
+
+    // ── Tools usage chart ──
+    const toolsData = Object.entries(toolUsage)
+        .sort(([,a],[,b]) => b - a)
+        .slice(0, window.innerWidth <= 480 ? 5 : 8)
+        .map(([id, count]) => {
+            const t = tools.find(x => x.id === id);
+            return { name: t?.name || id, count };
+        });
+    toolsChart.data.labels   = toolsData.map(t => t.name);
+    toolsChart.data.datasets[0].data = toolsData.map(t => t.count);
+    toolsChart.update('none');
+
+    // ── Status donut ──
+    statusChart.data.datasets[0].data = [enabled, disabled];
+    statusChart.update('none');
+    const dt = document.getElementById('donutTotal');    if (dt) dt.textContent = tools.length;
+    const de = document.getElementById('donutEnabled');  if (de) de.textContent = enabled;
+    const dd = document.getElementById('donutDisabled'); if (dd) dd.textContent = disabled;
+
+    // ── Activity list ──
+    const actList = document.getElementById('activityList');
+    if (actList) {
+        actList.innerHTML = activities.length
+            ? activities.slice(0, 14).map(a => `
+                <li class="activity-item">
+                    <div class="activity-icon stat-icon ${a.bg || 'bg-primary'}">
+                        <i class="fas ${a.icon || 'fa-info'}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">${a.title}</div>
+                        <div class="activity-meta">${a.meta || ''} · ${AdminUI.timeAgo(a.time)}</div>
+                    </div>
+                </li>
+            `).join('')
+            : `<li style="text-align:center;padding:28px 16px;color:var(--text-light);">
+                <i class="fas fa-bell-slash" style="font-size:34px;opacity:0.3;margin-bottom:10px;display:block;"></i>
                 <p style="font-size:12px;margin:0;">No activity yet</p>
                 <p style="font-size:11px;margin-top:4px;opacity:0.7;">Visit site to see updates</p>
-            </li>
-        `;
-        document.getElementById('activityList').innerHTML = activityHtml;
-
-        renderHourlyHeatmap(activities);
-        renderCategoryBreakdown(tools, toolUsage);
-        renderQuickTools(tools, toolUsage);
-
-        document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
-        updateToolsBadge();
+            </li>`;
     }
 
-    function renderHourlyHeatmap(activities) {
-        const today = new Date().toISOString().split('T')[0];
-        const isMobile = window.innerWidth <= 768;
-        const slots = isMobile ? 12 : 24;
-        const hourGroups = new Array(slots).fill(0);
+    // ── Hourly heatmap ──
+    renderHourlyHeatmap(activities);
 
-        activities.forEach(a => {
-            const d = new Date(a.time);
-            if (d.toISOString().split('T')[0] === today) {
-                if (isMobile) {
-                    hourGroups[Math.floor(d.getHours() / 2)]++;
-                } else {
-                    hourGroups[d.getHours()]++;
-                }
-            }
-        });
+    // ── Category breakdown ──
+    renderCategoryBreakdown(tools, toolUsage);
 
-        const max = Math.max(...hourGroups, 1);
-        document.getElementById('hourlyGrid').style.gridTemplateColumns = `repeat(${slots}, 1fr)`;
-        document.getElementById('hourlyGrid').innerHTML = hourGroups.map((count, h) => {
-            const intensity = count / max;
-            const opacity = intensity > 0 ? Math.max(0.2, intensity) : 0;
-            const bg = intensity > 0 ? `rgba(124,58,237,${opacity})` : 'var(--bg)';
-            const hourLabel = isMobile ? `${h*2}-${h*2+1}h` : `${h}:00`;
-            return `<div class="hourly-cell" style="background:${bg};" data-tooltip="${hourLabel} — ${count} activities"></div>`;
-        }).join('');
-    }
+    // ── Quick tools ──
+    renderQuickTools(tools, toolUsage);
 
-    function renderCategoryBreakdown(tools, toolUsage) {
-        const catData = {};
-        tools.forEach(t => {
-            if (!catData[t.category]) catData[t.category] = { count: 0, usage: 0, enabled: 0 };
-            catData[t.category].count++;
-            catData[t.category].usage += (toolUsage[t.id] || 0);
-            if (t.enabled) catData[t.category].enabled++;
-        });
-        const totalUsage = Object.values(catData).reduce((a, b) => a + b.usage, 0) || 1;
+    // ── Last updated ──
+    const lu = document.getElementById('lastUpdated');
+    if (lu) lu.textContent = new Date().toLocaleTimeString();
 
-        document.getElementById('categoryBreakdown').innerHTML = Object.entries(catData)
-            .sort(([,a], [,b]) => b.count - a.count)
-            .map(([cat, data]) => {
-                const catInfo = CATEGORIES[cat] || { name: cat, icon: 'fa-folder', color: '#7c3aed' };
-                const pct = ((data.usage / totalUsage) * 100).toFixed(0);
-                return `
-                    <div style="margin-bottom:10px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-                            <span style="font-size:11px;font-weight:600;color:var(--text-dark);">
-                                <i class="fas ${catInfo.icon}" style="color:${catInfo.color};width:14px;"></i>
-                                ${catInfo.name}
-                            </span>
-                            <span style="font-size:10px;color:var(--text-light);">
-                                ${data.enabled}/${data.count} · ${data.usage}
-                            </span>
-                        </div>
-                        <div style="height:5px;background:var(--bg);border-radius:50px;overflow:hidden;">
-                            <div style="width:${pct}%;height:100%;background:${catInfo.color};border-radius:50px;transition:width 0.6s;"></div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-    }
+    updateToolsBadge();
+}
 
-    function renderQuickTools(tools, toolUsage) {
-        const enabledTools = tools.filter(t => t.enabled).slice(0, 12);
-        document.getElementById('quickToolGrid').innerHTML = enabledTools.map(t => {
-            const usage = toolUsage[t.id] || 0;
-            return `
-                <a href="${ADMIN_CONFIG.SITE_URL}${t.path}" target="_blank" class="quick-tool">
-                    <i class="fas ${t.icon}"></i>
-                    <span>${t.name}</span>
-                    <small>${usage} uses</small>
-                </a>
-            `;
-        }).join('');
-    }
+function renderHourlyHeatmap(activities) {
+    const today   = new Date().toISOString().split('T')[0];
+    const isMob   = window.innerWidth <= 768;
+    const slots   = isMob ? 12 : 24;
+    const hourGroups = new Array(slots).fill(0);
 
-    refreshDashboard(false);
-    setTimeout(() => refreshDashboard(true), 100);
-    setInterval(() => refreshDashboard(false), 5000);
-
-    window.addEventListener('storage', (e) => {
-        if ([ADMIN_CONFIG.ANALYTICS_KEY, ADMIN_CONFIG.ACTIVITY_KEY, ADMIN_CONFIG.TOOLS_KEY].includes(e.key)) {
-            refreshDashboard(false);
+    activities.forEach(a => {
+        const d = new Date(a.time);
+        if (d.toISOString().split('T')[0] === today) {
+            hourGroups[isMob ? Math.floor(d.getHours() / 2) : d.getHours()]++;
         }
     });
 
-    document.getElementById('chartRange').addEventListener('change', () => refreshDashboard(false));
+    const max = Math.max(...hourGroups, 1);
+    const grid = document.getElementById('hourlyGrid');
+    if (!grid) return;
+    grid.style.gridTemplateColumns = `repeat(${slots}, 1fr)`;
+    grid.innerHTML = hourGroups.map((count, h) => {
+        const intensity = count / max;
+        const opacity   = intensity > 0 ? Math.max(0.18, intensity) : 0;
+        const bg        = intensity > 0 ? `rgba(124,58,237,${opacity})` : 'var(--bg)';
+        const label     = isMob ? `${h*2}-${h*2+1}h` : `${h}:00`;
+        return `<div class="hourly-cell" style="background:${bg};" data-tooltip="${label} — ${count} events"></div>`;
+    }).join('');
+}
 
-    /* ACTIONS */
-    window.manualRefresh = function() {
-        const btn = document.getElementById('refreshBtn');
-        btn.classList.add('spinning');
-        refreshDashboard(true);
-        AdminUI.toast('Refreshed!', 'success', 1500);
-        setTimeout(() => btn.classList.remove('spinning'), 600);
+function renderCategoryBreakdown(tools, toolUsage) {
+    const catData = {};
+    tools.forEach(t => {
+        if (!catData[t.category]) catData[t.category] = { count:0, usage:0, enabled:0 };
+        catData[t.category].count++;
+        catData[t.category].usage += (toolUsage[t.id] || 0);
+        if (t.enabled) catData[t.category].enabled++;
+    });
+    const totalUsage = Math.max(Object.values(catData).reduce((a,b) => a + b.usage, 0), 1);
+    const el = document.getElementById('categoryBreakdown');
+    if (!el) return;
+    el.innerHTML = Object.entries(catData)
+        .sort(([,a],[,b]) => b.count - a.count)
+        .map(([cat, data]) => {
+            const catInfo = CATEGORIES[cat] || { name: cat, icon:'fa-folder', color:'#7c3aed' };
+            const pct = ((data.usage / totalUsage) * 100).toFixed(0);
+            return `
+                <div style="margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                        <span style="font-size:11px;font-weight:600;color:var(--text-dark);display:flex;align-items:center;gap:5px;">
+                            <i class="fas ${catInfo.icon}" style="color:${catInfo.color};width:14px;"></i>
+                            ${catInfo.name}
+                        </span>
+                        <span style="font-size:10px;color:var(--text-light);">${data.enabled}/${data.count} · ${data.usage}</span>
+                    </div>
+                    <div style="height:5px;background:var(--bg);border-radius:50px;overflow:hidden;">
+                        <div style="width:${pct}%;height:100%;background:${catInfo.color};border-radius:50px;transition:width 0.6s ease;"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+}
+
+function renderQuickTools(tools, toolUsage) {
+    const el = document.getElementById('quickToolGrid');
+    if (!el) return;
+    const enabledTools = tools.filter(t => t.enabled).slice(0, 12);
+    el.innerHTML = enabledTools.map(t => `
+        <a href="${ADMIN_CONFIG.SITE_URL}${t.path}" target="_blank" rel="noopener noreferrer"
+           class="quick-tool" aria-label="${t.name}">
+            <i class="fas ${t.icon}" aria-hidden="true"></i>
+            <span>${t.name}</span>
+            <small>${AdminUI.formatNumber(toolUsage[t.id] || 0)} uses</small>
+        </a>
+    `).join('');
+}
+
+/* ════════════════════════════════════════
+   INIT + AUTO REFRESH
+════════════════════════════════════════ */
+refreshDashboard(false);
+setTimeout(() => refreshDashboard(true), 80);
+setInterval(() => refreshDashboard(false), 5000);
+
+window.addEventListener('storage', (e) => {
+    if ([ADMIN_CONFIG.ANALYTICS_KEY, ADMIN_CONFIG.ACTIVITY_KEY, ADMIN_CONFIG.TOOLS_KEY].includes(e.key)) {
+        refreshDashboard(false);
+    }
+});
+window.addEventListener('admin-storage-change', () => refreshDashboard(false));
+
+document.getElementById('chartRange')?.addEventListener('change', () => refreshDashboard(false));
+
+/* ════════════════════════════════════════
+   ACTIONS
+════════════════════════════════════════ */
+window.manualRefresh = function() {
+    const btn = document.getElementById('refreshBtn');
+    if (btn) btn.classList.add('spinning');
+    refreshDashboard(true);
+    AdminUI.toast('Dashboard refreshed!', 'success', 1500);
+    setTimeout(() => btn?.classList.remove('spinning'), 700);
+};
+
+window.resetAnalytics = async function() {
+    const ok = await AdminUI.confirm({
+        title: 'Reset Analytics?',
+        message: 'This will <strong>permanently delete</strong> all analytics data. Cannot be undone.',
+        icon: 'danger', iconClass: 'fa-exclamation-triangle',
+        confirmText: 'Yes, Reset', cancelText: 'Cancel', confirmClass: 'btn-danger',
+    });
+    if (!ok) return;
+    AdminStorage.set(ADMIN_CONFIG.ANALYTICS_KEY, {
+        totalVisits:0, totalFiles:0, toolUsage:{}, dailyVisits:{},
+        hourlyVisits:{}, firstVisit: Date.now()
+    });
+    prevValues = { tools: prevValues.tools, visits:0, files:0, activities:0, bannerVisits:0, bannerFiles:0, bannerTools:prevValues.tools };
+    AdminUI.toast('Analytics reset!', 'success');
+    refreshDashboard(true);
+};
+
+window.clearActivity = async function() {
+    const ok = await AdminUI.confirm({
+        title: 'Clear Activity Log?',
+        message: 'All activity logs will be permanently deleted.',
+        icon: 'warning', iconClass: 'fa-trash-alt',
+        confirmText: 'Yes, Clear', cancelText: 'Cancel', confirmClass: 'btn-danger',
+    });
+    if (!ok) return;
+    AdminStorage.set(ADMIN_CONFIG.ACTIVITY_KEY, []);
+    AdminUI.toast('Activity cleared', 'success');
+    refreshDashboard(false);
+};
+
+window.exportData = function() {
+    const data = {
+        exportDate: new Date().toISOString(),
+        site: ADMIN_CONFIG.SITE_NAME,
+        tools: AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []),
+        analytics: AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {}),
+        activities: AdminStorage.get(ADMIN_CONFIG.ACTIVITY_KEY, [])
     };
-
-    window.resetAnalytics = async function() {
-        const ok = await AdminUI.confirm({
-            title: 'Reset Analytics?',
-            message: 'This will <strong>permanently delete</strong> all analytics data. Cannot be undone.',
-            icon: 'danger',
-            iconClass: 'fa-exclamation-triangle',
-            confirmText: 'Yes, Reset',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
-
-        AdminStorage.set(ADMIN_CONFIG.ANALYTICS_KEY, {
-            totalVisits: 0, totalFiles: 0, toolUsage: {}, dailyVisits: {},
-            hourlyVisits: {}, devices: { desktop: 0, mobile: 0, tablet: 0 },
-            browsers: {}, countries: {}, referrers: {}, firstVisit: Date.now()
-        });
-        AdminUI.toast('Analytics reset!', 'success');
-        prevValues = { visits: 0, files: 0, tools: prevValues.tools, activities: 0, bannerVisits: 0, bannerFiles: 0, bannerTools: prevValues.tools };
-        refreshDashboard(true);
-    };
-
-    window.clearActivity = async function() {
-        const ok = await AdminUI.confirm({
-            title: 'Clear Activity?',
-            message: 'All activity logs will be deleted.',
-            icon: 'warning',
-            iconClass: 'fa-trash-alt',
-            confirmText: 'Yes, Clear',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
-        AdminStorage.set(ADMIN_CONFIG.ACTIVITY_KEY, []);
-        AdminUI.toast('Activity cleared', 'success');
-        refreshDashboard(true);
-    };
-
-    window.exportData = function() {
-        const data = {
-            exportDate: new Date().toISOString(),
-            site: ADMIN_CONFIG.SITE_NAME,
-            tools: AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []),
-            analytics: AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {}),
-            activities: AdminStorage.get(ADMIN_CONFIG.ACTIVITY_KEY, [])
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = Object.assign(document.createElement('a'), {
-            href: url,
-            download: `aitoolcor-${new Date().toISOString().split('T')[0]}.json`
-        });
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
-        AdminUI.toast('Data exported!', 'success');
-    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = Object.assign(document.createElement('a'), {
+        href: url,
+        download: `aitoolcor-export-${new Date().toISOString().split('T')[0]}.json`
+    });
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+    AdminUI.toast('Data exported!', 'success');
+};
 </script>
 
 </body>

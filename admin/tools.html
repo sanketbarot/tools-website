@@ -18,412 +18,92 @@
     <link rel="stylesheet" href="css/admin.css">
 
     <style>
-        /* ═══════════════════════════════════════
-           TOOLS MANAGER - MOBILE FIRST
-        ═══════════════════════════════════════ */
-
-        .tools-toolbar {
-            display: flex; gap: 8px; flex-wrap: wrap;
-            align-items: center; margin-bottom: 16px;
-        }
-        .tools-toolbar .search-box {
-            flex: 1 1 100%;
-            max-width: 100%;
-        }
-        .tools-toolbar .btn {
-            flex: 1;
-            min-width: 0;
-            padding: 9px 12px;
-            font-size: 12px;
-        }
-
-        .category-pills {
-            display: flex; gap: 6px; flex-wrap: wrap;
-            margin-bottom: 14px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 4px;
-        }
-        .category-pills::-webkit-scrollbar { height: 4px; }
-        .category-pills::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 2px;
-        }
-
-        .category-pill {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 7px 12px; border-radius: 50px;
-            background: #fff; border: 1.5px solid var(--border);
-            font-size: 12px; font-weight: 600;
-            color: var(--text-medium); cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .category-pill:hover, .category-pill:active {
-            border-color: var(--primary); color: var(--primary);
-        }
-        .category-pill.active {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: #fff; border-color: transparent;
-            box-shadow: 0 3px 10px rgba(124,58,237,0.25);
-        }
-        .category-pill .count {
-            background: rgba(255,255,255,0.25);
-            padding: 1px 7px; border-radius: 50px;
-            font-size: 10px;
-        }
-        .category-pill:not(.active) .count {
-            background: var(--bg);
-            color: var(--text-light);
-        }
-
-        .bulk-bar {
-            display: none;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: #fff;
-            padding: 10px 14px; border-radius: 12px;
-            margin-bottom: 14px;
-            align-items: center; gap: 10px;
-            position: sticky;
-            top: calc(var(--topbar-h) + 8px);
-            z-index: 10;
-            flex-wrap: wrap;
-            box-shadow: 0 6px 20px rgba(124,58,237,0.25);
-        }
-        .bulk-bar.show { display: flex; }
-        .bulk-bar .btn {
-            color: var(--primary);
-            background: #fff;
-            font-size: 11px;
-            padding: 6px 10px;
-        }
-        .bulk-bar-info {
-            font-size: 13px;
-            font-weight: 600;
-            flex: 1;
-            min-width: 0;
-        }
-        .bulk-bar-actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        /* Category Section */
-        .category-section {
-            margin-bottom: 18px;
-        }
-        .category-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 14px;
-            background: linear-gradient(135deg, rgba(124,58,237,0.05), rgba(236,72,153,0.05));
-            border: 1.5px solid rgba(124,58,237,0.1);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .category-header h3 {
-            font-size: 14px; font-weight: 800;
-            color: var(--text-dark);
-            display: flex; align-items: center; gap: 8px;
-            margin: 0;
-            flex: 1;
-            min-width: 0;
-        }
-        .category-header h3 i {
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        .category-header h3 span {
-            font-size: 11px;
-            color: var(--text-light);
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .category-actions {
-            display: flex; gap: 6px;
-        }
-        .category-actions button {
-            background: #fff;
-            border: 1px solid var(--border);
-            padding: 5px 10px;
-            border-radius: 7px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--text-medium);
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .category-actions button:hover, .category-actions button:active {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Tool Row */
-        .tool-row {
-            display: grid;
-            grid-template-columns: auto auto 1fr auto auto;
-            gap: 12px; align-items: center;
-            padding: 12px;
-            background: #fff;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            margin-bottom: 8px;
-            transition: all 0.2s;
-        }
-        .tool-row:hover, .tool-row:active {
-            border-color: var(--primary);
-            box-shadow: 0 3px 12px rgba(124,58,237,0.08);
-        }
-        .tool-row.disabled { opacity: 0.55; background: #fafafa; }
-
-        .tool-checkbox {
-            width: 18px; height: 18px;
-            accent-color: var(--primary);
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .tool-icon-box {
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 16px;
-            flex-shrink: 0;
-        }
-        .tool-icon-box.color-red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .tool-icon-box.color-green  { background: linear-gradient(135deg, #10b981, #059669); }
-        .tool-icon-box.color-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-        .tool-icon-box.color-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-        .tool-icon-box.color-orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .tool-icon-box.color-pink   { background: linear-gradient(135deg, #ec4899, #db2777); }
-        .tool-icon-box.color-teal   { background: linear-gradient(135deg, #14b8a6, #0d9488); }
-        .tool-icon-box.color-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
-
-        .tool-info { min-width: 0; flex: 1; }
-        .tool-info h4 {
-            font-size: 13px; font-weight: 700;
-            color: var(--text-dark); margin: 0 0 2px;
-            display: flex; align-items: center; gap: 6px;
-            flex-wrap: wrap;
-        }
-        .tool-info p {
-            font-size: 11px; color: var(--text-light);
-            margin: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .tool-mini-badge {
-            font-size: 9px; font-weight: 800;
-            padding: 2px 5px; border-radius: 3px;
-            text-transform: uppercase; letter-spacing: 0.4px;
-        }
-        .tool-mini-badge.popular { background: #fef3c7; color: #d97706; }
-        .tool-mini-badge.new     { background: #d1fae5; color: #059669; }
-        .tool-mini-badge.ai      { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; }
-        .tool-mini-badge.soon    { background: #e0e7ff; color: #4338ca; }
-
+        /* ── Tool Usage column ── */
         .tool-usage {
             text-align: right;
             font-size: 11px;
-            min-width: 50px;
-        }
-        .tool-usage strong { display: block; color: var(--primary); font-size: 13px; }
-        .tool-usage small { color: var(--text-light); font-size: 10px; }
-
-        .tool-actions {
-            display: flex; align-items: center; gap: 8px;
+            min-width: 46px;
             flex-shrink: 0;
         }
+        .tool-usage strong { display: block; color: var(--primary); font-size: 13px; line-height: 1; }
+        .tool-usage small  { color: var(--text-light); font-size: 10px; }
+
+        /* ── Mini badge inside tool row ── */
+        .tool-mini-badge {
+            font-size: 9px; font-weight: 800;
+            padding: 2px 5px; border-radius: 3px;
+            text-transform: uppercase; letter-spacing: 0.3px;
+        }
+        .tool-mini-badge.popular { background: #fef3c7; color: #d97706; }
+        .tool-mini-badge.new     { background: #d1fae5; color: #059669; }
+        .tool-mini-badge.ai      { background: linear-gradient(135deg,#8b5cf6,#ec4899); color:#fff; }
+        .tool-mini-badge.soon    { background: #e0e7ff; color: #4338ca; }
+
+        /* ── Tool visit button ── */
         .tool-visit-btn {
             width: 30px; height: 30px;
-            border-radius: 8px; border: none;
+            border-radius: 8px; border: 1px solid var(--border);
             background: var(--bg); color: var(--text-medium);
             cursor: pointer; transition: all 0.2s;
             display: flex; align-items: center; justify-content: center;
-            font-size: 12px;
+            font-size: 12px; flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
         }
-        .tool-visit-btn:hover, .tool-visit-btn:active {
-            background: var(--primary); color: #fff;
-        }
+        .tool-visit-btn:hover { background: var(--success); color: #fff; border-color: var(--success); }
 
-        /* Summary Cards */
+        /* ── Summary row ── */
         .summary-row {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px; margin-bottom: 16px;
         }
         .summary-card {
-            background: #fff;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
+            background: #fff; border: 1.5px solid var(--border);
+            border-radius: 12px; padding: 14px;
             display: flex; align-items: center; gap: 10px;
-            transition: all 0.2s;
+            transition: all 0.2s; position: relative; overflow: hidden;
         }
-        .summary-card:hover, .summary-card:active {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(124,58,237,0.08);
-        }
+        .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+        .summary-card:nth-child(1)::before { background: linear-gradient(90deg,#7c3aed,#ec4899); }
+        .summary-card:nth-child(2)::before { background: linear-gradient(90deg,#10b981,#059669); }
+        .summary-card:nth-child(3)::before { background: linear-gradient(90deg,#ef4444,#dc2626); }
+        .summary-card:nth-child(4)::before { background: linear-gradient(90deg,#f59e0b,#f97316); }
+        .summary-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(124,58,237,0.08); }
         .summary-card-icon {
-            width: 38px; height: 38px;
-            border-radius: 10px;
+            width: 38px; height: 38px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff;
-            flex-shrink: 0;
-            font-size: 15px;
+            color: #fff; flex-shrink: 0; font-size: 15px;
         }
         .summary-card-info { min-width: 0; flex: 1; }
-        .summary-card-info strong {
-            display: block; font-size: 18px;
-            font-weight: 800; color: var(--text-dark);
-            line-height: 1;
-        }
-        .summary-card-info span {
-            font-size: 11px; color: var(--text-light);
-        }
+        .summary-card-info strong { display: block; font-size: 19px; font-weight: 800; color: var(--text-dark); line-height: 1; }
+        .summary-card-info span   { font-size: 11px; color: var(--text-light); }
 
-        /* ═══════════════════════════════════════
-           RESPONSIVE BREAKPOINTS
-        ═══════════════════════════════════════ */
-
-        /* Tablet */
-        @media (min-width: 481px) {
-            .summary-row {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .tools-toolbar .search-box {
-                flex: 1;
-                max-width: 320px;
-            }
-            .tools-toolbar .btn {
-                flex: 0 0 auto;
-            }
-            .tool-row {
-                grid-template-columns: auto auto 1fr auto auto auto;
-                padding: 12px 16px;
-            }
+        /* ── Tool row override for desktop (5-col) ── */
+        @media (min-width: 600px) {
+            .tool-row { grid-template-columns: 18px 40px 1fr auto auto auto !important; }
         }
 
-        @media (min-width: 769px) {
-            .page-container { padding: 24px !important; }
-            .summary-card { padding: 16px; }
-            .summary-card-info strong { font-size: 20px; }
-            .category-header { padding: 12px 16px; }
-            .category-header h3 { font-size: 15px; }
-            .category-header h3 i { width: 36px; height: 36px; }
-            .tool-row {
-                padding: 14px 16px;
-                gap: 16px;
-            }
-            .tool-icon-box { width: 42px; height: 42px; font-size: 17px; }
-            .tool-info h4 { font-size: 14px; }
-            .tool-info p { font-size: 12px; }
+        /* ── Responsive ── */
+        @media (max-width: 767px) {
+            .summary-row { grid-template-columns: repeat(2, 1fr); }
         }
-
-        /* Mobile small */
         @media (max-width: 480px) {
-            .page-container { padding: 12px !important; }
-            .tools-toolbar {
-                gap: 6px;
-            }
-            .tools-toolbar .btn {
-                font-size: 11px;
-                padding: 8px 10px;
-                flex: 1 1 30%;
-            }
-            .tools-toolbar .btn i { font-size: 11px; }
-
-            .tool-row {
-                grid-template-columns: auto 1fr auto;
-                gap: 10px;
-                padding: 10px 12px;
-            }
-            .tool-checkbox {
-                grid-row: 1 / 3;
-            }
-            .tool-icon-box {
-                width: 36px; height: 36px;
-                font-size: 14px;
-                grid-row: 1 / 3;
-            }
-            .tool-usage { display: none; }
-            .tool-info p {
-                display: -webkit-box;
-                -webkit-line-clamp: 1;
-                -webkit-box-orient: vertical;
-                font-size: 10px;
-            }
-            .tool-info h4 { font-size: 12px; }
-            .tool-mini-badge { font-size: 8px; padding: 1px 4px; }
-
-            .tool-actions { gap: 6px; }
-            .tool-visit-btn { width: 28px; height: 28px; font-size: 11px; }
-
-            .toggle-switch {
-                width: 42px !important; height: 24px !important;
-            }
-            .toggle-slider::before {
-                height: 18px !important; width: 18px !important;
-            }
-            .toggle-switch input:checked + .toggle-slider::before {
-                transform: translateX(18px) !important;
-            }
-
-            .category-header {
-                padding: 10px 12px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .category-header h3 {
-                font-size: 13px;
-            }
-            .category-actions {
-                width: 100%;
-            }
-            .category-actions button {
-                flex: 1;
-                justify-content: center;
-                font-size: 10px;
-                padding: 5px 8px;
-            }
-
+            .summary-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .summary-card { padding: 12px; gap: 8px; }
             .summary-card-icon { width: 34px; height: 34px; font-size: 13px; }
             .summary-card-info strong { font-size: 16px; }
             .summary-card-info span { font-size: 10px; }
-
-            .bulk-bar {
-                padding: 10px 12px;
-                top: calc(var(--topbar-h) + 4px);
-            }
-            .bulk-bar-info { font-size: 12px; }
-            .bulk-bar .btn { font-size: 10px; padding: 5px 8px; }
+            .tool-usage { display: none; }
+            .category-header { flex-direction: column; align-items: stretch; }
+            .category-actions { width: 100%; }
+            .category-actions button { flex: 1; justify-content: center; font-size: 10px; padding: 5px 8px; }
         }
-
-        /* Very small */
         @media (max-width: 360px) {
             .summary-row { grid-template-columns: 1fr 1fr; }
-            .tools-toolbar .btn { flex: 1 1 45%; }
-            .category-pills { padding-bottom: 6px; }
-            .tool-info h4 { font-size: 11px; }
         }
-
-        /* Touch optimizations */
         @media (hover: none) {
-            .tool-row, .summary-card, .category-pill, .quick-action-btn {
-                -webkit-tap-highlight-color: rgba(124,58,237,0.1);
+            .tool-row, .summary-card, .category-pill {
+                -webkit-tap-highlight-color: rgba(124,58,237,0.08);
             }
         }
     </style>
@@ -434,517 +114,552 @@
 
 <script src="js/admin.js"></script>
 <script>
-    if (!AdminAuth.requireAuth()) throw new Error('Not authenticated');
+/* ════════════════════════════════════════
+   AUTH CHECK
+════════════════════════════════════════ */
+if (!AdminAuth.requireAuth()) throw new Error('Not authenticated');
 
-    document.getElementById('adminWrapper').innerHTML = `
-        ${AdminUI.renderSidebar('tools')}
-        <div class="main-content">
-            ${AdminUI.renderTopbar('Tools Manager', 'Enable or disable tools')}
+/* ════════════════════════════════════════
+   RENDER LAYOUT
+════════════════════════════════════════ */
+document.getElementById('adminWrapper').innerHTML = `
+    ${AdminUI.renderSidebar('tools')}
+    <div class="main-content">
+        ${AdminUI.renderTopbar('Tools Manager', 'Enable or disable tools on your website')}
 
-            <div class="page-container">
+        <div class="page-container">
 
-                <div class="summary-row" id="summaryRow"></div>
+            <!-- SUMMARY CARDS -->
+            <div class="summary-row" id="summaryRow"></div>
 
-                <div class="tools-toolbar">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="search" id="searchInput" placeholder="Search tools...">
-                    </div>
-                    <button class="btn btn-success" type="button" onclick="enableAll()">
-                        <i class="fas fa-toggle-on"></i> Enable All
-                    </button>
-                    <button class="btn btn-danger" type="button" onclick="disableAll()">
-                        <i class="fas fa-toggle-off"></i> Disable All
-                    </button>
-                    <button class="btn btn-outline" type="button" onclick="resetToDefaults()">
-                        <i class="fas fa-redo"></i> Reset
-                    </button>
-                </div>
-
-                <div class="category-pills" id="categoryPills"></div>
-
-                <div class="bulk-bar" id="bulkBar">
-                    <i class="fas fa-check-circle"></i>
-                    <span class="bulk-bar-info"><strong id="selectedCount">0</strong> selected</span>
-                    <div class="bulk-bar-actions">
-                        <button class="btn btn-sm" type="button" onclick="bulkEnable()">
-                            <i class="fas fa-check"></i> Enable
-                        </button>
-                        <button class="btn btn-sm" type="button" onclick="bulkDisable()">
-                            <i class="fas fa-times"></i> Disable
-                        </button>
-                        <button class="btn btn-sm" type="button" onclick="clearSelection()" style="color:#fff;background:transparent;border:1px solid rgba(255,255,255,0.4);">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-
-                <div id="toolsContainer"></div>
-
-                <div id="emptyState" class="empty-state" style="display:none;">
+            <!-- TOOLBAR -->
+            <div class="tools-toolbar">
+                <div class="search-box" style="flex:1 1 220px;max-width:340px;">
                     <i class="fas fa-search"></i>
-                    <h3>No tools found</h3>
-                    <p>Try a different search or category</p>
+                    <input type="search" id="searchInput" placeholder="Search tools..." autocomplete="off">
                 </div>
+                <button class="btn btn-success btn-sm" type="button" onclick="enableAll()">
+                    <i class="fas fa-toggle-on"></i> Enable All
+                </button>
+                <button class="btn btn-danger btn-sm" type="button" onclick="disableAll()">
+                    <i class="fas fa-toggle-off"></i> Disable All
+                </button>
+                <button class="btn btn-outline btn-sm" type="button" onclick="resetToDefaults()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
 
-                <div class="card" style="margin-top:16px;background:var(--info-light);border-color:var(--info);">
-                    <div style="display:flex;gap:10px;align-items:flex-start;">
-                        <i class="fas fa-info-circle" style="color:var(--info);font-size:18px;margin-top:2px;flex-shrink:0;"></i>
-                        <div style="flex:1;">
-                            <strong style="color:var(--info);display:block;margin-bottom:4px;font-size:13px;">⚡ Live Sync</strong>
-                            <p style="color:var(--text-medium);font-size:12px;margin:0;line-height:1.5;">
-                                Changes apply within <strong>2 seconds</strong> on the
-                                <a href="${ADMIN_CONFIG.SITE_URL}" target="_blank" style="color:var(--primary);font-weight:600;">website</a>.
-                                Disabled tools show "Maintenance" page.
-                            </p>
-                        </div>
+            <!-- CATEGORY PILLS -->
+            <div class="category-pills" id="categoryPills" role="tablist" aria-label="Filter by category"></div>
+
+            <!-- BULK ACTION BAR -->
+            <div class="bulk-bar" id="bulkBar" role="toolbar" aria-label="Bulk actions">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                <span class="bulk-bar-info">
+                    <strong id="selectedCount">0</strong> selected
+                </span>
+                <div class="bulk-bar-actions">
+                    <button class="btn btn-sm" type="button" onclick="bulkEnable()">
+                        <i class="fas fa-check"></i> Enable
+                    </button>
+                    <button class="btn btn-sm" type="button" onclick="bulkDisable()">
+                        <i class="fas fa-times"></i> Disable
+                    </button>
+                    <button class="btn btn-sm" type="button" onclick="clearSelection()"
+                            style="color:#fff;background:transparent;border:1px solid rgba(255,255,255,0.35);">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <!-- TOOLS LIST -->
+            <div id="toolsContainer"></div>
+
+            <!-- EMPTY STATE -->
+            <div id="emptyState" class="empty-state" style="display:none;" aria-live="polite">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <h3>No tools found</h3>
+                <p>Try a different search term or category</p>
+                <button class="btn btn-outline" type="button" onclick="setCategory('all');document.getElementById('searchInput').value='';currentSearch='';" style="margin-top:12px;">
+                    <i class="fas fa-times"></i> Clear Filter
+                </button>
+            </div>
+
+            <!-- LIVE SYNC INFO -->
+            <div class="card" style="margin-top:16px;background:var(--info-light);border-color:rgba(59,130,246,0.3);">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                    <i class="fas fa-info-circle" style="color:var(--info);font-size:18px;margin-top:1px;flex-shrink:0;" aria-hidden="true"></i>
+                    <div style="flex:1;">
+                        <strong style="color:var(--info);display:block;margin-bottom:3px;font-size:13px;">
+                            ⚡ Live Sync Active
+                        </strong>
+                        <p style="color:var(--text-medium);font-size:12px;margin:0;line-height:1.5;">
+                            Changes reflect on your
+                            <a href="${ADMIN_CONFIG.SITE_URL}" target="_blank" rel="noopener noreferrer"
+                               style="color:var(--primary);font-weight:700;">website</a>
+                            within <strong>2 seconds</strong> via <code style="background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:4px;font-size:11px;">site-tracker.js</code>.
+                            Disabled tools automatically show a maintenance page to visitors.
+                        </p>
                     </div>
                 </div>
+            </div>
 
+        </div>
+    </div>
+`;
+
+AdminUI.initSidebar();
+AdminUI.initUserMenu();
+AdminUI.startLiveClock();
+updateToolsBadge();
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let currentCategory = 'all';
+let currentSearch   = '';
+let selectedTools   = new Set();
+
+/* ════════════════════════════════════════
+   RENDER SUMMARY CARDS
+════════════════════════════════════════ */
+function renderSummary() {
+    const tools     = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
+    const toolUsage = analytics.toolUsage || {};
+    const enabled   = tools.filter(t => t.enabled).length;
+    const disabled  = tools.length - enabled;
+    const totalUse  = Object.values(toolUsage).reduce((a,b) => a + b, 0);
+
+    document.getElementById('summaryRow').innerHTML = `
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background:linear-gradient(135deg,#7c3aed,#ec4899);">
+                <i class="fas fa-th-large"></i>
+            </div>
+            <div class="summary-card-info">
+                <strong>${tools.length}</strong>
+                <span>Total Tools</span>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background:linear-gradient(135deg,#10b981,#059669);">
+                <i class="fas fa-toggle-on"></i>
+            </div>
+            <div class="summary-card-info">
+                <strong>${enabled}</strong>
+                <span>Enabled</span>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);">
+                <i class="fas fa-toggle-off"></i>
+            </div>
+            <div class="summary-card-info">
+                <strong>${disabled}</strong>
+                <span>Disabled</span>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316);">
+                <i class="fas fa-fire"></i>
+            </div>
+            <div class="summary-card-info">
+                <strong>${AdminUI.formatNumber(totalUse)}</strong>
+                <span>Total Usage</span>
             </div>
         </div>
     `;
+}
 
-    AdminUI.initSidebar();
-    AdminUI.initUserMenu();
-    AdminUI.startLiveClock();
-    updateToolsBadge();
-
-    let currentCategory = 'all';
-    let currentSearch = '';
-    let selectedTools = new Set();
-
-    function renderSummary() {
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        const enabled = tools.filter(t => t.enabled).length;
-        const disabled = tools.length - enabled;
-        const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
-        const toolUsage = analytics.toolUsage || {};
-        const totalUsage = Object.values(toolUsage).reduce((a, b) => a + b, 0);
-
-        document.getElementById('summaryRow').innerHTML = `
-            <div class="summary-card">
-                <div class="summary-card-icon" style="background:linear-gradient(135deg,#7c3aed,#ec4899);">
-                    <i class="fas fa-th-large"></i>
-                </div>
-                <div class="summary-card-info">
-                    <strong>${tools.length}</strong>
-                    <span>Total Tools</span>
-                </div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-card-icon" style="background:linear-gradient(135deg,#10b981,#059669);">
-                    <i class="fas fa-toggle-on"></i>
-                </div>
-                <div class="summary-card-info">
-                    <strong>${enabled}</strong>
-                    <span>Enabled</span>
-                </div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-card-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);">
-                    <i class="fas fa-toggle-off"></i>
-                </div>
-                <div class="summary-card-info">
-                    <strong>${disabled}</strong>
-                    <span>Disabled</span>
-                </div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-card-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
-                    <i class="fas fa-fire"></i>
-                </div>
-                <div class="summary-card-info">
-                    <strong>${AdminUI.formatNumber(totalUsage)}</strong>
-                    <span>Total Usage</span>
-                </div>
+/* ════════════════════════════════════════
+   RENDER CATEGORY PILLS
+════════════════════════════════════════ */
+function renderCategories() {
+    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const html  = Object.entries(CATEGORIES).map(([key, cat]) => {
+        const count = key === 'all' ? tools.length : tools.filter(t => t.category === key).length;
+        if (count === 0 && key !== 'all') return '';
+        return `
+            <div class="category-pill ${key === currentCategory ? 'active' : ''}"
+                 role="tab"
+                 aria-selected="${key === currentCategory}"
+                 onclick="setCategory('${key}')"
+                 tabindex="0"
+                 onkeydown="if(event.key==='Enter'||event.key===' ')setCategory('${key}')">
+                <i class="fas ${cat.icon}" aria-hidden="true"></i>
+                ${cat.name}
+                <span class="count">${count}</span>
             </div>
         `;
+    }).join('');
+    document.getElementById('categoryPills').innerHTML = html;
+}
+
+/* ════════════════════════════════════════
+   RENDER TOOLS
+════════════════════════════════════════ */
+function renderTools() {
+    const tools     = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
+    const toolUsage = analytics.toolUsage || {};
+
+    let filtered = tools;
+    if (currentCategory !== 'all') {
+        filtered = filtered.filter(t => t.category === currentCategory);
+    }
+    if (currentSearch) {
+        const s = currentSearch.toLowerCase();
+        filtered = filtered.filter(t =>
+            t.name.toLowerCase().includes(s) ||
+            t.desc.toLowerCase().includes(s) ||
+            t.category.toLowerCase().includes(s) ||
+            t.id.toLowerCase().includes(s)
+        );
     }
 
-    function renderCategories() {
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        const html = Object.entries(CATEGORIES).map(([key, cat]) => {
-            const count = key === 'all' ? tools.length : tools.filter(t => t.category === key).length;
-            if (count === 0 && key !== 'all') return '';
-            return `
-                <div class="category-pill ${key === currentCategory ? 'active' : ''}"
-                     onclick="setCategory('${key}')">
-                    <i class="fas ${cat.icon}"></i>
-                    ${cat.name}
-                    <span class="count">${count}</span>
-                </div>
-            `;
-        }).join('');
-        document.getElementById('categoryPills').innerHTML = html;
+    const container = document.getElementById('toolsContainer');
+    const emptyEl   = document.getElementById('emptyState');
+
+    if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyEl.style.display = 'block';
+        return;
     }
+    emptyEl.style.display = 'none';
 
-    function renderTools() {
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
-        const toolUsage = analytics.toolUsage || {};
+    // Group by category
+    const grouped = {};
+    filtered.forEach(t => {
+        if (!grouped[t.category]) grouped[t.category] = [];
+        grouped[t.category].push(t);
+    });
 
-        let filtered = tools;
-        if (currentCategory !== 'all') {
-            filtered = filtered.filter(t => t.category === currentCategory);
-        }
-        if (currentSearch) {
-            const s = currentSearch.toLowerCase();
-            filtered = filtered.filter(t =>
-                t.name.toLowerCase().includes(s) ||
-                t.desc.toLowerCase().includes(s) ||
-                t.category.toLowerCase().includes(s)
-            );
-        }
-
-        const container = document.getElementById('toolsContainer');
-        const emptyEl = document.getElementById('emptyState');
-
-        if (filtered.length === 0) {
-            container.innerHTML = '';
-            emptyEl.style.display = 'block';
-            return;
-        }
-        emptyEl.style.display = 'none';
-
-        const grouped = {};
-        filtered.forEach(t => {
-            if (!grouped[t.category]) grouped[t.category] = [];
-            grouped[t.category].push(t);
-        });
-
-        const html = Object.entries(grouped).map(([catKey, catTools]) => {
-            const catInfo = CATEGORIES[catKey] || { name: catKey, icon: 'fa-folder', color: '#7c3aed' };
-            const enabledCount = catTools.filter(t => t.enabled).length;
-
-            return `
-                <div class="category-section">
-                    <div class="category-header">
-                        <h3>
-                            <i class="fas ${catInfo.icon}" style="background:linear-gradient(135deg,${catInfo.color},${catInfo.color}dd);"></i>
-                            ${catInfo.name}
-                            <span>${enabledCount}/${catTools.length} active</span>
-                        </h3>
-                        <div class="category-actions">
-                            <button type="button" onclick="enableCategory('${catKey}')">
-                                <i class="fas fa-check"></i> All On
-                            </button>
-                            <button type="button" onclick="disableCategory('${catKey}')">
-                                <i class="fas fa-times"></i> All Off
-                            </button>
-                        </div>
-                    </div>
-                    ${catTools.map(tool => renderToolRow(tool, toolUsage)).join('')}
-                </div>
-            `;
-        }).join('');
-
-        container.innerHTML = html;
-    }
-
-    function renderToolRow(tool, toolUsage) {
-        const usage = toolUsage[tool.id] || 0;
-        const isSelected = selectedTools.has(tool.id);
-        const badgeHtml = tool.badge ? `<span class="tool-mini-badge ${tool.badge}">${tool.badge}</span>` : '';
+    container.innerHTML = Object.entries(grouped).map(([catKey, catTools]) => {
+        const catInfo      = CATEGORIES[catKey] || { name: catKey, icon:'fa-folder', color:'#7c3aed' };
+        const enabledCount = catTools.filter(t => t.enabled).length;
 
         return `
-            <div class="tool-row ${!tool.enabled ? 'disabled' : ''}" data-id="${tool.id}">
-                <input type="checkbox" class="tool-checkbox"
-                       ${isSelected ? 'checked' : ''}
-                       onchange="toggleSelect('${tool.id}', this.checked)">
-
-                <div class="tool-icon-box color-${tool.color}">
-                    <i class="fas ${tool.icon}"></i>
+            <div class="category-section">
+                <div class="category-header">
+                    <h3>
+                        <i class="fas ${catInfo.icon}"
+                           style="background:linear-gradient(135deg,${catInfo.color},${catInfo.color}cc);
+                                  padding:8px;border-radius:8px;width:auto;height:auto;font-size:13px;"></i>
+                        ${catInfo.name}
+                        <span>${enabledCount}/${catTools.length} active</span>
+                    </h3>
+                    <div class="category-actions">
+                        <button type="button" onclick="enableCategory('${catKey}')" title="Enable all ${catInfo.name}">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                            <span>All On</span>
+                        </button>
+                        <button type="button" onclick="disableCategory('${catKey}')" title="Disable all ${catInfo.name}">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <span>All Off</span>
+                        </button>
+                    </div>
                 </div>
-
-                <div class="tool-info">
-                    <h4>${tool.name} ${badgeHtml}</h4>
-                    <p>${tool.desc}</p>
-                </div>
-
-                <div class="tool-usage">
-                    <strong>${AdminUI.formatNumber(usage)}</strong>
-                    <small>uses</small>
-                </div>
-
-                <div class="tool-actions">
-                    <label class="toggle-switch" title="${tool.enabled ? 'Disable' : 'Enable'}">
-                        <input type="checkbox" ${tool.enabled ? 'checked' : ''}
-                               onchange="toggleTool('${tool.id}', this.checked)">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <button type="button" class="tool-visit-btn" onclick="visitTool('${tool.id}')" title="Visit">
-                        <i class="fas fa-external-link-alt"></i>
-                    </button>
-                </div>
+                ${catTools.map(tool => renderToolRow(tool, toolUsage)).join('')}
             </div>
         `;
-    }
+    }).join('');
+}
 
-    /* ACTIONS */
-    window.setCategory = function(cat) {
-        currentCategory = cat;
-        clearSelection();
-        renderCategories();
-        renderTools();
-        // Scroll to top of tools
-        window.scrollTo({ top: document.querySelector('.tools-toolbar').offsetTop - 80, behavior: 'smooth' });
-    };
+function renderToolRow(tool, toolUsage) {
+    const usage      = toolUsage[tool.id] || 0;
+    const isSelected = selectedTools.has(tool.id);
+    const badgeHtml  = tool.badge
+        ? `<span class="tool-mini-badge ${tool.badge}">${tool.badge}</span>`
+        : '';
 
-    window.toggleTool = function(id, enabled) {
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        const tool = tools.find(t => t.id === id);
-        if (!tool) return;
+    return `
+        <div class="tool-row ${!tool.enabled ? 'disabled' : ''}" data-id="${tool.id}">
 
-        tool.enabled = enabled;
-        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
-        AdminStorage.logActivity({
-            icon: enabled ? 'fa-toggle-on' : 'fa-toggle-off',
-            bg: enabled ? 'bg-success' : 'bg-warning',
-            title: `Tool ${enabled ? 'enabled' : 'disabled'}`,
-            meta: tool.name
-        });
+            <input type="checkbox"
+                   class="tool-checkbox"
+                   ${isSelected ? 'checked' : ''}
+                   aria-label="Select ${tool.name}"
+                   onchange="toggleSelect('${tool.id}', this.checked)">
 
-        AdminUI.toast(`${tool.name} ${enabled ? 'enabled' : 'disabled'}`, enabled ? 'success' : 'warning');
-        renderSummary();
-        renderTools();
-        updateToolsBadge();
-    };
+            <div class="tool-icon-box color-${tool.color}" aria-hidden="true">
+                <i class="fas ${tool.icon}"></i>
+            </div>
 
-    window.toggleSelect = function(id, checked) {
-        if (checked) selectedTools.add(id);
-        else selectedTools.delete(id);
-        updateBulkBar();
-    };
+            <div class="tool-info">
+                <h4>${tool.name} ${badgeHtml}</h4>
+                <p>${tool.desc}</p>
+            </div>
 
-    window.clearSelection = function() {
-        selectedTools.clear();
-        document.querySelectorAll('.tool-checkbox').forEach(cb => cb.checked = false);
-        updateBulkBar();
-    };
+            <div class="tool-usage" aria-label="${usage} uses">
+                <strong>${AdminUI.formatNumber(usage)}</strong>
+                <small>uses</small>
+            </div>
 
-    function updateBulkBar() {
-        const bar = document.getElementById('bulkBar');
-        const count = document.getElementById('selectedCount');
-        if (selectedTools.size > 0) {
-            bar.classList.add('show');
-            count.textContent = selectedTools.size;
-        } else {
-            bar.classList.remove('show');
-        }
-    }
+            <div class="tool-actions">
+                <label class="toggle-switch" title="${tool.enabled ? 'Click to disable' : 'Click to enable'}"
+                       aria-label="${tool.enabled ? 'Disable' : 'Enable'} ${tool.name}">
+                    <input type="checkbox"
+                           ${tool.enabled ? 'checked' : ''}
+                           onchange="toggleTool('${tool.id}', this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+                <button type="button"
+                        class="tool-visit-btn"
+                        onclick="visitTool('${tool.id}')"
+                        title="Open ${tool.name}"
+                        aria-label="Open ${tool.name} in new tab">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    `;
+}
 
-    window.bulkEnable = async function() {
-        if (selectedTools.size === 0) return;
-        const ok = await AdminUI.confirm({
-            title: 'Enable Selected?',
-            message: `Enable <strong>${selectedTools.size} tool(s)</strong>?`,
-            icon: 'success',
-            iconClass: 'fa-toggle-on',
-            confirmText: 'Yes, Enable',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-success',
-        });
-        if (!ok) return;
-        bulkAction(true);
-    };
-
-    window.bulkDisable = async function() {
-        if (selectedTools.size === 0) return;
-        const ok = await AdminUI.confirm({
-            title: 'Disable Selected?',
-            message: `Disable <strong>${selectedTools.size} tool(s)</strong>?`,
-            icon: 'danger',
-            iconClass: 'fa-toggle-off',
-            confirmText: 'Yes, Disable',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
-        bulkAction(false);
-    };
-
-    function bulkAction(enable) {
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        const count = selectedTools.size;
-        tools.forEach(t => {
-            if (selectedTools.has(t.id)) t.enabled = enable;
-        });
-        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
-        AdminStorage.logActivity({
-            icon: enable ? 'fa-toggle-on' : 'fa-toggle-off',
-            bg: enable ? 'bg-success' : 'bg-warning',
-            title: `Bulk ${enable ? 'enable' : 'disable'}`,
-            meta: `${count} tools affected`
-        });
-        AdminUI.toast(`${count} tool(s) ${enable ? 'enabled' : 'disabled'}`, enable ? 'success' : 'warning');
-        clearSelection();
-        renderSummary();
-        renderTools();
-        updateToolsBadge();
-    }
-
-    window.enableCategory = async function(catKey) {
-        const catInfo = CATEGORIES[catKey];
-        const ok = await AdminUI.confirm({
-            title: `Enable ${catInfo.name}?`,
-            message: `Enable all tools in <strong>${catInfo.name}</strong>?`,
-            icon: 'success',
-            iconClass: 'fa-toggle-on',
-            confirmText: 'Yes, Enable',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-success',
-        });
-        if (!ok) return;
-
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        let count = 0;
-        tools.forEach(t => {
-            if (t.category === catKey && !t.enabled) { t.enabled = true; count++; }
-        });
-        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
-        AdminUI.toast(`${count} ${catInfo.name} enabled`, 'success');
-        renderSummary();
-        renderTools();
-        updateToolsBadge();
-    };
-
-    window.disableCategory = async function(catKey) {
-        const catInfo = CATEGORIES[catKey];
-        const ok = await AdminUI.confirm({
-            title: `Disable ${catInfo.name}?`,
-            message: `Disable all tools in <strong>${catInfo.name}</strong>?`,
-            icon: 'danger',
-            iconClass: 'fa-toggle-off',
-            confirmText: 'Yes, Disable',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
-
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        let count = 0;
-        tools.forEach(t => {
-            if (t.category === catKey && t.enabled) { t.enabled = false; count++; }
-        });
-        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
-        AdminUI.toast(`${count} ${catInfo.name} disabled`, 'warning');
-        renderSummary();
-        renderTools();
-        updateToolsBadge();
-    };
-
-    window.enableAll = async function() {
-        const ok = await AdminUI.confirm({
-            title: 'Enable All Tools?',
-            message: 'This will <strong>enable all tools</strong> on your website.',
-            icon: 'success',
-            iconClass: 'fa-toggle-on',
-            confirmText: 'Yes, Enable',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-success',
-        });
-        if (!ok) return;
-
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        tools.forEach(t => t.enabled = true);
-        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
-        AdminStorage.logActivity({
-            icon: 'fa-check-circle',
-            bg: 'bg-success',
-            title: 'All tools enabled',
-            meta: `${tools.length} tools activated`
-        });
-        AdminUI.toast(`All ${tools.length} tools enabled!`, 'success');
-        renderSummary();
-        renderTools();
-        updateToolsBadge();
-    };
-
-    window.disableAll = async function() {
-        const ok = await AdminUI.confirm({
-            title: 'Disable All Tools?',
-            message: 'This will <strong>hide all tools</strong> from your website.',
-            icon: 'danger',
-            iconClass: 'fa-toggle-off',
-            confirmText: 'Yes, Disable',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
-
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        tools.forEach(t => t.enabled = false);
-        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
-        AdminStorage.logActivity({
-            icon: 'fa-times-circle',
-            bg: 'bg-danger',
-            title: 'All tools disabled',
-            meta: `${tools.length} tools deactivated`
-        });
-        AdminUI.toast(`All ${tools.length} tools disabled!`, 'danger');
-        renderSummary();
-        renderTools();
-        updateToolsBadge();
-    };
-
-    window.resetToDefaults = async function() {
-        const ok = await AdminUI.confirm({
-            title: 'Reset to Defaults?',
-            message: 'This will <strong>restore default configuration</strong>.',
-            icon: 'warning',
-            iconClass: 'fa-redo',
-            confirmText: 'Yes, Reset',
-            cancelText: 'Cancel',
-            confirmClass: 'btn-primary',
-        });
-        if (!ok) return;
-
-        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, DEFAULT_TOOLS);
-        AdminStorage.logActivity({
-            icon: 'fa-redo',
-            bg: 'bg-info',
-            title: 'Tools reset',
-            meta: 'Configuration restored'
-        });
-        AdminUI.toast('Tools reset to defaults', 'info');
-        renderSummary();
-        renderCategories();
-        renderTools();
-        updateToolsBadge();
-    };
-
-    window.visitTool = function(id) {
-        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
-        const tool = tools.find(t => t.id === id);
-        if (tool) {
-            window.open(`${ADMIN_CONFIG.SITE_URL}${tool.path}`, '_blank');
-        }
-    };
-
-    /* SEARCH */
-    let searchTimer;
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => {
-            currentSearch = e.target.value.trim();
-            renderTools();
-        }, 200);
-    });
-
-    /* LIVE SYNC */
-    window.addEventListener('storage', (e) => {
-        if (e.key === ADMIN_CONFIG.TOOLS_KEY || e.key === ADMIN_CONFIG.ANALYTICS_KEY) {
-            renderSummary();
-            renderTools();
-            updateToolsBadge();
-        }
-    });
-
-    /* INIT */
-    renderSummary();
+/* ════════════════════════════════════════
+   CATEGORY FILTER
+════════════════════════════════════════ */
+window.setCategory = function(cat) {
+    currentCategory = cat;
+    clearSelection();
     renderCategories();
     renderTools();
+    // Smooth scroll to toolbar
+    const toolbar = document.querySelector('.tools-toolbar');
+    if (toolbar) window.scrollTo({ top: toolbar.offsetTop - 80, behavior: 'smooth' });
+};
+
+/* ════════════════════════════════════════
+   TOGGLE SINGLE TOOL
+════════════════════════════════════════ */
+window.toggleTool = function(id, enabled) {
+    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const tool  = tools.find(t => t.id === id);
+    if (!tool) return;
+
+    tool.enabled = enabled;
+    AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
+    AdminStorage.logActivity({
+        icon: enabled ? 'fa-toggle-on' : 'fa-toggle-off',
+        bg:   enabled ? 'bg-success' : 'bg-warning',
+        title:`Tool ${enabled ? 'enabled' : 'disabled'}`,
+        meta: tool.name
+    });
+
+    AdminUI.toast(`<strong>${tool.name}</strong> ${enabled ? 'enabled ✓' : 'disabled'}`, enabled ? 'success' : 'warning');
+    renderSummary();
+    renderTools();
+    updateToolsBadge();
+};
+
+/* ════════════════════════════════════════
+   SELECTION
+════════════════════════════════════════ */
+window.toggleSelect = function(id, checked) {
+    if (checked) selectedTools.add(id);
+    else         selectedTools.delete(id);
+    updateBulkBar();
+};
+
+window.clearSelection = function() {
+    selectedTools.clear();
+    document.querySelectorAll('.tool-checkbox').forEach(cb => cb.checked = false);
+    updateBulkBar();
+};
+
+function updateBulkBar() {
+    const bar   = document.getElementById('bulkBar');
+    const count = document.getElementById('selectedCount');
+    if (selectedTools.size > 0) {
+        bar.classList.add('show');
+        count.textContent = selectedTools.size;
+    } else {
+        bar.classList.remove('show');
+    }
+}
+
+/* ════════════════════════════════════════
+   BULK ACTIONS
+════════════════════════════════════════ */
+window.bulkEnable = async function() {
+    if (!selectedTools.size) return;
+    const ok = await AdminUI.confirm({
+        title: 'Enable Selected?',
+        message: `Enable <strong>${selectedTools.size} tool(s)</strong>?`,
+        icon: 'success', iconClass: 'fa-toggle-on',
+        confirmText: 'Yes, Enable', cancelText: 'Cancel', confirmClass: 'btn-success',
+    });
+    if (!ok) return;
+    bulkAction(true);
+};
+
+window.bulkDisable = async function() {
+    if (!selectedTools.size) return;
+    const ok = await AdminUI.confirm({
+        title: 'Disable Selected?',
+        message: `Disable <strong>${selectedTools.size} tool(s)</strong>?`,
+        icon: 'danger', iconClass: 'fa-toggle-off',
+        confirmText: 'Yes, Disable', cancelText: 'Cancel', confirmClass: 'btn-danger',
+    });
+    if (!ok) return;
+    bulkAction(false);
+};
+
+function bulkAction(enable) {
+    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const count = selectedTools.size;
+    tools.forEach(t => { if (selectedTools.has(t.id)) t.enabled = enable; });
+    AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
+    AdminStorage.logActivity({
+        icon: enable ? 'fa-toggle-on' : 'fa-toggle-off',
+        bg:   enable ? 'bg-success' : 'bg-warning',
+        title:`Bulk ${enable ? 'enable' : 'disable'}`,
+        meta: `${count} tools affected`
+    });
+    AdminUI.toast(`${count} tool(s) ${enable ? 'enabled' : 'disabled'}`, enable ? 'success' : 'warning');
+    clearSelection();
+    renderSummary();
+    renderTools();
+    updateToolsBadge();
+}
+
+/* ════════════════════════════════════════
+   CATEGORY ACTIONS
+════════════════════════════════════════ */
+window.enableCategory = async function(catKey) {
+    const catInfo = CATEGORIES[catKey];
+    const ok = await AdminUI.confirm({
+        title: `Enable ${catInfo.name}?`,
+        message: `Enable all tools in <strong>${catInfo.name}</strong>?`,
+        icon: 'success', iconClass: 'fa-toggle-on',
+        confirmText: 'Yes, Enable', cancelText: 'Cancel', confirmClass: 'btn-success',
+    });
+    if (!ok) return;
+    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    let count = 0;
+    tools.forEach(t => { if (t.category === catKey && !t.enabled) { t.enabled = true; count++; } });
+    AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
+    AdminUI.toast(`${count} ${catInfo.name} tool(s) enabled`, 'success');
+    renderSummary(); renderTools(); updateToolsBadge();
+};
+
+window.disableCategory = async function(catKey) {
+    const catInfo = CATEGORIES[catKey];
+    const ok = await AdminUI.confirm({
+        title: `Disable ${catInfo.name}?`,
+        message: `Disable all tools in <strong>${catInfo.name}</strong>?`,
+        icon: 'danger', iconClass: 'fa-toggle-off',
+        confirmText: 'Yes, Disable', cancelText: 'Cancel', confirmClass: 'btn-danger',
+    });
+    if (!ok) return;
+    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    let count = 0;
+    tools.forEach(t => { if (t.category === catKey && t.enabled) { t.enabled = false; count++; } });
+    AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
+    AdminUI.toast(`${count} ${catInfo.name} tool(s) disabled`, 'warning');
+    renderSummary(); renderTools(); updateToolsBadge();
+};
+
+/* ════════════════════════════════════════
+   GLOBAL ENABLE / DISABLE / RESET
+════════════════════════════════════════ */
+window.enableAll = async function() {
+    const ok = await AdminUI.confirm({
+        title: 'Enable All Tools?',
+        message: 'This will <strong>enable all tools</strong> on your website.',
+        icon: 'success', iconClass: 'fa-toggle-on',
+        confirmText: 'Yes, Enable All', cancelText: 'Cancel', confirmClass: 'btn-success',
+    });
+    if (!ok) return;
+    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    tools.forEach(t => t.enabled = true);
+    AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
+    AdminStorage.logActivity({ icon:'fa-check-circle', bg:'bg-success', title:'All tools enabled', meta:`${tools.length} tools activated` });
+    AdminUI.toast(`All ${tools.length} tools enabled!`, 'success');
+    renderSummary(); renderTools(); updateToolsBadge();
+};
+
+window.disableAll = async function() {
+    const ok = await AdminUI.confirm({
+        title: 'Disable All Tools?',
+        message: 'This will <strong>hide all tools</strong> from your website.',
+        icon: 'danger', iconClass: 'fa-toggle-off',
+        confirmText: 'Yes, Disable All', cancelText: 'Cancel', confirmClass: 'btn-danger',
+    });
+    if (!ok) return;
+    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    tools.forEach(t => t.enabled = false);
+    AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
+    AdminStorage.logActivity({ icon:'fa-times-circle', bg:'bg-danger', title:'All tools disabled', meta:`${tools.length} tools deactivated` });
+    AdminUI.toast(`All ${tools.length} tools disabled!`, 'danger');
+    renderSummary(); renderTools(); updateToolsBadge();
+};
+
+window.resetToDefaults = async function() {
+    const ok = await AdminUI.confirm({
+        title: 'Reset to Defaults?',
+        message: 'This will <strong>restore the default configuration</strong> for all tools.',
+        icon: 'warning', iconClass: 'fa-redo',
+        confirmText: 'Yes, Reset', cancelText: 'Cancel', confirmClass: 'btn-primary',
+    });
+    if (!ok) return;
+    AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, DEFAULT_TOOLS);
+    AdminStorage.logActivity({ icon:'fa-redo', bg:'bg-info', title:'Tools reset to defaults', meta:'Configuration restored' });
+    AdminUI.toast('Tools reset to defaults', 'info');
+    renderSummary(); renderCategories(); renderTools(); updateToolsBadge();
+};
+
+/* ════════════════════════════════════════
+   VISIT TOOL
+════════════════════════════════════════ */
+window.visitTool = function(id) {
+    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const tool  = tools.find(t => t.id === id);
+    if (tool) window.open(`${ADMIN_CONFIG.SITE_URL}${tool.path}`, '_blank', 'noopener,noreferrer');
+};
+
+/* ════════════════════════════════════════
+   SEARCH
+════════════════════════════════════════ */
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+        currentSearch = e.target.value.trim();
+        renderTools();
+    }, 200);
+});
+
+// Clear search on Escape
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.getElementById('searchInput').value = '';
+        currentSearch = '';
+        renderTools();
+    }
+});
+
+/* ════════════════════════════════════════
+   LIVE SYNC (cross-tab)
+════════════════════════════════════════ */
+window.addEventListener('storage', (e) => {
+    if (e.key === ADMIN_CONFIG.TOOLS_KEY || e.key === ADMIN_CONFIG.ANALYTICS_KEY) {
+        renderSummary();
+        renderTools();
+        updateToolsBadge();
+    }
+});
+window.addEventListener('admin-storage-change', () => {
+    renderSummary();
+    renderTools();
+    updateToolsBadge();
+});
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+renderSummary();
+renderCategories();
+renderTools();
 </script>
 
 </body>
