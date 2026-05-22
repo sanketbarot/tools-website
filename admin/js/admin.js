@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════
    AI TOOLCOR — ADMIN COMMON JS
    Website: https://www.aitoolcor.com/
-   All tools categorized & live sync optimized
+   All tools synced with index page
 ════════════════════════════════════════════════ */
 
 const ADMIN_CONFIG = {
@@ -22,80 +22,85 @@ const ADMIN_CONFIG = {
 };
 
 /* ════════════════════════════════════════════════
-   ALL TOOLS - Categorized
+   ALL TOOLS — Matched with index.html
 ════════════════════════════════════════════════ */
 const DEFAULT_TOOLS = [
-    /* ═══════ PDF TOOLS (Active) ═══════ */
-    { id: 'merge-pdf',       name: 'Merge PDF',        category: 'pdf',        path: 'merge-pdf.html',                   icon: 'fa-object-group',        color: 'red',    enabled: true, badge: 'popular', desc: 'Combine multiple PDFs into one document' },
-    { id: 'compress-pdf',    name: 'Compress PDF',     category: 'pdf',        path: 'compress-pdf.html',                icon: 'fa-compress-arrows-alt', color: 'green',  enabled: true, badge: 'popular', desc: 'Reduce PDF file size without losing quality' },
-    { id: 'split-pdf',       name: 'Split PDF',        category: 'pdf',        path: 'split-pdf.html',                   icon: 'fa-cut',                 color: 'blue',   enabled: true, badge: null,      desc: 'Extract pages or split PDF into multiple files' },
-    { id: 'sign-pdf',        name: 'Sign PDF',         category: 'pdf',        path: 'sign-pdf.html',                    icon: 'fa-signature',           color: 'purple', enabled: true, badge: null,      desc: 'Draw, type or upload your signature' },
-    { id: 'pdf-to-jpg',      name: 'PDF to JPG',       category: 'pdf',        path: 'pdf-to-jpg.html',                  icon: 'fa-image',               color: 'orange', enabled: true, badge: null,      desc: 'Convert PDF pages to images' },
-    { id: 'jpg-to-pdf',      name: 'JPG to PDF',       category: 'pdf',        path: 'jpg-to-pdf.html',                  icon: 'fa-image',               color: 'red',    enabled: true, badge: null,      desc: 'Convert JPG, PNG, BMP to PDF' },
-    { id: 'ocr-pdf',         name: 'OCR PDF',          category: 'pdf',        path: 'ocr-pdf.html',                     icon: 'fa-eye',                 color: 'purple', enabled: true, badge: 'ai',      desc: 'AI-powered text extraction from scanned PDFs' },
-    { id: 'unlock-pdf',      name: 'Unlock PDF',       category: 'pdf',        path: 'unlock-pdf.html',                  icon: 'fa-lock-open',           color: 'green',  enabled: true, badge: null,      desc: 'Remove password from PDF files' },
-    { id: 'protect-pdf',     name: 'Protect PDF',      category: 'pdf',        path: 'protect-pdf.html',                 icon: 'fa-shield-alt',          color: 'red',    enabled: true, badge: null,      desc: 'Add password protection to PDFs' },
-    { id: 'watermark',       name: 'Watermark',        category: 'pdf',        path: 'watermark.html',                   icon: 'fa-tint',                color: 'teal',   enabled: true, badge: null,      desc: 'Add text or image watermarks to PDFs' },
-    { id: 'redact-pdf',      name: 'Redact PDF',       category: 'pdf',        path: 'redact-pdf.html',                  icon: 'fa-eraser',              color: 'red',    enabled: true, badge: null,      desc: 'Black out sensitive content permanently' },
-    { id: 'organize-pdf',    name: 'Organize PDF',     category: 'pdf',        path: 'organize-pdf.html',                icon: 'fa-th-large',            color: 'teal',   enabled: true, badge: null,      desc: 'Rearrange, rotate, delete PDF pages' },
-    { id: 'rotate-pdf',      name: 'Rotate PDF',       category: 'pdf',        path: 'rotate-pdf.html',                  icon: 'fa-arrows-rotate',       color: 'orange', enabled: true, badge: null,      desc: 'Rotate PDF pages 90/180/270 degrees' },
-    { id: 'crop-pdf',        name: 'Crop PDF',         category: 'pdf',        path: 'crop-pdf.html',                    icon: 'fa-crop-alt',            color: 'purple', enabled: true, badge: null,      desc: 'Trim margins or crop specific areas' },
-    { id: 'page-numbers',    name: 'Page Numbers',     category: 'pdf',        path: 'page-numbers.html',                icon: 'fa-list-ol',             color: 'blue',   enabled: true, badge: null,      desc: 'Add page numbers to headers or footers' },
-    { id: 'scan-to-pdf',     name: 'Scan to PDF',      category: 'pdf',        path: 'scan-to-pdf.html',                 icon: 'fa-camera',              color: 'pink',   enabled: true, badge: 'new',     desc: 'Capture photos and convert to PDF' },
-    { id: 'pdf-forms',       name: 'PDF Forms',        category: 'pdf',        path: 'pdf-forms.html',                   icon: 'fa-edit',                color: 'blue',   enabled: true, badge: null,      desc: 'Fill or create interactive PDF forms' },
-    { id: 'repair-pdf',      name: 'Repair PDF',       category: 'pdf',        path: 'repair-pdf.html',                  icon: 'fa-tools',               color: 'orange', enabled: true, badge: null,      desc: 'Fix corrupted or damaged PDF files' },
-    { id: 'compare-pdf',     name: 'Compare PDF',      category: 'pdf',        path: 'compare-pdf.html',                 icon: 'fa-not-equal',           color: 'purple', enabled: true, badge: null,      desc: 'Compare two PDFs side by side' },
-    { id: 'pdf-to-pdfa',     name: 'PDF to PDF/A',     category: 'pdf',        path: 'pdf-to-pdfa.html',                 icon: 'fa-archive',             color: 'teal',   enabled: true, badge: null,      desc: 'Convert to PDF/A archival format' },
-    { id: 'crop-jpg',        name: 'Crop JPG',         category: 'pdf',        path: 'crop-jpg.html',                    icon: 'fa-crop-alt',            color: 'purple', enabled: true, badge: null,      desc: 'Batch crop multiple images' },
-    { id: 'pdf-to-ico',      name: 'PDF to ICO',       category: 'pdf',        path: 'pdf-to-ico.html',                  icon: 'fa-file-image',          color: 'red',    enabled: true, badge: 'new',     desc: 'Convert PDF pages to icon files' },
-    { id: 'jpg-to-ico',      name: 'JPG to ICO',       category: 'pdf',        path: 'jpg-to-ico.html',                  icon: 'fa-image',               color: 'orange', enabled: true, badge: 'new',     desc: 'Convert images to favicon icons' },
-    { id: 'corrupt-pdf',     name: 'Corrupt PDF',      category: 'pdf',        path: 'corrupt-pdf.html',                 icon: 'fa-virus',               color: 'red',    enabled: true, badge: null,      desc: 'Intentionally corrupt PDF for QA testing' },
-    { id: 'font-identifier', name: 'Font Identifier',  category: 'pdf',        path: 'font-identifier.html',             icon: 'fa-font',                color: 'indigo', enabled: true, badge: null,      desc: 'Find font name from any image' },
+    /* ═══════ PDF TOOLS (From index.html) ═══════ */
+    { id: 'merge-pdf',       name: 'Merge PDF',        category: 'pdf',        path: 'merge-pdf.html',       icon: 'fa-object-group',        color: 'red',    enabled: true, badge: 'popular', desc: 'Combine multiple PDFs into one document easily' },
+    { id: 'compress-pdf',    name: 'Compress PDF',     category: 'pdf',        path: 'compress-pdf.html',    icon: 'fa-compress-arrows-alt', color: 'green',  enabled: true, badge: 'popular', desc: 'Reduce PDF file size without losing quality' },
+    { id: 'split-pdf',       name: 'Split PDF',        category: 'pdf',        path: 'split-pdf.html',       icon: 'fa-cut',                 color: 'blue',   enabled: true, badge: null,      desc: 'Extract pages or split PDF into multiple files' },
+    { id: 'sign-pdf',        name: 'Sign PDF',         category: 'pdf',        path: 'sign-pdf.html',        icon: 'fa-signature',           color: 'purple', enabled: true, badge: null,      desc: 'Draw, type or upload your signature' },
+    { id: 'pdf-to-jpg',      name: 'PDF to JPG',       category: 'convert',    path: 'pdf-to-jpg.html',      icon: 'fa-image',               color: 'orange', enabled: true, badge: null,      desc: 'Convert PDF pages to JPG images' },
+    { id: 'jpg-to-pdf',      name: 'JPG to PDF',       category: 'convert',    path: 'jpg-to-pdf.html',      icon: 'fa-image',               color: 'red',    enabled: true, badge: null,      desc: 'Convert JPG, PNG, BMP images to PDF' },
+    { id: 'ocr-pdf',         name: 'OCR PDF',          category: 'ai',         path: 'ocr-pdf.html',         icon: 'fa-eye',                 color: 'purple', enabled: true, badge: 'ai',      desc: 'AI-powered text extraction from scanned PDFs' },
+    { id: 'font-identifier', name: 'Font Identifier',  category: 'design',     path: 'font-identifier.html', icon: 'fa-font',                color: 'indigo', enabled: true, badge: null,      desc: 'Find font name from any image instantly' },
+    { id: 'unlock-pdf',      name: 'Unlock PDF',       category: 'security',   path: 'unlock-pdf.html',      icon: 'fa-lock-open',           color: 'green',  enabled: true, badge: null,      desc: 'Remove passwords from secured PDF files' },
+    { id: 'protect-pdf',     name: 'Protect PDF',      category: 'security',   path: 'protect-pdf.html',     icon: 'fa-shield-alt',          color: 'red',    enabled: true, badge: null,      desc: 'Add password protection to PDFs' },
+    { id: 'watermark',       name: 'Watermark',        category: 'edit',       path: 'watermark.html',       icon: 'fa-tint',                color: 'teal',   enabled: true, badge: null,      desc: 'Add text or image watermarks to PDFs' },
+    { id: 'redact-pdf',      name: 'Redact PDF',       category: 'edit',       path: 'redact-pdf.html',      icon: 'fa-eraser',              color: 'red',    enabled: true, badge: null,      desc: 'Black out sensitive content permanently' },
+    { id: 'organize-pdf',    name: 'Organize PDF',     category: 'pdf',        path: 'organize-pdf.html',    icon: 'fa-th-large',            color: 'teal',   enabled: true, badge: null,      desc: 'Rearrange, rotate, delete PDF pages' },
+    { id: 'rotate-pdf',      name: 'Rotate PDF',       category: 'edit',       path: 'rotate-pdf.html',      icon: 'fa-arrows-rotate',       color: 'orange', enabled: true, badge: null,      desc: 'Rotate PDF pages 90/180/270 degrees' },
+    { id: 'crop-pdf',        name: 'Crop PDF',         category: 'edit',       path: 'crop-pdf.html',        icon: 'fa-crop-alt',            color: 'purple', enabled: true, badge: null,      desc: 'Trim margins or crop specific areas' },
+    { id: 'page-numbers',    name: 'Page Numbers',     category: 'edit',       path: 'page-numbers.html',    icon: 'fa-list-ol',             color: 'blue',   enabled: true, badge: null,      desc: 'Add page numbers to PDFs' },
+    { id: 'scan-to-pdf',     name: 'Scan to PDF',      category: 'convert',    path: 'scan-to-pdf.html',     icon: 'fa-camera',              color: 'pink',   enabled: true, badge: 'new',     desc: 'Capture photos and convert to PDF' },
+    { id: 'pdf-forms',       name: 'PDF Forms',        category: 'edit',       path: 'pdf-forms.html',       icon: 'fa-edit',                color: 'blue',   enabled: true, badge: null,      desc: 'Fill or create interactive PDF forms' },
+    { id: 'repair-pdf',      name: 'Repair PDF',       category: 'edit',       path: 'repair-pdf.html',      icon: 'fa-tools',               color: 'orange', enabled: true, badge: null,      desc: 'Fix corrupted or damaged PDF files' },
+    { id: 'compare-pdf',     name: 'Compare PDF',      category: 'edit',       path: 'compare-pdf.html',     icon: 'fa-not-equal',           color: 'purple', enabled: true, badge: null,      desc: 'Compare two PDFs side by side' },
+    { id: 'pdf-to-pdfa',     name: 'PDF to PDF/A',     category: 'convert',    path: 'pdf-to-pdfa.html',     icon: 'fa-archive',             color: 'teal',   enabled: true, badge: null,      desc: 'Convert to PDF/A archival format' },
+    { id: 'crop-jpg',        name: 'Crop JPG',         category: 'edit',       path: 'crop-jpg.html',        icon: 'fa-crop-alt',            color: 'purple', enabled: true, badge: null,      desc: 'Batch crop multiple images' },
+    { id: 'pdf-to-ico',      name: 'PDF to ICO',       category: 'convert',    path: 'pdf-to-ico.html',      icon: 'fa-file-image',          color: 'red',    enabled: true, badge: 'new',     desc: 'Convert PDF pages to icon files' },
+    { id: 'jpg-to-ico',      name: 'JPG to ICO',       category: 'convert',    path: 'jpg-to-ico.html',      icon: 'fa-image',               color: 'orange', enabled: true, badge: 'new',     desc: 'Convert images to favicon icons' },
+    { id: 'jpg-to-png',      name: 'JPG to PNG',       category: 'convert',    path: 'jpg-to-png.html',      icon: 'fa-image',               color: 'orange', enabled: true, badge: 'new',     desc: 'Convert JPG images to PNG format' },
+    { id: 'corrupt-pdf',     name: 'Corrupt PDF',      category: 'edit',       path: 'corrupt-pdf.html',     icon: 'fa-virus',               color: 'red',    enabled: true, badge: null,      desc: 'Intentionally corrupt PDF for QA testing' },
 
-    /* ═══════ CALCULATOR TOOLS (Active) ═══════ */
+    /* ═══════ CALCULATOR TOOLS (From navbar dropdown) ═══════ */
     { id: 'age-calculator',         name: 'Age Calculator',         category: 'calculator', path: 'tools/calculators/age-calculator.html',         icon: 'fa-birthday-cake',  color: 'pink',   enabled: true, badge: null, desc: 'Calculate age from date of birth' },
     { id: 'bmi-calculator',         name: 'BMI Calculator',         category: 'calculator', path: 'tools/calculators/bmi-calculator.html',         icon: 'fa-weight',         color: 'green',  enabled: true, badge: null, desc: 'Calculate Body Mass Index' },
     { id: 'discount-calculator',    name: 'Discount Calculator',    category: 'calculator', path: 'tools/calculators/discount-calculator.html',    icon: 'fa-tags',           color: 'red',    enabled: true, badge: null, desc: 'Calculate discount and final price' },
     { id: 'emi-calculator',         name: 'EMI Calculator',         category: 'calculator', path: 'tools/calculators/emi-calculator.html',         icon: 'fa-money-bill-wave',color: 'orange', enabled: true, badge: null, desc: 'Calculate loan EMI and total interest' },
     { id: 'percentage-calculator',  name: 'Percentage Calculator',  category: 'calculator', path: 'tools/calculators/percentage-calculator.html',  icon: 'fa-percentage',     color: 'blue',   enabled: true, badge: null, desc: 'Calculate percentage easily' },
 
-    /* ═══════ DEVELOPER TOOLS (Active) ═══════ */
+    /* ═══════ DEVELOPER TOOLS (From navbar dropdown) ═══════ */
     { id: 'base64-encoder',     name: 'Base64 Encoder',     category: 'developer', path: 'tools/developer/base64-encoder.html',     icon: 'fa-exchange-alt', color: 'purple', enabled: true, badge: null, desc: 'Encode and decode Base64 strings' },
     { id: 'hash-generator',     name: 'Hash Generator',     category: 'developer', path: 'tools/developer/hash-generator.html',     icon: 'fa-fingerprint',  color: 'indigo', enabled: true, badge: null, desc: 'Generate MD5, SHA-1, SHA-256 hashes' },
     { id: 'json-formatter',     name: 'JSON Formatter',     category: 'developer', path: 'tools/developer/json-formatter.html',     icon: 'fa-code',         color: 'blue',   enabled: true, badge: null, desc: 'Format, validate and beautify JSON' },
     { id: 'password-generator', name: 'Password Generator', category: 'developer', path: 'tools/developer/password-generator.html', icon: 'fa-key',          color: 'red',    enabled: true, badge: null, desc: 'Generate strong secure passwords' },
 
-    /* ═══════ IMAGE TOOLS (Active) ═══════ */
+    /* ═══════ IMAGE TOOLS (From navbar dropdown) ═══════ */
     { id: 'color-picker',     name: 'Color Picker',     category: 'image', path: 'tools/image/color-picker.html',     icon: 'fa-palette',  color: 'pink',   enabled: true, badge: null, desc: 'Pick colors from any image' },
     { id: 'image-compressor', name: 'Image Compressor', category: 'image', path: 'tools/image/image-compressor.html', icon: 'fa-compress', color: 'green',  enabled: true, badge: null, desc: 'Compress images without quality loss' },
-    { id: 'qr-generator',     name: 'QR Generator',     category: 'image', path: 'tools/image/qr-generator.html',     icon: 'fa-qrcode',   color: 'purple', enabled: true, badge: null, desc: 'Generate QR codes for any text/URL' },
+    { id: 'qr-generator',     name: 'QR Generator',     category: 'image', path: 'tools/image/qr-generator.html',     icon: 'fa-qrcode',   color: 'purple', enabled: true, badge: null, desc: 'Generate QR codes for any text or URL' },
 
-    /* ═══════ TEXT TOOLS (if any) ═══════ */
+    /* ═══════ TEXT TOOLS (From navbar dropdown) ═══════ */
     { id: 'word-counter',    name: 'Word Counter',    category: 'text', path: 'tools/text/word-counter.html',    icon: 'fa-font',        color: 'blue',   enabled: true, badge: null, desc: 'Count words, characters, paragraphs' },
     { id: 'case-converter',  name: 'Case Converter',  category: 'text', path: 'tools/text/case-converter.html',  icon: 'fa-text-height', color: 'orange', enabled: true, badge: null, desc: 'Convert text case (upper/lower/title)' },
     { id: 'lorem-generator', name: 'Lorem Ipsum',     category: 'text', path: 'tools/text/lorem-generator.html', icon: 'fa-paragraph',   color: 'purple', enabled: true, badge: null, desc: 'Generate Lorem Ipsum dummy text' },
 
     /* ═══════ COMING SOON / INACTIVE TOOLS ═══════ */
-    { id: 'edit-pdf',      name: 'Edit PDF',      category: 'pdf',     path: 'edit-pdf.html',      icon: 'fa-edit',           color: 'blue',   enabled: false, badge: 'soon', desc: 'Edit text, images and links in PDFs' },
-    { id: 'jpg-to-png',    name: 'JPG to PNG',    category: 'image',   path: 'jpg-to-png.html',    icon: 'fa-image',          color: 'green',  enabled: false, badge: 'soon', desc: 'Convert JPG images to PNG format' },
-    { id: 'pdf-to-excel',  name: 'PDF to Excel',  category: 'pdf',     path: 'pdf-to-excel.html',  icon: 'fa-file-excel',     color: 'green',  enabled: false, badge: 'soon', desc: 'Convert PDF tables to Excel spreadsheets' },
-    { id: 'pdf-to-word',   name: 'PDF to Word',   category: 'pdf',     path: 'pdf-to-word.html',   icon: 'fa-file-word',      color: 'blue',   enabled: false, badge: 'soon', desc: 'Convert PDF to editable Word document' },
-    { id: 'ppt-to-pdf',    name: 'PPT to PDF',    category: 'pdf',     path: 'ppt-to-pdf.html',    icon: 'fa-file-powerpoint',color: 'orange', enabled: false, badge: 'soon', desc: 'Convert PowerPoint presentations to PDF' },
-    { id: 'translate-pdf', name: 'Translate PDF', category: 'pdf',     path: 'translate-pdf.html', icon: 'fa-language',       color: 'purple', enabled: false, badge: 'soon', desc: 'Translate PDFs into 100+ languages' },
-    { id: 'word-to-pdf',   name: 'Word to PDF',   category: 'pdf',     path: 'word-to-pdf.html',   icon: 'fa-file-word',      color: 'blue',   enabled: false, badge: 'soon', desc: 'Convert Word documents to PDF' },
+    { id: 'edit-pdf',      name: 'Edit PDF',      category: 'edit',     path: 'edit-pdf.html',      icon: 'fa-edit',            color: 'blue',   enabled: false, badge: 'soon', desc: 'Edit text, images and links in PDFs' },
+    { id: 'pdf-to-excel',  name: 'PDF to Excel',  category: 'convert',  path: 'pdf-to-excel.html',  icon: 'fa-file-excel',      color: 'green',  enabled: false, badge: 'soon', desc: 'Convert PDF tables to Excel spreadsheets' },
+    { id: 'pdf-to-word',   name: 'PDF to Word',   category: 'convert',  path: 'pdf-to-word.html',   icon: 'fa-file-word',       color: 'blue',   enabled: false, badge: 'soon', desc: 'Convert PDF to editable Word document' },
+    { id: 'ppt-to-pdf',    name: 'PPT to PDF',    category: 'convert',  path: 'ppt-to-pdf.html',    icon: 'fa-file-powerpoint', color: 'orange', enabled: false, badge: 'soon', desc: 'Convert PowerPoint presentations to PDF' },
+    { id: 'translate-pdf', name: 'Translate PDF', category: 'ai',       path: 'translate-pdf.html', icon: 'fa-language',        color: 'purple', enabled: false, badge: 'soon', desc: 'Translate PDFs into 100+ languages' },
+    { id: 'word-to-pdf',   name: 'Word to PDF',   category: 'convert',  path: 'word-to-pdf.html',   icon: 'fa-file-word',       color: 'blue',   enabled: false, badge: 'soon', desc: 'Convert Word documents to PDF' },
 ];
 
 const CATEGORIES = {
     'all':        { name: 'All Tools',  icon: 'fa-th-large',     color: '#7c3aed' },
     'pdf':        { name: 'PDF Tools',  icon: 'fa-file-pdf',     color: '#ef4444' },
+    'convert':    { name: 'Convert',    icon: 'fa-exchange-alt', color: '#3b82f6' },
+    'edit':       { name: 'Edit',       icon: 'fa-edit',         color: '#f59e0b' },
+    'security':   { name: 'Security',   icon: 'fa-lock',         color: '#dc2626' },
+    'ai':         { name: 'AI Tools',   icon: 'fa-robot',        color: '#ec4899' },
+    'design':     { name: 'Design',     icon: 'fa-palette',      color: '#06b6d4' },
     'calculator': { name: 'Calculator', icon: 'fa-calculator',   color: '#10b981' },
-    'developer':  { name: 'Developer',  icon: 'fa-code',         color: '#3b82f6' },
-    'image':      { name: 'Image',      icon: 'fa-image',        color: '#ec4899' },
-    'text':       { name: 'Text',       icon: 'fa-font',         color: '#f59e0b' },
+    'developer':  { name: 'Developer',  icon: 'fa-code',         color: '#6366f1' },
+    'image':      { name: 'Image',      icon: 'fa-image',        color: '#f97316' },
+    'text':       { name: 'Text',       icon: 'fa-font',         color: '#8b5cf6' },
 };
 
 /* ════════════════════════════════════════════════
-   STORAGE HELPERS - With Live Sync
+   STORAGE HELPERS
 ════════════════════════════════════════════════ */
 const AdminStorage = {
     get(key, fallback = null) {
@@ -108,9 +113,7 @@ const AdminStorage = {
         try {
             const json = JSON.stringify(value);
             localStorage.setItem(key, json);
-            // Also store timestamp for change detection
             localStorage.setItem(key + '_updated', Date.now().toString());
-            // Manual event dispatch for same-tab
             window.dispatchEvent(new CustomEvent('admin-storage-change', { detail: { key, value } }));
             return true;
         } catch (_) { return false; }
@@ -120,21 +123,18 @@ const AdminStorage = {
         localStorage.removeItem(key + '_updated');
     },
 
-    /* MERGE existing tools with defaults (preserves enabled state but adds new tools) */
     init() {
         const existing = this.get(ADMIN_CONFIG.TOOLS_KEY, []);
 
         if (!existing || existing.length === 0) {
-            // First time - use defaults
             this.set(ADMIN_CONFIG.TOOLS_KEY, DEFAULT_TOOLS);
         } else {
-            // Merge: keep existing enabled state, add new tools
+            // MERGE: Keep existing enabled state, add new tools
             const existingMap = new Map(existing.map(t => [t.id, t]));
             const merged = DEFAULT_TOOLS.map(defaultTool => {
-                const existing = existingMap.get(defaultTool.id);
-                if (existing) {
-                    // Keep enabled state from existing
-                    return { ...defaultTool, enabled: existing.enabled };
+                const existingTool = existingMap.get(defaultTool.id);
+                if (existingTool) {
+                    return { ...defaultTool, enabled: existingTool.enabled };
                 }
                 return defaultTool;
             });

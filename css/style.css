@@ -754,3 +754,44 @@ body::before {
     .features-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ════════════════════════════════════════
+   COMING SOON BADGE
+════════════════════════════════════════ */
+.badge-soon {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    animation: soonPulse 2s ease-in-out infinite;
+}
+
+@keyframes soonPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5);
+    }
+}
+
+/* Tool card with Soon badge - slight effect */
+.tool-card:has(.badge-soon) {
+    position: relative;
+}
+.tool-card:has(.badge-soon)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), rgba(139, 92, 246, 0.05));
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Soon tool hover */
+.tool-card:has(.badge-soon):hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
+}
