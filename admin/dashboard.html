@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Dashboard — AI ToolCor Admin</title>
     <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#7c3aed">
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c3aed'/><text x='50' y='62' text-anchor='middle' font-size='40' font-weight='800' fill='white' font-family='Arial'>A</text></svg>">
 
@@ -16,87 +19,97 @@
 
     <style>
         /* ═══════════════════════════════════════
-           DASHBOARD ENHANCEMENTS
+           DASHBOARD - MOBILE FIRST RESPONSIVE
         ═══════════════════════════════════════ */
 
+        /* Welcome Banner */
         .welcome-banner {
             background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
-            border-radius: 20px;
-            padding: 28px 32px;
+            border-radius: 16px;
+            padding: 20px;
             color: #fff;
-            margin-bottom: 24px;
+            margin-bottom: 18px;
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 16px;
         }
         .welcome-banner::before {
             content: '';
             position: absolute;
-            width: 300px; height: 300px;
+            width: 250px; height: 250px;
             background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
-            top: -150px; right: -100px;
+            top: -120px; right: -80px;
             border-radius: 50%;
+            pointer-events: none;
         }
         .welcome-banner::after {
             content: '';
             position: absolute;
-            width: 200px; height: 200px;
+            width: 180px; height: 180px;
             background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
-            bottom: -100px; left: 30%;
+            bottom: -90px; left: 20%;
             border-radius: 50%;
+            pointer-events: none;
         }
         .welcome-banner-content {
             position: relative; z-index: 1;
-            flex: 1; min-width: 250px;
+            flex: 1; min-width: 200px;
         }
         .welcome-banner h2 {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
+            line-height: 1.2;
         }
         .welcome-banner p {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.95;
+            margin: 0;
         }
         .welcome-banner-stats {
             position: relative; z-index: 1;
-            display: flex; gap: 24px;
+            display: flex; gap: 16px;
             flex-wrap: wrap;
+            width: 100%;
+            justify-content: space-between;
         }
         .welcome-stat {
             text-align: center;
+            flex: 1;
+            min-width: 70px;
         }
         .welcome-stat strong {
             display: block;
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
             line-height: 1;
         }
         .welcome-stat span {
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             opacity: 0.9;
-            margin-top: 4px;
+            margin-top: 3px;
             display: block;
         }
 
+        /* Live indicator */
         .live-indicator {
             display: inline-flex; align-items: center; gap: 6px;
             background: rgba(16,185,129,0.1);
             color: var(--success);
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 50px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             border: 1px solid rgba(16,185,129,0.2);
         }
         .live-dot {
-            width: 8px; height: 8px;
+            width: 7px; height: 7px;
             background: var(--success);
             border-radius: 50%;
             animation: livePulse 1.5s infinite;
@@ -106,13 +119,30 @@
             50% { opacity: 0.7; transform: scale(1.2); box-shadow: 0 0 0 10px rgba(16,185,129,0); }
         }
 
+        .live-status-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .live-status-text {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .last-updated-text {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-left: auto;
+        }
+
         .refresh-btn {
-            display: inline-flex; align-items: center; gap: 6px;
+            display: inline-flex; align-items: center; gap: 5px;
             background: #fff;
             border: 1.5px solid var(--border);
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-size: 12px;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--text-medium);
             cursor: pointer;
@@ -125,47 +155,50 @@
         .refresh-btn.spinning i { animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Quick Tool Grid */
         .quick-tool-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
-            margin-top: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin-top: 14px;
         }
         .quick-tool {
             background: var(--bg);
             border: 1.5px solid var(--border);
             border-radius: 10px;
-            padding: 12px;
+            padding: 10px 8px;
             text-align: center;
             text-decoration: none;
             color: var(--text-dark);
             transition: all 0.2s;
-            position: relative;
         }
-        .quick-tool:hover {
+        .quick-tool:hover, .quick-tool:active {
             border-color: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(124,58,237,0.12);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.12);
         }
         .quick-tool i {
-            font-size: 22px;
-            margin-bottom: 6px;
+            font-size: 20px;
+            margin-bottom: 4px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            display: block;
         }
         .quick-tool span {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
+            line-height: 1.2;
         }
         .quick-tool small {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-light);
             margin-top: 2px;
             display: block;
         }
 
+        /* Donut chart */
         .donut-center {
             position: absolute;
             top: 50%; left: 50%;
@@ -175,98 +208,86 @@
         }
         .donut-center strong {
             display: block;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
             color: var(--text-dark);
             line-height: 1;
         }
         .donut-center span {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-light);
-            margin-top: 4px;
+            margin-top: 3px;
             display: block;
         }
         .donut-wrapper { position: relative; }
 
-        .chart-empty {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            height: 100%;
-            color: var(--text-light);
-            text-align: center;
-        }
-        .chart-empty i {
-            font-size: 48px;
-            opacity: 0.3;
-            margin-bottom: 12px;
-        }
-
-        .stat-trend { font-size: 11px; }
-
+        /* Quick action buttons */
         .quick-action-btn {
             background: linear-gradient(135deg, #fff, #fafbff);
             border: 1.5px solid var(--border);
-            padding: 16px;
+            padding: 14px;
             border-radius: 12px;
             text-decoration: none;
             color: var(--text-dark);
-            display: flex; align-items: center; gap: 14px;
+            display: flex; align-items: center; gap: 12px;
             transition: all 0.2s;
             position: relative;
             overflow: hidden;
         }
-        .quick-action-btn:hover {
-            transform: translateX(4px);
+        .quick-action-btn:hover, .quick-action-btn:active {
+            transform: translateX(3px);
             border-color: var(--primary);
-            box-shadow: 0 8px 20px rgba(124,58,237,0.1);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.1);
         }
         .quick-action-icon {
-            width: 44px; height: 44px;
-            border-radius: 12px;
+            width: 40px; height: 40px;
+            border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             color: #fff;
-            font-size: 18px;
+            font-size: 16px;
             flex-shrink: 0;
         }
-        .quick-action-info { flex: 1; }
+        .quick-action-info { flex: 1; min-width: 0; }
         .quick-action-info strong {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
         }
         .quick-action-info small {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-light);
             margin-top: 2px;
+            line-height: 1.3;
         }
         .quick-action-btn i.arrow {
             color: var(--text-light);
             transition: transform 0.2s;
+            flex-shrink: 0;
         }
         .quick-action-btn:hover i.arrow {
-            transform: translateX(4px);
+            transform: translateX(3px);
             color: var(--primary);
         }
 
+        /* Hourly heatmap */
         .hourly-grid {
             display: grid;
             grid-template-columns: repeat(24, 1fr);
-            gap: 4px;
-            margin-top: 12px;
+            gap: 3px;
+            margin-top: 10px;
         }
         .hourly-cell {
             aspect-ratio: 1;
-            border-radius: 4px;
+            border-radius: 3px;
             background: var(--bg);
             position: relative;
             cursor: pointer;
             transition: transform 0.2s;
+            min-height: 14px;
         }
         .hourly-cell:hover {
-            transform: scale(1.15);
+            transform: scale(1.2);
             z-index: 10;
         }
         .hourly-cell[data-tooltip]:hover::after {
@@ -278,27 +299,166 @@
             color: #fff;
             padding: 4px 8px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
             white-space: nowrap;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             z-index: 100;
         }
         .hourly-labels {
             display: grid;
             grid-template-columns: repeat(24, 1fr);
-            gap: 4px;
+            gap: 3px;
             margin-top: 4px;
-            font-size: 9px;
+            font-size: 8px;
             color: var(--text-light);
             text-align: center;
         }
 
-        @media (max-width: 768px) {
-            .welcome-banner { padding: 20px; }
+        /* Chart card optimized */
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        /* Card header mobile */
+        .card-header {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card-title {
+            font-size: 14px !important;
+        }
+
+        /* Activity list mobile */
+        .activity-list {
+            max-height: 380px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ═══════════════════════════════════════
+           MOBILE BREAKPOINTS
+        ═══════════════════════════════════════ */
+
+        /* Tablet */
+        @media (max-width: 1024px) {
+            .welcome-banner { padding: 18px; }
             .welcome-banner h2 { font-size: 20px; }
-            .welcome-stat strong { font-size: 22px; }
-            .hourly-grid { grid-template-columns: repeat(12, 1fr); }
+            .welcome-stat strong { font-size: 20px; }
+            .chart-container { height: 260px; }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .page-container { padding: 14px !important; }
+            .welcome-banner {
+                padding: 16px;
+                border-radius: 14px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .welcome-banner h2 { font-size: 18px; }
+            .welcome-banner p { font-size: 12px; }
+            .welcome-banner-stats {
+                gap: 8px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(255,255,255,0.15);
+            }
+            .welcome-stat strong { font-size: 18px; }
+            .welcome-stat span { font-size: 9px; }
+
+            .live-status-bar { gap: 6px; }
+            .live-status-text { font-size: 11px; }
+            .last-updated-text {
+                font-size: 10px;
+                margin-left: 0;
+                width: 100%;
+                order: 5;
+                margin-top: 4px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+                margin-bottom: 18px !important;
+            }
+            .stat-card { padding: 14px !important; }
+            .stat-icon { width: 38px !important; height: 38px !important; font-size: 16px !important; }
+            .stat-value { font-size: 22px !important; }
+            .stat-label { font-size: 11px !important; }
+            .stat-trend { font-size: 10px !important; padding: 3px 8px !important; }
+            .stat-card-header { margin-bottom: 10px !important; }
+
+            .grid-2 {
+                grid-template-columns: 1fr !important;
+                gap: 14px !important;
+            }
+
+            .chart-card, .card {
+                padding: 14px !important;
+                border-radius: 12px !important;
+            }
+            .chart-container { height: 230px; }
+
+            .quick-tool-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+
+            .quick-action-btn { padding: 12px; }
+            .quick-action-icon { width: 36px; height: 36px; font-size: 14px; }
+            .quick-action-info strong { font-size: 12px; }
+            .quick-action-info small { font-size: 10px; }
+
+            .hourly-grid {
+                grid-template-columns: repeat(12, 1fr);
+                gap: 4px;
+            }
             .hourly-labels { grid-template-columns: repeat(12, 1fr); }
+            .hourly-cell { min-height: 22px; }
+
+            .donut-center strong { font-size: 24px; }
+            .donut-center span { font-size: 10px; }
+        }
+
+        /* Small mobile */
+        @media (max-width: 480px) {
+            .page-container { padding: 12px !important; }
+            .welcome-banner { padding: 14px; }
+            .welcome-banner h2 { font-size: 17px; }
+            .welcome-stat strong { font-size: 16px; }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+            }
+            .stat-card { padding: 12px !important; }
+            .stat-value { font-size: 20px !important; }
+
+            .quick-tool-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            .quick-tool { padding: 12px 8px; }
+            .quick-tool i { font-size: 22px; }
+            .quick-tool span { font-size: 11px; }
+
+            .chart-container { height: 220px; }
+
+            .refresh-btn span { display: none; }
+
+            .hourly-cell { min-height: 18px; }
+        }
+
+        /* Extra small */
+        @media (max-width: 360px) {
+            .stats-grid { grid-template-columns: 1fr !important; }
+            .welcome-banner-stats { justify-content: center; }
+        }
+
+        /* Touch optimizations */
+        @media (hover: none) {
+            .quick-tool, .quick-action-btn, .stat-card {
+                -webkit-tap-highlight-color: rgba(124,58,237,0.1);
+            }
         }
     </style>
 </head>
@@ -321,13 +481,10 @@
         return 'Good Evening';
     }
 
-    /* ═══════════════════════════════════════
-       RENDER PAGE
-    ═══════════════════════════════════════ */
     document.getElementById('adminWrapper').innerHTML = `
         ${AdminUI.renderSidebar('dashboard')}
         <div class="main-content">
-            ${AdminUI.renderTopbar('Dashboard', 'Real-time analytics & system overview')}
+            ${AdminUI.renderTopbar('Dashboard', 'Real-time analytics')}
 
             <div class="page-container">
 
@@ -335,7 +492,7 @@
                 <div class="welcome-banner">
                     <div class="welcome-banner-content">
                         <h2>${getGreeting()}, ${firstName}! 👋</h2>
-                        <p>Here's what's happening with <strong>AI ToolCor</strong> today</p>
+                        <p>Welcome back to <strong>AI ToolCor</strong></p>
                     </div>
                     <div class="welcome-banner-stats">
                         <div class="welcome-stat">
@@ -354,20 +511,20 @@
                 </div>
 
                 <!-- LIVE STATUS BAR -->
-                <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+                <div class="live-status-bar">
                     <span class="live-indicator">
                         <span class="live-dot"></span>
                         LIVE
                     </span>
-                    <span style="font-size:13px;color:var(--text-light);">
-                        Auto-refreshing every <strong>5 seconds</strong>
-                    </span>
-                    <span style="font-size:12px;color:var(--text-light);margin-left:auto;">
-                        Last sync: <strong id="lastUpdated">just now</strong>
+                    <span class="live-status-text">
+                        Auto-refresh <strong>5s</strong>
                     </span>
                     <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">
-                        <i class="fas fa-sync-alt"></i> Refresh Now
+                        <i class="fas fa-sync-alt"></i> <span>Refresh</span>
                     </button>
+                    <span class="last-updated-text">
+                        Last: <strong id="lastUpdated">just now</strong>
+                    </span>
                 </div>
 
                 <!-- STATS CARDS -->
@@ -378,7 +535,7 @@
                                 <i class="fas fa-toggle-on"></i>
                             </div>
                             <span class="stat-trend up" id="trendTools">
-                                <i class="fas fa-check"></i> All Active
+                                <i class="fas fa-check"></i> Active
                             </span>
                         </div>
                         <div class="stat-value" id="statTools">0</div>
@@ -390,7 +547,7 @@
                             <div class="stat-icon bg-info">
                                 <i class="fas fa-eye"></i>
                             </div>
-                            <span class="stat-trend up" id="trendVisits">
+                            <span class="stat-trend up">
                                 <i class="fas fa-arrow-up"></i> Live
                             </span>
                         </div>
@@ -403,7 +560,7 @@
                             <div class="stat-icon bg-success">
                                 <i class="fas fa-file-alt"></i>
                             </div>
-                            <span class="stat-trend up" id="trendFiles">
+                            <span class="stat-trend up">
                                 <i class="fas fa-arrow-up"></i> Real
                             </span>
                         </div>
@@ -416,12 +573,12 @@
                             <div class="stat-icon bg-warning">
                                 <i class="fas fa-bolt"></i>
                             </div>
-                            <span class="stat-trend up" id="trendActivity">
+                            <span class="stat-trend up">
                                 <i class="fas fa-fire"></i> Hot
                             </span>
                         </div>
                         <div class="stat-value" id="statActivity">0</div>
-                        <div class="stat-label">Total Activities</div>
+                        <div class="stat-label">Activities</div>
                     </div>
                 </div>
 
@@ -430,12 +587,12 @@
                     <div class="chart-card">
                         <div class="card-header">
                             <div class="card-title">
-                                <i class="fas fa-chart-area"></i> Visitor Trends (30 Days)
+                                <i class="fas fa-chart-area"></i> Visitor Trends
                             </div>
-                            <select class="form-select" id="chartRange" style="width:auto;font-size:12px;padding:6px 10px;">
-                                <option value="30">Last 30 Days</option>
-                                <option value="7">Last 7 Days</option>
-                                <option value="14">Last 14 Days</option>
+                            <select class="form-select" id="chartRange" style="width:auto;font-size:11px;padding:5px 8px;">
+                                <option value="30">30 Days</option>
+                                <option value="7">7 Days</option>
+                                <option value="14">14 Days</option>
                             </select>
                         </div>
                         <div class="chart-container">
@@ -446,27 +603,27 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">
-                                <i class="fas fa-bell"></i> Live Activity
+                                <i class="fas fa-bell"></i> Activity
                                 <span class="badge badge-success" id="activityCount" style="margin-left:4px;font-size:10px;">0</span>
                             </div>
-                            <button class="btn btn-outline btn-sm" type="button" onclick="clearActivity()" title="Clear all">
+                            <button class="btn btn-outline btn-sm" type="button" onclick="clearActivity()" title="Clear">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
-                        <ul class="activity-list" id="activityList" style="max-height:380px;overflow-y:auto;"></ul>
+                        <ul class="activity-list" id="activityList"></ul>
                     </div>
                 </div>
 
                 <!-- TOOLS USAGE + STATUS DONUT -->
-                <div style="margin-top:24px;" class="grid-2">
+                <div style="margin-top:18px;" class="grid-2">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">
-                                <i class="fas fa-fire"></i> Top Used Tools
+                                <i class="fas fa-fire"></i> Top Tools
                             </div>
-                            <a href="tools.html" style="font-size:12px;color:var(--primary);text-decoration:none;font-weight:600;">Manage →</a>
+                            <a href="tools.html" style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:600;">Manage →</a>
                         </div>
-                        <div class="chart-container" style="height:320px;">
+                        <div class="chart-container" style="height:280px;">
                             <canvas id="toolsChart"></canvas>
                         </div>
                     </div>
@@ -474,25 +631,25 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">
-                                <i class="fas fa-chart-pie"></i> Tools Status
+                                <i class="fas fa-chart-pie"></i> Status
                             </div>
                         </div>
                         <div class="donut-wrapper">
-                            <div class="chart-container" style="height:240px;">
+                            <div class="chart-container" style="height:200px;">
                                 <canvas id="statusChart"></canvas>
                             </div>
                             <div class="donut-center">
                                 <strong id="donutTotal">0</strong>
-                                <span>Total Tools</span>
+                                <span>Total</span>
                             </div>
                         </div>
 
-                        <div style="display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap;">
-                            <div style="display:flex;align-items:center;gap:6px;font-size:12px;">
+                        <div style="display:flex;gap:10px;margin-top:12px;justify-content:center;flex-wrap:wrap;">
+                            <div style="display:flex;align-items:center;gap:5px;font-size:11px;">
                                 <span style="width:10px;height:10px;background:#10b981;border-radius:50%;"></span>
                                 <strong id="donutEnabled">0</strong> Enabled
                             </div>
-                            <div style="display:flex;align-items:center;gap:6px;font-size:12px;">
+                            <div style="display:flex;align-items:center;gap:5px;font-size:11px;">
                                 <span style="width:10px;height:10px;background:#ef4444;border-radius:50%;"></span>
                                 <strong id="donutDisabled">0</strong> Disabled
                             </div>
@@ -501,25 +658,20 @@
                 </div>
 
                 <!-- HOURLY HEATMAP + QUICK ACTIONS -->
-                <div style="margin-top:24px;" class="grid-2">
+                <div style="margin-top:18px;" class="grid-2">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">
-                                <i class="fas fa-clock"></i> Today's Hourly Activity
+                                <i class="fas fa-clock"></i> Today's Activity
                             </div>
-                            <span style="font-size:12px;color:var(--text-light);">Past 24 hours</span>
+                            <span style="font-size:11px;color:var(--text-light);">24h</span>
                         </div>
                         <div class="hourly-grid" id="hourlyGrid"></div>
-                        <div class="hourly-labels">
-                            <span>0h</span><span></span><span></span><span></span><span></span><span></span>
-                            <span>6h</span><span></span><span></span><span></span><span></span><span></span>
-                            <span>12h</span><span></span><span></span><span></span><span></span><span></span>
-                            <span>18h</span><span></span><span></span><span></span><span></span><span>23h</span>
-                        </div>
+                        <div class="hourly-labels" id="hourlyLabels"></div>
 
-                        <div style="margin-top:24px;">
-                            <h4 style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text-dark);">
-                                <i class="fas fa-layer-group" style="color:var(--primary);"></i> Category Breakdown
+                        <div style="margin-top:18px;">
+                            <h4 style="font-size:12px;font-weight:700;margin-bottom:10px;color:var(--text-dark);">
+                                <i class="fas fa-layer-group" style="color:var(--primary);"></i> Categories
                             </h4>
                             <div id="categoryBreakdown"></div>
                         </div>
@@ -531,14 +683,14 @@
                                 <i class="fas fa-rocket"></i> Quick Actions
                             </div>
                         </div>
-                        <div style="display:flex;flex-direction:column;gap:10px;">
+                        <div style="display:flex;flex-direction:column;gap:8px;">
                             <a href="tools.html" class="quick-action-btn">
                                 <div class="quick-action-icon" style="background:linear-gradient(135deg,#7c3aed,#ec4899);">
                                     <i class="fas fa-cogs"></i>
                                 </div>
                                 <div class="quick-action-info">
                                     <strong>Manage Tools</strong>
-                                    <small>Enable or disable tools</small>
+                                    <small>Enable/disable tools</small>
                                 </div>
                                 <i class="fas fa-arrow-right arrow"></i>
                             </a>
@@ -548,8 +700,8 @@
                                     <i class="fas fa-external-link-alt"></i>
                                 </div>
                                 <div class="quick-action-info">
-                                    <strong>View Website</strong>
-                                    <small>Open ${ADMIN_CONFIG.SITE_URL.replace('https://','')}</small>
+                                    <strong>View Site</strong>
+                                    <small>Open website</small>
                                 </div>
                                 <i class="fas fa-arrow-right arrow"></i>
                             </a>
@@ -559,8 +711,8 @@
                                     <i class="fas fa-redo"></i>
                                 </div>
                                 <div class="quick-action-info">
-                                    <strong>Reset Analytics</strong>
-                                    <small>Clear all tracking data</small>
+                                    <strong>Reset Data</strong>
+                                    <small>Clear analytics</small>
                                 </div>
                                 <i class="fas fa-arrow-right arrow"></i>
                             </a>
@@ -571,7 +723,7 @@
                                 </div>
                                 <div class="quick-action-info">
                                     <strong>Export Data</strong>
-                                    <small>Download analytics as JSON</small>
+                                    <small>Download as JSON</small>
                                 </div>
                                 <i class="fas fa-arrow-right arrow"></i>
                             </a>
@@ -582,7 +734,7 @@
                                 </div>
                                 <div class="quick-action-info">
                                     <strong style="color:var(--danger);">Logout</strong>
-                                    <small>End your admin session</small>
+                                    <small>End session</small>
                                 </div>
                                 <i class="fas fa-arrow-right arrow"></i>
                             </a>
@@ -591,25 +743,25 @@
                 </div>
 
                 <!-- ALL TOOLS QUICK ACCESS -->
-                <div class="card" style="margin-top:24px;">
+                <div class="card" style="margin-top:18px;">
                     <div class="card-header">
                         <div class="card-title">
-                            <i class="fas fa-th"></i> All Tools Quick Access
+                            <i class="fas fa-th"></i> Quick Access
                         </div>
-                        <a href="tools.html" style="font-size:12px;color:var(--primary);text-decoration:none;font-weight:600;">
-                            Manage All →
+                        <a href="tools.html" style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:600;">
+                            All →
                         </a>
                     </div>
                     <div class="quick-tool-grid" id="quickToolGrid"></div>
                 </div>
 
                 <!-- FOOTER INFO -->
-                <div style="margin-top:24px;text-align:center;padding:20px;color:var(--text-light);font-size:12px;">
+                <div style="margin-top:20px;text-align:center;padding:16px 10px;color:var(--text-light);font-size:11px;line-height:1.6;">
                     <p>
                         <i class="fas fa-shield-alt" style="color:var(--success);"></i>
-                        Secured Admin Panel · Logged in as <strong style="color:var(--text-dark);">${user.email}</strong>
+                        Secured · <strong style="color:var(--text-dark);">${user.email}</strong>
                     </p>
-                    <p style="margin-top:6px;">
+                    <p style="margin-top:4px;">
                         Session expires: <strong id="sessionExpiry"></strong>
                     </p>
                 </div>
@@ -622,6 +774,16 @@
     AdminUI.initUserMenu();
     AdminUI.startLiveClock();
     updateToolsBadge();
+
+    /* Render hourly labels */
+    const labelsEl = document.getElementById('hourlyLabels');
+    if (window.innerWidth <= 768) {
+        labelsEl.innerHTML = ['0h','','','','','','6h','','','','','12h','','','','','18h','','','','','','','23h']
+            .map(l => `<span>${l}</span>`).join('');
+    } else {
+        labelsEl.innerHTML = ['0h','','','','','','6h','','','','','','12h','','','','','','18h','','','','','23h']
+            .map(l => `<span>${l}</span>`).join('');
+    }
 
     /* Session expiry */
     const session = AdminStorage.get(ADMIN_CONFIG.SESSION_KEY);
@@ -638,7 +800,7 @@
 
     function initVisitsChart() {
         const ctx = document.getElementById('visitsChart').getContext('2d');
-        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        const gradient = ctx.createLinearGradient(0, 0, 0, 280);
         gradient.addColorStop(0, 'rgba(124,58,237,0.45)');
         gradient.addColorStop(1, 'rgba(124,58,237,0)');
 
@@ -651,14 +813,14 @@
                     data: [],
                     borderColor: '#7c3aed',
                     backgroundColor: gradient,
-                    borderWidth: 3,
+                    borderWidth: 2.5,
                     fill: true,
                     tension: 0.4,
-                    pointRadius: 3,
+                    pointRadius: window.innerWidth <= 768 ? 2 : 3,
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#7c3aed',
                     pointBorderWidth: 2,
-                    pointHoverRadius: 7,
+                    pointHoverRadius: 6,
                 }]
             },
             options: {
@@ -668,17 +830,29 @@
                     legend: { display: false },
                     tooltip: {
                         backgroundColor: '#1e293b',
-                        padding: 12,
+                        padding: 10,
                         cornerRadius: 8,
                         displayColors: false,
-                        callbacks: {
-                            label: (ctx) => `  ${ctx.parsed.y} visits`
-                        }
+                        bodyFont: { size: 12 },
+                        callbacks: { label: (ctx) => `  ${ctx.parsed.y} visits` }
                     }
                 },
                 scales: {
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 }, maxRotation: 0 } },
-                    y: { grid: { color: '#f1f5f9' }, beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 11 }, precision: 0 } }
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { size: window.innerWidth <= 480 ? 9 : 10 },
+                            maxRotation: 0,
+                            autoSkip: true,
+                            maxTicksLimit: window.innerWidth <= 480 ? 6 : 10
+                        }
+                    },
+                    y: {
+                        grid: { color: '#f1f5f9' },
+                        beginAtZero: true,
+                        ticks: { color: '#94a3b8', font: { size: 10 }, precision: 0 }
+                    }
                 }
             }
         });
@@ -692,8 +866,8 @@
                 datasets: [{
                     data: [],
                     backgroundColor: ['#7c3aed','#ec4899','#10b981','#f59e0b','#3b82f6','#06b6d4','#8b5cf6','#f43f5e'],
-                    borderRadius: 8,
-                    barThickness: 24
+                    borderRadius: 6,
+                    barThickness: window.innerWidth <= 480 ? 16 : 22
                 }]
             },
             options: {
@@ -704,15 +878,15 @@
                     legend: { display: false },
                     tooltip: {
                         backgroundColor: '#1e293b',
-                        padding: 12,
+                        padding: 10,
                         cornerRadius: 8,
                         displayColors: false,
                         callbacks: { label: (ctx) => `  ${ctx.parsed.x} uses` }
                     }
                 },
                 scales: {
-                    x: { grid: { color: '#f1f5f9' }, beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 11 }, precision: 0 } },
-                    y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 12, weight: '600' } } }
+                    x: { grid: { color: '#f1f5f9' }, beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 10 }, precision: 0 } },
+                    y: { grid: { display: false }, ticks: { color: '#475569', font: { size: window.innerWidth <= 480 ? 10 : 11, weight: '600' } } }
                 }
             }
         });
@@ -727,16 +901,16 @@
                     data: [0, 0],
                     backgroundColor: ['#10b981', '#ef4444'],
                     borderWidth: 0,
-                    hoverOffset: 8
+                    hoverOffset: 6
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '70%',
+                cutout: '68%',
                 plugins: {
                     legend: { display: false },
-                    tooltip: { backgroundColor: '#1e293b', padding: 12, cornerRadius: 8 }
+                    tooltip: { backgroundColor: '#1e293b', padding: 10, cornerRadius: 8 }
                 }
             }
         });
@@ -745,6 +919,17 @@
     initVisitsChart();
     initToolsChart();
     initStatusChart();
+
+    /* Re-init charts on resize for mobile/desktop switch */
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            visitsChart?.resize();
+            toolsChart?.resize();
+            statusChart?.resize();
+        }, 250);
+    });
 
     /* ═══════════════════════════════════════
        LIVE DATA REFRESH
@@ -790,13 +975,13 @@
             bannerVisits: todayVisits, bannerFiles: todayFiles, bannerTools: enabled
         };
 
-        document.getElementById('labelTools').textContent = `Active of ${tools.length} Tools`;
+        document.getElementById('labelTools').textContent = `of ${tools.length} Tools`;
         document.getElementById('activityCount').textContent = totalActivities;
 
         const trendTools = document.getElementById('trendTools');
         if (enabled === tools.length) {
             trendTools.className = 'stat-trend up';
-            trendTools.innerHTML = '<i class="fas fa-check"></i> All Active';
+            trendTools.innerHTML = '<i class="fas fa-check"></i> All On';
         } else if (enabled === 0) {
             trendTools.className = 'stat-trend down';
             trendTools.innerHTML = '<i class="fas fa-times"></i> All Off';
@@ -805,7 +990,6 @@
             trendTools.innerHTML = `<i class="fas fa-info"></i> ${disabled} Off`;
         }
 
-        /* Visits Chart */
         const range = parseInt(document.getElementById('chartRange').value) || 30;
         const dailyVisits = analytics.dailyVisits || {};
         const labels = [], data = [];
@@ -820,24 +1004,21 @@
         visitsChart.data.datasets[0].data = data;
         visitsChart.update('none');
 
-        /* Tools Chart */
         const toolUsage = analytics.toolUsage || {};
         const toolsData = tools
             .map(t => ({ name: t.name, count: toolUsage[t.id] || 0 }))
             .sort((a, b) => b.count - a.count)
-            .slice(0, 8);
+            .slice(0, window.innerWidth <= 480 ? 6 : 8);
         toolsChart.data.labels = toolsData.map(t => t.name);
         toolsChart.data.datasets[0].data = toolsData.map(t => t.count);
         toolsChart.update('none');
 
-        /* Status Donut */
         statusChart.data.datasets[0].data = [enabled, disabled];
         statusChart.update('none');
         document.getElementById('donutTotal').textContent = tools.length;
         document.getElementById('donutEnabled').textContent = enabled;
         document.getElementById('donutDisabled').textContent = disabled;
 
-        /* Activity Feed */
         const activityHtml = activities.length ? activities.slice(0, 12).map(a => `
             <li class="activity-item">
                 <div class="activity-icon stat-icon ${a.bg || 'bg-primary'}">
@@ -849,10 +1030,10 @@
                 </div>
             </li>
         `).join('') : `
-            <li style="text-align:center;padding:40px 20px;color:var(--text-light);">
-                <i class="fas fa-bell-slash" style="font-size:40px;opacity:0.3;margin-bottom:12px;display:block;"></i>
-                <p style="font-size:13px;margin:0;">No activity yet.</p>
-                <p style="font-size:12px;margin-top:4px;opacity:0.7;">Visit the site to see live updates here.</p>
+            <li style="text-align:center;padding:30px 16px;color:var(--text-light);">
+                <i class="fas fa-bell-slash" style="font-size:36px;opacity:0.3;margin-bottom:10px;display:block;"></i>
+                <p style="font-size:12px;margin:0;">No activity yet</p>
+                <p style="font-size:11px;margin-top:4px;opacity:0.7;">Visit site to see updates</p>
             </li>
         `;
         document.getElementById('activityList').innerHTML = activityHtml;
@@ -867,17 +1048,29 @@
 
     function renderHourlyHeatmap(activities) {
         const today = new Date().toISOString().split('T')[0];
-        const hours = new Array(24).fill(0);
+        const isMobile = window.innerWidth <= 768;
+        const slots = isMobile ? 12 : 24;
+        const hourGroups = new Array(slots).fill(0);
+
         activities.forEach(a => {
             const d = new Date(a.time);
-            if (d.toISOString().split('T')[0] === today) hours[d.getHours()]++;
+            if (d.toISOString().split('T')[0] === today) {
+                if (isMobile) {
+                    hourGroups[Math.floor(d.getHours() / 2)]++;
+                } else {
+                    hourGroups[d.getHours()]++;
+                }
+            }
         });
-        const max = Math.max(...hours, 1);
-        document.getElementById('hourlyGrid').innerHTML = hours.map((count, h) => {
+
+        const max = Math.max(...hourGroups, 1);
+        document.getElementById('hourlyGrid').style.gridTemplateColumns = `repeat(${slots}, 1fr)`;
+        document.getElementById('hourlyGrid').innerHTML = hourGroups.map((count, h) => {
             const intensity = count / max;
             const opacity = intensity > 0 ? Math.max(0.2, intensity) : 0;
             const bg = intensity > 0 ? `rgba(124,58,237,${opacity})` : 'var(--bg)';
-            return `<div class="hourly-cell" style="background:${bg};" data-tooltip="${h}:00 — ${count} ${count === 1 ? 'activity' : 'activities'}"></div>`;
+            const hourLabel = isMobile ? `${h*2}-${h*2+1}h` : `${h}:00`;
+            return `<div class="hourly-cell" style="background:${bg};" data-tooltip="${hourLabel} — ${count} activities"></div>`;
         }).join('');
     }
 
@@ -897,17 +1090,17 @@
                 const catInfo = CATEGORIES[cat] || { name: cat, icon: 'fa-folder', color: '#7c3aed' };
                 const pct = ((data.usage / totalUsage) * 100).toFixed(0);
                 return `
-                    <div style="margin-bottom:12px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                            <span style="font-size:12px;font-weight:600;color:var(--text-dark);">
-                                <i class="fas ${catInfo.icon}" style="color:${catInfo.color};width:16px;"></i>
+                    <div style="margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                            <span style="font-size:11px;font-weight:600;color:var(--text-dark);">
+                                <i class="fas ${catInfo.icon}" style="color:${catInfo.color};width:14px;"></i>
                                 ${catInfo.name}
                             </span>
-                            <span style="font-size:11px;color:var(--text-light);">
-                                ${data.enabled}/${data.count} active · ${data.usage} uses
+                            <span style="font-size:10px;color:var(--text-light);">
+                                ${data.enabled}/${data.count} · ${data.usage}
                             </span>
                         </div>
-                        <div style="height:6px;background:var(--bg);border-radius:50px;overflow:hidden;">
+                        <div style="height:5px;background:var(--bg);border-radius:50px;overflow:hidden;">
                             <div style="width:${pct}%;height:100%;background:${catInfo.color};border-radius:50px;transition:width 0.6s;"></div>
                         </div>
                     </div>
@@ -920,7 +1113,7 @@
         document.getElementById('quickToolGrid').innerHTML = enabledTools.map(t => {
             const usage = toolUsage[t.id] || 0;
             return `
-                <a href="${ADMIN_CONFIG.SITE_URL}${t.id}.html" target="_blank" class="quick-tool">
+                <a href="${ADMIN_CONFIG.SITE_URL}${t.path}" target="_blank" class="quick-tool">
                     <i class="fas ${t.icon}"></i>
                     <span>${t.name}</span>
                     <small>${usage} uses</small>
@@ -929,7 +1122,6 @@
         }).join('');
     }
 
-    /* Init + Auto Refresh */
     refreshDashboard(false);
     setTimeout(() => refreshDashboard(true), 100);
     setInterval(() => refreshDashboard(false), 5000);
@@ -942,21 +1134,19 @@
 
     document.getElementById('chartRange').addEventListener('change', () => refreshDashboard(false));
 
-    /* ═══════════════════════════════════════
-       ACTIONS - With Custom Modals
-    ═══════════════════════════════════════ */
+    /* ACTIONS */
     window.manualRefresh = function() {
         const btn = document.getElementById('refreshBtn');
         btn.classList.add('spinning');
         refreshDashboard(true);
-        AdminUI.toast('Dashboard refreshed!', 'success', 1500);
+        AdminUI.toast('Refreshed!', 'success', 1500);
         setTimeout(() => btn.classList.remove('spinning'), 600);
     };
 
     window.resetAnalytics = async function() {
         const ok = await AdminUI.confirm({
             title: 'Reset Analytics?',
-            message: 'This will <strong>permanently delete</strong> all analytics data including visits, file counts, and tool usage stats. This cannot be undone.',
+            message: 'This will <strong>permanently delete</strong> all analytics data. Cannot be undone.',
             icon: 'danger',
             iconClass: 'fa-exclamation-triangle',
             confirmText: 'Yes, Reset',
@@ -966,26 +1156,19 @@
         if (!ok) return;
 
         AdminStorage.set(ADMIN_CONFIG.ANALYTICS_KEY, {
-            totalVisits: 0,
-            totalFiles: 0,
-            toolUsage: {},
-            dailyVisits: {},
-            hourlyVisits: {},
-            devices: { desktop: 0, mobile: 0, tablet: 0 },
-            browsers: {},
-            countries: {},
-            referrers: {},
-            firstVisit: Date.now()
+            totalVisits: 0, totalFiles: 0, toolUsage: {}, dailyVisits: {},
+            hourlyVisits: {}, devices: { desktop: 0, mobile: 0, tablet: 0 },
+            browsers: {}, countries: {}, referrers: {}, firstVisit: Date.now()
         });
-        AdminUI.toast('Analytics reset successfully', 'success');
+        AdminUI.toast('Analytics reset!', 'success');
         prevValues = { visits: 0, files: 0, tools: prevValues.tools, activities: 0, bannerVisits: 0, bannerFiles: 0, bannerTools: prevValues.tools };
         refreshDashboard(true);
     };
 
     window.clearActivity = async function() {
         const ok = await AdminUI.confirm({
-            title: 'Clear Activity Log?',
-            message: 'All <strong>activity logs</strong> will be permanently deleted. Are you sure?',
+            title: 'Clear Activity?',
+            message: 'All activity logs will be deleted.',
             icon: 'warning',
             iconClass: 'fa-trash-alt',
             confirmText: 'Yes, Clear',
@@ -993,7 +1176,6 @@
             confirmClass: 'btn-danger',
         });
         if (!ok) return;
-
         AdminStorage.set(ADMIN_CONFIG.ACTIVITY_KEY, []);
         AdminUI.toast('Activity cleared', 'success');
         refreshDashboard(true);
@@ -1011,12 +1193,12 @@
         const url = URL.createObjectURL(blob);
         const a = Object.assign(document.createElement('a'), {
             href: url,
-            download: `aitoolcor-data-${new Date().toISOString().split('T')[0]}.json`
+            download: `aitoolcor-${new Date().toISOString().split('T')[0]}.json`
         });
         document.body.appendChild(a);
         a.click();
         setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
-        AdminUI.toast('Data exported successfully!', 'success');
+        AdminUI.toast('Data exported!', 'success');
     };
 </script>
 

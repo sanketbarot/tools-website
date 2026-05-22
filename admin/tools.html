@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Tools Manager — AI ToolCor Admin</title>
     <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#7c3aed">
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c3aed'/><text x='50' y='62' text-anchor='middle' font-size='40' font-weight='800' fill='white' font-family='Arial'>A</text></svg>">
 
@@ -15,32 +18,60 @@
     <link rel="stylesheet" href="css/admin.css">
 
     <style>
+        /* ═══════════════════════════════════════
+           TOOLS MANAGER - MOBILE FIRST
+        ═══════════════════════════════════════ */
+
         .tools-toolbar {
-            display: flex; gap: 12px; flex-wrap: wrap;
-            align-items: center; margin-bottom: 20px;
-        }
-        .category-pills {
             display: flex; gap: 8px; flex-wrap: wrap;
-            margin-bottom: 18px;
+            align-items: center; margin-bottom: 16px;
         }
+        .tools-toolbar .search-box {
+            flex: 1 1 100%;
+            max-width: 100%;
+        }
+        .tools-toolbar .btn {
+            flex: 1;
+            min-width: 0;
+            padding: 9px 12px;
+            font-size: 12px;
+        }
+
+        .category-pills {
+            display: flex; gap: 6px; flex-wrap: wrap;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 4px;
+        }
+        .category-pills::-webkit-scrollbar { height: 4px; }
+        .category-pills::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
         .category-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 14px; border-radius: 50px;
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 7px 12px; border-radius: 50px;
             background: #fff; border: 1.5px solid var(--border);
             font-size: 12px; font-weight: 600;
             color: var(--text-medium); cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
-        .category-pill:hover { border-color: var(--primary); color: var(--primary); }
+        .category-pill:hover, .category-pill:active {
+            border-color: var(--primary); color: var(--primary);
+        }
         .category-pill.active {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: #fff; border-color: transparent;
-            box-shadow: 0 4px 12px rgba(124,58,237,0.25);
+            box-shadow: 0 3px 10px rgba(124,58,237,0.25);
         }
         .category-pill .count {
             background: rgba(255,255,255,0.25);
-            padding: 2px 8px; border-radius: 50px;
-            font-size: 11px;
+            padding: 1px 7px; border-radius: 50px;
+            font-size: 10px;
         }
         .category-pill:not(.active) .count {
             background: var(--bg);
@@ -51,37 +82,121 @@
             display: none;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: #fff;
-            padding: 12px 18px; border-radius: 12px;
-            margin-bottom: 16px;
-            align-items: center; gap: 12px;
+            padding: 10px 14px; border-radius: 12px;
+            margin-bottom: 14px;
+            align-items: center; gap: 10px;
+            position: sticky;
+            top: calc(var(--topbar-h) + 8px);
+            z-index: 10;
+            flex-wrap: wrap;
+            box-shadow: 0 6px 20px rgba(124,58,237,0.25);
         }
         .bulk-bar.show { display: flex; }
-        .bulk-bar .btn { color: var(--primary); background: #fff; }
+        .bulk-bar .btn {
+            color: var(--primary);
+            background: #fff;
+            font-size: 11px;
+            padding: 6px 10px;
+        }
+        .bulk-bar-info {
+            font-size: 13px;
+            font-weight: 600;
+            flex: 1;
+            min-width: 0;
+        }
+        .bulk-bar-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
 
+        /* Category Section */
+        .category-section {
+            margin-bottom: 18px;
+        }
+        .category-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.05), rgba(236,72,153,0.05));
+            border: 1.5px solid rgba(124,58,237,0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .category-header h3 {
+            font-size: 14px; font-weight: 800;
+            color: var(--text-dark);
+            display: flex; align-items: center; gap: 8px;
+            margin: 0;
+            flex: 1;
+            min-width: 0;
+        }
+        .category-header h3 i {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .category-header h3 span {
+            font-size: 11px;
+            color: var(--text-light);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .category-actions {
+            display: flex; gap: 6px;
+        }
+        .category-actions button {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 5px 10px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-medium);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .category-actions button:hover, .category-actions button:active {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Tool Row */
         .tool-row {
             display: grid;
-            grid-template-columns: auto auto 1fr auto auto auto;
-            gap: 16px; align-items: center;
-            padding: 14px 16px;
+            grid-template-columns: auto auto 1fr auto auto;
+            gap: 12px; align-items: center;
+            padding: 12px;
             background: #fff;
             border: 1.5px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
             transition: all 0.2s;
         }
-        .tool-row:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(124,58,237,0.08); }
+        .tool-row:hover, .tool-row:active {
+            border-color: var(--primary);
+            box-shadow: 0 3px 12px rgba(124,58,237,0.08);
+        }
         .tool-row.disabled { opacity: 0.55; background: #fafafa; }
 
         .tool-checkbox {
             width: 18px; height: 18px;
             accent-color: var(--primary);
             cursor: pointer;
+            flex-shrink: 0;
         }
         .tool-icon-box {
-            width: 42px; height: 42px;
+            width: 40px; height: 40px;
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 18px;
+            color: #fff; font-size: 16px;
             flex-shrink: 0;
         }
         .tool-icon-box.color-red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
@@ -93,87 +208,223 @@
         .tool-icon-box.color-teal   { background: linear-gradient(135deg, #14b8a6, #0d9488); }
         .tool-icon-box.color-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
 
-        .tool-info { min-width: 0; }
+        .tool-info { min-width: 0; flex: 1; }
         .tool-info h4 {
-            font-size: 14px; font-weight: 700;
-            color: var(--text-dark); margin: 0 0 3px;
-            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; font-weight: 700;
+            color: var(--text-dark); margin: 0 0 2px;
+            display: flex; align-items: center; gap: 6px;
+            flex-wrap: wrap;
         }
         .tool-info p {
-            font-size: 12px; color: var(--text-light);
-            margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 11px; color: var(--text-light);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .tool-mini-badge {
             font-size: 9px; font-weight: 800;
-            padding: 2px 6px; border-radius: 4px;
-            text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 2px 5px; border-radius: 3px;
+            text-transform: uppercase; letter-spacing: 0.4px;
         }
         .tool-mini-badge.popular { background: #fef3c7; color: #d97706; }
         .tool-mini-badge.new     { background: #d1fae5; color: #059669; }
         .tool-mini-badge.ai      { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; }
+        .tool-mini-badge.soon    { background: #e0e7ff; color: #4338ca; }
 
         .tool-usage {
             text-align: right;
-            font-size: 12px;
-            min-width: 80px;
+            font-size: 11px;
+            min-width: 50px;
         }
-        .tool-usage strong { display: block; color: var(--primary); font-size: 14px; }
-        .tool-usage small { color: var(--text-light); }
+        .tool-usage strong { display: block; color: var(--primary); font-size: 13px; }
+        .tool-usage small { color: var(--text-light); font-size: 10px; }
 
-        .tool-category-label {
-            font-size: 11px; font-weight: 700;
-            padding: 4px 10px; border-radius: 50px;
-            background: var(--bg);
-            color: var(--text-medium);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .tool-actions {
+            display: flex; align-items: center; gap: 8px;
+            flex-shrink: 0;
         }
-
-        .tool-actions { display: flex; gap: 6px; }
-        .tool-actions button {
-            width: 32px; height: 32px;
+        .tool-visit-btn {
+            width: 30px; height: 30px;
             border-radius: 8px; border: none;
             background: var(--bg); color: var(--text-medium);
             cursor: pointer; transition: all 0.2s;
             display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
         }
-        .tool-actions button:hover { background: var(--primary); color: #fff; }
+        .tool-visit-btn:hover, .tool-visit-btn:active {
+            background: var(--primary); color: #fff;
+        }
 
+        /* Summary Cards */
         .summary-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 14px;
-            margin-bottom: 22px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
         }
         .summary-card {
             background: #fff;
             border: 1.5px solid var(--border);
             border-radius: 12px;
-            padding: 16px;
-            display: flex; align-items: center; gap: 12px;
+            padding: 14px;
+            display: flex; align-items: center; gap: 10px;
+            transition: all 0.2s;
+        }
+        .summary-card:hover, .summary-card:active {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.08);
         }
         .summary-card-icon {
-            width: 42px; height: 42px;
+            width: 38px; height: 38px;
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             color: #fff;
+            flex-shrink: 0;
+            font-size: 15px;
         }
+        .summary-card-info { min-width: 0; flex: 1; }
         .summary-card-info strong {
-            display: block; font-size: 20px;
+            display: block; font-size: 18px;
             font-weight: 800; color: var(--text-dark);
             line-height: 1;
         }
         .summary-card-info span {
-            font-size: 12px; color: var(--text-light);
+            font-size: 11px; color: var(--text-light);
         }
 
-        @media (max-width: 768px) {
-            .tool-row {
-                grid-template-columns: auto auto 1fr auto;
-                gap: 10px;
+        /* ═══════════════════════════════════════
+           RESPONSIVE BREAKPOINTS
+        ═══════════════════════════════════════ */
+
+        /* Tablet */
+        @media (min-width: 481px) {
+            .summary-row {
+                grid-template-columns: repeat(4, 1fr);
             }
-            .tool-category-label, .tool-usage { display: none; }
-            .tool-info p { display: none; }
+            .tools-toolbar .search-box {
+                flex: 1;
+                max-width: 320px;
+            }
+            .tools-toolbar .btn {
+                flex: 0 0 auto;
+            }
+            .tool-row {
+                grid-template-columns: auto auto 1fr auto auto auto;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .page-container { padding: 24px !important; }
+            .summary-card { padding: 16px; }
+            .summary-card-info strong { font-size: 20px; }
+            .category-header { padding: 12px 16px; }
+            .category-header h3 { font-size: 15px; }
+            .category-header h3 i { width: 36px; height: 36px; }
+            .tool-row {
+                padding: 14px 16px;
+                gap: 16px;
+            }
+            .tool-icon-box { width: 42px; height: 42px; font-size: 17px; }
+            .tool-info h4 { font-size: 14px; }
+            .tool-info p { font-size: 12px; }
+        }
+
+        /* Mobile small */
+        @media (max-width: 480px) {
+            .page-container { padding: 12px !important; }
+            .tools-toolbar {
+                gap: 6px;
+            }
+            .tools-toolbar .btn {
+                font-size: 11px;
+                padding: 8px 10px;
+                flex: 1 1 30%;
+            }
+            .tools-toolbar .btn i { font-size: 11px; }
+
+            .tool-row {
+                grid-template-columns: auto 1fr auto;
+                gap: 10px;
+                padding: 10px 12px;
+            }
+            .tool-checkbox {
+                grid-row: 1 / 3;
+            }
+            .tool-icon-box {
+                width: 36px; height: 36px;
+                font-size: 14px;
+                grid-row: 1 / 3;
+            }
+            .tool-usage { display: none; }
+            .tool-info p {
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                font-size: 10px;
+            }
+            .tool-info h4 { font-size: 12px; }
+            .tool-mini-badge { font-size: 8px; padding: 1px 4px; }
+
+            .tool-actions { gap: 6px; }
+            .tool-visit-btn { width: 28px; height: 28px; font-size: 11px; }
+
+            .toggle-switch {
+                width: 42px !important; height: 24px !important;
+            }
+            .toggle-slider::before {
+                height: 18px !important; width: 18px !important;
+            }
+            .toggle-switch input:checked + .toggle-slider::before {
+                transform: translateX(18px) !important;
+            }
+
+            .category-header {
+                padding: 10px 12px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .category-header h3 {
+                font-size: 13px;
+            }
+            .category-actions {
+                width: 100%;
+            }
+            .category-actions button {
+                flex: 1;
+                justify-content: center;
+                font-size: 10px;
+                padding: 5px 8px;
+            }
+
+            .summary-card { padding: 12px; gap: 8px; }
+            .summary-card-icon { width: 34px; height: 34px; font-size: 13px; }
+            .summary-card-info strong { font-size: 16px; }
+            .summary-card-info span { font-size: 10px; }
+
+            .bulk-bar {
+                padding: 10px 12px;
+                top: calc(var(--topbar-h) + 4px);
+            }
+            .bulk-bar-info { font-size: 12px; }
+            .bulk-bar .btn { font-size: 10px; padding: 5px 8px; }
+        }
+
+        /* Very small */
+        @media (max-width: 360px) {
+            .summary-row { grid-template-columns: 1fr 1fr; }
+            .tools-toolbar .btn { flex: 1 1 45%; }
+            .category-pills { padding-bottom: 6px; }
+            .tool-info h4 { font-size: 11px; }
+        }
+
+        /* Touch optimizations */
+        @media (hover: none) {
+            .tool-row, .summary-card, .category-pill, .quick-action-btn {
+                -webkit-tap-highlight-color: rgba(124,58,237,0.1);
+            }
         }
     </style>
 </head>
@@ -188,16 +439,16 @@
     document.getElementById('adminWrapper').innerHTML = `
         ${AdminUI.renderSidebar('tools')}
         <div class="main-content">
-            ${AdminUI.renderTopbar('Tools Manager', 'Enable or disable tools on your website')}
+            ${AdminUI.renderTopbar('Tools Manager', 'Enable or disable tools')}
 
             <div class="page-container">
 
                 <div class="summary-row" id="summaryRow"></div>
 
                 <div class="tools-toolbar">
-                    <div class="search-box" style="flex:1;max-width:400px;">
+                    <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="search" id="searchInput" placeholder="Search tools by name...">
+                        <input type="search" id="searchInput" placeholder="Search tools...">
                     </div>
                     <button class="btn btn-success" type="button" onclick="enableAll()">
                         <i class="fas fa-toggle-on"></i> Enable All
@@ -214,13 +465,13 @@
 
                 <div class="bulk-bar" id="bulkBar">
                     <i class="fas fa-check-circle"></i>
-                    <span><strong id="selectedCount">0</strong> tool(s) selected</span>
-                    <div style="margin-left:auto;display:flex;gap:8px;">
+                    <span class="bulk-bar-info"><strong id="selectedCount">0</strong> selected</span>
+                    <div class="bulk-bar-actions">
                         <button class="btn btn-sm" type="button" onclick="bulkEnable()">
-                            <i class="fas fa-check"></i> Enable Selected
+                            <i class="fas fa-check"></i> Enable
                         </button>
                         <button class="btn btn-sm" type="button" onclick="bulkDisable()">
-                            <i class="fas fa-times"></i> Disable Selected
+                            <i class="fas fa-times"></i> Disable
                         </button>
                         <button class="btn btn-sm" type="button" onclick="clearSelection()" style="color:#fff;background:transparent;border:1px solid rgba(255,255,255,0.4);">
                             Cancel
@@ -228,9 +479,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="padding:18px;">
-                    <div id="toolsList"></div>
-                </div>
+                <div id="toolsContainer"></div>
 
                 <div id="emptyState" class="empty-state" style="display:none;">
                     <i class="fas fa-search"></i>
@@ -238,14 +487,15 @@
                     <p>Try a different search or category</p>
                 </div>
 
-                <div class="card" style="margin-top:18px;background:var(--info-light);border-color:var(--info);">
-                    <div style="display:flex;gap:12px;align-items:flex-start;">
-                        <i class="fas fa-info-circle" style="color:var(--info);font-size:20px;margin-top:2px;"></i>
+                <div class="card" style="margin-top:16px;background:var(--info-light);border-color:var(--info);">
+                    <div style="display:flex;gap:10px;align-items:flex-start;">
+                        <i class="fas fa-info-circle" style="color:var(--info);font-size:18px;margin-top:2px;flex-shrink:0;"></i>
                         <div style="flex:1;">
-                            <strong style="color:var(--info);display:block;margin-bottom:4px;">How it works</strong>
-                            <p style="color:var(--text-medium);font-size:13px;margin:0;line-height:1.6;">
-                                Toggle tools ON/OFF and changes apply <strong>instantly</strong> on your <a href="${ADMIN_CONFIG.SITE_URL}" target="_blank" style="color:var(--primary);font-weight:600;">website</a>.
-                                Disabled tools are hidden from visitors but their files remain on the server.
+                            <strong style="color:var(--info);display:block;margin-bottom:4px;font-size:13px;">⚡ Live Sync</strong>
+                            <p style="color:var(--text-medium);font-size:12px;margin:0;line-height:1.5;">
+                                Changes apply within <strong>2 seconds</strong> on the
+                                <a href="${ADMIN_CONFIG.SITE_URL}" target="_blank" style="color:var(--primary);font-weight:600;">website</a>.
+                                Disabled tools show "Maintenance" page.
                             </p>
                         </div>
                     </div>
@@ -260,7 +510,6 @@
     AdminUI.startLiveClock();
     updateToolsBadge();
 
-    /* STATE */
     let currentCategory = 'all';
     let currentSearch = '';
     let selectedTools = new Set();
@@ -348,59 +597,88 @@
             );
         }
 
-        const listEl = document.getElementById('toolsList');
+        const container = document.getElementById('toolsContainer');
         const emptyEl = document.getElementById('emptyState');
 
         if (filtered.length === 0) {
-            listEl.innerHTML = '';
+            container.innerHTML = '';
             emptyEl.style.display = 'block';
             return;
         }
         emptyEl.style.display = 'none';
 
-        listEl.innerHTML = filtered.map(tool => {
-            const usage = toolUsage[tool.id] || 0;
-            const isSelected = selectedTools.has(tool.id);
-            const badgeHtml = tool.badge ? `<span class="tool-mini-badge ${tool.badge}">${tool.badge}</span>` : '';
+        const grouped = {};
+        filtered.forEach(t => {
+            if (!grouped[t.category]) grouped[t.category] = [];
+            grouped[t.category].push(t);
+        });
+
+        const html = Object.entries(grouped).map(([catKey, catTools]) => {
+            const catInfo = CATEGORIES[catKey] || { name: catKey, icon: 'fa-folder', color: '#7c3aed' };
+            const enabledCount = catTools.filter(t => t.enabled).length;
 
             return `
-                <div class="tool-row ${!tool.enabled ? 'disabled' : ''}" data-id="${tool.id}">
-                    <input type="checkbox" class="tool-checkbox"
-                           ${isSelected ? 'checked' : ''}
-                           onchange="toggleSelect('${tool.id}', this.checked)">
-
-                    <div class="tool-icon-box color-${tool.color}">
-                        <i class="fas ${tool.icon}"></i>
-                    </div>
-
-                    <div class="tool-info">
-                        <h4>${tool.name} ${badgeHtml}</h4>
-                        <p>${tool.desc}</p>
-                    </div>
-
-                    <span class="tool-category-label">${tool.category}</span>
-
-                    <div class="tool-usage">
-                        <strong>${AdminUI.formatNumber(usage)}</strong>
-                        <small>uses</small>
-                    </div>
-
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <label class="toggle-switch" title="${tool.enabled ? 'Disable' : 'Enable'}">
-                            <input type="checkbox" ${tool.enabled ? 'checked' : ''}
-                                   onchange="toggleTool('${tool.id}', this.checked)">
-                            <span class="toggle-slider"></span>
-                        </label>
-
-                        <div class="tool-actions">
-                            <button type="button" onclick="visitTool('${tool.id}')" title="Visit tool page">
-                                <i class="fas fa-external-link-alt"></i>
+                <div class="category-section">
+                    <div class="category-header">
+                        <h3>
+                            <i class="fas ${catInfo.icon}" style="background:linear-gradient(135deg,${catInfo.color},${catInfo.color}dd);"></i>
+                            ${catInfo.name}
+                            <span>${enabledCount}/${catTools.length} active</span>
+                        </h3>
+                        <div class="category-actions">
+                            <button type="button" onclick="enableCategory('${catKey}')">
+                                <i class="fas fa-check"></i> All On
+                            </button>
+                            <button type="button" onclick="disableCategory('${catKey}')">
+                                <i class="fas fa-times"></i> All Off
                             </button>
                         </div>
                     </div>
+                    ${catTools.map(tool => renderToolRow(tool, toolUsage)).join('')}
                 </div>
             `;
         }).join('');
+
+        container.innerHTML = html;
+    }
+
+    function renderToolRow(tool, toolUsage) {
+        const usage = toolUsage[tool.id] || 0;
+        const isSelected = selectedTools.has(tool.id);
+        const badgeHtml = tool.badge ? `<span class="tool-mini-badge ${tool.badge}">${tool.badge}</span>` : '';
+
+        return `
+            <div class="tool-row ${!tool.enabled ? 'disabled' : ''}" data-id="${tool.id}">
+                <input type="checkbox" class="tool-checkbox"
+                       ${isSelected ? 'checked' : ''}
+                       onchange="toggleSelect('${tool.id}', this.checked)">
+
+                <div class="tool-icon-box color-${tool.color}">
+                    <i class="fas ${tool.icon}"></i>
+                </div>
+
+                <div class="tool-info">
+                    <h4>${tool.name} ${badgeHtml}</h4>
+                    <p>${tool.desc}</p>
+                </div>
+
+                <div class="tool-usage">
+                    <strong>${AdminUI.formatNumber(usage)}</strong>
+                    <small>uses</small>
+                </div>
+
+                <div class="tool-actions">
+                    <label class="toggle-switch" title="${tool.enabled ? 'Disable' : 'Enable'}">
+                        <input type="checkbox" ${tool.enabled ? 'checked' : ''}
+                               onchange="toggleTool('${tool.id}', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <button type="button" class="tool-visit-btn" onclick="visitTool('${tool.id}')" title="Visit">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                </div>
+            </div>
+        `;
     }
 
     /* ACTIONS */
@@ -409,6 +687,8 @@
         clearSelection();
         renderCategories();
         renderTools();
+        // Scroll to top of tools
+        window.scrollTo({ top: document.querySelector('.tools-toolbar').offsetTop - 80, behavior: 'smooth' });
     };
 
     window.toggleTool = function(id, enabled) {
@@ -457,8 +737,8 @@
     window.bulkEnable = async function() {
         if (selectedTools.size === 0) return;
         const ok = await AdminUI.confirm({
-            title: 'Enable Selected Tools?',
-            message: `Enable <strong>${selectedTools.size} selected tool(s)</strong>?`,
+            title: 'Enable Selected?',
+            message: `Enable <strong>${selectedTools.size} tool(s)</strong>?`,
             icon: 'success',
             iconClass: 'fa-toggle-on',
             confirmText: 'Yes, Enable',
@@ -472,8 +752,8 @@
     window.bulkDisable = async function() {
         if (selectedTools.size === 0) return;
         const ok = await AdminUI.confirm({
-            title: 'Disable Selected Tools?',
-            message: `Disable <strong>${selectedTools.size} selected tool(s)</strong>? These tools will be hidden from your website.`,
+            title: 'Disable Selected?',
+            message: `Disable <strong>${selectedTools.size} tool(s)</strong>?`,
             icon: 'danger',
             iconClass: 'fa-toggle-off',
             confirmText: 'Yes, Disable',
@@ -494,7 +774,7 @@
         AdminStorage.logActivity({
             icon: enable ? 'fa-toggle-on' : 'fa-toggle-off',
             bg: enable ? 'bg-success' : 'bg-warning',
-            title: `Bulk ${enable ? 'enable' : 'disable'} action`,
+            title: `Bulk ${enable ? 'enable' : 'disable'}`,
             meta: `${count} tools affected`
         });
         AdminUI.toast(`${count} tool(s) ${enable ? 'enabled' : 'disabled'}`, enable ? 'success' : 'warning');
@@ -504,13 +784,63 @@
         updateToolsBadge();
     }
 
+    window.enableCategory = async function(catKey) {
+        const catInfo = CATEGORIES[catKey];
+        const ok = await AdminUI.confirm({
+            title: `Enable ${catInfo.name}?`,
+            message: `Enable all tools in <strong>${catInfo.name}</strong>?`,
+            icon: 'success',
+            iconClass: 'fa-toggle-on',
+            confirmText: 'Yes, Enable',
+            cancelText: 'Cancel',
+            confirmClass: 'btn-success',
+        });
+        if (!ok) return;
+
+        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+        let count = 0;
+        tools.forEach(t => {
+            if (t.category === catKey && !t.enabled) { t.enabled = true; count++; }
+        });
+        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
+        AdminUI.toast(`${count} ${catInfo.name} enabled`, 'success');
+        renderSummary();
+        renderTools();
+        updateToolsBadge();
+    };
+
+    window.disableCategory = async function(catKey) {
+        const catInfo = CATEGORIES[catKey];
+        const ok = await AdminUI.confirm({
+            title: `Disable ${catInfo.name}?`,
+            message: `Disable all tools in <strong>${catInfo.name}</strong>?`,
+            icon: 'danger',
+            iconClass: 'fa-toggle-off',
+            confirmText: 'Yes, Disable',
+            cancelText: 'Cancel',
+            confirmClass: 'btn-danger',
+        });
+        if (!ok) return;
+
+        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+        let count = 0;
+        tools.forEach(t => {
+            if (t.category === catKey && t.enabled) { t.enabled = false; count++; }
+        });
+        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, tools);
+        AdminUI.toast(`${count} ${catInfo.name} disabled`, 'warning');
+        renderSummary();
+        renderTools();
+        updateToolsBadge();
+    };
+
     window.enableAll = async function() {
         const ok = await AdminUI.confirm({
             title: 'Enable All Tools?',
-            message: 'This will <strong>enable all tools</strong> on your website. All visitors will see and be able to use every tool.',
+            message: 'This will <strong>enable all tools</strong> on your website.',
             icon: 'success',
             iconClass: 'fa-toggle-on',
-            confirmText: 'Yes, Enable All',
+            confirmText: 'Yes, Enable',
             cancelText: 'Cancel',
             confirmClass: 'btn-success',
         });
@@ -534,10 +864,10 @@
     window.disableAll = async function() {
         const ok = await AdminUI.confirm({
             title: 'Disable All Tools?',
-            message: 'This will <strong>hide all tools</strong> from your website. Visitors will see <strong>no tools</strong> until you re-enable them.',
+            message: 'This will <strong>hide all tools</strong> from your website.',
             icon: 'danger',
             iconClass: 'fa-toggle-off',
-            confirmText: 'Yes, Disable All',
+            confirmText: 'Yes, Disable',
             cancelText: 'Cancel',
             confirmClass: 'btn-danger',
         });
@@ -561,7 +891,7 @@
     window.resetToDefaults = async function() {
         const ok = await AdminUI.confirm({
             title: 'Reset to Defaults?',
-            message: 'This will <strong>restore the original tools configuration</strong>. All your custom enable/disable changes will be lost.',
+            message: 'This will <strong>restore default configuration</strong>.',
             icon: 'warning',
             iconClass: 'fa-redo',
             confirmText: 'Yes, Reset',
@@ -574,7 +904,7 @@
         AdminStorage.logActivity({
             icon: 'fa-redo',
             bg: 'bg-info',
-            title: 'Tools reset to defaults',
+            title: 'Tools reset',
             meta: 'Configuration restored'
         });
         AdminUI.toast('Tools reset to defaults', 'info');
@@ -585,7 +915,11 @@
     };
 
     window.visitTool = function(id) {
-        window.open(`${ADMIN_CONFIG.SITE_URL}${id}.html`, '_blank');
+        const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+        const tool = tools.find(t => t.id === id);
+        if (tool) {
+            window.open(`${ADMIN_CONFIG.SITE_URL}${tool.path}`, '_blank');
+        }
     };
 
     /* SEARCH */
