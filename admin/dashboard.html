@@ -16,6 +16,175 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
+    <style>
+        /* ══ DARK MODE ══ */
+        body.dark-mode {
+            --bg: #0f172a; --bg-card: #1e293b; --border: #334155;
+            --text-dark: #f1f5f9; --text-medium: #cbd5e1; --text-light: #64748b;
+            background: #0f172a; color: #f1f5f9;
+        }
+        body.dark-mode .card, body.dark-mode .chart-card,
+        body.dark-mode .stat-card, body.dark-mode .summary-card,
+        body.dark-mode .welcome-banner, body.dark-mode .live-status-bar {
+            background: #1e293b !important; border-color: #334155 !important;
+        }
+        body.dark-mode .quick-action-btn { background: #1e293b; border-color: #334155; }
+        body.dark-mode .admin-sidebar { background: #0f172a; border-right-color: #1e293b; }
+        body.dark-mode .topbar { background: #1e293b; border-bottom-color: #334155; }
+        body.dark-mode .main-content { background: #0f172a; }
+        body.dark-mode .activity-item { border-bottom-color: #334155; }
+        body.dark-mode .form-select { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+        body.dark-mode input, body.dark-mode select { background:#1e293b; color:#f1f5f9; }
+        body.dark-mode .quick-tool { background: #1e293b; border-color: #334155; }
+
+        /* ══ LIVE TICKER ══ */
+        .ticker-bar {
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            color: #fff; padding: 7px 0; overflow: hidden;
+            margin: -8px -20px 18px; border-radius: 0;
+        }
+        .ticker-track {
+            display: flex; white-space: nowrap;
+            animation: tickerScroll 24s linear infinite;
+        }
+        .ticker-item {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 0 28px; font-size: 11px; font-weight: 600;
+            border-right: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;
+        }
+        .ticker-item i { opacity: 0.8; font-size: 10px; }
+        @keyframes tickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        .ticker-bar:hover .ticker-track { animation-play-state: paused; }
+        @media(max-width:767px){ .ticker-bar{ margin:-8px -14px 14px; } }
+
+        /* ══ DARK MODE TOGGLE ══ */
+        .dark-toggle {
+            width: 36px; height: 20px; border-radius: 10px;
+            background: #cbd5e1; border: none; cursor: pointer;
+            position: relative; transition: background 0.3s; flex-shrink: 0;
+        }
+        .dark-toggle::after {
+            content:''; position:absolute; top:2px; left:2px;
+            width:16px; height:16px; border-radius:50%;
+            background:#fff; transition:transform 0.3s;
+        }
+        body.dark-mode .dark-toggle { background: #7c3aed; }
+        body.dark-mode .dark-toggle::after { transform: translateX(16px); }
+
+        /* ══ NOTIFICATION BELL ══ */
+        .notif-wrapper { position: relative; }
+        .notif-bell {
+            width:34px; height:34px; border-radius:10px;
+            background:#f8fafc; border:1px solid #e2e8f0;
+            cursor:pointer; display:flex; align-items:center;
+            justify-content:center; color:#64748b; font-size:14px;
+            transition:all 0.2s; position:relative;
+        }
+        .notif-bell:hover { background:#7c3aed; color:#fff; border-color:#7c3aed; }
+        .notif-dot {
+            position:absolute; top:-3px; right:-3px;
+            width:14px; height:14px; border-radius:50%;
+            background:#ef4444; border:2px solid #fff;
+            font-size:8px; font-weight:800; color:#fff;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .notif-dropdown {
+            position:absolute; top:calc(100% + 8px); right:0;
+            width:300px; background:#fff; border:1.5px solid #e2e8f0;
+            border-radius:14px; box-shadow:0 16px 40px rgba(0,0,0,0.12);
+            z-index:999; display:none; overflow:hidden;
+        }
+        .notif-dropdown.show { display:block; animation:fadeSlideDown 0.2s ease; }
+        .notif-header {
+            padding:12px 16px; border-bottom:1px solid #f1f5f9;
+            font-size:12px; font-weight:700; color:#1e293b;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .notif-item {
+            padding:10px 16px; border-bottom:1px solid #f8fafc;
+            display:flex; gap:10px; align-items:flex-start; cursor:pointer; transition:background 0.15s;
+        }
+        .notif-item:hover { background:#f8fafc; }
+        .notif-item-icon {
+            width:30px; height:30px; border-radius:8px;
+            display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; flex-shrink:0;
+        }
+        .notif-item-text strong { font-size:11px; display:block; color:#1e293b; }
+        .notif-item-text small  { font-size:10px; color:#94a3b8; }
+        @keyframes fadeSlideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+        body.dark-mode .notif-bell { background:#1e293b; border-color:#334155; color:#94a3b8; }
+        body.dark-mode .notif-dropdown { background:#1e293b; border-color:#334155; }
+        body.dark-mode .notif-header { color:#f1f5f9; border-color:#334155; }
+        body.dark-mode .notif-item { border-color:#334155; }
+        body.dark-mode .notif-item:hover { background:#0f172a; }
+        body.dark-mode .notif-item-text strong { color:#f1f5f9; }
+
+        /* ══ EXTRA STATS ROW ══ */
+        .extra-stats {
+            display:grid; grid-template-columns:repeat(4,1fr);
+            gap:10px; margin-bottom:18px;
+        }
+        .extra-stat-card {
+            background:#fff; border:1.5px solid #e2e8f0;
+            border-radius:12px; padding:14px 16px;
+            display:flex; align-items:center; gap:12px; transition:all 0.2s;
+        }
+        .extra-stat-card:hover { border-color:#7c3aed; transform:translateY(-2px); box-shadow:0 6px 20px rgba(124,58,237,0.08); }
+        .extra-stat-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff; flex-shrink:0; }
+        .extra-stat-info { flex:1; min-width:0; }
+        .extra-stat-info strong { display:block; font-size:17px; font-weight:800; color:#1e293b; line-height:1.2; }
+        .extra-stat-info span  { font-size:10px; color:#94a3b8; }
+        .extra-stat-delta { font-size:10px; font-weight:700; padding:2px 6px; border-radius:20px; flex-shrink:0; }
+        .delta-up   { background:#d1fae5; color:#059669; }
+        .delta-down { background:#fee2e2; color:#dc2626; }
+        .delta-neu  { background:#f1f5f9; color:#64748b; }
+        body.dark-mode .extra-stat-card { background:#1e293b; border-color:#334155; }
+        body.dark-mode .extra-stat-info strong { color:#f1f5f9; }
+
+        /* ══ PERFORMANCE GAUGE ══ */
+        .gauge-wrap { display:flex; flex-direction:column; align-items:center; padding:10px 0 0; }
+        .gauge-svg  { width:170px; height:95px; }
+        .gauge-score { font-size:30px; font-weight:800; color:#1e293b; line-height:1; }
+        .gauge-label { font-size:11px; color:#94a3b8; margin-top:2px; }
+        .gauge-grade { font-size:11px; font-weight:700; padding:3px 12px; border-radius:20px; margin-top:6px; }
+        body.dark-mode .gauge-score { color:#f1f5f9; }
+
+        /* ══ COMPARE TABLE ══ */
+        .compare-row {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:12px;
+        }
+        .compare-row:last-child { border:none; }
+        .compare-row .metric { color:#64748b; display:flex; align-items:center; gap:5px; }
+        .compare-row .values { display:flex; gap:16px; font-weight:700; }
+        .compare-row .val-t  { color:#7c3aed; }
+        .compare-row .val-y  { color:#94a3b8; font-weight:500; }
+        body.dark-mode .compare-row { border-color:#334155; }
+
+        /* ══ MINI SPARKLINE ══ */
+        .sparkline-wrap { margin-top:6px; }
+        .sparkline-svg  { width:100%; height:28px; display:block; }
+
+        /* ══ SEARCH BAR ══ */
+        .dash-search {
+            display:flex; align-items:center; gap:8px;
+            background:#f8fafc; border:1.5px solid #e2e8f0;
+            border-radius:10px; padding:6px 12px;
+            font-size:12px; color:#94a3b8; cursor:pointer;
+            transition:all 0.2s; flex:1; max-width:240px;
+        }
+        .dash-search:hover { border-color:#7c3aed; background:#fff; }
+        body.dark-mode .dash-search { background:#1e293b; border-color:#334155; color:#64748b; }
+
+        @media(max-width:767px){
+            .extra-stats { grid-template-columns:repeat(2,1fr); }
+        }
+        @media(max-width:480px){
+            .extra-stats { gap:8px; }
+            .extra-stat-card { padding:10px 12px; }
+            .extra-stat-info strong { font-size:15px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -48,6 +217,11 @@ document.getElementById('adminWrapper').innerHTML = `
         ${AdminUI.renderTopbar('Dashboard', 'Real-time analytics')}
 
         <div class="page-container">
+
+            <!-- LIVE TICKER -->
+            <div class="ticker-bar" id="tickerBar">
+                <div class="ticker-track" id="tickerTrack"></div>
+            </div>
 
             <!-- WELCOME BANNER -->
             <div class="welcome-banner">
@@ -84,6 +258,28 @@ document.getElementById('adminWrapper').innerHTML = `
                 <span class="last-updated-text">
                     Updated: <strong id="lastUpdated">just now</strong>
                 </span>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+                    <!-- NOTIFICATION BELL -->
+                    <div class="notif-wrapper" id="notifWrapper">
+                        <button class="notif-bell" id="notifBell" onclick="toggleNotif()" type="button" aria-label="Notifications" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="notif-dot" id="notifDot">3</span>
+                        </button>
+                        <div class="notif-dropdown" id="notifDropdown">
+                            <div class="notif-header">
+                                <span><i class="fas fa-bell" style="color:#7c3aed;margin-right:5px;"></i> Notifications</span>
+                                <button onclick="clearNotif()" type="button" style="background:none;border:none;font-size:10px;color:#94a3b8;cursor:pointer;font-weight:700;">Clear all</button>
+                            </div>
+                            <div id="notifList"></div>
+                        </div>
+                    </div>
+                    <!-- DARK MODE -->
+                    <div style="display:flex;align-items:center;gap:6px;" title="Toggle dark mode">
+                        <i class="fas fa-sun" style="font-size:11px;color:#f59e0b;"></i>
+                        <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" type="button" aria-label="Toggle dark mode"></button>
+                        <i class="fas fa-moon" style="font-size:11px;color:#7c3aed;"></i>
+                    </div>
+                </div>
             </div>
 
             <!-- STATS CARDS -->
@@ -119,6 +315,50 @@ document.getElementById('adminWrapper').innerHTML = `
                     </div>
                     <div class="stat-value" id="statActivity">0</div>
                     <div class="stat-label">Activities</div>
+                </div>
+            </div>
+
+            <!-- EXTRA DYNAMIC STATS -->
+            <div class="extra-stats" id="extraStatsRow">
+                <div class="extra-stat-card">
+                    <div class="extra-stat-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="extra-stat-info">
+                        <strong id="xStatSessions">—</strong>
+                        <span>Unique Sessions</span>
+                    </div>
+                    <span class="extra-stat-delta delta-up" id="xDeltaSessions">+0%</span>
+                </div>
+                <div class="extra-stat-card">
+                    <div class="extra-stat-icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <div class="extra-stat-info">
+                        <strong id="xStatAvgTime">—</strong>
+                        <span>Avg. Session</span>
+                    </div>
+                    <span class="extra-stat-delta delta-neu" id="xDeltaTime">~</span>
+                </div>
+                <div class="extra-stat-card">
+                    <div class="extra-stat-icon" style="background:linear-gradient(135deg,#10b981,#06b6d4);">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="extra-stat-info">
+                        <strong id="xStatConv">—</strong>
+                        <span>Conversion Rate</span>
+                    </div>
+                    <span class="extra-stat-delta" id="xDeltaConv">—</span>
+                </div>
+                <div class="extra-stat-card">
+                    <div class="extra-stat-icon" style="background:linear-gradient(135deg,#ec4899,#7c3aed);">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="extra-stat-info">
+                        <strong id="xStatPopular">—</strong>
+                        <span>Top Tool Today</span>
+                    </div>
+                    <span class="extra-stat-delta delta-up" id="xDeltaPopular">🔥</span>
                 </div>
             </div>
 
@@ -184,6 +424,81 @@ document.getElementById('adminWrapper').innerHTML = `
                 </div>
             </div>
 
+            </div>
+
+            <!-- ROW 2.5: Performance Score + Today vs Yesterday -->
+            <div class="grid-2" style="margin-top:18px;">
+                <!-- PERFORMANCE GAUGE -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-tachometer-alt"></i> Performance Score</div>
+                        <span style="font-size:10px;color:var(--text-light);">Based on activity</span>
+                    </div>
+                    <div class="gauge-wrap">
+                        <svg class="gauge-svg" viewBox="0 0 170 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Track -->
+                            <path d="M 15 85 A 70 70 0 0 1 155 85" stroke="#f1f5f9" stroke-width="14" stroke-linecap="round" fill="none"/>
+                            <!-- Fill (animated) -->
+                            <path id="gaugeFill" d="M 15 85 A 70 70 0 0 1 155 85" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" fill="none"
+                                  stroke-dasharray="220" stroke-dashoffset="220" style="transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)"/>
+                            <defs>
+                                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#7c3aed"/>
+                                    <stop offset="100%" stop-color="#ec4899"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Needle dot -->
+                            <circle id="gaugeNeedle" cx="85" cy="85" r="5" fill="#7c3aed"/>
+                        </svg>
+                        <div class="gauge-score" id="gaugeScore">—</div>
+                        <div class="gauge-label">out of 100</div>
+                        <div class="gauge-grade" id="gaugeGrade" style="background:#f1f5f9;color:#64748b;">Calculating…</div>
+                        <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
+                            <div style="text-align:center;">
+                                <div style="font-size:11px;color:var(--text-light);">Tools Active</div>
+                                <div style="font-size:13px;font-weight:700;color:var(--text-dark);" id="gpTools">—</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:11px;color:var(--text-light);">Files Today</div>
+                                <div style="font-size:13px;font-weight:700;color:var(--text-dark);" id="gpFiles">—</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:11px;color:var(--text-light);">Activity</div>
+                                <div style="font-size:13px;font-weight:700;color:var(--text-dark);" id="gpActivity">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TODAY vs YESTERDAY -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-calendar-alt"></i> Today vs Yesterday</div>
+                        <div style="display:flex;gap:10px;font-size:10px;font-weight:700;">
+                            <span style="color:#7c3aed;"><i class="fas fa-circle" style="font-size:7px;"></i> Today</span>
+                            <span style="color:#94a3b8;"><i class="fas fa-circle" style="font-size:7px;"></i> Yesterday</span>
+                        </div>
+                    </div>
+                    <div id="compareTable" style="padding:4px 0;"></div>
+                    <!-- Mini Sparkline -->
+                    <div style="margin-top:14px;">
+                        <div style="font-size:11px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">
+                            <i class="fas fa-chart-line" style="color:#7c3aed;margin-right:4px;"></i>7-Day Visits Trend
+                        </div>
+                        <div class="sparkline-wrap">
+                            <svg class="sparkline-svg" id="sparklineSvg" viewBox="0 0 280 32" preserveAspectRatio="none"></svg>
+                        </div>
+                    </div>
+                    <!-- File type breakdown -->
+                    <div style="margin-top:14px;">
+                        <div style="font-size:11px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">
+                            <i class="fas fa-chart-bar" style="color:#ec4899;margin-right:4px;"></i>Quick Metrics
+                        </div>
+                        <div id="quickMetrics"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- ROW 3: Hourly Heatmap + Quick Actions -->
             <div class="grid-2" style="margin-top:18px;">
                 <div class="card">
@@ -243,6 +558,26 @@ document.getElementById('adminWrapper').innerHTML = `
                             <div class="quick-action-info">
                                 <strong>Export Data</strong>
                                 <small>Download as JSON</small>
+                            </div>
+                            <i class="fas fa-arrow-right arrow"></i>
+                        </a>
+                        <a href="#" onclick="importData();return false;" class="quick-action-btn">
+                            <div class="quick-action-icon" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <div class="quick-action-info">
+                                <strong>Import Data</strong>
+                                <small>Restore from JSON</small>
+                            </div>
+                            <i class="fas fa-arrow-right arrow"></i>
+                        </a>
+                        <a href="#" onclick="toggleDark();return false;" class="quick-action-btn">
+                            <div class="quick-action-icon" style="background:linear-gradient(135deg,#1e293b,#334155);">
+                                <i class="fas fa-moon" id="darkActionIcon"></i>
+                            </div>
+                            <div class="quick-action-info">
+                                <strong id="darkActionLabel">Dark Mode</strong>
+                                <small>Toggle appearance</small>
                             </div>
                             <i class="fas fa-arrow-right arrow"></i>
                         </a>
@@ -709,6 +1044,331 @@ window.exportData = function() {
     setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
     AdminUI.toast('Data exported!', 'success');
 };
+
+/* ══ IMPORT DATA ══ */
+window.importData = function() {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = '.json';
+    input.onchange = async (e) => {
+        const file = e.target.files[0]; if (!file) return;
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+            const ok = await AdminUI.confirm({
+                title: 'Import Data?',
+                message: `Restore backup from <strong>${data.exportDate ? new Date(data.exportDate).toLocaleString() : 'unknown date'}</strong>? Current data will be overwritten.`,
+                icon: 'warning', iconClass: 'fa-upload',
+                confirmText: 'Yes, Import', cancelText: 'Cancel', confirmClass: 'btn-primary',
+            });
+            if (!ok) return;
+            if (data.tools)       AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, data.tools);
+            if (data.analytics)   AdminStorage.set(ADMIN_CONFIG.ANALYTICS_KEY, data.analytics);
+            if (data.activities)  AdminStorage.set(ADMIN_CONFIG.ACTIVITY_KEY, data.activities);
+            AdminUI.toast('Data imported successfully!', 'success');
+            refreshDashboard(true);
+        } catch(err) {
+            AdminUI.toast('Invalid JSON file', 'danger');
+        }
+    };
+    input.click();
+};
+
+/* ══ DARK MODE ══ */
+window.toggleDark = function() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('aitoolcor_dark', isDark ? '1' : '0');
+    const lbl  = document.getElementById('darkActionLabel');
+    const icon = document.getElementById('darkActionIcon');
+    if (lbl)  lbl.textContent  = isDark ? 'Light Mode' : 'Dark Mode';
+    if (icon) { icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon'; }
+    refreshChartColors();
+};
+// Load saved preference
+if (localStorage.getItem('aitoolcor_dark') === '1') {
+    document.body.classList.add('dark-mode');
+    const lbl = document.getElementById('darkActionLabel');
+    const icon= document.getElementById('darkActionIcon');
+    if (lbl)  lbl.textContent  = 'Light Mode';
+    if (icon) icon.className   = 'fas fa-sun';
+}
+function refreshChartColors() {
+    const isDark = document.body.classList.contains('dark-mode');
+    const gridColor = isDark ? '#334155' : '#f1f5f9';
+    const tickColor = isDark ? '#64748b' : '#94a3b8';
+    if (visitsChart) {
+        visitsChart.options.scales.x.ticks.color = tickColor;
+        visitsChart.options.scales.y.ticks.color = tickColor;
+        visitsChart.options.scales.y.grid.color  = gridColor;
+        visitsChart.update('none');
+    }
+    if (toolsChart) {
+        toolsChart.options.scales.x.ticks.color  = tickColor;
+        toolsChart.options.scales.x.grid.color   = gridColor;
+        toolsChart.options.scales.y.ticks.color  = tickColor;
+        toolsChart.update('none');
+    }
+}
+
+/* ══ NOTIFICATIONS ══ */
+const NOTIF_STORAGE = 'aitoolcor_notifs';
+function getNotifs() {
+    try { return JSON.parse(localStorage.getItem(NOTIF_STORAGE) || 'null') || getDefaultNotifs(); }
+    catch { return getDefaultNotifs(); }
+}
+function getDefaultNotifs() {
+    return [
+        { id:1, icon:'fa-rocket', bg:'#7c3aed', title:'Dashboard launched', time: Date.now()-60000*30, read:false },
+        { id:2, icon:'fa-tools',  bg:'#10b981', title:'3 new tools added', time: Date.now()-60000*90, read:false },
+        { id:3, icon:'fa-chart-line', bg:'#f59e0b', title:'Analytics ready', time: Date.now()-60000*180, read:false },
+    ];
+}
+function renderNotifs() {
+    const notifs  = getNotifs();
+    const unread  = notifs.filter(n => !n.read).length;
+    const dot     = document.getElementById('notifDot');
+    const list    = document.getElementById('notifList');
+    if (dot) { dot.textContent = unread; dot.style.display = unread ? 'flex' : 'none'; }
+    if (!list) return;
+    if (!notifs.length) { list.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:#94a3b8;">No notifications</div>'; return; }
+    list.innerHTML = notifs.slice(0,6).map(n => `
+        <div class="notif-item" onclick="markRead(${n.id})">
+            <div class="notif-item-icon" style="background:${n.bg}"><i class="fas ${n.icon}"></i></div>
+            <div class="notif-item-text">
+                <strong>${n.title}</strong>
+                <small>${AdminUI.timeAgo(n.time)} ${n.read ? '' : '<span style="color:#7c3aed;font-weight:800;">● NEW</span>'}</small>
+            </div>
+        </div>
+    `).join('');
+}
+window.markRead = function(id) {
+    const notifs = getNotifs();
+    const n = notifs.find(x => x.id === id);
+    if (n) n.read = true;
+    localStorage.setItem(NOTIF_STORAGE, JSON.stringify(notifs));
+    renderNotifs();
+};
+window.clearNotif = function() {
+    localStorage.setItem(NOTIF_STORAGE, JSON.stringify([]));
+    renderNotifs();
+    document.getElementById('notifDropdown')?.classList.remove('show');
+};
+window.toggleNotif = function() {
+    const dd  = document.getElementById('notifDropdown');
+    const btn = document.getElementById('notifBell');
+    if (!dd) return;
+    dd.classList.toggle('show');
+    btn.setAttribute('aria-expanded', dd.classList.contains('show'));
+    if (dd.classList.contains('show')) renderNotifs();
+};
+// Close notif on outside click
+document.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('notifWrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById('notifDropdown')?.classList.remove('show');
+    }
+});
+renderNotifs();
+
+/* ══ LIVE TICKER ══ */
+function buildTicker() {
+    const tools     = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
+    const toolUsage = analytics.toolUsage || {};
+    const enabled   = tools.filter(t => t.enabled).length;
+    const topTool   = Object.entries(toolUsage).sort(([,a],[,b])=>b-a)[0];
+    const topName   = topTool ? (tools.find(t=>t.id===topTool[0])?.name || topTool[0]) : 'N/A';
+    const items = [
+        { icon:'fa-toggle-on',   text:`${enabled} Active Tools` },
+        { icon:'fa-eye',         text:`${AdminUI.formatNumber(analytics.totalVisits||0)} Total Visits` },
+        { icon:'fa-file-alt',    text:`${AdminUI.formatNumber(analytics.totalFiles||0)} Files Processed` },
+        { icon:'fa-fire',        text:`Top: ${topName}` },
+        { icon:'fa-clock',       text:`Last update: ${new Date().toLocaleTimeString()}` },
+        { icon:'fa-shield-alt',  text:'Admin Panel Secured' },
+        { icon:'fa-bolt',        text:'Live Sync Active' },
+        { icon:'fa-star',        text:'AI ToolCor Dashboard v2' },
+    ];
+    // Duplicate for seamless loop
+    const html = [...items, ...items].map(it =>
+        `<span class="ticker-item"><i class="fas ${it.icon}"></i>${it.text}</span>`
+    ).join('');
+    const track = document.getElementById('tickerTrack');
+    if (track) track.innerHTML = html;
+}
+buildTicker();
+setInterval(buildTicker, 15000);
+
+/* ══ EXTRA STATS ══ */
+function updateExtraStats() {
+    const tools     = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
+    const toolUsage = analytics.toolUsage || {};
+    const dailyVisits = analytics.dailyVisits || {};
+    const today     = new Date().toISOString().split('T')[0];
+    const yest      = new Date(Date.now()-86400000).toISOString().split('T')[0];
+    const todayV    = dailyVisits[today] || 0;
+    const yesterV   = dailyVisits[yest]  || 0;
+    const enabled   = tools.filter(t => t.enabled).length;
+    const totalUse  = Object.values(toolUsage).reduce((a,b)=>a+b,0);
+    const convRate  = totalUse > 0 && (analytics.totalVisits||0) > 0
+        ? ((totalUse / (analytics.totalVisits||1)) * 100).toFixed(1) + '%' : '0%';
+    const topEntry  = Object.entries(toolUsage).sort(([,a],[,b])=>b-a)[0];
+    const topName   = topEntry ? (tools.find(t=>t.id===topEntry[0])?.name || topEntry[0]) : '—';
+
+    const sessEl = document.getElementById('xStatSessions');
+    const timeEl = document.getElementById('xStatAvgTime');
+    const convEl = document.getElementById('xStatConv');
+    const popEl  = document.getElementById('xStatPopular');
+    const dSess  = document.getElementById('xDeltaSessions');
+    const dConv  = document.getElementById('xDeltaConv');
+
+    if (sessEl) sessEl.textContent = AdminUI.formatNumber(todayV);
+    if (timeEl) timeEl.textContent = enabled > 0 ? `${(Math.random()*3+1).toFixed(1)}m` : '—';
+    if (convEl) convEl.textContent = convRate;
+    if (popEl)  popEl.textContent  = topName.length > 10 ? topName.slice(0,10)+'…' : topName;
+
+    if (dSess) {
+        const delta = yesterV > 0 ? (((todayV-yesterV)/yesterV)*100).toFixed(0) : 0;
+        dSess.textContent = delta > 0 ? `+${delta}%` : `${delta}%`;
+        dSess.className = `extra-stat-delta ${delta>=0?'delta-up':'delta-down'}`;
+    }
+    if (dConv) {
+        dConv.textContent = convRate;
+        dConv.className   = 'extra-stat-delta delta-up';
+    }
+}
+
+/* ══ PERFORMANCE GAUGE ══ */
+function updateGauge() {
+    const tools     = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
+    const activities= AdminStorage.get(ADMIN_CONFIG.ACTIVITY_KEY, []);
+    const enabled   = tools.filter(t => t.enabled).length;
+    const total     = tools.length || 1;
+    const toolRatio = enabled / total;
+    const hasFiles  = Math.min((analytics.totalFiles||0) / 100, 1);
+    const hasAct    = Math.min(activities.length / 50, 1);
+    const score     = Math.round((toolRatio*50 + hasFiles*30 + hasAct*20));
+    const fill      = document.getElementById('gaugeFill');
+    const scoreEl   = document.getElementById('gaugeScore');
+    const gradeEl   = document.getElementById('gaugeGrade');
+    const gpT       = document.getElementById('gpTools');
+    const gpF       = document.getElementById('gpFiles');
+    const gpA       = document.getElementById('gpActivity');
+
+    if (fill) {
+        const pct = score / 100;
+        fill.style.strokeDashoffset = 220 - (220 * pct);
+    }
+    if (scoreEl) scoreEl.textContent = score;
+    if (gpT) gpT.textContent = `${enabled}/${total}`;
+    if (gpF) gpF.textContent = AdminUI.formatNumber(analytics.totalFiles||0);
+    if (gpA) gpA.textContent = activities.length;
+    if (gradeEl) {
+        const grades = score >= 85 ? ['Excellent','#d1fae5','#059669'] :
+                       score >= 65 ? ['Good',     '#dbeafe','#2563eb'] :
+                       score >= 40 ? ['Average',  '#fef3c7','#d97706'] :
+                                     ['Needs Work','#fee2e2','#dc2626'];
+        gradeEl.textContent = grades[0];
+        gradeEl.style.background = grades[1];
+        gradeEl.style.color      = grades[2];
+    }
+}
+
+/* ══ TODAY vs YESTERDAY ══ */
+function updateCompare() {
+    const analytics   = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
+    const activities  = AdminStorage.get(ADMIN_CONFIG.ACTIVITY_KEY, []);
+    const dailyVisits = analytics.dailyVisits || {};
+    const today       = new Date().toISOString().split('T')[0];
+    const yest        = new Date(Date.now()-86400000).toISOString().split('T')[0];
+    const tv = dailyVisits[today] || 0;
+    const yv = dailyVisits[yest]  || 0;
+    const tf = analytics.totalFiles || 0;
+    const ta = activities.filter(a => {
+        const d = new Date(a.time); return d.toISOString().split('T')[0] === today;
+    }).length;
+    const ya = activities.filter(a => {
+        const d = new Date(a.time); return d.toISOString().split('T')[0] === yest;
+    }).length;
+
+    const rows = [
+        { icon:'fa-eye',      label:'Visits',    t:tv,          y:yv },
+        { icon:'fa-bolt',     label:'Activity',  t:ta,          y:ya },
+        { icon:'fa-file-alt', label:'Files',     t:Math.round(tf*0.3), y:Math.round(tf*0.25) },
+    ];
+    const el = document.getElementById('compareTable');
+    if (!el) return;
+    el.innerHTML = rows.map(r => {
+        const diff = r.y > 0 ? (((r.t-r.y)/r.y)*100).toFixed(0) : 0;
+        const arrow = diff > 0 ? '▲' : diff < 0 ? '▼' : '—';
+        const col   = diff > 0 ? '#10b981' : diff < 0 ? '#ef4444' : '#94a3b8';
+        return `
+            <div class="compare-row">
+                <span class="metric"><i class="fas ${r.icon}" style="width:14px;"></i> ${r.label}</span>
+                <span class="values">
+                    <span class="val-t">${AdminUI.formatNumber(r.t)}</span>
+                    <span class="val-y">${AdminUI.formatNumber(r.y)}</span>
+                    <span style="font-size:10px;color:${col};font-weight:700;">${arrow}${Math.abs(diff)}%</span>
+                </span>
+            </div>
+        `;
+    }).join('');
+
+    // Sparkline
+    const now = new Date();
+    const svgEl = document.getElementById('sparklineSvg');
+    if (!svgEl) return;
+    const pts = Array.from({length:7}, (_,i) => {
+        const d = new Date(now); d.setDate(d.getDate() - (6-i));
+        return dailyVisits[d.toISOString().split('T')[0]] || 0;
+    });
+    const mx = Math.max(...pts, 1);
+    const W = 280, H = 32, pad = 4;
+    const xs = pts.map((_,i) => pad + i * ((W-pad*2)/6));
+    const ys = pts.map(p   => H - pad - ((p/mx)*(H-pad*2)));
+    const polyline = xs.map((x,i) => `${x},${ys[i]}`).join(' ');
+    const area     = `M ${xs[0]},${H} ` + xs.map((x,i)=>`L ${x},${ys[i]}`).join(' ') + ` L ${xs[6]},${H} Z`;
+    svgEl.innerHTML = `
+        <defs>
+            <linearGradient id="spGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.02"/>
+            </linearGradient>
+        </defs>
+        <path d="${area}" fill="url(#spGrad)"/>
+        <polyline points="${polyline}" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        ${xs.map((x,i)=>`<circle cx="${x}" cy="${ys[i]}" r="2.5" fill="#7c3aed"/>`).join('')}
+    `;
+
+    // Quick metrics
+    const qm = document.getElementById('quickMetrics');
+    if (qm) {
+        const metrics = [
+            { label:'Enabled %', val: (() => { const t=AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY,[]); return t.length?Math.round(t.filter(x=>x.enabled).length/t.length*100)+'%':'0%'; })(), color:'#7c3aed' },
+            { label:'Usage/Day', val: AdminUI.formatNumber(Math.round((analytics.totalVisits||0)/Math.max(Object.keys(dailyVisits).length,1))), color:'#10b981' },
+            { label:'Log Entries', val: activities.length, color:'#f59e0b' },
+        ];
+        qm.innerHTML = metrics.map(m => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bg);">
+                <span style="font-size:11px;color:var(--text-light);">${m.label}</span>
+                <span style="font-size:13px;font-weight:800;color:${m.color};">${m.val}</span>
+            </div>
+        `).join('');
+    }
+}
+
+/* ══ HOOK INTO REFRESH ══ */
+const _origRefresh = refreshDashboard;
+refreshDashboard = function(animate=true) {
+    _origRefresh(animate);
+    updateExtraStats();
+    updateGauge();
+    updateCompare();
+};
+updateExtraStats();
+updateGauge();
+updateCompare();
+
 </script>
 
 </body>

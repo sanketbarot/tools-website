@@ -83,6 +83,9 @@ const DEFAULT_TOOLS = [
     { id:'ppt-to-pdf',    name:'PPT to PDF',    category:'convert', path:'ppt-to-pdf.html',    icon:'fa-file-powerpoint', color:'orange',enabled:false, badge:'soon', desc:'Convert PowerPoint presentations to PDF' },
     { id:'translate-pdf', name:'Translate PDF', category:'ai',      path:'translate-pdf.html', icon:'fa-language',        color:'purple',enabled:false, badge:'soon', desc:'Translate PDFs into 100+ languages' },
     { id:'word-to-pdf',   name:'Word to PDF',   category:'convert', path:'word-to-pdf.html',   icon:'fa-file-word',       color:'blue',  enabled:false, badge:'soon', desc:'Convert Word documents to PDF' },
+    { id:'excel-to-pdf',  name:'Excel to PDF',  category:'convert', path:'excel-to-pdf.html',  icon:'fa-file-excel',      color:'green', enabled:false,  badge:'new',  desc:'Convert Excel spreadsheets to PDF format' },
+    { id:'html-to-pdf',   name:'HTML to PDF',   category:'convert', path:'html-to-pdf.html',   icon:'fa-code',            color:'orange',enabled:false,  badge:'new',  desc:'Convert HTML pages or URLs to PDF' },
+    { id:'pdf-to-ppt',    name:'PDF to PPT',    category:'convert', path:'pdf-to-ppt.html',    icon:'fa-file-powerpoint', color:'red',   enabled:false,  badge:'new',  desc:'Convert PDF files to PowerPoint presentations' },
 ];
 
 /* ════════════════════════════════════════════════

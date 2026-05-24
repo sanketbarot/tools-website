@@ -18,93 +18,236 @@
     <link rel="stylesheet" href="css/admin.css">
 
     <style>
-        /* ── Tool Usage column ── */
-        .tool-usage {
-            text-align: right;
-            font-size: 11px;
-            min-width: 46px;
-            flex-shrink: 0;
+        /* ══ DARK MODE ══ */
+        body.dark-mode {
+            background: #0f172a !important; color: #f1f5f9;
         }
-        .tool-usage strong { display: block; color: var(--primary); font-size: 13px; line-height: 1; }
-        .tool-usage small  { color: var(--text-light); font-size: 10px; }
-
-        /* ── Mini badge inside tool row ── */
-        .tool-mini-badge {
-            font-size: 9px; font-weight: 800;
-            padding: 2px 5px; border-radius: 3px;
-            text-transform: uppercase; letter-spacing: 0.3px;
+        body.dark-mode .card, body.dark-mode .summary-card,
+        body.dark-mode .stat-card, body.dark-mode .tool-row,
+        body.dark-mode .category-section {
+            background: #1e293b !important; border-color: #334155 !important;
         }
-        .tool-mini-badge.popular { background: #fef3c7; color: #d97706; }
-        .tool-mini-badge.new     { background: #d1fae5; color: #059669; }
-        .tool-mini-badge.ai      { background: linear-gradient(135deg,#8b5cf6,#ec4899); color:#fff; }
-        .tool-mini-badge.soon    { background: #e0e7ff; color: #4338ca; }
+        body.dark-mode .admin-sidebar  { background: #0f172a; border-right-color: #1e293b; }
+        body.dark-mode .topbar         { background: #1e293b; border-bottom-color: #334155; }
+        body.dark-mode .main-content   { background: #0f172a; }
+        body.dark-mode .tools-toolbar  { background: #1e293b; border-color: #334155; }
+        body.dark-mode .category-pill  { background: #1e293b; border-color: #334155; color: #94a3b8; }
+        body.dark-mode .category-pill.active { background: #7c3aed; color:#fff; border-color:#7c3aed; }
+        body.dark-mode input, body.dark-mode select { background:#1e293b; color:#f1f5f9; border-color:#334155; }
+        body.dark-mode .summary-card-info strong { color: #f1f5f9; }
+        body.dark-mode .tool-info h4   { color: #f1f5f9; }
+        body.dark-mode .tool-info p    { color: #64748b; }
+        body.dark-mode .tool-usage strong { color: #a78bfa; }
+        body.dark-mode .tool-visit-btn { background: #1e293b; border-color: #334155; color: #94a3b8; }
+        body.dark-mode .live-sync-card { background: rgba(59,130,246,0.08) !important; border-color: rgba(59,130,246,0.2) !important; }
 
-        /* ── Tool visit button ── */
-        .tool-visit-btn {
-            width: 30px; height: 30px;
-            border-radius: 8px; border: 1px solid var(--border);
-            background: var(--bg); color: var(--text-medium);
-            cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; flex-shrink: 0;
-            -webkit-tap-highlight-color: transparent;
+        /* ══ TICKER BAR ══ */
+        .ticker-bar {
+            background: linear-gradient(135deg,#7c3aed,#ec4899);
+            color: #fff; padding: 7px 0; overflow: hidden;
+            margin: -8px -20px 18px; border-radius: 0;
         }
-        .tool-visit-btn:hover { background: var(--success); color: #fff; border-color: var(--success); }
+        .ticker-track {
+            display: flex; white-space: nowrap;
+            animation: tickerScroll 26s linear infinite;
+        }
+        .ticker-item {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 0 28px; font-size: 11px; font-weight: 600;
+            border-right: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;
+        }
+        .ticker-item i { opacity: 0.8; font-size: 10px; }
+        @keyframes tickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        .ticker-bar:hover .ticker-track { animation-play-state: paused; }
+        @media(max-width:767px){ .ticker-bar{ margin:-8px -14px 14px; } }
 
-        /* ── Summary row ── */
+        /* ══ DARK TOGGLE ══ */
+        .dark-toggle {
+            width:36px; height:20px; border-radius:10px;
+            background:#cbd5e1; border:none; cursor:pointer;
+            position:relative; transition:background 0.3s; flex-shrink:0;
+        }
+        .dark-toggle::after {
+            content:''; position:absolute; top:2px; left:2px;
+            width:16px; height:16px; border-radius:50%;
+            background:#fff; transition:transform 0.3s;
+        }
+        body.dark-mode .dark-toggle { background:#7c3aed; }
+        body.dark-mode .dark-toggle::after { transform:translateX(16px); }
+
+        /* ══ LIVE STATUS BAR ══ */
+        .tools-live-bar {
+            display: flex; align-items: center; gap: 10px;
+            background: #fff; border: 1.5px solid #e2e8f0;
+            border-radius: 12px; padding: 10px 16px;
+            margin-bottom: 16px; flex-wrap: wrap;
+        }
+        .live-indicator-sm {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 10px; font-weight: 800; letter-spacing: 0.5px;
+            color: #10b981;
+        }
+        .live-dot-sm {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #10b981;
+            animation: livePulse 1.4s ease-in-out infinite;
+        }
+        @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+        body.dark-mode .tools-live-bar { background:#1e293b; border-color:#334155; }
+
+        /* ══ SUMMARY CARDS ══ */
         .summary-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            display: grid; grid-template-columns: repeat(4,1fr);
             gap: 10px; margin-bottom: 16px;
         }
         .summary-card {
-            background: #fff; border: 1.5px solid var(--border);
-            border-radius: 12px; padding: 14px;
-            display: flex; align-items: center; gap: 10px;
-            transition: all 0.2s; position: relative; overflow: hidden;
+            background: #fff; border: 1.5px solid #e2e8f0;
+            border-radius: 14px; padding: 16px;
+            display: flex; align-items: center; gap: 12px;
+            transition: all 0.22s; position: relative; overflow: hidden;
         }
-        .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-        .summary-card:nth-child(1)::before { background: linear-gradient(90deg,#7c3aed,#ec4899); }
-        .summary-card:nth-child(2)::before { background: linear-gradient(90deg,#10b981,#059669); }
-        .summary-card:nth-child(3)::before { background: linear-gradient(90deg,#ef4444,#dc2626); }
-        .summary-card:nth-child(4)::before { background: linear-gradient(90deg,#f59e0b,#f97316); }
-        .summary-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(124,58,237,0.08); }
+        .summary-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+        .summary-card:nth-child(1)::before { background:linear-gradient(90deg,#7c3aed,#ec4899); }
+        .summary-card:nth-child(2)::before { background:linear-gradient(90deg,#10b981,#059669); }
+        .summary-card:nth-child(3)::before { background:linear-gradient(90deg,#ef4444,#dc2626); }
+        .summary-card:nth-child(4)::before { background:linear-gradient(90deg,#f59e0b,#f97316); }
+        .summary-card:nth-child(5)::before { background:linear-gradient(90deg,#3b82f6,#06b6d4); }
+        .summary-card:nth-child(6)::before { background:linear-gradient(90deg,#8b5cf6,#6366f1); }
+        .summary-card:hover { border-color:#7c3aed; transform:translateY(-2px); box-shadow:0 8px 20px rgba(124,58,237,0.1); }
         .summary-card-icon {
-            width: 38px; height: 38px; border-radius: 10px;
+            width:40px; height:40px; border-radius:12px;
+            display:flex; align-items:center; justify-content:center;
+            color:#fff; flex-shrink:0; font-size:16px;
+        }
+        .summary-card-info { min-width:0; flex:1; }
+        .summary-card-info strong { display:block; font-size:20px; font-weight:800; color:#1e293b; line-height:1; }
+        .summary-card-info span   { font-size:11px; color:#94a3b8; }
+        .summary-card-delta {
+            font-size:10px; font-weight:700; padding:2px 7px;
+            border-radius:20px; flex-shrink:0;
+        }
+        .delta-up   { background:#d1fae5; color:#059669; }
+        .delta-down { background:#fee2e2; color:#dc2626; }
+        .delta-neu  { background:#f1f5f9; color:#64748b; }
+
+        /* ══ VIEW TOGGLE ══ */
+        .view-toggle {
+            display: flex; gap: 2px;
+            background: #f1f5f9; border-radius: 8px; padding: 2px;
+        }
+        .view-btn {
+            width: 28px; height: 28px; border-radius: 6px; border: none;
+            background: transparent; color: #94a3b8; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; flex-shrink: 0; font-size: 15px;
+            font-size: 12px; transition: all 0.2s;
         }
-        .summary-card-info { min-width: 0; flex: 1; }
-        .summary-card-info strong { display: block; font-size: 19px; font-weight: 800; color: var(--text-dark); line-height: 1; }
-        .summary-card-info span   { font-size: 11px; color: var(--text-light); }
+        .view-btn.active { background: #fff; color: #7c3aed; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        body.dark-mode .view-toggle { background: #0f172a; }
+        body.dark-mode .view-btn.active { background: #1e293b; }
 
-        /* ── Tool row override for desktop (5-col) ── */
-        @media (min-width: 600px) {
-            .tool-row { grid-template-columns: 18px 40px 1fr auto auto auto !important; }
+        /* ══ SORT SELECT ══ */
+        .sort-select {
+            font-size: 11px; padding: 5px 10px; border-radius: 8px;
+            border: 1.5px solid #e2e8f0; background: #fff; color: #475569;
+            cursor: pointer; font-weight: 600;
+        }
+        body.dark-mode .sort-select { background:#1e293b; border-color:#334155; color:#94a3b8; }
+
+        /* ══ TOOL USAGE COLUMN ══ */
+        .tool-usage { text-align:right; font-size:11px; min-width:46px; flex-shrink:0; }
+        .tool-usage strong { display:block; color:var(--primary); font-size:13px; line-height:1; }
+        .tool-usage small  { color:var(--text-light); font-size:10px; }
+
+        /* ══ MINI BADGE ══ */
+        .tool-mini-badge {
+            font-size:9px; font-weight:800; padding:2px 5px; border-radius:3px;
+            text-transform:uppercase; letter-spacing:0.3px;
+        }
+        .tool-mini-badge.popular { background:#fef3c7; color:#d97706; }
+        .tool-mini-badge.new     { background:#d1fae5; color:#059669; }
+        .tool-mini-badge.ai      { background:linear-gradient(135deg,#8b5cf6,#ec4899); color:#fff; }
+        .tool-mini-badge.soon    { background:#e0e7ff; color:#4338ca; }
+
+        /* ══ VISIT BUTTON ══ */
+        .tool-visit-btn {
+            width:30px; height:30px; border-radius:8px; border:1px solid var(--border);
+            background:var(--bg); color:var(--text-medium); cursor:pointer; transition:all 0.2s;
+            display:flex; align-items:center; justify-content:center;
+            font-size:12px; flex-shrink:0; -webkit-tap-highlight-color:transparent;
+        }
+        .tool-visit-btn:hover { background:var(--success); color:#fff; border-color:var(--success); }
+
+        /* ══ GRID VIEW ══ */
+        .tools-grid-view .category-section { margin-bottom: 24px; }
+        .tools-grid-view .tool-row-wrap { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; }
+        .tools-grid-view .tool-row {
+            display: flex !important; flex-direction: column !important;
+            grid-template-columns: unset !important;
+            border-radius: 14px !important; padding: 16px !important;
+            gap: 10px !important; position: relative;
+        }
+        .tools-grid-view .tool-row .tool-grid-top { display:flex; align-items:center; gap:10px; }
+        .tools-grid-view .tool-checkbox { position:absolute; top:12px; left:12px; }
+        .tools-grid-view .tool-info h4 { font-size:13px; }
+        .tools-grid-view .tool-info p  { font-size:11px; -webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden; }
+        .tools-grid-view .tool-actions { display:flex; justify-content:space-between; align-items:center; }
+        .tools-grid-view .tool-usage   { text-align:left; }
+
+        /* ══ PROGRESS BAR IN CATEGORY HEADER ══ */
+        .cat-progress-bar {
+            height: 3px; border-radius: 50px; background: #f1f5f9; overflow: hidden; margin-top: 6px;
+        }
+        .cat-progress-fill { height: 100%; border-radius: 50px; transition: width 0.6s ease; }
+        body.dark-mode .cat-progress-bar { background: #334155; }
+
+        /* ══ TOOL ROW ANIMATE ══ */
+        .tool-row { transition: all 0.2s; }
+        .tool-row:hover { transform: translateX(3px); box-shadow: 0 2px 12px rgba(124,58,237,0.06); }
+        body.dark-mode .tool-row:hover { box-shadow: 0 2px 12px rgba(124,58,237,0.15); }
+
+        /* ══ STATS MINI GRID ══ */
+        .tools-mini-stats {
+            display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px;
+        }
+        .mini-stat {
+            background: #fff; border: 1.5px solid #e2e8f0;
+            border-radius: 12px; padding: 12px 14px;
+            display: flex; align-items: center; gap: 10px; transition: all 0.2s;
+        }
+        .mini-stat:hover { border-color: #7c3aed; transform: translateY(-1px); }
+        .mini-stat-icon { width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff; flex-shrink:0; }
+        .mini-stat-info strong { display:block; font-size:15px; font-weight:800; color:#1e293b; line-height:1; }
+        .mini-stat-info span   { font-size:10px; color:#94a3b8; }
+        body.dark-mode .mini-stat { background:#1e293b; border-color:#334155; }
+        body.dark-mode .mini-stat-info strong { color:#f1f5f9; }
+
+        /* ══ DESKTOP 6-COL ROW ══ */
+        @media(min-width:600px) {
+            .tool-row { grid-template-columns:18px 40px 1fr auto auto auto !important; }
         }
 
-        /* ── Responsive ── */
-        @media (max-width: 767px) {
-            .summary-row { grid-template-columns: repeat(2, 1fr); }
+        /* ══ RESPONSIVE ══ */
+        @media(max-width:767px) {
+            .summary-row { grid-template-columns:repeat(2,1fr); }
+            .tools-mini-stats { grid-template-columns:repeat(3,1fr); }
         }
-        @media (max-width: 480px) {
-            .summary-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .summary-card { padding: 12px; gap: 8px; }
-            .summary-card-icon { width: 34px; height: 34px; font-size: 13px; }
-            .summary-card-info strong { font-size: 16px; }
-            .summary-card-info span { font-size: 10px; }
-            .tool-usage { display: none; }
-            .category-header { flex-direction: column; align-items: stretch; }
-            .category-actions { width: 100%; }
-            .category-actions button { flex: 1; justify-content: center; font-size: 10px; padding: 5px 8px; }
+        @media(max-width:480px) {
+            .summary-row { grid-template-columns:repeat(2,1fr); gap:8px; }
+            .summary-card { padding:12px; gap:8px; }
+            .summary-card-icon { width:34px; height:34px; font-size:13px; }
+            .summary-card-info strong { font-size:16px; }
+            .tool-usage { display:none; }
+            .category-header { flex-direction:column; align-items:stretch; }
+            .category-actions { width:100%; }
+            .category-actions button { flex:1; justify-content:center; font-size:10px; padding:5px 8px; }
+            .tools-mini-stats { grid-template-columns:repeat(3,1fr); gap:6px; }
+            .mini-stat { padding:10px; }
+            .mini-stat-icon { width:28px; height:28px; font-size:11px; }
+            .mini-stat-info strong { font-size:13px; }
         }
-        @media (max-width: 360px) {
-            .summary-row { grid-template-columns: 1fr 1fr; }
-        }
-        @media (hover: none) {
-            .tool-row, .summary-card, .category-pill {
-                -webkit-tap-highlight-color: rgba(124,58,237,0.08);
-            }
+        @media(max-width:360px) { .summary-row { grid-template-columns:1fr 1fr; } }
+        @media(hover:none) {
+            .tool-row, .summary-card, .category-pill { -webkit-tap-highlight-color:rgba(124,58,237,0.08); }
         }
     </style>
 </head>
@@ -129,8 +272,77 @@ document.getElementById('adminWrapper').innerHTML = `
 
         <div class="page-container">
 
+            <!-- LIVE TICKER -->
+            <div class="ticker-bar">
+                <div class="ticker-track" id="tickerTrack"></div>
+            </div>
+
             <!-- SUMMARY CARDS -->
             <div class="summary-row" id="summaryRow"></div>
+
+            <!-- MINI STATS ROW -->
+            <div class="tools-mini-stats" id="miniStatsRow">
+                <div class="mini-stat">
+                    <div class="mini-stat-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="mini-stat-info">
+                        <strong id="msEnableRate">0%</strong>
+                        <span>Enable Rate</span>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon" style="background:linear-gradient(135deg,#ec4899,#f43f5e);">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="mini-stat-info">
+                        <strong id="msTopTool">—</strong>
+                        <span>Top Tool</span>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="mini-stat-info">
+                        <strong id="msCatCount">0</strong>
+                        <span>Categories</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIVE BAR + DARK MODE -->
+            <div class="tools-live-bar">
+                <span class="live-indicator-sm">
+                    <span class="live-dot-sm"></span> LIVE
+                </span>
+                <span style="font-size:11px;color:var(--text-light);">Changes sync instantly to website</span>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <!-- VIEW TOGGLE -->
+                    <div class="view-toggle">
+                        <button class="view-btn active" id="viewList" onclick="setView('list')" title="List view" type="button">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button class="view-btn" id="viewGrid" onclick="setView('grid')" title="Grid view" type="button">
+                            <i class="fas fa-th"></i>
+                        </button>
+                    </div>
+                    <!-- SORT -->
+                    <select class="sort-select" id="sortSelect" onchange="renderTools()">
+                        <option value="default">Default Order</option>
+                        <option value="name">A → Z</option>
+                        <option value="usage">Most Used</option>
+                        <option value="enabled">Enabled First</option>
+                        <option value="disabled">Disabled First</option>
+                    </select>
+                    <!-- DARK MODE -->
+                    <div style="display:flex;align-items:center;gap:6px;" title="Toggle dark mode">
+                        <i class="fas fa-sun" style="font-size:11px;color:#f59e0b;"></i>
+                        <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" type="button" aria-label="Toggle dark mode"></button>
+                        <i class="fas fa-moon" style="font-size:11px;color:#7c3aed;"></i>
+                    </div>
+                </div>
+            </div>
 
             <!-- TOOLBAR -->
             <div class="tools-toolbar">
@@ -186,7 +398,7 @@ document.getElementById('adminWrapper').innerHTML = `
             </div>
 
             <!-- LIVE SYNC INFO -->
-            <div class="card" style="margin-top:16px;background:var(--info-light);border-color:rgba(59,130,246,0.3);">
+            <div class="card live-sync-card" style="margin-top:16px;background:var(--info-light);border-color:rgba(59,130,246,0.3);">
                 <div style="display:flex;gap:10px;align-items:flex-start;">
                     <i class="fas fa-info-circle" style="color:var(--info);font-size:18px;margin-top:1px;flex-shrink:0;" aria-hidden="true"></i>
                     <div style="flex:1;">
@@ -230,6 +442,9 @@ function renderSummary() {
     const enabled   = tools.filter(t => t.enabled).length;
     const disabled  = tools.length - enabled;
     const totalUse  = Object.values(toolUsage).reduce((a,b) => a + b, 0);
+    const newBadge  = tools.filter(t => t.badge === 'new').length;
+    const aiTools   = tools.filter(t => t.category === 'ai').length;
+    const rate      = tools.length ? Math.round(enabled/tools.length*100) : 0;
 
     document.getElementById('summaryRow').innerHTML = `
         <div class="summary-card">
@@ -240,6 +455,7 @@ function renderSummary() {
                 <strong>${tools.length}</strong>
                 <span>Total Tools</span>
             </div>
+            <span class="summary-card-delta delta-neu">${Object.keys(CATEGORIES).length-1} cats</span>
         </div>
         <div class="summary-card">
             <div class="summary-card-icon" style="background:linear-gradient(135deg,#10b981,#059669);">
@@ -249,6 +465,7 @@ function renderSummary() {
                 <strong>${enabled}</strong>
                 <span>Enabled</span>
             </div>
+            <span class="summary-card-delta delta-up">+${rate}%</span>
         </div>
         <div class="summary-card">
             <div class="summary-card-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);">
@@ -258,6 +475,7 @@ function renderSummary() {
                 <strong>${disabled}</strong>
                 <span>Disabled</span>
             </div>
+            <span class="summary-card-delta delta-down">${tools.length ? Math.round(disabled/tools.length*100) : 0}%</span>
         </div>
         <div class="summary-card">
             <div class="summary-card-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316);">
@@ -267,8 +485,39 @@ function renderSummary() {
                 <strong>${AdminUI.formatNumber(totalUse)}</strong>
                 <span>Total Usage</span>
             </div>
+            <span class="summary-card-delta delta-up">🔥</span>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="summary-card-info">
+                <strong>${newBadge}</strong>
+                <span>New Tools</span>
+            </div>
+            <span class="summary-card-delta delta-up">NEW</span>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-icon" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="summary-card-info">
+                <strong>${aiTools}</strong>
+                <span>AI Tools</span>
+            </div>
+            <span class="summary-card-delta" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);color:#fff;font-size:9px;padding:2px 6px;border-radius:20px;font-weight:800;">AI</span>
         </div>
     `;
+
+    // Update mini stats
+    const topEntry  = Object.entries(toolUsage).sort(([,a],[,b])=>b-a)[0];
+    const topName   = topEntry ? (tools.find(t=>t.id===topEntry[0])?.name || topEntry[0]) : '—';
+    const msER = document.getElementById('msEnableRate');
+    const msTT = document.getElementById('msTopTool');
+    const msCC = document.getElementById('msCatCount');
+    if (msER) msER.textContent = rate + '%';
+    if (msTT) msTT.textContent = topName.length > 9 ? topName.slice(0,9)+'…' : topName;
+    if (msCC) msCC.textContent = Object.keys(CATEGORIES).length - 1;
 }
 
 /* ════════════════════════════════════════
@@ -302,6 +551,7 @@ function renderTools() {
     const tools     = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
     const analytics = AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
     const toolUsage = analytics.toolUsage || {};
+    const sortVal   = document.getElementById('sortSelect')?.value || 'default';
 
     let filtered = tools;
     if (currentCategory !== 'all') {
@@ -317,6 +567,12 @@ function renderTools() {
         );
     }
 
+    // Sort
+    if (sortVal === 'name')     filtered = [...filtered].sort((a,b) => a.name.localeCompare(b.name));
+    if (sortVal === 'usage')    filtered = [...filtered].sort((a,b) => (toolUsage[b.id]||0) - (toolUsage[a.id]||0));
+    if (sortVal === 'enabled')  filtered = [...filtered].sort((a,b) => (b.enabled?1:0) - (a.enabled?1:0));
+    if (sortVal === 'disabled') filtered = [...filtered].sort((a,b) => (a.enabled?1:0) - (b.enabled?1:0));
+
     const container = document.getElementById('toolsContainer');
     const emptyEl   = document.getElementById('emptyState');
 
@@ -327,6 +583,8 @@ function renderTools() {
     }
     emptyEl.style.display = 'none';
 
+    const isGrid = currentView === 'grid';
+
     // Group by category
     const grouped = {};
     filtered.forEach(t => {
@@ -334,9 +592,15 @@ function renderTools() {
         grouped[t.category].push(t);
     });
 
+    container.className = isGrid ? 'tools-grid-view' : '';
     container.innerHTML = Object.entries(grouped).map(([catKey, catTools]) => {
-        const catInfo      = CATEGORIES[catKey] || { name: catKey, icon:'fa-folder', color:'#7c3aed' };
+        const catInfo      = CATEGORIES[catKey] || { name:catKey, icon:'fa-folder', color:'#7c3aed' };
         const enabledCount = catTools.filter(t => t.enabled).length;
+        const pct          = catTools.length ? Math.round(enabledCount/catTools.length*100) : 0;
+
+        const rowsHtml = isGrid
+            ? `<div class="tool-row-wrap">${catTools.map(tool => renderToolRowGrid(tool, toolUsage)).join('')}</div>`
+            : catTools.map(tool => renderToolRow(tool, toolUsage)).join('');
 
         return `
             <div class="category-section">
@@ -359,7 +623,10 @@ function renderTools() {
                         </button>
                     </div>
                 </div>
-                ${catTools.map(tool => renderToolRow(tool, toolUsage)).join('')}
+                <div class="cat-progress-bar">
+                    <div class="cat-progress-fill" style="width:${pct}%;background:${catInfo.color};"></div>
+                </div>
+                ${rowsHtml}
             </div>
         `;
     }).join('');
@@ -618,24 +885,147 @@ window.visitTool = function(id) {
 };
 
 /* ════════════════════════════════════════
-   SEARCH
+   GRID CARD RENDERER
+════════════════════════════════════════ */
+function renderToolRowGrid(tool, toolUsage) {
+    const usage      = toolUsage[tool.id] || 0;
+    const isSelected = selectedTools.has(tool.id);
+    const badgeHtml  = tool.badge ? `<span class="tool-mini-badge ${tool.badge}">${tool.badge}</span>` : '';
+    return `
+        <div class="tool-row ${!tool.enabled ? 'disabled' : ''}" data-id="${tool.id}" style="flex-direction:column;gap:10px;padding:16px;border-radius:14px;">
+            <input type="checkbox" class="tool-checkbox" ${isSelected?'checked':''} aria-label="Select ${tool.name}" onchange="toggleSelect('${tool.id}', this.checked)" style="position:absolute;top:12px;left:12px;">
+            <div style="display:flex;align-items:center;gap:10px;padding-left:8px;">
+                <div class="tool-icon-box color-${tool.color}" aria-hidden="true"><i class="fas ${tool.icon}"></i></div>
+                <div class="tool-info" style="flex:1;min-width:0;">
+                    <h4>${tool.name} ${badgeHtml}</h4>
+                    <p style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${tool.desc}</p>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:1px solid var(--border);">
+                <div style="font-size:10px;color:var(--text-light);">
+                    <strong style="color:var(--primary);font-size:12px;">${AdminUI.formatNumber(usage)}</strong> uses
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <label class="toggle-switch" title="${tool.enabled?'Disable':'Enable'}">
+                        <input type="checkbox" ${tool.enabled?'checked':''} onchange="toggleTool('${tool.id}', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <button type="button" class="tool-visit-btn" onclick="visitTool('${tool.id}')" title="Open ${tool.name}">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/* ════════════════════════════════════════
+   VIEW TOGGLE
+════════════════════════════════════════ */
+let currentView = localStorage.getItem('aitoolcor_view') || 'list';
+function setView(v) {
+    currentView = v;
+    localStorage.setItem('aitoolcor_view', v);
+    document.getElementById('viewList')?.classList.toggle('active', v === 'list');
+    document.getElementById('viewGrid')?.classList.toggle('active', v === 'grid');
+    renderTools();
+}
+// Apply saved view
+setView(currentView);
+
+/* ════════════════════════════════════════
+   DARK MODE
+════════════════════════════════════════ */
+window.toggleDark = function() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('aitoolcor_dark', isDark ? '1' : '0');
+};
+if (localStorage.getItem('aitoolcor_dark') === '1') document.body.classList.add('dark-mode');
+
+/* ════════════════════════════════════════
+   LIVE TICKER
+════════════════════════════════════════ */
+function buildTicker() {
+    const tools    = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const enabled  = tools.filter(t => t.enabled).length;
+    const newTools = tools.filter(t => t.badge === 'new').length;
+    const cats     = Object.keys(CATEGORIES).length - 1;
+    const analytics= AdminStorage.get(ADMIN_CONFIG.ANALYTICS_KEY, {});
+    const topEntry = Object.entries(analytics.toolUsage||{}).sort(([,a],[,b])=>b-a)[0];
+    const topName  = topEntry ? (tools.find(t=>t.id===topEntry[0])?.name || topEntry[0]) : 'N/A';
+    const items = [
+        { icon:'fa-th-large',    text:`${tools.length} Total Tools` },
+        { icon:'fa-toggle-on',   text:`${enabled} Active` },
+        { icon:'fa-star',        text:`${newTools} New Tools` },
+        { icon:'fa-layer-group', text:`${cats} Categories` },
+        { icon:'fa-fire',        text:`Top: ${topName}` },
+        { icon:'fa-bolt',        text:'Live Sync On' },
+        { icon:'fa-clock',       text:new Date().toLocaleTimeString() },
+        { icon:'fa-shield-alt',  text:'Admin Secured' },
+    ];
+    const html = [...items,...items].map(it =>
+        `<span class="ticker-item"><i class="fas ${it.icon}"></i>${it.text}</span>`
+    ).join('');
+    const track = document.getElementById('tickerTrack');
+    if (track) track.innerHTML = html;
+}
+buildTicker();
+setInterval(buildTicker, 15000);
+
+/* ════════════════════════════════════════
+   ADD 3 NEW TOOLS TO DEFAULT_TOOLS
+════════════════════════════════════════ */
+(function injectNewTools() {
+    const newToolDefs = [
+        {
+            id:'excel-to-pdf',  name:'Excel to PDF',  category:'convert',
+            path:'excel-to-pdf.html', icon:'fa-file-excel',      color:'green',
+            enabled:true,  badge:'new',
+            desc:'Convert Excel spreadsheets (.xlsx/.xls) to PDF format instantly'
+        },
+        {
+            id:'html-to-pdf',   name:'HTML to PDF',   category:'convert',
+            path:'html-to-pdf.html',  icon:'fa-code',            color:'orange',
+            enabled:true,  badge:'new',
+            desc:'Convert any HTML page or web URL to a clean PDF document'
+        },
+        {
+            id:'pdf-to-ppt',    name:'PDF to PPT',    category:'convert',
+            path:'pdf-to-ppt.html',   icon:'fa-file-powerpoint', color:'red',
+            enabled:true,  badge:'new',
+            desc:'Convert PDF files into editable PowerPoint presentations'
+        },
+    ];
+    // Inject into DEFAULT_TOOLS if not already present
+    newToolDefs.forEach(nt => {
+        if (!DEFAULT_TOOLS.find(t => t.id === nt.id)) DEFAULT_TOOLS.push(nt);
+    });
+    // Also inject into live storage if not present
+    const stored = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    let changed = false;
+    newToolDefs.forEach(nt => {
+        if (!stored.find(t => t.id === nt.id)) { stored.push(nt); changed = true; }
+    });
+    if (changed) {
+        AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, stored);
+        AdminStorage.logActivity({
+            icon: 'fa-plus-circle', bg: 'bg-success',
+            title: '3 new tools added',
+            meta: 'Excel to PDF · HTML to PDF · PDF to PPT'
+        });
+    }
+})();
+
+/* ════════════════════════════════════════
+   SEARCH + SORT
 ════════════════════════════════════════ */
 let searchTimer;
 document.getElementById('searchInput').addEventListener('input', (e) => {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => {
-        currentSearch = e.target.value.trim();
-        renderTools();
-    }, 200);
+    searchTimer = setTimeout(() => { currentSearch = e.target.value.trim(); renderTools(); }, 200);
 });
-
-// Clear search on Escape
 document.getElementById('searchInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        document.getElementById('searchInput').value = '';
-        currentSearch = '';
-        renderTools();
-    }
+    if (e.key === 'Escape') { document.getElementById('searchInput').value = ''; currentSearch = ''; renderTools(); }
 });
 
 /* ════════════════════════════════════════
@@ -643,15 +1033,11 @@ document.getElementById('searchInput').addEventListener('keydown', (e) => {
 ════════════════════════════════════════ */
 window.addEventListener('storage', (e) => {
     if (e.key === ADMIN_CONFIG.TOOLS_KEY || e.key === ADMIN_CONFIG.ANALYTICS_KEY) {
-        renderSummary();
-        renderTools();
-        updateToolsBadge();
+        renderSummary(); renderTools(); updateToolsBadge();
     }
 });
 window.addEventListener('admin-storage-change', () => {
-    renderSummary();
-    renderTools();
-    updateToolsBadge();
+    renderSummary(); renderTools(); updateToolsBadge();
 });
 
 /* ════════════════════════════════════════
