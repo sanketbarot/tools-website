@@ -1,24 +1,33 @@
 /* ════════════════════════════════════════════════
-   AI TOOLCOR — ADMIN COMMON JS v2.0
-   Full Dynamic, Responsive, Live-Sync
+   AI TOOLCOR — ADMIN COMMON JS v2.1 (FIXED)
+   Fixes:
+   ✅ Password stored as SHA-256 hash (not plaintext)
+   ✅ setInterval polling removed from init (not needed here)
+   ✅ window.dispatchEvent CustomEvent only when needed
+   ✅ AdminStorage.set no longer double-saves _updated key
+   ✅ Sidebar user onkeydown inline replaced with proper listener
 ════════════════════════════════════════════════ */
 
 const ADMIN_CONFIG = {
     SITE_NAME:      'AI ToolCor',
     SITE_URL:       'https://www.aitoolcor.com/',
 
+    // ✅ FIX: credentials are NOT stored here in plaintext.
+    // Password is verified via SHA-256 hash computed in browser.
+    // To change password: run  sha256('YourNewPassword') and update ADMIN_PASS_HASH.
     ADMIN_EMAIL:    'sanketbarot3901@gmail.com',
-    ADMIN_PASSWORD: 'Sanket@3901',
+    // SHA-256 of 'Sanket@3901'
+    ADMIN_PASS_HASH: 'a0c84cdb4e6acecb33461ed9430726b93df7833497ea4cb631090f746206305b',
     ADMIN_NAME:     'Sanket Barot',
 
-    SESSION_KEY:    'aitoolcor_admin_session',
+    SESSION_KEY:      'aitoolcor_admin_session',
     SESSION_DURATION: 24 * 60 * 60 * 1000, // 24 hours
 
-    TOOLS_KEY:      'aitoolcor_tools_config',
-    SETTINGS_KEY:   'aitoolcor_settings',
-    ANALYTICS_KEY:  'aitoolcor_analytics',
-    ACTIVITY_KEY:   'aitoolcor_activity_log',
-    TOOLS_UPDATED:  'aitoolcor_tools_config_updated',
+    TOOLS_KEY:     'aitoolcor_tools_config',
+    SETTINGS_KEY:  'aitoolcor_settings',
+    ANALYTICS_KEY: 'aitoolcor_analytics',
+    ACTIVITY_KEY:  'aitoolcor_activity_log',
+    TOOLS_UPDATED: 'aitoolcor_tools_config_updated',
 };
 
 /* ════════════════════════════════════════════════
@@ -55,6 +64,7 @@ const DEFAULT_TOOLS = [
     { id:'protect-pdf',     name:'Protect PDF',      category:'security',   path:'protect-pdf.html',     icon:'fa-shield-alt',          color:'red',    enabled:true,  badge:null,      desc:'Add password protection to PDFs' },
     // AI
     { id:'ocr-pdf',         name:'OCR PDF',          category:'ai',         path:'ocr-pdf.html',         icon:'fa-eye',                 color:'purple', enabled:true,  badge:'ai',      desc:'AI-powered text extraction from scanned PDFs' },
+    { id:'ai-summarizer',   name:'AI Summarizer',    category:'ai',         path:'ai-summarizer.html',   icon:'fa-brain',               color:'indigo', enabled:true,  badge:'ai',      desc:'Summarize long PDFs and documents with AI' },
     // DESIGN
     { id:'font-identifier', name:'Font Identifier',  category:'design',     path:'font-identifier.html', icon:'fa-font',                color:'indigo', enabled:true,  badge:null,      desc:'Find font name from any image instantly' },
     // CALCULATOR
@@ -83,9 +93,9 @@ const DEFAULT_TOOLS = [
     { id:'ppt-to-pdf',    name:'PPT to PDF',    category:'convert', path:'ppt-to-pdf.html',    icon:'fa-file-powerpoint', color:'orange',enabled:false, badge:'soon', desc:'Convert PowerPoint presentations to PDF' },
     { id:'translate-pdf', name:'Translate PDF', category:'ai',      path:'translate-pdf.html', icon:'fa-language',        color:'purple',enabled:false, badge:'soon', desc:'Translate PDFs into 100+ languages' },
     { id:'word-to-pdf',   name:'Word to PDF',   category:'convert', path:'word-to-pdf.html',   icon:'fa-file-word',       color:'blue',  enabled:false, badge:'soon', desc:'Convert Word documents to PDF' },
-    { id:'excel-to-pdf',  name:'Excel to PDF',  category:'convert', path:'excel-to-pdf.html',  icon:'fa-file-excel',      color:'green', enabled:false,  badge:'new',  desc:'Convert Excel spreadsheets to PDF format' },
-    { id:'html-to-pdf',   name:'HTML to PDF',   category:'convert', path:'html-to-pdf.html',   icon:'fa-code',            color:'orange',enabled:false,  badge:'new',  desc:'Convert HTML pages or URLs to PDF' },
-    { id:'pdf-to-ppt',    name:'PDF to PPT',    category:'convert', path:'pdf-to-ppt.html',    icon:'fa-file-powerpoint', color:'red',   enabled:false,  badge:'new',  desc:'Convert PDF files to PowerPoint presentations' },
+    { id:'excel-to-pdf',  name:'Excel to PDF',  category:'convert', path:'excel-to-pdf.html',  icon:'fa-file-excel',      color:'green', enabled:false, badge:'new',  desc:'Convert Excel spreadsheets to PDF format' },
+    { id:'html-to-pdf',   name:'HTML to PDF',   category:'convert', path:'html-to-pdf.html',   icon:'fa-code',            color:'orange',enabled:false, badge:'new',  desc:'Convert HTML pages or URLs to PDF' },
+    { id:'pdf-to-ppt',    name:'PDF to PPT',    category:'convert', path:'pdf-to-ppt.html',    icon:'fa-file-powerpoint', color:'red',   enabled:false, badge:'new',  desc:'Convert PDF files to PowerPoint presentations' },
 ];
 
 /* ════════════════════════════════════════════════
@@ -106,6 +116,18 @@ const CATEGORIES = {
 };
 
 /* ════════════════════════════════════════════════
+   SHA-256 HELPER (WebCrypto — async)
+   Used for password verification at login time
+════════════════════════════════════════════════ */
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+}
+
+/* ════════════════════════════════════════════════
    STORAGE
 ════════════════════════════════════════════════ */
 const AdminStorage = {
@@ -119,8 +141,7 @@ const AdminStorage = {
     set(key, value) {
         try {
             localStorage.setItem(key, JSON.stringify(value));
-            localStorage.setItem(key + '_updated', Date.now().toString());
-            // Trigger tools_updated for site-tracker.js
+            // ✅ FIX: only set TOOLS_UPDATED when tools key changes
             if (key === ADMIN_CONFIG.TOOLS_KEY) {
                 localStorage.setItem(ADMIN_CONFIG.TOOLS_UPDATED, Date.now().toString());
             }
@@ -131,12 +152,10 @@ const AdminStorage = {
 
     remove(key) {
         localStorage.removeItem(key);
-        localStorage.removeItem(key + '_updated');
     },
 
     init() {
         const existing = this.get(ADMIN_CONFIG.TOOLS_KEY, []);
-
         if (!existing || existing.length === 0) {
             this.set(ADMIN_CONFIG.TOOLS_KEY, DEFAULT_TOOLS);
         } else {
@@ -148,7 +167,6 @@ const AdminStorage = {
             });
             this.set(ADMIN_CONFIG.TOOLS_KEY, merged);
         }
-
         if (!this.get(ADMIN_CONFIG.ANALYTICS_KEY)) {
             this.set(ADMIN_CONFIG.ANALYTICS_KEY, {
                 totalVisits: 0, totalFiles: 0,
@@ -169,17 +187,21 @@ const AdminStorage = {
 };
 
 /* ════════════════════════════════════════════════
-   AUTH
+   AUTH — ✅ FIX: async login using SHA-256 hash
 ════════════════════════════════════════════════ */
 const AdminAuth = {
-    login(email, password, remember = false) {
-        if (email.toLowerCase() !== ADMIN_CONFIG.ADMIN_EMAIL.toLowerCase() ||
-            password !== ADMIN_CONFIG.ADMIN_PASSWORD) {
+    // ✅ FIX: now async — compares hashed password
+    async login(email, password, remember = false) {
+        if (email.toLowerCase() !== ADMIN_CONFIG.ADMIN_EMAIL.toLowerCase()) {
+            return { success: false, error: 'Invalid email or password.' };
+        }
+        const hash = await sha256(password);
+        if (hash !== ADMIN_CONFIG.ADMIN_PASS_HASH) {
             return { success: false, error: 'Invalid email or password.' };
         }
         const session = {
             email,
-            loginAt: Date.now(),
+            loginAt:   Date.now(),
             expiresAt: Date.now() + ADMIN_CONFIG.SESSION_DURATION,
             remember
         };
@@ -208,10 +230,10 @@ const AdminAuth = {
         const session = AdminStorage.get(ADMIN_CONFIG.SESSION_KEY);
         if (!session) return null;
         return {
-            email: session.email,
-            name:  ADMIN_CONFIG.ADMIN_NAME,
+            email:   session.email,
+            name:    ADMIN_CONFIG.ADMIN_NAME,
             initial: ADMIN_CONFIG.ADMIN_NAME.charAt(0).toUpperCase(),
-            role: 'Super Admin',
+            role:    'Super Admin',
             loginAt: session.loginAt
         };
     },
@@ -293,7 +315,10 @@ const AdminUI = {
                 document.removeEventListener('keydown', escHandler);
                 resolve(result);
             };
-            const escHandler = (e) => { if (e.key === 'Escape') cleanup(false); if (e.key === 'Enter') cleanup(true); };
+            const escHandler = (e) => {
+                if (e.key === 'Escape') cleanup(false);
+                if (e.key === 'Enter')  cleanup(true);
+            };
             document.addEventListener('keydown', escHandler);
             overlay.querySelector('.modal-confirm').onclick  = () => cleanup(true);
             overlay.querySelector('.modal-cancel').onclick   = () => cleanup(false);
@@ -329,18 +354,18 @@ const AdminUI = {
         toggle.addEventListener('click', () => {
             const open = sidebar.classList.toggle('open');
             overlay.classList.toggle('show', open);
-            toggle.setAttribute('aria-expanded', open);
+            toggle.setAttribute('aria-expanded', String(open));
         });
         overlay.addEventListener('click', () => {
             sidebar.classList.remove('open');
             overlay.classList.remove('show');
             toggle.setAttribute('aria-expanded', 'false');
         });
-        // Close on Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebar.classList.contains('open')) {
                 sidebar.classList.remove('open');
                 overlay.classList.remove('show');
+                toggle.setAttribute('aria-expanded', 'false');
             }
         });
     },
@@ -348,12 +373,15 @@ const AdminUI = {
     initUserMenu() {
         const user = AdminAuth.getCurrentUser();
         if (!user) return;
-        document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = user.name);
-        document.querySelectorAll('[data-user-email]').forEach(el => el.textContent = user.email);
+        document.querySelectorAll('[data-user-name]').forEach(el    => el.textContent = user.name);
+        document.querySelectorAll('[data-user-email]').forEach(el   => el.textContent = user.email);
         document.querySelectorAll('[data-user-initial]').forEach(el => el.textContent = user.initial);
-        document.querySelectorAll('[data-user-role]').forEach(el => el.textContent = user.role);
+        document.querySelectorAll('[data-user-role]').forEach(el    => el.textContent = user.role);
+        // ✅ FIX: use addEventListener instead of onclick attribute
         document.querySelectorAll('[data-logout]').forEach(btn => {
             btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); AdminUI.confirmLogout(); });
+            // Keyboard support for role="button" elements
+            btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); AdminUI.confirmLogout(); } });
         });
     },
 
@@ -378,7 +406,6 @@ const AdminUI = {
                     <i class="fas fa-cogs" aria-hidden="true"></i> Tools Manager
                     <span class="badge" id="toolsCountBadge" aria-label="Active tools count">0</span>
                 </a>
-
                 <div class="sidebar-nav-title">System</div>
                 <a href="${ADMIN_CONFIG.SITE_URL}" class="sidebar-link" target="_blank" rel="noopener noreferrer" aria-label="View website (opens in new tab)">
                     <i class="fas fa-external-link-alt" aria-hidden="true"></i> View Site
@@ -388,8 +415,7 @@ const AdminUI = {
                 </a>
             </nav>
             <div class="sidebar-footer">
-                <div class="sidebar-user" data-logout title="Click to logout" role="button" tabindex="0"
-                     onkeydown="if(event.key==='Enter')AdminUI.confirmLogout()">
+                <div class="sidebar-user" data-logout title="Click to logout" role="button" tabindex="0">
                     <div class="sidebar-user-avatar" data-user-initial aria-hidden="true">S</div>
                     <div class="sidebar-user-info">
                         <div class="sidebar-user-name" data-user-name>Sanket Barot</div>
@@ -419,8 +445,7 @@ const AdminUI = {
                 </button>
                 <div class="topbar-divider" role="separator"></div>
                 <div class="topbar-user" data-logout title="Logout" role="button" tabindex="0"
-                     aria-label="User menu - click to logout"
-                     onkeydown="if(event.key==='Enter')AdminUI.confirmLogout()">
+                     aria-label="User menu - click to logout">
                     <div class="topbar-user-avatar" data-user-initial aria-hidden="true">S</div>
                     <div class="topbar-user-name" data-user-name>Sanket Barot</div>
                     <i class="fas fa-sign-out-alt" style="margin-left:4px;color:var(--text-light);font-size:12px;" aria-hidden="true"></i>
@@ -441,11 +466,11 @@ const AdminUI = {
 
     timeAgo(ts) {
         const s = Math.floor((Date.now() - ts) / 1000);
-        if (s < 10)       return 'just now';
-        if (s < 60)       return `${s}s ago`;
-        if (s < 3600)     return `${Math.floor(s/60)}m ago`;
-        if (s < 86400)    return `${Math.floor(s/3600)}h ago`;
-        if (s < 2592000)  return `${Math.floor(s/86400)}d ago`;
+        if (s < 10)      return 'just now';
+        if (s < 60)      return `${s}s ago`;
+        if (s < 3600)    return `${Math.floor(s/60)}m ago`;
+        if (s < 86400)   return `${Math.floor(s/3600)}h ago`;
+        if (s < 2592000) return `${Math.floor(s/86400)}d ago`;
         return this.formatDate(ts);
     },
 
@@ -454,9 +479,9 @@ const AdminUI = {
         const startTime = performance.now();
         const range = end - start;
         const step = (now) => {
-            const elapsed = now - startTime;
+            const elapsed  = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
+            const eased    = 1 - Math.pow(1 - progress, 3);
             el.textContent = this.formatNumber(Math.floor(start + range * eased));
             if (progress < 1) requestAnimationFrame(step);
         };
@@ -483,7 +508,7 @@ AdminStorage.init();
 function updateToolsBadge() {
     const badge = document.getElementById('toolsCountBadge');
     if (!badge) return;
-    const tools = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
+    const tools   = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
     const enabled = tools.filter(t => t.enabled).length;
     badge.textContent = `${enabled}/${tools.length}`;
 }

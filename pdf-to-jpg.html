@@ -280,7 +280,7 @@
         <i class="fas fa-robot" aria-hidden="true"></i>
         <span>AI</span> ToolCor
     </a>
-            <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+            <button class="hamburger" id="hamburger" type="button" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu" aria-expanded="false"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
     <div class="nav-links" id="navLinks">
         <a href="index.html"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
         <a href="index.html#tools"><i class="fas fa-th" aria-hidden="true"></i> All Tools</a>
@@ -759,9 +759,12 @@ function resetTool(){results.forEach(r=>URL.revokeObjectURL(r.dataUrl));rawBytes
             const btn  = document.getElementById('navLoginBtn');
             const text = document.getElementById('navLoginText');
             if (text) text.textContent = user.firstName;
-            if (btn)  btn.onclick = () => {
-                if (confirm('Logout?')) { localStorage.removeItem('currentUser'); location.reload(); }
-            };
+            if (btn) {
+                btn.removeAttribute('href');
+                btn.addEventListener('click', function() {
+                    if (confirm('Logout?')) { localStorage.removeItem('currentUser'); location.reload(); }
+                });
+            }
         }
     } catch(_) {}
 })();

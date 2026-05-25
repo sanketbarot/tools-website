@@ -1375,9 +1375,12 @@ function resetTool() {
             const btn  = document.getElementById('navLoginBtn');
             const text = document.getElementById('navLoginText');
             if (text) text.textContent = user.firstName;
-            if (btn)  btn.onclick = () => {
-                if (confirm('Logout?')) { localStorage.removeItem('currentUser'); location.reload(); }
-            };
+            if (btn) {
+                btn.removeAttribute('href');
+                btn.addEventListener('click', function() {
+                    if (confirm('Logout?')) { localStorage.removeItem('currentUser'); location.reload(); }
+                });
+            }
         }
     } catch (_) {}
 })();
