@@ -973,41 +973,45 @@ buildTicker();
 setInterval(buildTicker, 15000);
 
 /* ════════════════════════════════════════
-   SYNC ALL TOOLS TO STORAGE (v7 — full list)
-   Ensures admin panel always has every tool
-   from tools-renderer.js DEFAULT_TOOLS
+   ADD 3 NEW TOOLS TO DEFAULT_TOOLS
 ════════════════════════════════════════ */
-(function syncAllTools() {
-    const allNewTools = [
-        { id:'ai-summarizer', name:'AI Summarizer',  category:'ai',      path:'ai-summarizer.html',  icon:'fa-brain',           color:'indigo',  enabled:true,  badge:'ai',   desc:'Instantly summarize long PDFs, articles and documents with AI.', keywords:'ai summarizer summarize text document article pdf abstract' },
-        { id:'excel-to-pdf',  name:'Excel to PDF',   category:'convert', path:'excel-to-pdf.html',   icon:'fa-file-excel',      color:'green',   enabled:false, badge:'soon', desc:'Convert Excel spreadsheets to professional PDF documents.', keywords:'excel xls xlsx to pdf spreadsheet convert tables' },
-        { id:'html-to-pdf',   name:'HTML to PDF',    category:'convert', path:'html-to-pdf.html',    icon:'fa-code',            color:'blue',    enabled:false, badge:'soon', desc:'Convert any web page or HTML code into a clean PDF file.', keywords:'html to pdf webpage url web convert screenshot' },
-        { id:'pdf-to-ppt',    name:'PDF to PPT',     category:'convert', path:'pdf-to-ppt.html',     icon:'fa-file-powerpoint', color:'orange',  enabled:false, badge:'soon', desc:'Convert PDF documents into editable PowerPoint presentations.', keywords:'pdf to ppt powerpoint slides presentation convert' },
-        { id:'word-to-pdf',   name:'Word to PDF',    category:'convert', path:'word-to-pdf.html',    icon:'fa-file-word',       color:'blue',    enabled:false, badge:'soon', desc:'Convert Word documents to high-quality PDF files easily.', keywords:'word to pdf doc docx convert document format' },
-        { id:'jpg-to-ico',    name:'JPG to ICO',     category:'convert', path:'jpg-to-ico.html',     icon:'fa-image',           color:'orange',  enabled:true,  badge:'new',  desc:'Convert any PNG or JPG photo into custom website favicons.', keywords:'jpg png image to ico icon favicon shortcut' },
-        { id:'jpg-to-png',    name:'JPG to PNG',     category:'convert', path:'jpg-to-png.html',     icon:'fa-image',           color:'purple',  enabled:true,  badge:'new',  desc:'Convert JPG images to PNG format with transparency support.', keywords:'jpg to png image convert format transparent' },
-        { id:'pdf-to-ico',    name:'PDF to ICO',     category:'convert', path:'pdf-to-ico.html',     icon:'fa-file-image',      color:'red',     enabled:true,  badge:'new',  desc:'Convert individual PDF page blocks into .ico desktop icons.', keywords:'pdf to ico icon favicon converter shortcut' },
+(function injectNewTools() {
+    const newToolDefs = [
+        {
+            id:'excel-to-pdf',  name:'Excel to PDF',  category:'convert',
+            path:'excel-to-pdf.html', icon:'fa-file-excel',      color:'green',
+            enabled:true,  badge:'new',
+            desc:'Convert Excel spreadsheets (.xlsx/.xls) to PDF format instantly'
+        },
+        {
+            id:'html-to-pdf',   name:'HTML to PDF',   category:'convert',
+            path:'html-to-pdf.html',  icon:'fa-code',            color:'orange',
+            enabled:true,  badge:'new',
+            desc:'Convert any HTML page or web URL to a clean PDF document'
+        },
+        {
+            id:'pdf-to-ppt',    name:'PDF to PPT',    category:'convert',
+            path:'pdf-to-ppt.html',   icon:'fa-file-powerpoint', color:'red',
+            enabled:true,  badge:'new',
+            desc:'Convert PDF files into editable PowerPoint presentations'
+        },
     ];
-
+    // Inject into DEFAULT_TOOLS if not already present
+    newToolDefs.forEach(nt => {
+        if (!DEFAULT_TOOLS.find(t => t.id === nt.id)) DEFAULT_TOOLS.push(nt);
+    });
+    // Also inject into live storage if not present
     const stored = AdminStorage.get(ADMIN_CONFIG.TOOLS_KEY, []);
     let changed = false;
-    const newNames = [];
-
-    allNewTools.forEach(nt => {
-        if (!DEFAULT_TOOLS.find(t => t.id === nt.id)) DEFAULT_TOOLS.push(nt);
-        if (!stored.find(t => t.id === nt.id)) {
-            stored.push(nt);
-            newNames.push(nt.name);
-            changed = true;
-        }
+    newToolDefs.forEach(nt => {
+        if (!stored.find(t => t.id === nt.id)) { stored.push(nt); changed = true; }
     });
-
     if (changed) {
         AdminStorage.set(ADMIN_CONFIG.TOOLS_KEY, stored);
         AdminStorage.logActivity({
             icon: 'fa-plus-circle', bg: 'bg-success',
-            title: `${newNames.length} new tool(s) synced`,
-            meta: newNames.join(' · ')
+            title: '3 new tools added',
+            meta: 'Excel to PDF · HTML to PDF · PDF to PPT'
         });
     }
 })();

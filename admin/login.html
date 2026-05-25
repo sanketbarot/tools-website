@@ -26,29 +26,26 @@
         </div>
 
         <!-- Alert Area -->
-        <div id="alertBox" role="alert" aria-live="polite"></div>
+        <div id="alertBox"></div>
 
-        <form id="loginForm" autocomplete="off" novalidate>
+        <form id="loginForm" autocomplete="off">
             <div class="form-group">
                 <label class="form-label" for="email">Email Address</label>
                 <div class="login-input-wrap">
-                    <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
+                    <i class="fas fa-envelope input-icon"></i>
                     <input type="email" id="email" class="form-control"
-                           placeholder="Enter your email" required autofocus
-                           autocomplete="username">
+                           placeholder="Enter your email" required autofocus>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="password">Password</label>
                 <div class="login-input-wrap">
-                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                    <i class="fas fa-lock input-icon"></i>
                     <input type="password" id="password" class="form-control"
-                           placeholder="Enter your password" required
-                           autocomplete="current-password">
-                    <button type="button" class="password-toggle" id="togglePwd"
-                            aria-label="Show password" aria-pressed="false">
-                        <i class="fas fa-eye" aria-hidden="true"></i>
+                           placeholder="Enter your password" required>
+                    <button type="button" class="password-toggle" id="togglePwd" aria-label="Show password">
+                        <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
@@ -58,95 +55,93 @@
                     <input type="checkbox" id="remember">
                     Remember me
                 </label>
-                <button type="button" id="forgotLink" class="link-btn">Forgot password?</button>
+                <a href="#" id="forgotLink">Forgot password?</a>
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg btn-block" id="loginBtn">
-                <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                <i class="fas fa-sign-in-alt"></i>
                 <span>Sign In to Admin</span>
             </button>
         </form>
 
         <div class="login-footer">
-            <i class="fas fa-shield-alt" aria-hidden="true"></i> Secured Admin Access ·
-            <a href="https://www.aitoolcor.com/" target="_blank" rel="noopener noreferrer">← Back to Website</a>
+            <i class="fas fa-shield-alt"></i> Secured Admin Access ·
+            <a href="https://www.aitoolcor.com/" target="_blank">← Back to Website</a>
         </div>
     </div>
 
     <script src="js/admin.js"></script>
     <script>
-        'use strict';
-
         // Redirect if already logged in
         if (AdminAuth.isLoggedIn()) {
             window.location.replace('dashboard.html');
         }
 
-        // Show/hide password toggle
-        document.getElementById('togglePwd').addEventListener('click', function () {
-            const pwd  = document.getElementById('password');
+        // Show/hide password
+        document.getElementById('togglePwd').addEventListener('click', function() {
+            const pwd = document.getElementById('password');
             const icon = this.querySelector('i');
-            const show = pwd.type === 'password';
-            pwd.type       = show ? 'text' : 'password';
-            icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
-            this.setAttribute('aria-pressed', String(show));
-            this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                pwd.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
         });
 
         // Forgot password
-        document.getElementById('forgotLink').addEventListener('click', async function () {
+        document.getElementById('forgotLink').addEventListener('click', async function(e) {
+            e.preventDefault();
             await AdminUI.confirm({
-                title:        'Forgot Password?',
-                message:      'Please contact your <strong>system administrator</strong> to reset your password.',
-                icon:         'info',
-                iconClass:    'fa-info-circle',
-                confirmText:  'Got it',
-                cancelText:   'Close',
+                title: 'Forgot Password?',
+                message: 'Please contact your <strong>system administrator</strong> to reset your password.',
+                icon: 'info',
+                iconClass: 'fa-info-circle',
+                confirmText: 'Got it',
+                cancelText: 'Close',
                 confirmClass: 'btn-primary',
             });
         });
 
-        // ✅ FIX: login handler is now async (AdminAuth.login uses SHA-256)
-        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const email    = document.getElementById('email').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
-            const btn      = document.getElementById('loginBtn');
+            const btn = document.getElementById('loginBtn');
             const alertBox = document.getElementById('alertBox');
 
-            btn.disabled  = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> <span>Signing in…</span>';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Signing in...</span>';
             alertBox.innerHTML = '';
 
-            // ✅ FIX: await the async login
-            const result = await AdminAuth.login(email, password, remember);
+            setTimeout(() => {
+                const result = AdminAuth.login(email, password, remember);
 
-            if (result.success) {
-                alertBox.innerHTML = `
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i>
-                        <div>Login successful! Redirecting…</div>
-                    </div>`;
-                setTimeout(() => window.location.replace('dashboard.html'), 400);
-            } else {
-                alertBox.innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
-                        <div>${result.error}</div>
-                    </div>`;
-                btn.disabled  = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt" aria-hidden="true"></i> <span>Sign In to Admin</span>';
+                if (result.success) {
+                    alertBox.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <div>Login successful! Redirecting...</div>
+                        </div>`;
+                    setTimeout(() => window.location.replace('dashboard.html'), 400);
+                } else {
+                    alertBox.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>${result.error}</div>
+                        </div>`;
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>Sign In to Admin</span>';
 
-                // Shake animation on error
-                const box = document.querySelector('.login-box');
-                box.style.animation = 'none';
-                requestAnimationFrame(() => {
-                    box.style.animation = 'shake 0.4s ease';
-                    box.addEventListener('animationend', () => { box.style.animation = ''; }, { once: true });
-                });
-            }
+                    const box = document.querySelector('.login-box');
+                    box.style.animation = 'shake 0.4s';
+                    setTimeout(() => box.style.animation = '', 500);
+                }
+            }, 400);
         });
     </script>
 </body>
