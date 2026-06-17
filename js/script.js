@@ -75,7 +75,7 @@ window.addEventListener('resize', debounce(() => {
    DROPDOWN MENUS
 ════════════════════════════════ */
 function ddToggle(id) {
-    const current = $(id);
+    const current = typeof id === 'string' ? $(id) : id;
     if (!current) return;
     const isOpen = current.classList.contains('open');
     $$('.ndrop').forEach(drop => {
@@ -90,8 +90,32 @@ function ddToggle(id) {
     }
 }
 
+// ⭐ Attach click events to all dropdown buttons
+document.addEventListener('DOMContentLoaded', () => {
+    $$('.ndrop-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropdown = btn.closest('.ndrop');
+            ddToggle(dropdown);
+        });
+    });
+});
+
+// Close on outside click
 document.addEventListener('click', e => {
     if (!e.target.closest('.ndrop') && !e.target.closest('.hamburger')) {
+        $$('.ndrop').forEach(drop => {
+            drop.classList.remove('open');
+            const btn = drop.querySelector('.ndrop-btn');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+    }
+});
+
+// Close on Escape key
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
         $$('.ndrop').forEach(drop => {
             drop.classList.remove('open');
             const btn = drop.querySelector('.ndrop-btn');
