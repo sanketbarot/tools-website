@@ -1,0 +1,60 @@
+/* ════════════════════════════════════════
+   AI TOOLCOR — ADSENSE STYLES v5.0
+   Light Theme — Auto-hide empty slots
+════════════════════════════════════════ */
+
+.ad-container {
+    max-width: 900px; margin: 0 auto; padding: 0;
+    text-align: center; overflow: hidden;
+    max-height: 0; opacity: 0; visibility: hidden; clear: both;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+.ad-container.is-filled {
+    max-height: 320px; opacity: 1; visibility: visible;
+    margin: 20px auto; padding: 10px 16px;
+}
+.ad-container.is-filled.ad-banner {
+    background: rgba(255,255,255,0.80);
+    border-radius: 14px; border: 1.5px dashed rgba(124,58,237,0.12);
+    backdrop-filter: blur(8px);
+}
+.ad-label {
+    display: none; font-size: 9px; color: #9ca3af;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    font-weight: 700; margin-bottom: 5px; text-align: center;
+}
+.ad-container.is-filled .ad-label { display: block; }
+.adsbygoogle { display: block !important; width: 100% !important; min-width: 250px; }
+ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
+
+.ad-container.ad-loading .ad-inner {
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: adShimmer 1.8s infinite;
+    min-height: 90px; border-radius: 12px;
+}
+@keyframes adShimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+@keyframes adFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.ad-container.is-filled { animation: adFadeIn 0.45s ease-out; }
+
+.ad-sidebar {
+    position: absolute; top: 100px; width: 160px; min-height: 600px;
+    z-index: 99; display: none; transition: opacity 0.3s ease;
+}
+.ad-sidebar.is-filled {
+    display: flex; flex-direction: column; align-items: center;
+    background: rgba(255,255,255,0.75); border-radius: 12px; padding: 10px;
+    border: 1.5px dashed rgba(124,58,237,0.12); backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(124,58,237,0.08);
+}
+.ad-sidebar-left  { left:  10px; }
+.ad-sidebar-right { right: 10px; }
+
+@media (max-width: 1200px) { .ad-sidebar { display: none !important; } }
+@media (max-width: 768px)  { .ad-container.is-filled { padding: 8px 12px; margin: 12px auto; } }
