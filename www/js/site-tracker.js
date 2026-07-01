@@ -274,6 +274,148 @@
         }
     }
 
+    /* ─────── COOKIE CONSENT BANNER ─────── */
+    function initCookieConsent() {
+        if (localStorage.getItem('aitoolcor_cookie_consent') !== null) {
+            return;
+        }
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .cc-banner-wrap {
+                position: fixed;
+                bottom: 24px;
+                right: 24px;
+                max-width: 400px;
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                border-radius: 20px;
+                padding: 24px;
+                box-shadow: 0 16px 40px rgba(31, 38, 135, 0.15);
+                z-index: 100000;
+                font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+                color: #1e293b;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                animation: ccFadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+            .cc-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 800;
+                font-size: 17px;
+                color: #7c3aed;
+            }
+            .cc-header i {
+                font-size: 20px;
+                background: linear-gradient(135deg, #7c3aed, #ec4899);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .cc-text {
+                font-size: 13.5px;
+                line-height: 1.6;
+                color: #4b5563;
+                margin: 0;
+            }
+            .cc-text a {
+                color: #7c3aed;
+                text-decoration: underline;
+                font-weight: 600;
+            }
+            .cc-text a:hover {
+                color: #c084fc;
+            }
+            .cc-buttons {
+                display: flex;
+                gap: 10px;
+            }
+            .cc-btn {
+                flex: 1;
+                padding: 10px 16px;
+                border-radius: 50px;
+                font-size: 13px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: none;
+                outline: none;
+                text-align: center;
+            }
+            .cc-btn-accept {
+                background: linear-gradient(135deg, #7c3aed, #ec4899);
+                color: #fff;
+                box-shadow: 0 6px 16px rgba(124, 58, 237, 0.25);
+            }
+            .cc-btn-accept:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
+            }
+            .cc-btn-reject {
+                background: rgba(243, 244, 246, 0.8);
+                color: #4b5563;
+                border: 1px solid rgba(229, 231, 235, 1);
+            }
+            .cc-btn-reject:hover {
+                background: rgba(229, 231, 235, 1);
+            }
+            @keyframes ccFadeInUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes ccFadeOutDown {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(30px); }
+            }
+            @media (max-width: 480px) {
+                .cc-banner-wrap {
+                    left: 16px;
+                    right: 16px;
+                    bottom: 16px;
+                    max-width: none;
+                    padding: 20px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        const banner = document.createElement('div');
+        banner.className = 'cc-banner-wrap';
+        banner.innerHTML = `
+            <div class="cc-header">
+                <i class="fas fa-cookie-bite"></i>
+                <span>We Value Your Privacy</span>
+            </div>
+            <p class="cc-text">
+                We use cookies to personalize content and ads, analyze our traffic, and improve your user experience. By clicking "Accept All", you agree to our use of cookies. Read more in our <a href="/privacy.html">Privacy Policy</a>.
+            </p>
+            <div class="cc-buttons">
+                <button class="cc-btn cc-btn-reject" id="ccRejectBtn">Reject All</button>
+                <button class="cc-btn cc-btn-accept" id="ccAcceptBtn">Accept All</button>
+            </div>
+        `;
+        document.body.appendChild(banner);
+
+        document.getElementById('ccAcceptBtn').onclick = () => {
+            localStorage.setItem('aitoolcor_cookie_consent', 'accepted');
+            closeBanner();
+        };
+
+        document.getElementById('ccRejectBtn').onclick = () => {
+            localStorage.setItem('aitoolcor_cookie_consent', 'rejected');
+            closeBanner();
+        };
+
+        function closeBanner() {
+            banner.style.animation = 'ccFadeOutDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+            setTimeout(() => banner.remove(), 450);
+        }
+    }
+
     /* ─────── INIT ─────── */
     function init() {
         lastToolsUpdate = localStorage.getItem(KEYS.TOOLS_UPDATED) || '0';
@@ -281,6 +423,7 @@
         trackVisit();
         checkToolStatus();
         hideDisabledTools();
+        initCookieConsent();
 
         // FAST polling every 2 seconds for instant sync
         setInterval(checkForUpdates, 2000);

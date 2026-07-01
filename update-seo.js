@@ -12,6 +12,7 @@ const TAGS_TO_INJECT = `
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QVFKTFQF4T"></script>
 
     <!-- ========== GOOGLE ADSENSE ========== -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8473875587893208" crossorigin="anonymous"></script>
     <meta name="google-adsense-account" content="ca-pub-8473875587893208">
     <meta name="google-site-verification" content="gRWH_JtJqZdbeRny9sAHCQg-AFHd10tVOtADOhM_bC4">
     <link rel="preconnect" href="https://pagead2.googlesyndication.com">
@@ -45,6 +46,7 @@ function updateFile(filePath) {
     content = content.replace(/<!--\s*========== GOOGLE ADSENSE ==========\s*-->[\s\S]*?(?=<!--|<\/head>)/gi, '');
     
     // 3. Remove individual scattered tags (in case they weren't under the block comment)
+    content = content.replace(/<script[^>]*src=["']https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-8473875587893208["'][^>]*><\/script>/gi, '');
     content = content.replace(/<meta[^>]*name=["']google-adsense-account["'][^>]*>/gi, '');
     content = content.replace(/<meta[^>]*name=["']google-site-verification["'][^>]*>/gi, '');
     content = content.replace(/<script[^>]*src=["']https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-QVFKTFQF4T["'][^>]*><\/script>/gi, '');
