@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-/* ── NAVBAR SCROLL — dark theme ── */
+/* ── NAVBAR SCROLL — theme aware ── */
 let _scrollTicking = false;
 window.addEventListener('scroll', function() {
     if (_scrollTicking) return;
@@ -103,16 +103,7 @@ window.addEventListener('scroll', function() {
     requestAnimationFrame(function() {
         const navbar = document.querySelector('.navbar');
         if (navbar) {
-            const scrolled = window.pageYOffset > 60;
-            if (scrolled) {
-                navbar.style.background = 'rgba(255,255,255,0.97)';
-                navbar.style.boxShadow  = '0 4px 24px rgba(124,58,237,0.10)';
-                navbar.style.borderBottomColor = 'rgba(124,58,237,0.12)';
-            } else {
-                navbar.style.background = 'rgba(255,255,255,0.78)';
-                navbar.style.boxShadow  = '0 2px 16px rgba(124,58,237,0.06)';
-                navbar.style.borderBottomColor = 'rgba(124,58,237,0.08)';
-            }
+            navbar.classList.toggle('scrolled', window.pageYOffset > 60);
         }
 
         // Back to top button
@@ -266,7 +257,7 @@ function showToast(msg, type) {
     toast.className = 'tc-toast';
     toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i> ${msg}`;
 
-    const colors = { success: '#7c3aed', error: '#dc2626', info: '#4b5563' };
+    const colors = { success: '#4f46e5', error: '#dc2626', info: '#475569' };
     toast.style.background = colors[type] || colors.success;
     document.body.appendChild(toast);
 
@@ -377,4 +368,49 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch(_) {}
 })();
 
-console.log('✅ tool-page.js v5.0 — light theme edition loaded');
+/* ── THEME TOGGLE (LIGHT / DARK) ── */
+(function initPageTheme() {
+    function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        try { localStorage.setItem('aitoolcor_theme', isDark ? 'dark' : 'light'); } catch (_) {}
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', isDark ? '#070b14' : '#4f46e5');
+        document.querySelectorAll('.theme-toggle i').forEach(icon => {
+            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        });
+        document.querySelectorAll('.theme-toggle').forEach(btn => {
+            btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+            btn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        });
+    }
+
+    let saved = null;
+    try { saved = localStorage.getItem('aitoolcor_theme'); } catch (_) {}
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initial = saved || (prefersDark ? 'dark' : 'light');
+    applyTheme(initial);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.getElementById('navLinks');
+        if (navLinks && !navLinks.querySelector('.theme-toggle')) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'theme-toggle';
+            btn.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
+            const loginBtn = document.getElementById('navLoginBtn');
+            if (loginBtn) navLinks.insertBefore(btn, loginBtn);
+            else navLinks.appendChild(btn);
+        }
+        document.querySelectorAll('.theme-toggle').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                applyTheme(current === 'dark' ? 'light' : 'dark');
+            });
+        });
+        applyTheme(document.documentElement.getAttribute('data-theme') || initial);
+    });
+    window.applyTheme = applyTheme;
+})();
+
+console.log('✅ tool-page.js v6.0 — Bento SaaS Light/Dark edition loaded');

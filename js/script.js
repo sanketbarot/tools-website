@@ -485,15 +485,16 @@ function showToast(msg, type = 'success') {
 function initHeroEntrance() {
     const badge = document.querySelector('.hero-badge');
     const h1 = document.querySelector('.hero h1');
-    const p  = document.querySelector('.hero p');
+    const p  = document.querySelector('.hero-sub') || document.querySelector('.hero p');
     const search = document.querySelector('.hero-search');
-    const stats  = document.querySelector('.hero-stats');
+    const chips = document.querySelector('.quick-chips');
+    const tiles = Array.from(document.querySelectorAll('.bento-tile'));
 
-    const els = [badge, h1, p, search, stats].filter(Boolean);
+    const els = [badge, h1, p, search, chips, ...tiles].filter(Boolean);
     els.forEach((el, i) => {
         el.style.opacity = '0';
-        el.style.transform = 'translateY(24px)';
-        el.style.transition = `opacity 0.55s ease ${0.1 + i * 0.10}s, transform 0.55s ease ${0.1 + i * 0.10}s`;
+        el.style.transform = 'translateY(18px)';
+        el.style.transition = `opacity 0.45s ease ${0.06 + i * 0.06}s, transform 0.45s ease ${0.06 + i * 0.06}s`;
     });
 
     requestAnimationFrame(() => {
@@ -502,14 +503,60 @@ function initHeroEntrance() {
                 el.style.opacity = '1';
                 el.style.transform = 'translateY(0)';
             });
-        }, 80);
+        }, 60);
     });
+}
+
+/* ════════════════════════════════
+   THEME TOGGLE (LIGHT / DARK)
+════════════════════════════════ */
+function applyTheme(theme) {
+    const isDark = theme === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    try { localStorage.setItem('aitoolcor_theme', isDark ? 'dark' : 'light'); } catch (_) {}
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', isDark ? '#070b14' : '#4f46e5');
+    document.querySelectorAll('.theme-toggle i').forEach(icon => {
+        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    });
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+        btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        btn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    });
+}
+
+function initThemeToggle() {
+    let saved = null;
+    try { saved = localStorage.getItem('aitoolcor_theme'); } catch (_) {}
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initial = saved || (prefersDark ? 'dark' : 'light');
+
+    const navLinks = $('navLinks');
+    if (navLinks && !navLinks.querySelector('.theme-toggle')) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'theme-toggle';
+        btn.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
+        const loginBtn = $('navLoginBtn');
+        if (loginBtn) navLinks.insertBefore(btn, loginBtn);
+        else navLinks.appendChild(btn);
+    }
+
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        });
+    });
+
+    applyTheme(initial);
 }
 
 /* ════════════════════════════════
    INIT
 ════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+    initThemeToggle();
     checkUserAuth();
     initFooterYear();
     initSearch();
@@ -523,6 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Expose globally for inline HTML usage
     window.showToast = showToast;
+    window.applyTheme = applyTheme;
 
-    console.log('✅ AI ToolCor v5.0 loaded');
+    console.log('✅ AI ToolCor v6.0 Bento SaaS loaded');
 });

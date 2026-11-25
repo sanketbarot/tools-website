@@ -1,0 +1,62 @@
+name: Daily Automated SEO & Build
+
+on:
+  schedule:
+    # Runs daily at 08:00 AM IST (02:30 UTC)
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+    paths:
+      - '**.html'
+      - 'css/**'
+      - 'js/**'
+      - 'scripts/**'
+      - 'build-www.js'
+
+permissions:
+  contents: write
+
+jobs:
+  seo-and-build:
+    # Avoid infinite loop on bot commits
+    if: "!contains(github.event.head_commit.message, 'chore(seo):')"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Daily SEO Automator, Sitemap Sync & IndexNow Ping
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: npm run seo:daily
+
+      - name: Publish SEO Summary
+        run: |
+          if [ -f SEO_REPORT.md ]; then
+            cat SEO_REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit & Push SEO / Sitemap / Build Updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(seo): daily automated SEO sync, sitemap & www build"
+            git push
+          else
+            echo "No SEO or build changes to commit."
+          fi

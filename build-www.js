@@ -6,14 +6,20 @@ const DEST_DIR = path.join(__dirname, 'www');
 
 // Items to ignore at the root level
 const IGNORE_ROOT_ITEMS = [
-    'node_modules', 
-    'android', 
-    'ios', 
-    'www', 
-    'package.json', 
-    'package-lock.json', 
-    'update-seo.js', 
+    'node_modules',
+    'android',
+    'ios',
+    'www',
+    'scripts',
+    '.github',
+    'package.json',
+    'package-lock.json',
+    'update-seo.js',
     'build-www.js',
+    'seo-manifest.json',
+    'SEO_REPORT.md',
+    '.seo-cache.json',
+    'tools-website.apk',
     '.git'
 ];
 
@@ -22,14 +28,16 @@ function copyFolderSync(from, to) {
         fs.mkdirSync(to, { recursive: true });
     }
     fs.readdirSync(from).forEach(element => {
-        // Skip ignored root items
         if (from === SOURCE_DIR && IGNORE_ROOT_ITEMS.includes(element)) {
+            return;
+        }
+        if (element.startsWith('sitemap.backup.') && element.endsWith('.xml')) {
             return;
         }
 
         const sourcePath = path.join(from, element);
         const destPath = path.join(to, element);
-        
+
         const stat = fs.statSync(sourcePath);
         if (stat.isFile()) {
             fs.copyFileSync(sourcePath, destPath);
@@ -39,10 +47,9 @@ function copyFolderSync(from, to) {
     });
 }
 
-console.log("Building www directory...");
-// Clean www dir if it exists
+console.log('Building www directory...');
 if (fs.existsSync(DEST_DIR)) {
     fs.rmSync(DEST_DIR, { recursive: true, force: true });
 }
 copyFolderSync(SOURCE_DIR, DEST_DIR);
-console.log("Built www directory successfully.");
+console.log('Built www directory successfully.');
