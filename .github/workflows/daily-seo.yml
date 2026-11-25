@@ -33,15 +33,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (without modifying tracked node_modules)
+        run: |
+          if [ ! -d node_modules/cheerio ]; then
+            npm install --no-save cheerio
+          fi
 
       - name: Run Daily SEO Automator, Sitemap Sync & IndexNow Ping
         env:
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
         run: npm run seo:daily
+
+      - name: Restore tracked node_modules if modified by runner
+        run: git checkout -- node_modules || true
 
       - name: Publish SEO Summary
         run: |
@@ -53,7 +58,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add sitemap.xml robots.txt seo-manifest.json SEO_REPORT.md .seo-cache.json www/
+          git add -- '*.html' 'tools/**/*.html' 'blog/**/*.html' || true
           if ! git diff --cached --quiet; then
             git commit -m "chore(seo): daily automated SEO sync, sitemap & www build"
             git push
