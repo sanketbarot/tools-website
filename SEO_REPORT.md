@@ -1,22 +1,24 @@
 # AI ToolCor — Automated SEO Health Report
 
-- **Last Run**: 2026-11-25T09:29:09.813Z
+- **Last Run**: 2026-11-26T04:44:22.647Z
 - **Mode**: Daily Automated Run
 - **Total Pages Scanned**: 61
 - **Indexable Pages in Sitemap**: 60
-- **Pages Updated This Run**: 0
-- **URLs Refreshed in Sitemap**: 0
-- **Average SEO Score**: **98/100**
+- **Pages Updated This Run**: 6
+- **URLs Refreshed in Sitemap**: 15
+- **Average SEO Score**: **97/100**
 
 ## Warnings Summary
 
 | Page | Score | Notes |
 |---|---:|---|
 | `ai-summarizer.html` | 96 | Description length 181 chars (ideal 80-160) |
-| `blog/why-browser-based-tools-future.html` | 96 | Title length 73 chars (ideal 30-65) |
+| `blog/essential-pdf-security-tips.html` | 85 | Broken internal links: merge-pdf.html, split-pdf.html, compress-pdf.html, organize-pdf.html, pdf-to-jpg.html |
+| `blog/how-to-compress-pdf-email.html` | 85 | Broken internal links: merge-pdf.html, split-pdf.html, compress-pdf.html, organize-pdf.html, pdf-to-jpg.html |
+| `blog/why-browser-based-tools-future.html` | 81 | Title length 73 chars (ideal 30-65); Broken internal links: merge-pdf.html, split-pdf.html, compress-pdf.html, organize-pdf.html, pdf-to-jpg.html |
 | `crop-jpg.html` | 96 | Description length 200 chars (ideal 80-160) |
 | `excel-to-pdf.html` | 96 | Title length 74 chars (ideal 30-65) |
-| `font-identifier.html` | 96 | Description length 203 chars (ideal 80-160) |
+| `font-identifier.html` | 81 | Description length 203 chars (ideal 80-160); Broken internal links: color-picker.html, image-resizer.html, image-compressor.html |
 | `html-to-pdf.html` | 92 | Title length 73 chars (ideal 30-65); Description length 187 chars (ideal 80-160) |
 | `jpg-to-ico.html` | 96 | Description length 188 chars (ideal 80-160) |
 | `jpg-to-pdf.html` | 96 | Description length 177 chars (ideal 80-160) |

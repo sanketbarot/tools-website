@@ -192,7 +192,7 @@
 
     
     <style>
-        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+.calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
         .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
         .calc-card h2 i{color:#22c55e;font-size:17px}
 
@@ -242,21 +242,34 @@
         .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
         .privacy-note i{color:#22c55e;margin-right:4px}
 
-        .ic-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-        .ic-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
-        .ic-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(34,197,94,0.25)}
-        .ic-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
-        .ic-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
-        .ic-faq .faq-item.active .faq-q h4{color:#22c55e}
-        .ic-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
-        .ic-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#22c55e}
-        .ic-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(34,197,94,0.1);color:#22c55e;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .ic-faq .faq-item.active .faq-q .faq-num{background:#22c55e;color:#fff}
-        .ic-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(34,197,94,0.1);margin:0 22px}
-        .ic-faq .faq-item.active .faq-a{display:block}
-        .ic-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-        @media(max-width:480px){.calc-card{padding:20px 16px}.img-item{flex-wrap:wrap}.img-thumb{width:44px;height:44px}.ic-faq .faq-q{padding:14px 16px}}
+        
+        /* Image Compressor — Dark Mode & Resize Controls */
+        .ic-opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0; align-items:end; }
+        .ic-opt label { display:block; font-size:12px; font-weight:700; color:var(--text-medium,#475569); margin-bottom:6px; }
+        .ic-opt select { width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid rgba(34,197,94,0.25); background:var(--bg-card,#fff); color:var(--text-dark,#0f172a); font-size:13px; font-weight:600; outline:none; }
+        .img-remove-btn { padding:6px 10px; border:1.5px solid rgba(239,68,68,0.25); border-radius:50px; background:transparent; color:#ef4444; font-size:11px; cursor:pointer; transition:all .18s; }
+        .img-remove-btn:hover { background:#ef4444; color:#fff; }
+        html[data-theme="dark"] .calc-card,
+        html[data-theme="dark"] .img-item { background:#131c2e; border-color:rgba(148,163,184,0.2); }
+        html[data-theme="dark"] .upload-box,
+        html[data-theme="dark"] .ic-opt select,
+        html[data-theme="dark"] .summary-bar { background:#0b1120; border-color:rgba(148,163,184,0.24); color:#f1f5f9; }
+        @media(max-width:600px){ .ic-opts-grid { grid-template-columns:1fr; } }
+        @media(max-width:480px){.calc-card{padding:20px 16px}.img-item{flex-wrap:wrap}.img-thumb{width:44px;height:44px}}
     </style>
        <!-- ========== AD STYLES ========== -->
 <link rel="stylesheet" href="../../css/ads.css">
@@ -295,7 +308,7 @@
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
         
             <a href="../../blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <a href="../../login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -303,26 +316,41 @@
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
+<main>
 <section class="tool-area">
 <div class="container">
     <div class="calc-card">
         <h2><i class="fas fa-upload"></i> Upload Images</h2>
-        <div class="upload-box" id="dropZone" onclick="document.getElementById('fileInput').click()">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <h3>Drop Images Here</h3>
-            <p>or click to browse — JPG, PNG, WebP supported</p>
-            <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple="">
+        <div class="upload-box" id="dropZone" role="button" tabindex="0" onclick="if(event.target.id!=='fileInput')document.getElementById('fileInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('fileInput').click();}">
+            <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+            <h3>Drop Images Here or Click to Browse</h3>
+            <p>Batch JPG, PNG, WebP, BMP supported — or paste screenshot (Ctrl+V)</p>
         </div>
+        <input type="file" id="fileInput" accept="image/*,.jpg,.jpeg,.png,.webp,.bmp" multiple="" hidden="">
 
         <div class="quality-slider">
-            <label>Quality <span id="qualityLabel">80%</span></label>
-            <input type="range" id="qualityRange" min="10" max="100" value="80" step="5" oninput="updateQuality()">
+            <label>Compression Quality <span id="qualityLabel">80%</span></label>
+            <input type="range" id="qualityRange" min="10" max="100" value="80" step="5" oninput="onSettingsChange()">
         </div>
 
-        <div class="format-row">
-            <button class="format-btn active" onclick="setFormat(this,'jpeg')">JPEG</button>
-            <button class="format-btn" onclick="setFormat(this,'png')">PNG</button>
-            <button class="format-btn" onclick="setFormat(this,'webp')">WebP</button>
+        <div class="ic-opts-grid">
+            <div class="ic-opt">
+                <label>Output Format</label>
+                <div class="format-row" style="margin:0;">
+                    <button class="format-btn active" type="button" onclick="setFormat(this,'jpeg')">JPEG</button>
+                    <button class="format-btn" type="button" onclick="setFormat(this,'webp')">WebP (Best)</button>
+                    <button class="format-btn" type="button" onclick="setFormat(this,'png')">PNG</button>
+                </div>
+            </div>
+            <div class="ic-opt">
+                <label for="maxWidthSel">Max Dimension (optional downscale)</label>
+                <select id="maxWidthSel" onchange="onSettingsChange()">
+                    <option value="0" selected>Keep Original Resolution</option>
+                    <option value="1920">1920px (Full HD Web)</option>
+                    <option value="1280">1280px (Standard Web)</option>
+                    <option value="800">800px (Thumbnail / Fast)</option>
+                </select>
+            </div>
         </div>
 
         <div class="image-list" id="imageList"></div>
@@ -342,16 +370,59 @@
 </div>
 </section>
 
+</main>
+
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related Image &amp; Icon Tools</h2>
+            <p>Convert, compress, resize, and generate icons right in your browser.</p>
+        </div>
+        <div class="related-grid">
+            <a href="../../jpg-to-png.html" class="related-card" aria-label="JPG to PNG">
+                <div class="related-icon ri-green"><i class="fas fa-image" aria-hidden="true"></i></div>
+                <h4>JPG to PNG</h4>
+                <p>Lossless PNG &amp; BG removal</p>
+            </a>
+            <a href="../../jpg-to-ico.html" class="related-card" aria-label="JPG to ICO">
+                <div class="related-icon ri-orange"><i class="fas fa-icons" aria-hidden="true"></i></div>
+                <h4>JPG to ICO</h4>
+                <p>Create multi-size .ico favicons</p>
+            </a>
+            <a href="../../pdf-to-ico.html" class="related-card" aria-label="PDF to ICO">
+                <div class="related-icon ri-orange"><i class="fas fa-icons" aria-hidden="true"></i></div>
+                <h4>PDF to ICO</h4>
+                <p>Make favicons from PDF pages</p>
+            </a>
+            <a href="../../crop-jpg.html" class="related-card" aria-label="Crop JPG">
+                <div class="related-icon ri-cyan"><i class="fas fa-crop" aria-hidden="true"></i></div>
+                <h4>Crop JPG</h4>
+                <p>Crop, resize &amp; frame images</p>
+            </a>
+            <a href="../../jpg-to-pdf.html" class="related-card" aria-label="JPG to PDF">
+                <div class="related-icon ri-red"><i class="fas fa-images" aria-hidden="true"></i></div>
+                <h4>JPG to PDF</h4>
+                <p>Turn images into crisp PDFs</p>
+            </a>
+            <a href="../../pdf-to-jpg.html" class="related-card" aria-label="PDF to JPG">
+                <div class="related-icon ri-orange"><i class="fas fa-file-image" aria-hidden="true"></i></div>
+                <h4>PDF to JPG</h4>
+                <p>Convert PDF pages to images</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section"><div class="container"><div class="section-header"><h2>How It Works</h2></div><div class="steps-row"><div class="step-box glass"><div class="step-num">1</div><i class="fas fa-upload"></i><h4>Upload</h4><p>Upload or drag &amp; drop images.</p></div><div class="step-box glass"><div class="step-num">2</div><i class="fas fa-sliders-h"></i><h4>Adjust</h4><p>Set quality and format.</p></div><div class="step-box glass"><div class="step-num">3</div><i class="fas fa-download"></i><h4>Download</h4><p>Download compressed images.</p></div></div></div></section>
 
 
 
-<section class="faq-section"><div class="container"><div class="section-header"><h2>FAQ</h2></div><div class="ic-faq">
-    <div class="faq-item" onclick="icFaqToggle(this)"><div class="faq-q"><span class="faq-num">1</span><h4>How much can images be compressed?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>Typically 40-80% size reduction depending on the image and quality setting. JPEG and WebP offer the best compression ratios.</p></div></div>
-    <div class="faq-item" onclick="icFaqToggle(this)"><div class="faq-q"><span class="faq-num">2</span><h4>Does compression reduce quality?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>At 70-80% quality, the difference is barely noticeable to the human eye. Below 50%, quality loss becomes more visible.</p></div></div>
-    <div class="faq-item" onclick="icFaqToggle(this)"><div class="faq-q"><span class="faq-num">3</span><h4>Are my images uploaded?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>No! Everything runs in your browser using Canvas API. Images never leave your device.</p></div></div>
+<section class="faq-section"><div class="container"><div class="section-header"><h2>Frequently Asked Questions</h2></div><div class="faq-list">
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>How much can images be compressed?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Typically 40-80% size reduction depending on the image and quality setting. JPEG and WebP offer the best compression ratios.</p></div></div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Does compression reduce quality?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>At 70-80% quality, the difference is barely noticeable to the human eye. Below 50%, quality loss becomes more visible.</p></div></div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Are my images uploaded?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! Everything runs in your browser using Canvas API. Images never leave your device.</p></div></div></div>
 </div></div></section>
 
  <footer class="footer" role="contentinfo">
@@ -416,120 +487,222 @@
     </footer>
 
 <script>
-var compressedFiles=[];
-var outputFormat='jpeg';
+var sourceItems = []; // [{ id, file, img, thumbUrl, outBlob, outSize, saved, note }]
+var outputFormat = 'jpeg';
+var nextId = 1;
 
-var dropZone=document.getElementById('dropZone');
-var fileInput=document.getElementById('fileInput');
-dropZone.addEventListener('dragover',function(e){e.preventDefault();dropZone.style.borderColor='#22c55e';dropZone.style.background='rgba(34,197,94,0.08)';});
-dropZone.addEventListener('dragleave',function(){dropZone.style.borderColor='rgba(34,197,94,0.3)';dropZone.style.background='rgba(34,197,94,0.03)';});
-dropZone.addEventListener('drop',function(e){e.preventDefault();dropZone.style.borderColor='rgba(34,197,94,0.3)';dropZone.style.background='rgba(34,197,94,0.03)';handleFiles(e.dataTransfer.files);});
-fileInput.addEventListener('change',function(){handleFiles(fileInput.files);});
+function icToast(m, t) { if (typeof showToast === 'function') showToast(m, t || 'success'); }
 
-function updateQuality(){
-    var v=document.getElementById('qualityRange').value;
-    document.getElementById('qualityLabel').textContent=v+'%';
-    var el=document.getElementById('qualityRange');
-    var pct=((v-el.min)/(el.max-el.min))*100;
-    el.style.background='linear-gradient(to right,#22c55e 0%,#22c55e '+pct+'%,rgba(34,197,94,0.15) '+pct+'%)';
+var dropZone = document.getElementById('dropZone');
+var fileInput = document.getElementById('fileInput');
+['dragenter','dragover'].forEach(function(evt) {
+    dropZone.addEventListener(evt, function(e) { e.preventDefault(); dropZone.style.borderColor = '#22c55e'; dropZone.style.background = 'rgba(34,197,94,0.09)'; });
+    window.addEventListener(evt, function(e) { e.preventDefault(); });
+});
+['dragleave','drop'].forEach(function(evt) {
+    dropZone.addEventListener(evt, function(e) { e.preventDefault(); dropZone.style.borderColor = 'rgba(34,197,94,0.3)'; dropZone.style.background = 'rgba(34,197,94,0.03)'; });
+});
+window.addEventListener('drop', function(e) { e.preventDefault(); });
+dropZone.addEventListener('drop', function(e) { if (e.dataTransfer && e.dataTransfer.files.length) handleFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', function() { if (fileInput.files.length) handleFiles(fileInput.files); fileInput.value = ''; });
+document.addEventListener('paste', function(e) {
+    var items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    var files = [];
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].type && items[i].type.indexOf('image/') === 0) files.push(items[i].getAsFile());
+    }
+    if (files.length) handleFiles(files);
+});
+
+function updateQualitySliderUI() {
+    var v = document.getElementById('qualityRange').value;
+    document.getElementById('qualityLabel').textContent = v + '%';
+    var el = document.getElementById('qualityRange');
+    var pct = ((v - el.min) / (el.max - el.min)) * 100;
+    el.style.background = 'linear-gradient(to right,#22c55e 0%,#22c55e ' + pct + '%,rgba(34,197,94,0.18) ' + pct + '%)';
 }
-updateQuality();
+updateQualitySliderUI();
 
-function setFormat(btn,fmt){
-    outputFormat=fmt;
-    var btns=document.querySelectorAll('.format-btn');
-    for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');
+var recompressTimer = null;
+function onSettingsChange() {
+    updateQualitySliderUI();
+    if (!sourceItems.length) return;
+    clearTimeout(recompressTimer);
+    recompressTimer = setTimeout(recompressAll, 120);
+}
+
+function setFormat(btn, fmt) {
+    outputFormat = fmt;
+    document.querySelectorAll('.format-btn').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
+    onSettingsChange();
 }
 
-function fmtSize(b){if(!b)return'0 B';var k=1024,u=['B','KB','MB'];var i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];}
-
-function handleFiles(files){
-    for(var i=0;i<files.length;i++){
-        if(!files[i].type.match(/image\/(jpeg|png|webp)/))continue;
-        compressImage(files[i]);
-    }
+function fmtSize(b) {
+    if (!b) return '0 B';
+    var k = 1024, u = ['B', 'KB', 'MB'];
+    var i = Math.floor(Math.log(b) / Math.log(k));
+    return (b / Math.pow(k, i)).toFixed(1) + ' ' + u[i];
 }
 
-function compressImage(file){
-    var quality=parseInt(document.getElementById('qualityRange').value)/100;
-    var reader=new FileReader();
-    reader.onload=function(e){
-        var img=new Image();
-        img.onload=function(){
-            var canvas=document.createElement('canvas');
-            canvas.width=img.width;
-            canvas.height=img.height;
-            var ctx=canvas.getContext('2d');
-            ctx.drawImage(img,0,0);
-
-            var mime='image/'+outputFormat;
-            canvas.toBlob(function(blob){
-                var saved=Math.round((1-blob.size/file.size)*100);
-                if(saved<0)saved=0;
-
-                var thumbUrl=canvas.toDataURL('image/jpeg',0.3);
-                var item={name:file.name,originalSize:file.size,compressedSize:blob.size,saved:saved,blob:blob,thumb:thumbUrl};
-                compressedFiles.push(item);
-                renderList();
-            },mime,quality);
+function handleFiles(files) {
+    var arr = Array.from(files || []);
+    arr.forEach(function(file) {
+        if (!file || (!(file.type || '').startsWith('image/') && !/\.(jpe?g|png|webp|bmp|gif)$/i.test(file.name || ''))) return;
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function() {
+            URL.revokeObjectURL(url);
+            var tc = document.createElement('canvas');
+            var s = Math.min(112 / img.width, 112 / img.height, 1);
+            tc.width = Math.max(1, Math.round(img.width * s));
+            tc.height = Math.max(1, Math.round(img.height * s));
+            tc.getContext('2d').drawImage(img, 0, 0, tc.width, tc.height);
+            var thumb = tc.toDataURL('image/jpeg', 0.6);
+            tc.width = 0; tc.height = 0;
+            var item = { id: nextId++, file: file, img: img, thumb: thumb, outBlob: null, outSize: 0, saved: 0, note: '' };
+            sourceItems.push(item);
+            processSingleItem(item).then(renderList);
         };
-        img.src=e.target.result;
-    };
-    reader.readAsDataURL(file);
+        img.onerror = function() { URL.revokeObjectURL(url); };
+        img.src = url;
+    });
 }
 
-function renderList(){
-    var list=document.getElementById('imageList');
-    var html='';
-    var totalOriginal=0,totalCompressed=0;
-    for(var i=0;i<compressedFiles.length;i++){
-        var f=compressedFiles[i];
-        totalOriginal+=f.originalSize;
-        totalCompressed+=f.compressedSize;
-        html+='<div class="img-item">'+
-            '<img class="img-thumb" src="'+f.thumb+'" alt="">'+
-            '<div class="img-info">'+
-                '<div class="ii-name">'+f.name+'</div>'+
-                '<div class="ii-meta"><span>'+fmtSize(f.originalSize)+' → '+fmtSize(f.compressedSize)+'</span><span class="saved">-'+f.saved+'%</span></div>'+
-                '<div class="img-progress"><div class="bar" style="width:'+(100-f.saved)+'%"></div></div>'+
-            '</div>'+
-            '<div class="img-actions"><button class="img-dl" onclick="downloadSingle('+i+')"><i class="fas fa-download"></i></button></div></div>';
-    }
-    list.innerHTML=html;
+function processSingleItem(item) {
+    return new Promise(function(resolve) {
+        var quality = parseInt(document.getElementById('qualityRange').value, 10) / 100;
+        var maxDim = parseInt(document.getElementById('maxWidthSel').value, 10) || 0;
+        var w = item.img.naturalWidth || item.img.width;
+        var h = item.img.naturalHeight || item.img.height;
+        if (maxDim > 0 && Math.max(w, h) > maxDim) {
+            var r = maxDim / Math.max(w, h);
+            w = Math.max(1, Math.round(w * r));
+            h = Math.max(1, Math.round(h * r));
+        }
 
-    if(compressedFiles.length>0){
-        var totalSaved=Math.round((1-totalCompressed/totalOriginal)*100);
-        document.getElementById('totalSaved').textContent=totalSaved+'% saved';
-        document.getElementById('totalLabel').textContent=fmtSize(totalOriginal)+' → '+fmtSize(totalCompressed)+' ('+compressedFiles.length+' images)';
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        if (outputFormat === 'jpeg') {
+            ctx.fillStyle = '#ffffff'; // Prevent transparent PNGs turning black in JPEG!
+            ctx.fillRect(0, 0, w, h);
+        }
+        ctx.drawImage(item.img, 0, 0, w, h);
+
+        canvas.toBlob(function(blob) {
+            canvas.width = 0; canvas.height = 0;
+            if (!blob) { resolve(); return; }
+            item.outBlob = blob;
+            item.outSize = blob.size;
+            item.outDims = w + '×' + h;
+            var diffPct = Math.round((1 - blob.size / item.file.size) * 100);
+            item.saved = diffPct;
+            item.note = diffPct < 0 ? 'Larger as PNG/quality — try WebP or lower quality' : '';
+            resolve();
+        }, 'image/' + outputFormat, quality);
+    });
+}
+
+function recompressAll() {
+    Promise.all(sourceItems.map(processSingleItem)).then(renderList);
+}
+
+function removeItem(id) {
+    sourceItems = sourceItems.filter(function(it) { return it.id !== id; });
+    renderList();
+}
+
+function renderList() {
+    var list = document.getElementById('imageList');
+    list.innerHTML = '';
+    var totalOriginal = 0, totalCompressed = 0;
+
+    sourceItems.forEach(function(f) {
+        totalOriginal += f.file.size;
+        totalCompressed += f.outSize;
+
+        var row = document.createElement('div');
+        row.className = 'img-item';
+        var img = document.createElement('img');
+        img.className = 'img-thumb'; img.src = f.thumb; img.alt = '';
+
+        var info = document.createElement('div');
+        info.className = 'img-info';
+        var nm = document.createElement('div');
+        nm.className = 'ii-name'; nm.textContent = f.file.name || 'image';
+
+        var meta = document.createElement('div');
+        meta.className = 'ii-meta';
+        var szSpan = document.createElement('span');
+        szSpan.textContent = fmtSize(f.file.size) + ' → ' + fmtSize(f.outSize) + ' (' + (f.outDims || '') + ')';
+        var savedSpan = document.createElement('span');
+        savedSpan.className = 'saved';
+        if (f.saved >= 0) {
+            savedSpan.textContent = '-' + f.saved + '% saved';
+        } else {
+            savedSpan.style.color = '#f59e0b';
+            savedSpan.textContent = '+' + Math.abs(f.saved) + '% (' + (f.note || 'larger') + ')';
+        }
+        meta.append(szSpan, savedSpan);
+
+        var prog = document.createElement('div');
+        prog.className = 'img-progress';
+        var bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.width = Math.max(8, Math.min(100, 100 - Math.max(0, f.saved))) + '%';
+        prog.appendChild(bar);
+        info.append(nm, meta, prog);
+
+        var acts = document.createElement('div');
+        acts.className = 'img-actions';
+        var dl = document.createElement('button');
+        dl.type = 'button'; dl.className = 'img-dl';
+        dl.innerHTML = '<i class="fas fa-download"></i>';
+        dl.onclick = function() { downloadSingle(f); };
+        var rm = document.createElement('button');
+        rm.type = 'button'; rm.className = 'img-remove-btn';
+        rm.innerHTML = '<i class="fas fa-times"></i>';
+        rm.onclick = function() { removeItem(f.id); };
+        acts.append(dl, rm);
+
+        row.append(img, info, acts);
+        list.appendChild(row);
+    });
+
+    if (sourceItems.length > 0) {
+        var totalSaved = Math.round((1 - totalCompressed / totalOriginal) * 100);
+        document.getElementById('totalSaved').textContent = (totalSaved >= 0 ? totalSaved + '% saved' : '+' + Math.abs(totalSaved) + '% larger');
+        document.getElementById('totalLabel').textContent = fmtSize(totalOriginal) + ' → ' + fmtSize(totalCompressed) + ' (' + sourceItems.length + ' images)';
         document.getElementById('summaryBar').classList.add('show');
-        document.getElementById('batchActions').style.display='flex';
+        document.getElementById('batchActions').style.display = 'flex';
+    } else {
+        document.getElementById('summaryBar').classList.remove('show');
+        document.getElementById('batchActions').style.display = 'none';
     }
 }
 
-function downloadSingle(idx){
-    var f=compressedFiles[idx];
-    var ext=outputFormat==='jpeg'?'jpg':outputFormat;
-    var name=f.name.replace(/\.[^.]+$/,'')+'_compressed.'+ext;
-    var url=URL.createObjectURL(f.blob);
-    var a=document.createElement('a');a.href=url;a.download=name;a.click();
-    setTimeout(function(){URL.revokeObjectURL(url);},300);
+function downloadSingle(f) {
+    if (!f || !f.outBlob) return;
+    var ext = outputFormat === 'jpeg' ? 'jpg' : outputFormat;
+    var name = (f.file.name || 'image').replace(/\.[^.]+$/, '') + '_compressed.' + ext;
+    var url = URL.createObjectURL(f.outBlob);
+    var a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 400);
 }
 
-function downloadAll(){
-    for(var i=0;i<compressedFiles.length;i++)downloadSingle(i);
+function downloadAll() {
+    sourceItems.forEach(function(f, idx) { setTimeout(function() { downloadSingle(f); }, idx * 180); });
+    icToast('Downloading ' + sourceItems.length + ' compressed image(s)!');
 }
 
-function clearAll(){
-    compressedFiles=[];
-    document.getElementById('imageList').innerHTML='';
-    document.getElementById('summaryBar').classList.remove('show');
-    document.getElementById('batchActions').style.display='none';
-    fileInput.value='';
+function clearAll() {
+    sourceItems = [];
+    renderList();
+    fileInput.value = '';
 }
-
-function icFaqToggle(el){var a=el.classList.contains('active');var items=document.querySelectorAll('.ic-faq .faq-item');for(var i=0;i<items.length;i++)items[i].classList.remove('active');if(!a)el.classList.add('active');}
-if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open');};}
 </script>
 <script src="../../js/tool-page.js"></script>
 <script src="../../js/adsense.js"></script>

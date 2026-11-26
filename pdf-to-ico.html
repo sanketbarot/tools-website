@@ -200,324 +200,238 @@
 <link rel="stylesheet" href="css/ads.css">
 
     <style>
-        /* ════════════════════════════════════════
-           PREVIEW LAYOUT
-        ════════════════════════════════════════ */
-        .image-preview-wrap {
+.image-preview-wrap {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 18px;
+            margin: 18px 0;
         }
         .preview-card {
-            background: rgba(255,255,255,0.35);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 14px;
-            padding: 18px;
+            background: var(--surface-muted);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
             text-align: center;
         }
         .preview-card h4 {
-            font-size: 14px;
+            font-family: var(--font-head);
+            font-size: 13px;
             font-weight: 700;
             margin-bottom: 12px;
-            color: var(--text-dark, #1e293b);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-
-        /* ════════════════════════════════════════
-           CHECKERBOARD PREVIEW BOX
-        ════════════════════════════════════════ */
-        .img-preview-box {
-            min-height: 220px;
+        .img-preview-box,
+        .ico-size-preview,
+        .ico-preview-box {
+            background-color: #ffffff;
+            background-image:
+                linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
+                linear-gradient(-45deg, #e2e8f0 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #e2e8f0 75%),
+                linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+            border: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #fff;
-            background-image:
-                linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
-                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
-                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
             overflow: hidden;
+        }
+        html[data-theme="dark"] .img-preview-box,
+        html[data-theme="dark"] .ico-size-preview,
+        html[data-theme="dark"] .ico-preview-box {
+            background-color: #1e293b;
+            background-image:
+                linear-gradient(45deg, #334155 25%, transparent 25%),
+                linear-gradient(-45deg, #334155 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #334155 75%),
+                linear-gradient(-45deg, transparent 75%, #334155 75%);
+        }
+        .img-preview-box {
+            min-height: 210px;
+            background-size: 18px 18px;
+            background-position: 0 0, 0 9px, 9px -9px, -9px 0;
+            border-radius: 12px;
             padding: 12px;
         }
         .img-preview-box img {
             max-width: 100%;
-            max-height: 200px;
+            max-height: 195px;
             object-fit: contain;
+            border-radius: 6px;
+        }
+        .page-nav-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
             border-radius: 8px;
+            padding: 3px 6px;
+            font-size: 12px;
+        }
+        .page-nav-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 3px 7px;
+            border-radius: 6px;
+            font-size: 11px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .page-nav-btn:hover:not(:disabled) { background: var(--primary-soft); color: var(--primary); }
+        .page-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .page-num-input {
+            width: 44px;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            background: var(--surface-muted);
+            color: var(--text-dark);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 4px;
         }
 
-        /* ════════════════════════════════════════
-           ICO SIZE STRIP
-        ════════════════════════════════════════ */
+        /* Browser Tab Mockups */
+        .tab-mockup-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .browser-tab-sim {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 10px;
+            border-radius: 9px 9px 0 0;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid var(--border-subtle);
+            text-align: left;
+            overflow: hidden;
+        }
+        .browser-tab-sim.light { background: #f8fafc; color: #0f172a; }
+        .browser-tab-sim.dark { background: #0f172a; color: #f8fafc; border-color: #334155; }
+        .browser-tab-sim img { width: 16px; height: 16px; flex-shrink: 0; }
+        .browser-tab-sim span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* ICO Size Strip */
         .ico-sizes {
             display: flex;
             justify-content: center;
-            gap: 14px;
+            align-items: flex-end;
+            gap: 12px;
             flex-wrap: wrap;
-            margin-top: 16px;
+            margin-top: 14px;
         }
-        .ico-size-box { width: 78px; text-align: center; }
+        .ico-size-box { text-align: center; min-width: 50px; }
         .ico-size-preview {
-            margin: 0 auto 8px;
-            border: 1px solid #cbd5e1;
-            background-color: #fff;
-            background-image:
-                linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
-                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
-                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
-            background-size: 12px 12px;
-            border-radius: 8px;
+            margin: 0 auto 6px;
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+            border-radius: 7px;
+        }
+        .ico-size-preview img { max-width: 100%; max-height: 100%; }
+        .ico-size-label { font-size: 11px; color: var(--text-light); font-weight: 600; }
+
+        /* Options enhancements extending tool-page.css */
+        .options-row { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+        .option-field input[type="color"] {
+            width: 100%;
+            height: 40px;
+            padding: 3px 6px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            background: var(--bg-card);
+            cursor: pointer;
+        }
+        .option-hint { margin-top: 5px; font-size: 11px; color: var(--text-light); }
+
+        .toggle-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .toggle-card {
             display: flex;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 13px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
         }
-        .ico-size-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            image-rendering: pixelated;
-        }
-        .ico-size-label {
-            font-size: 11px;
-            color: var(--text-light, #64748b);
-            font-weight: 600;
-        }
-        .option-hint {
-            margin-top: 6px;
-            font-size: 11px;
-            color: var(--text-light, #64748b);
-        }
+        .toggle-card:hover { border-color: var(--primary); }
+        .toggle-card strong { display: block; font-size: 12.5px; color: var(--text-dark); }
+        .toggle-card small { display: block; font-size: 11px; color: var(--text-light); }
+        .toggle-card input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--primary); cursor: pointer; }
 
-        /* ════════════════════════════════════════
-           RESULT STATS
-        ════════════════════════════════════════ */
-        .result-stats {
+        .range-field {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 10px 13px;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin: 20px 0;
+            align-items: center;
+            gap: 10px;
         }
+        .range-field label { font-size: 12.5px; font-weight: 700; color: var(--text-dark); min-width: 92px; }
+        .range-field input[type="range"] { flex: 1; accent-color: var(--primary); cursor: pointer; }
+        .range-field span { font-size: 12px; font-weight: 700; color: var(--primary); min-width: 34px; text-align: right; }
+
+        /* Result stats */
+        .result-stats { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 18px 0; }
         .result-stat {
             text-align: center;
-            background: rgba(255,255,255,0.35);
-            border: 1px solid rgba(255,255,255,0.5);
+            background: var(--surface-muted);
+            border: 1px solid var(--border-subtle);
             border-radius: 12px;
-            padding: 14px 18px;
+            padding: 12px 18px;
             min-width: 110px;
         }
-        .result-stat strong {
-            display: block;
-            font-size: 22px;
-            color: var(--primary, #6366f1);
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-        .result-stat small {
-            color: var(--text-light, #64748b);
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        /* ════════════════════════════════════════
-           FORMAT BADGE
-        ════════════════════════════════════════ */
+        .result-stat strong { display: block; font-family: var(--font-head); font-size: 20px; color: var(--primary); line-height: 1.1; margin-bottom: 4px; }
+        .result-stat small { color: var(--text-light); font-size: 11px; font-weight: 600; text-transform: uppercase; }
         .format-badge {
             display: inline-block;
-            background: rgba(34,197,94,0.12);
-            color: #15803d;
+            background: var(--accent-soft);
+            color: var(--accent);
             padding: 5px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 700;
-            margin: 10px 0 16px;
+            margin: 8px 0 12px;
         }
-
-        /* ════════════════════════════════════════
-           ICO RESULT PREVIEW BOX
-        ════════════════════════════════════════ */
         .ico-preview-box {
-            width: 128px;
-            height: 128px;
-            margin: 20px auto 10px;
-            border: 2px solid #e2e8f0;
+            width: 132px;
+            height: 132px;
+            margin: 16px auto 8px;
             border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background-color: #fff;
-            background-image:
-                linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
-                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
-                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
             background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0;
         }
-        .ico-preview-box img {
-            max-width: 100%;
-            max-height: 100%;
-            image-rendering: pixelated;
-        }
+        .ico-preview-box img { max-width: 100%; max-height: 100%; }
 
-        /* ════════════════════════════════════════
-           ERROR MESSAGE
-        ════════════════════════════════════════ */
-        .error-message {
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.25);
-            border-radius: 10px;
-            padding: 13px 18px;
-            color: #dc2626;
-            font-size: 14px;
-            margin-bottom: 16px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
+        .preview-loading { color: var(--text-light); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        .upload-zone.dragover { border-color: var(--primary) !important; background: var(--primary-soft) !important; }
 
-        /* ════════════════════════════════════════
-           LOADING SPINNER IN PREVIEW
-        ════════════════════════════════════════ */
-        .preview-loading {
-            color: var(--text-light, #94a3b8);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        
+        
+        
+        
+        
+        
 
-        /* ════════════════════════════════════════
-           DRAG OVER
-        ════════════════════════════════════════ */
-        .upload-zone.dragover {
-            border-color: var(--primary, #6366f1) !important;
-            background: rgba(79,70,229,0.07) !important;
-        }
-
-        /* ════════════════════════════════════════
-           FAQ
-        ════════════════════════════════════════ */
-        .faq-section { padding: 50px 0; }
-        .faq-list { max-width: 750px; margin: 0 auto; }
-        .faq-item {
-            background: rgba(255,255,255,0.65);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.6);
-            border-radius: 14px;
-            margin-bottom: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-        }
-        .faq-item:hover {
-            background: rgba(255,255,255,0.8);
-            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
-            transform: translateY(-1px);
-        }
-        .faq-item.open {
-            background: rgba(255,255,255,0.85);
-            border-color: rgba(79,70,229,0.2);
-            box-shadow: 0 6px 25px rgba(79,70,229,0.1);
-        }
-        .faq-question {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 22px;
-            gap: 14px;
-        }
-        .faq-question h4 {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-dark, #1e293b);
-            margin: 0;
-            line-height: 1.4;
-            flex: 1;
-        }
-        .faq-item.open .faq-question h4 { color: var(--primary, #6366f1); }
-        .faq-question i {
-            font-size: 13px;
-            color: var(--text-light, #94a3b8);
-            transition: transform 0.35s ease, color 0.3s ease;
-            flex-shrink: 0;
-            width: 20px;
-            text-align: center;
-        }
-        .faq-item.open .faq-question i {
-            transform: rotate(180deg);
-            color: var(--primary, #6366f1);
-        }
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease;
-            opacity: 0;
-        }
-        .faq-item.open .faq-answer { max-height: 400px; opacity: 1; }
-        .faq-answer-inner { padding: 0 22px 20px; }
-        .faq-item.open .faq-answer-inner {
-            border-top: 1px solid rgba(79,70,229,0.1);
-            padding-top: 16px;
-            margin: 0 22px;
-            padding-left: 0;
-            padding-right: 0;
-        }
-        .faq-answer-inner p {
-            font-size: 14px;
-            line-height: 1.7;
-            color: var(--text-light, #64748b);
-            margin: 0;
-        }
-        .faq-answer-inner p strong { color: var(--text-dark, #1e293b); }
-        .faq-num {
-            width: 28px; height: 28px;
-            background: rgba(79,70,229,0.1);
-            color: var(--primary, #6366f1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 700;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-        .faq-item.open .faq-num {
-            background: var(--primary, #6366f1);
-            color: #fff;
-        }
-
-        /* ════════════════════════════════════════
-           RESPONSIVE
-        ════════════════════════════════════════ */
-        @media (max-width: 768px) {
-            .image-preview-wrap { grid-template-columns: 1fr; }
-            .ico-sizes { gap: 10px; }
-            .ico-size-box { width: 68px; }
-            .result-stats { gap: 12px; }
-            .faq-question { padding: 16px 18px; }
-            .faq-question h4 { font-size: 14px; }
-            .faq-answer-inner { padding: 0 18px 18px; }
-            .faq-item.open .faq-answer-inner { margin: 0 18px; }
-            .faq-answer-inner p { font-size: 13px; }
-            .faq-num { width: 24px; height: 24px; font-size: 11px; }
-        }
-        @media (max-width: 480px) {
-            .ico-size-box { width: 58px; }
-            .faq-question { padding: 14px; }
-            .faq-question h4 { font-size: 13px; }
-            .faq-item { border-radius: 10px; margin-bottom: 8px; }
-        }
+        @media (max-width: 820px) {.image-preview-wrap, .tab-mockup-row { grid-template-columns: 1fr; }}
     </style>
     
     
@@ -559,7 +473,7 @@
         <a href="index.html#tools"><i class="fas fa-th" aria-hidden="true"></i> All Tools</a>
         
             <a href="blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="login.html" class="nav-btn"><i class="fas fa-user" aria-hidden="true"></i> Login</a>
+            <a href="login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -579,7 +493,7 @@
             </div>
             <div>
                 <h1>PDF to ICO</h1>
-                <p>Convert the first page of your PDF into favicon ICO files. Free, fast &amp; browser-based!</p>
+                <p>Convert any PDF page into sharp single or multi-resolution .ICO favicons &amp; complete website icon kits. 100% private &amp; browser-based!</p>
             </div>
         </div>
     </div>
@@ -624,17 +538,16 @@
             <div id="optionsSection" data-section="" style="display:none;">
                 <div class="files-area">
 
-                    <!-- Error -->
                     <div class="error-message" id="errorMsg" role="alert" aria-live="polite">
                         <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                         <span id="errorText">Something went wrong.</span>
                     </div>
 
-                    <!-- File Header -->
                     <div class="files-header">
                         <h3>
                             <i class="fas fa-file-pdf" aria-hidden="true"></i>
                             <span id="fileName">document.pdf</span>
+                            <span style="font-size:12px;font-weight:600;color:var(--text-light);margin-left:6px;" id="pdfMetaBadge"></span>
                         </h3>
                         <div class="files-actions">
                             <button class="btn-sm btn-danger-sm" type="button" onclick="resetTool()" aria-label="Remove file and start over">
@@ -645,49 +558,50 @@
 
                     <!-- Previews -->
                     <div class="image-preview-wrap">
-
-                        <!-- PDF Preview -->
                         <div class="preview-card">
-                            <h4>PDF First Page Preview</h4>
+                            <h4>
+                                <span><i class="fas fa-file-pdf" style="color:var(--primary);margin-right:5px;"></i> Source PDF Page</span>
+                                <span class="page-nav-bar" id="pageNavBar">
+                                    <button type="button" class="page-nav-btn" id="prevPageBtn" onclick="changePdfPage(-1)" title="Previous Page"><i class="fas fa-chevron-left"></i></button>
+                                    <span>Page</span>
+                                    <input type="number" id="pageNumInput" class="page-num-input" value="1" min="1" onchange="jumpPdfPage(this.value)">
+                                    <span id="totalPagesLabel">/ 1</span>
+                                    <button type="button" class="page-nav-btn" id="nextPageBtn" onclick="changePdfPage(1)" title="Next Page"><i class="fas fa-chevron-right"></i></button>
+                                </span>
+                            </h4>
                             <div class="img-preview-box">
                                 <div class="preview-loading" id="originalLoading" role="status" aria-label="Rendering PDF">
                                     <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                                     Rendering PDF...
                                 </div>
-                                <img id="originalPreview" alt="PDF first page preview" style="display:none;">
+                                <img id="originalPreview" alt="Selected PDF page preview" style="display:none;">
                             </div>
                         </div>
 
-                        <!-- ICO Preview -->
                         <div class="preview-card">
-                            <h4>ICO Preview</h4>
-                            <div class="img-preview-box" style="min-height:80px;">
-                                <img id="icoMainPreview" alt="ICO icon preview">
+                            <h4>
+                                <span><i class="fas fa-icons" style="color:var(--accent);margin-right:5px;"></i> Live ICO Preview</span>
+                                <span style="font-size:11px;color:var(--text-light);font-weight:600;" id="previewSizeBadge">Multi-Size</span>
+                            </h4>
+                            <div class="img-preview-box" style="min-height:110px;">
+                                <img id="icoMainPreview" alt="ICO icon preview" style="max-height:110px;">
                             </div>
+
                             <div class="ico-sizes" aria-label="Icon size previews">
-                                <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:16px;height:16px;">
-                                        <img id="preview16" alt="16x16 icon preview">
-                                    </div>
-                                    <div class="ico-size-label">16×16</div>
+                                <div class="ico-size-box"><div class="ico-size-preview" style="width:18px;height:18px;"><img id="preview16" alt="16x16"></div><div class="ico-size-label">16px</div></div>
+                                <div class="ico-size-box"><div class="ico-size-preview" style="width:32px;height:32px;"><img id="preview32" alt="32x32"></div><div class="ico-size-label">32px</div></div>
+                                <div class="ico-size-box"><div class="ico-size-preview" style="width:48px;height:48px;"><img id="preview48" alt="48x48"></div><div class="ico-size-label">48px</div></div>
+                                <div class="ico-size-box"><div class="ico-size-preview" style="width:64px;height:64px;"><img id="preview64" alt="64x64"></div><div class="ico-size-label">64px</div></div>
+                            </div>
+
+                            <div class="tab-mockup-row" aria-label="Browser tab previews">
+                                <div class="browser-tab-sim light">
+                                    <img id="tabIconLight" alt="Light tab favicon">
+                                    <span>My Website — Light Tab</span>
                                 </div>
-                                <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:32px;height:32px;">
-                                        <img id="preview32" alt="32x32 icon preview">
-                                    </div>
-                                    <div class="ico-size-label">32×32</div>
-                                </div>
-                                <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:48px;height:48px;">
-                                        <img id="preview48" alt="48x48 icon preview">
-                                    </div>
-                                    <div class="ico-size-label">48×48</div>
-                                </div>
-                                <div class="ico-size-box">
-                                    <div class="ico-size-preview" style="width:64px;height:64px;">
-                                        <img id="preview64" alt="64x64 icon preview">
-                                    </div>
-                                    <div class="ico-size-label">64×64</div>
+                                <div class="browser-tab-sim dark">
+                                    <img id="tabIconDark" alt="Dark tab favicon">
+                                    <span>My Website — Dark Tab</span>
                                 </div>
                             </div>
                         </div>
@@ -695,41 +609,87 @@
 
                     <!-- Settings -->
                     <div class="options-panel glass-light">
-                        <h4><i class="fas fa-cog" aria-hidden="true"></i> ICO Settings</h4>
+                        <h4><i class="fas fa-sliders-h" aria-hidden="true"></i> Pro ICO &amp; Favicon Settings</h4>
                         <div class="options-row">
-
                             <div class="option-field">
-                                <label for="icoSize">Icon Size</label>
+                                <label for="icoSize">Output Format &amp; Size</label>
                                 <select id="icoSize" onchange="updatePreview()">
-                                    <option value="16">16×16 – Browser Tab</option>
-                                    <option value="32" selected="">32×32 – Standard Favicon</option>
-                                    <option value="48">48×48 – Desktop Icon</option>
-                                    <option value="64">64×64 – High Resolution</option>
-                                    <option value="128">128×128 – Large Icon</option>
-                                    <option value="all">📦 All Sizes (ZIP Pack)</option>
+                                    <option value="multi" selected="">⭐ Multi-Size .ICO (16–256px)</option>
+                                    <option value="all">📦 Complete Favicon Kit (.ZIP)</option>
+                                    <option value="16">16×16 .ICO – Browser Tab</option>
+                                    <option value="32">32×32 .ICO – Standard Favicon</option>
+                                    <option value="48">48×48 .ICO – Windows Desktop</option>
+                                    <option value="64">64×64 .ICO – High Resolution</option>
+                                    <option value="128">128×128 .ICO – App Icon</option>
+                                    <option value="256">256×256 .ICO – Retina HD</option>
                                 </select>
-                                <div class="option-hint">Single size or full ZIP pack</div>
+                                <div class="option-hint">Multi-Size embeds 6 sizes inside 1 .ico</div>
                             </div>
 
                             <div class="option-field">
-                                <label for="fitMode">Fit Mode</label>
+                                <label for="fitMode">Fit &amp; Shape</label>
                                 <select id="fitMode" onchange="updatePreview()">
                                     <option value="contain">Contain – Fit Entire Page</option>
-                                    <option value="cover">Cover – Fill Icon Area</option>
+                                    <option value="cover">Cover – Fill Square Icon</option>
                                 </select>
-                                <div class="option-hint">Contain = no crop, Cover = fill fully</div>
+                                <div class="option-hint">Contain preserves full design</div>
+                            </div>
+
+                            <div class="option-field">
+                                <label for="shapeMode">Icon Corner Shape</label>
+                                <select id="shapeMode" onchange="updatePreview()">
+                                    <option value="square">Square (Sharp Corners)</option>
+                                    <option value="rounded" selected="">Rounded (16% Radius)</option>
+                                    <option value="squircle">App Squircle (26% Radius)</option>
+                                    <option value="circle">Circle Avatar</option>
+                                </select>
+                                <div class="option-hint">Great for modern tabs &amp; apps</div>
                             </div>
 
                             <div class="option-field">
                                 <label for="bgMode">Background</label>
-                                <select id="bgMode" onchange="updatePreview()">
+                                <select id="bgMode" onchange="onBgModeChange()">
                                     <option value="white">White</option>
-                                    <option value="transparent">Transparent</option>
+                                    <option value="transparent" selected="">Transparent</option>
                                     <option value="black">Black</option>
+                                    <option value="custom">Custom Color...</option>
                                 </select>
-                                <div class="option-hint">White is best for most PDFs</div>
+                                <div class="option-hint">Use Transparent for round icons</div>
                             </div>
 
+                            <div class="option-field" id="customBgWrap" style="display:none;">
+                                <label for="customBgColor">Custom Background Color</label>
+                                <input type="color" id="customBgColor" value="#4f46e5" oninput="updatePreview()">
+                                <div class="option-hint">Pick any hex color</div>
+                            </div>
+
+                            <div class="option-field">
+                                <label for="outputName">Output Filename</label>
+                                <input type="text" id="outputName" value="favicon" placeholder="favicon">
+                                <div class="option-hint">Extension added automatically</div>
+                            </div>
+                        </div>
+
+                        <div class="toggle-row">
+                            <label class="toggle-card">
+                                <div>
+                                    <strong><i class="fas fa-crop-alt" style="color:var(--primary);margin-right:4px;"></i> Auto-Trim Page Margins</strong>
+                                    <small>Crops blank PDF whitespace around your logo</small>
+                                </div>
+                                <input type="checkbox" id="optAutoTrim" checked="" onchange="onPdfRenderOptionChange()">
+                            </label>
+                            <label class="toggle-card">
+                                <div>
+                                    <strong><i class="fas fa-eraser" style="color:var(--accent);margin-right:4px;"></i> Remove White Background</strong>
+                                    <small>Makes bright white PDF paper transparent</small>
+                                </div>
+                                <input type="checkbox" id="optKeyWhite" onchange="onPdfRenderOptionChange()">
+                            </label>
+                            <div class="range-field">
+                                <label for="optPadding">Inner Padding</label>
+                                <input type="range" id="optPadding" min="0" max="24" value="6" oninput="document.getElementById('padVal').textContent=this.value+'%';updatePreview()">
+                                <span id="padVal">6%</span>
+                            </div>
                         </div>
                     </div>
 
@@ -766,12 +726,12 @@
                         <img id="resultPreview" alt="Final ICO icon preview">
                     </div>
 
-                    <div class="format-badge" id="formatBadge">Windows ICO Format</div>
+                    <div class="format-badge" id="formatBadge">Multi-Resolution Windows ICO</div>
 
                     <div class="result-stats">
                         <div class="result-stat">
-                            <strong id="resultDimensions">32×32</strong>
-                            <small>Icon Size</small>
+                            <strong id="resultDimensions">6 Sizes</strong>
+                            <small>Embedded</small>
                         </div>
                         <div class="result-stat">
                             <strong id="resultFileSize">0 KB</strong>
@@ -798,6 +758,12 @@
                         <button class="btn-outline" type="button" onclick="resetTool()">
                             <i class="fas fa-redo" aria-hidden="true"></i> Convert Another
                         </button>
+                        <button class="btn-outline" type="button" onclick="showSection('optionsSection')">
+                            <i class="fas fa-sliders-h" aria-hidden="true"></i> Edit Settings
+                        </button>
+                        <button class="btn-outline" type="button" onclick="testLiveTabFavicon()">
+                            <i class="fas fa-window-maximize" aria-hidden="true"></i> Preview in Browser Tab
+                        </button>
                         <button class="btn-outline" type="button" onclick="copyHTMLTag()">
                             <i class="fas fa-code" aria-hidden="true"></i> Copy HTML Tag
                         </button>
@@ -813,6 +779,47 @@
 <!-- ═══════════════════════════════════════
      HOW TO
 ═══════════════════════════════════════ -->
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related Image &amp; Icon Tools</h2>
+            <p>Convert, compress, resize, and generate icons right in your browser.</p>
+        </div>
+        <div class="related-grid">
+            <a href="jpg-to-png.html" class="related-card" aria-label="JPG to PNG">
+                <div class="related-icon ri-green"><i class="fas fa-image" aria-hidden="true"></i></div>
+                <h4>JPG to PNG</h4>
+                <p>Lossless PNG &amp; BG removal</p>
+            </a>
+            <a href="jpg-to-ico.html" class="related-card" aria-label="JPG to ICO">
+                <div class="related-icon ri-orange"><i class="fas fa-icons" aria-hidden="true"></i></div>
+                <h4>JPG to ICO</h4>
+                <p>Create multi-size .ico favicons</p>
+            </a>
+            <a href="crop-jpg.html" class="related-card" aria-label="Crop JPG">
+                <div class="related-icon ri-cyan"><i class="fas fa-crop" aria-hidden="true"></i></div>
+                <h4>Crop JPG</h4>
+                <p>Crop, resize &amp; frame images</p>
+            </a>
+            <a href="jpg-to-pdf.html" class="related-card" aria-label="JPG to PDF">
+                <div class="related-icon ri-red"><i class="fas fa-images" aria-hidden="true"></i></div>
+                <h4>JPG to PDF</h4>
+                <p>Turn images into crisp PDFs</p>
+            </a>
+            <a href="pdf-to-jpg.html" class="related-card" aria-label="PDF to JPG">
+                <div class="related-icon ri-orange"><i class="fas fa-file-image" aria-hidden="true"></i></div>
+                <h4>PDF to JPG</h4>
+                <p>Convert PDF pages to images</p>
+            </a>
+            <a href="tools/image/image-compressor.html" class="related-card" aria-label="Image Compressor">
+                <div class="related-icon ri-orange"><i class="fas fa-compress" aria-hidden="true"></i></div>
+                <h4>Image Compressor</h4>
+                <p>Shrink JPG, PNG &amp; WebP fast</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section" aria-labelledby="howto-heading">
     <div class="container">
         <div class="section-header">
@@ -995,13 +1002,6 @@
         </div>
     </footer>
 
-<!-- Hidden canvases -->
-<canvas id="canvas16" width="16" height="16" style="display:none;"></canvas>
-<canvas id="canvas32" width="32" height="32" style="display:none;"></canvas>
-<canvas id="canvas48" width="48" height="48" style="display:none;"></canvas>
-<canvas id="canvas64" width="64" height="64" style="display:none;"></canvas>
-<canvas id="canvas128" width="128" height="128" style="display:none;"></canvas>
-
 <!-- ═══════════════════════════════════════
      SCRIPTS
 ═══════════════════════════════════════ -->
@@ -1009,35 +1009,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="js/tool-page.js"></script>
 
+
+
 <script>
-/* ════════════════════════════════════════
-   FOOTER YEAR
-════════════════════════════════════════ */
 (function() {
     const year = new Date().getFullYear();
-    // બધા possible IDs try કરે
-    const ids = ['currentYear', 'footerYear', 'year', 'footer-year'];
-    ids.forEach(function(id) {
+    ['currentYear', 'footerYear', 'year', 'footer-year'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = year;
     });
 })();
-/* ════════════════════════════════════════
-   PDF.js WORKER
-════════════════════════════════════════ */
+
 pdfjsLib.GlobalWorkerOptions.workerSrc =
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 /* ════════════════════════════════════════
    STATE
 ════════════════════════════════════════ */
-let pdfData          = null;
+let pdfDocProxy      = null;
+let currentPageNum   = 1;
+let totalPdfPages    = 1;
+let cachedPageCanvas = null; // High-res rendered canvas of selected page (trimmed/keyed)
 let selectedFileName = 'favicon';
 let outputBlob       = null;
-let outputIsZip      = false;
+let outputFileName   = 'favicon.ico';
+let livePreviewIconUrl = '';
 
 /* ════════════════════════════════════════
-   MOBILE MENU
+   MOBILE MENU / FAQ / SECTION NAVIGATION
 ════════════════════════════════════════ */
 if (typeof toggleMobileMenu === 'undefined') {
     window.toggleMobileMenu = function () {
@@ -1048,8 +1047,7 @@ if (typeof toggleMobileMenu === 'undefined') {
     };
 }
 
-/* Close on Escape */
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         const nav = document.getElementById('navLinks');
         const ham = document.getElementById('hamburger');
@@ -1058,28 +1056,23 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-/* ════════════════════════════════════════
-   FAQ ACCORDION
-════════════════════════════════════════ */
 function toggleFaq(clickedItem) {
     const isOpen = clickedItem.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('open'));
     if (!isOpen) clickedItem.classList.add('open');
 }
 
-/* ════════════════════════════════════════
-   SHOW SECTION
-════════════════════════════════════════ */
 function showSection(id) {
-    document.querySelectorAll('[data-section]')
-            .forEach(s => s.style.display = 'none');
+    document.querySelectorAll('[data-section]').forEach(s => s.style.display = 'none');
     const el = document.getElementById(id);
     if (el) el.style.display = 'block';
+    if (id === 'processingSection' || id === 'resultSection' || id === 'uploadSection' || window.scrollY > 200) {
+        const target = document.querySelector('.tool-header') || document.querySelector('.tool-wrapper');
+        const top = target ? Math.max(0, target.getBoundingClientRect().top + window.scrollY - 82) : 0;
+        window.scrollTo({ top, behavior: 'smooth' });
+    }
 }
 
-/* ════════════════════════════════════════
-   UTILITIES
-════════════════════════════════════════ */
 function updateProgress(pct, title, sub) {
     const fill = document.getElementById('progressFill');
     const txt  = document.getElementById('progressText');
@@ -1094,6 +1087,7 @@ function updateProgress(pct, title, sub) {
 }
 
 function formatSize(bytes) {
+    if (!bytes) return '0 B';
     if (bytes < 1024)    return bytes + ' B';
     if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / 1048576).toFixed(2) + ' MB';
@@ -1104,19 +1098,20 @@ function showError(msg) {
     document.getElementById('errorText').textContent = msg;
     el.style.display = 'flex';
     if (el._timer) clearTimeout(el._timer);
-    el._timer = setTimeout(() => el.style.display = 'none', 6000);
+    el._timer = setTimeout(() => el.style.display = 'none', 7000);
+}
+
+function notify(msg, type) {
+    if (typeof window.showToast === 'function') window.showToast(msg, type || 'success');
 }
 
 /* ════════════════════════════════════════
-   DRAG & DROP + FILE INPUT
+   UPLOAD & DRAG-DROP
 ════════════════════════════════════════ */
 const dropZone  = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 
-dropZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropZone.classList.add('dragover');
-});
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
 dropZone.addEventListener('drop', e => {
     e.preventDefault();
@@ -1127,219 +1122,445 @@ fileInput.addEventListener('change', () => {
     if (fileInput.files.length) handleFile(fileInput.files[0]);
 });
 
-/* ════════════════════════════════════════
-   HANDLE FILE
-════════════════════════════════════════ */
-function handleFile(file) {
-    if (!file.name.toLowerCase().endsWith('.pdf') &&
-        file.type !== 'application/pdf') {
+async function handleFile(file) {
+    if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
         showError('Please select a valid PDF file.');
         return;
     }
 
-    selectedFileName = file.name.replace(/\.[^/.]+$/, '');
+    selectedFileName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]+/g, '_') || 'favicon';
     document.getElementById('fileName').textContent = file.name;
+    document.getElementById('outputName').value = selectedFileName;
 
     document.getElementById('originalPreview').style.display = 'none';
     document.getElementById('originalLoading').style.display = 'flex';
     showSection('optionsSection');
 
-    const reader = new FileReader();
-    reader.onload = async e => {
-        try {
-            pdfData = new Uint8Array(e.target.result);
+    try {
+        const buf = await file.arrayBuffer();
+        pdfDocProxy = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+        totalPdfPages = pdfDocProxy.numPages;
+        currentPageNum = 1;
 
-            const previewUrl = await renderPdfPage(200);
-            const img = document.getElementById('originalPreview');
-            img.src = previewUrl;
-            img.style.display = 'block';
-            document.getElementById('originalLoading').style.display = 'none';
+        document.getElementById('pdfMetaBadge').textContent = totalPdfPages + (totalPdfPages === 1 ? ' Page' : ' Pages');
+        document.getElementById('totalPagesLabel').textContent = '/ ' + totalPdfPages;
+        document.getElementById('pageNumInput').max = totalPdfPages;
+        syncPageButtons();
 
-            await refreshSizePreviews();
+        await loadSelectedPageToCache();
+    } catch (err) {
+        console.error(err);
+        document.getElementById('originalLoading').style.display = 'none';
+        showError('Could not read PDF: ' + err.message);
+    }
+}
 
-        } catch (err) {
-            console.error(err);
-            document.getElementById('originalLoading').style.display = 'none';
-            showError('Could not read PDF: ' + err.message);
-        }
-    };
-    reader.readAsArrayBuffer(file);
+function syncPageButtons() {
+    document.getElementById('pageNumInput').value = currentPageNum;
+    document.getElementById('prevPageBtn').disabled = currentPageNum <= 1;
+    document.getElementById('nextPageBtn').disabled = currentPageNum >= totalPdfPages;
+}
+
+async function changePdfPage(delta) {
+    const next = Math.max(1, Math.min(totalPdfPages, currentPageNum + delta));
+    if (next === currentPageNum) return;
+    currentPageNum = next;
+    syncPageButtons();
+    await loadSelectedPageToCache();
+}
+
+async function jumpPdfPage(val) {
+    const n = Math.max(1, Math.min(totalPdfPages, parseInt(val, 10) || 1));
+    currentPageNum = n;
+    syncPageButtons();
+    await loadSelectedPageToCache();
 }
 
 /* ════════════════════════════════════════
-   RENDER PDF PAGE → DATA URL
+   HIGH-RES PAGE RENDER + TRIM + WHITE KEYOUT
 ════════════════════════════════════════ */
-async function renderPdfPage(outputSize) {
-    const fitMode = document.getElementById('fitMode').value;
-    const bgMode  = document.getElementById('bgMode').value;
+async function loadSelectedPageToCache() {
+    if (!pdfDocProxy) return;
+    document.getElementById('originalPreview').style.display = 'none';
+    document.getElementById('originalLoading').style.display = 'flex';
 
-    const pdf  = await pdfjsLib.getDocument({ data: pdfData.slice(0) }).promise;
-    const page = await pdf.getPage(1);
-    const rawVP = page.getViewport({ scale: 1 });
+    const page = await pdfDocProxy.getPage(currentPageNum);
+    const baseVp = page.getViewport({ scale: 1 });
+    const targetDim = 1024;
+    const scale = targetDim / Math.max(baseVp.width, baseVp.height);
+    const vp = page.getViewport({ scale });
 
-    let scale;
-    if (fitMode === 'contain') {
-        scale = outputSize / Math.max(rawVP.width, rawVP.height);
-    } else {
-        scale = outputSize / Math.min(rawVP.width, rawVP.height);
+    const hiCanvas = document.createElement('canvas');
+    hiCanvas.width = Math.max(64, Math.round(vp.width));
+    hiCanvas.height = Math.max(64, Math.round(vp.height));
+    const hiCtx = hiCanvas.getContext('2d', { willReadFrequently: true });
+
+    // Render on transparent backdrop so alpha-based PDFs preserve transparency
+    hiCtx.clearRect(0, 0, hiCanvas.width, hiCanvas.height);
+    await page.render({ canvasContext: hiCtx, viewport: vp, background: 'rgba(0,0,0,0)' }).promise;
+
+    // Show crisp source PDF preview
+    const origImg = document.getElementById('originalPreview');
+    origImg.src = hiCanvas.toDataURL('image/png');
+    origImg.style.display = 'block';
+    document.getElementById('originalLoading').style.display = 'none';
+
+    cachedPageCanvas = processSourceCanvas(hiCanvas);
+    await refreshSizePreviews();
+}
+
+function processSourceCanvas(srcCanvas) {
+    const keyWhite = document.getElementById('optKeyWhite').checked;
+    const autoTrim = document.getElementById('optAutoTrim').checked;
+
+    const work = document.createElement('canvas');
+    work.width = srcCanvas.width;
+    work.height = srcCanvas.height;
+    const ctx = work.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(srcCanvas, 0, 0);
+
+    const imgData = ctx.getImageData(0, 0, work.width, work.height);
+    const d = imgData.data;
+
+    if (keyWhite) {
+        for (let i = 0; i < d.length; i += 4) {
+            if (d[i + 3] === 0) continue;
+            const r = d[i], g = d[i + 1], b = d[i + 2];
+            if (r > 242 && g > 242 && b > 242) {
+                d[i + 3] = 0;
+            } else if (r > 224 && g > 224 && b > 224) {
+                const avg = (r + g + b) / 3;
+                d[i + 3] = Math.round(d[i + 3] * Math.max(0, (245 - avg) / 21));
+            }
+        }
+        ctx.putImageData(imgData, 0, 0);
     }
 
-    const vp  = page.getViewport({ scale });
-    const tmp = document.createElement('canvas');
-    tmp.width  = Math.round(vp.width);
-    tmp.height = Math.round(vp.height);
-    await page.render({ canvasContext: tmp.getContext('2d'), viewport: vp }).promise;
+    if (!autoTrim) return work;
+
+    // Trim near-white / transparent outer margin
+    let minX = work.width, minY = work.height, maxX = -1, maxY = -1;
+    const w = work.width, h = work.height;
+    for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+            const idx = (y * w + x) * 4;
+            const a = d[idx + 3];
+            if (a < 12) continue;
+            const isNearWhite = d[idx] > 247 && d[idx + 1] > 247 && d[idx + 2] > 247;
+            if (!isNearWhite) {
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+        }
+    }
+
+    if (maxX <= minX || maxY <= minY) return work;
+    const padPx = Math.round(Math.max(maxX - minX, maxY - minY) * 0.02);
+    minX = Math.max(0, minX - padPx);
+    minY = Math.max(0, minY - padPx);
+    maxX = Math.min(w - 1, maxX + padPx);
+    maxY = Math.min(h - 1, maxY + padPx);
+
+    const cropW = maxX - minX + 1;
+    const cropH = maxY - minY + 1;
+    const trimmed = document.createElement('canvas');
+    trimmed.width = cropW;
+    trimmed.height = cropH;
+    trimmed.getContext('2d').drawImage(work, minX, minY, cropW, cropH, 0, 0, cropW, cropH);
+    return trimmed;
+}
+
+async function onPdfRenderOptionChange() {
+    if (!pdfDocProxy) return;
+    await loadSelectedPageToCache();
+}
+
+function onBgModeChange() {
+    const mode = document.getElementById('bgMode').value;
+    document.getElementById('customBgWrap').style.display = mode === 'custom' ? 'block' : 'none';
+    updatePreview();
+}
+
+/* ════════════════════════════════════════
+   PROGRESSIVE DOWNSAMPLE + SHAPE MASK
+════════════════════════════════════════ */
+function drawSteppedDownscale(src, targetW, targetH) {
+    let cur = src;
+    let cw = src.width, ch = src.height;
+    while (cw * 0.5 > targetW && ch * 0.5 > targetH) {
+        const nw = Math.max(targetW, Math.round(cw * 0.5));
+        const nh = Math.max(targetH, Math.round(ch * 0.5));
+        const step = document.createElement('canvas');
+        step.width = nw; step.height = nh;
+        const sCtx = step.getContext('2d');
+        sCtx.imageSmoothingEnabled = true;
+        sCtx.imageSmoothingQuality = 'high';
+        sCtx.drawImage(cur, 0, 0, nw, nh);
+        cur = step; cw = nw; ch = nh;
+    }
+    const fin = document.createElement('canvas');
+    fin.width = targetW; fin.height = targetH;
+    const fCtx = fin.getContext('2d');
+    fCtx.imageSmoothingEnabled = true;
+    fCtx.imageSmoothingQuality = 'high';
+    fCtx.drawImage(cur, 0, 0, targetW, targetH);
+    return fin;
+}
+
+function renderIconCanvas(outputSize) {
+    const fitMode = document.getElementById('fitMode').value;
+    const shapeMode = document.getElementById('shapeMode').value;
+    const bgMode = document.getElementById('bgMode').value;
+    const customColor = document.getElementById('customBgColor').value;
+    const paddingPct = parseInt(document.getElementById('optPadding').value, 10) || 0;
 
     const out = document.createElement('canvas');
-    out.width  = outputSize;
+    out.width = outputSize;
     out.height = outputSize;
-    const ctx  = out.getContext('2d');
+    const ctx = out.getContext('2d');
 
-    if (bgMode === 'white') {
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, outputSize, outputSize);
-    } else if (bgMode === 'black') {
-        ctx.fillStyle = '#000000';
+    ctx.save();
+    // Apply shape clip
+    if (shapeMode === 'circle') {
+        ctx.beginPath();
+        ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+    } else if (shapeMode === 'rounded' || shapeMode === 'squircle') {
+        const radius = outputSize * (shapeMode === 'squircle' ? 0.26 : 0.16);
+        ctx.beginPath();
+        ctx.moveTo(radius, 0);
+        ctx.lineTo(outputSize - radius, 0);
+        ctx.quadraticCurveTo(outputSize, 0, outputSize, radius);
+        ctx.lineTo(outputSize, outputSize - radius);
+        ctx.quadraticCurveTo(outputSize, outputSize, outputSize - radius, outputSize);
+        ctx.lineTo(radius, outputSize);
+        ctx.quadraticCurveTo(0, outputSize, 0, outputSize - radius);
+        ctx.lineTo(0, radius);
+        ctx.quadraticCurveTo(0, 0, radius, 0);
+        ctx.closePath();
+        ctx.clip();
+    }
+
+    // Background fill
+    if (bgMode !== 'transparent') {
+        ctx.fillStyle = bgMode === 'white' ? '#ffffff' : (bgMode === 'black' ? '#000000' : customColor);
         ctx.fillRect(0, 0, outputSize, outputSize);
     }
 
-    const dx = (outputSize - tmp.width)  / 2;
-    const dy = (outputSize - tmp.height) / 2;
-    ctx.drawImage(tmp, dx, dy);
-
-    return out.toDataURL('image/png');
+    if (cachedPageCanvas) {
+        const padPx = (outputSize * paddingPct) / 100;
+        const inner = Math.max(1, outputSize - padPx * 2);
+        const sw = cachedPageCanvas.width, sh = cachedPageCanvas.height;
+        const ratio = fitMode === 'contain'
+            ? Math.min(inner / sw, inner / sh)
+            : Math.max(inner / sw, inner / sh);
+        const dw = Math.max(1, Math.round(sw * ratio));
+        const dh = Math.max(1, Math.round(sh * ratio));
+        const downscaled = drawSteppedDownscale(cachedPageCanvas, dw, dh);
+        const dx = Math.round((outputSize - dw) / 2);
+        const dy = Math.round((outputSize - dh) / 2);
+        ctx.drawImage(downscaled, dx, dy);
+    }
+    ctx.restore();
+    return out;
 }
 
-/* ════════════════════════════════════════
-   REFRESH SIZE STRIP PREVIEWS
-════════════════════════════════════════ */
 async function refreshSizePreviews() {
-    const sizeVal   = document.getElementById('icoSize').value;
-    const previewSz = sizeVal === 'all' ? 64 : parseInt(sizeVal);
-    const mainUrl   = await renderPdfPage(previewSz);
-    document.getElementById('icoMainPreview').src = mainUrl;
+    if (!cachedPageCanvas) return;
+    const sizeVal = document.getElementById('icoSize').value;
+    const labelMap = {
+        multi: 'Multi-Size (16–256px)',
+        all: 'Complete Favicon Kit (.ZIP)',
+        '16': '16×16', '32': '32×32', '48': '48×48',
+        '64': '64×64', '128': '128×128', '256': '256×256'
+    };
+    document.getElementById('previewSizeBadge').textContent = labelMap[sizeVal] || sizeVal;
+
+    const mainSz = (sizeVal === 'multi' || sizeVal === 'all') ? 128 : Math.min(128, parseInt(sizeVal, 10));
+    document.getElementById('icoMainPreview').src = renderIconCanvas(mainSz).toDataURL('image/png');
 
     for (const s of [16, 32, 48, 64]) {
-        try {
-            document.getElementById('preview' + s).src = await renderPdfPage(s);
-        } catch (e) { /* skip */ }
+        const url = renderIconCanvas(s).toDataURL('image/png');
+        document.getElementById('preview' + s).src = url;
+        if (s === 16) {
+            livePreviewIconUrl = url;
+            document.getElementById('tabIconLight').src = url;
+            document.getElementById('tabIconDark').src = url;
+        }
     }
 }
 
-async function updatePreview() {
-    if (!pdfData) return;
-    try { await refreshSizePreviews(); }
-    catch (e) { console.warn('Preview update failed:', e); }
+function updatePreview() {
+    if (!cachedPageCanvas) return;
+    refreshSizePreviews();
 }
 
 /* ════════════════════════════════════════
-   BUILD ICO BLOB
+   MULTI-RESOLUTION ICO ENCODER
 ════════════════════════════════════════ */
-function buildICO(pngBytes, size) {
-    const DATA_OFFSET = 22;
-    const buf  = new ArrayBuffer(DATA_OFFSET + pngBytes.length);
-    const view = new DataView(buf);
-    const u8   = new Uint8Array(buf);
-
-    view.setUint16(0, 0, true);
-    view.setUint16(2, 1, true);
-    view.setUint16(4, 1, true);
-
-    u8[6]  = size >= 256 ? 0 : size;
-    u8[7]  = size >= 256 ? 0 : size;
-    u8[8]  = 0;
-    u8[9]  = 0;
-    view.setUint16(10, 1,               true);
-    view.setUint16(12, 32,              true);
-    view.setUint32(14, pngBytes.length, true);
-    view.setUint32(18, DATA_OFFSET,     true);
-
-    u8.set(pngBytes, DATA_OFFSET);
-    return new Blob([buf], { type: 'image/x-icon' });
-}
-
 function dataURLtoBytes(dataURL) {
-    const b64    = dataURL.split(',')[1];
-    const binary = atob(b64);
-    const bytes  = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const b64 = dataURL.split(',')[1];
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     return bytes;
 }
 
+function buildMultiICO(entries) {
+    // entries: [{ size: number, pngBytes: Uint8Array }]
+    const count = entries.length;
+    const headerSize = 6;
+    const dirSize = count * 16;
+    let totalPayload = 0;
+    entries.forEach(e => { totalPayload += e.pngBytes.length; });
+
+    const buf = new ArrayBuffer(headerSize + dirSize + totalPayload);
+    const view = new DataView(buf);
+    const u8 = new Uint8Array(buf);
+
+    view.setUint16(0, 0, true);     // Reserved
+    view.setUint16(2, 1, true);     // Type 1 = ICO
+    view.setUint16(4, count, true); // Number of icons
+
+    let offset = headerSize + dirSize;
+    entries.forEach((entry, idx) => {
+        const dirPos = headerSize + idx * 16;
+        const dimByte = entry.size >= 256 ? 0 : entry.size;
+        u8[dirPos + 0] = dimByte;
+        u8[dirPos + 1] = dimByte;
+        u8[dirPos + 2] = 0;
+        u8[dirPos + 3] = 0;
+        view.setUint16(dirPos + 4, 1, true);
+        view.setUint16(dirPos + 6, 32, true);
+        view.setUint32(dirPos + 8, entry.pngBytes.length, true);
+        view.setUint32(dirPos + 12, offset, true);
+
+        u8.set(entry.pngBytes, offset);
+        offset += entry.pngBytes.length;
+    });
+
+    return new Blob([buf], { type: 'image/x-icon' });
+}
+
 /* ════════════════════════════════════════
-   GENERATE ICO
+   GENERATE ICO / KIT
 ════════════════════════════════════════ */
 async function generateICO() {
-    if (!pdfData) { showError('Please upload a PDF first.'); return; }
+    if (!cachedPageCanvas) { showError('Please upload a PDF first.'); return; }
 
     const btn = document.getElementById('generateBtn');
     btn.disabled = true;
 
     try {
         showSection('processingSection');
-        updateProgress(10, 'Starting…', 'Reading settings');
+        updateProgress(10, 'Preparing Icon...', 'Reading settings');
+        await new Promise(r => setTimeout(r, 40));
 
         const sizeVal = document.getElementById('icoSize').value;
+        const baseName = (document.getElementById('outputName').value.trim() || selectedFileName || 'favicon')
+            .replace(/\.(ico|zip)$/i, '');
 
-        /* ── ZIP Pack ── */
-        if (sizeVal === 'all') {
-            outputIsZip  = true;
-            const zip    = new JSZip();
-            const sizes  = [16, 32, 48, 64, 128];
-
+        if (sizeVal === 'multi') {
+            const sizes = [16, 32, 48, 64, 128, 256];
+            const entries = [];
             for (let i = 0; i < sizes.length; i++) {
-                const s   = sizes[i];
-                const pct = 10 + Math.round(((i + 1) / sizes.length) * 70);
-                updateProgress(pct, `Generating ${s}×${s}…`, 'Building icon pack');
+                const s = sizes[i];
+                updateProgress(15 + Math.round(((i + 1) / sizes.length) * 70), 'Encoding ' + s + '×' + s + '…', 'Building multi-resolution .ICO');
+                const pngBytes = dataURLtoBytes(renderIconCanvas(s).toDataURL('image/png'));
+                entries.push({ size: s, pngBytes });
+                await new Promise(r => setTimeout(r, 15));
+            }
+            outputBlob = buildMultiICO(entries);
+            outputFileName = baseName + '.ico';
+            const previewUrl = renderIconCanvas(128).toDataURL('image/png');
+            livePreviewIconUrl = renderIconCanvas(32).toDataURL('image/png');
 
-                const url      = await renderPdfPage(s);
-                const pngBytes = dataURLtoBytes(url);
-                const icoBlob  = buildICO(pngBytes, s);
-                const icoBuf   = await icoBlob.arrayBuffer();
+            document.getElementById('resultPreview').src = previewUrl;
+            document.getElementById('resultTitle').textContent = 'Multi-Size ICO Created! 🎉';
+            document.getElementById('resultSubtitle').textContent = '6 crisp resolutions packed inside one .ico file';
+            document.getElementById('resultDimensions').textContent = '16–256px';
+            document.getElementById('resultFormat').textContent = '.ICO';
+            document.getElementById('resultFileSize').textContent = formatSize(outputBlob.size);
+            document.getElementById('resultFileName').textContent = outputFileName;
+            document.getElementById('formatBadge').textContent = '6-in-1 Windows & Browser ICO';
+        } else if (sizeVal === 'all') {
+            const zip = new JSZip();
+            const icoSizes = [16, 32, 48, 64, 128, 256];
+            const multiEntries = [];
 
-                zip.file(`favicon-${s}x${s}.ico`, icoBuf);
-                zip.file(`favicon-${s}x${s}.png`, pngBytes);
+            for (let i = 0; i < icoSizes.length; i++) {
+                const s = icoSizes[i];
+                updateProgress(12 + Math.round(((i + 1) / icoSizes.length) * 58), 'Rendering ' + s + '×' + s + '…', 'Generating ICO & PNG assets');
+                const pngBytes = dataURLtoBytes(renderIconCanvas(s).toDataURL('image/png'));
+                multiEntries.push({ size: s, pngBytes });
+                zip.file('favicon-' + s + 'x' + s + '.png', pngBytes);
+                await new Promise(r => setTimeout(r, 15));
             }
 
-            updateProgress(85, 'Packing ZIP…', 'Almost done');
+            updateProgress(75, 'Adding PWA & Apple Icons…', 'apple-touch-icon, android-chrome & webmanifest');
+            zip.file('favicon.ico', await buildMultiICO(multiEntries).arrayBuffer());
+            zip.file('apple-touch-icon.png', dataURLtoBytes(renderIconCanvas(180).toDataURL('image/png')));
+            zip.file('android-chrome-192x192.png', dataURLtoBytes(renderIconCanvas(192).toDataURL('image/png')));
+            zip.file('android-chrome-512x512.png', dataURLtoBytes(renderIconCanvas(512).toDataURL('image/png')));
+
+            const manifest = {
+                name: baseName,
+                short_name: baseName,
+                icons: [
+                    { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+                    { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
+                ],
+                theme_color: '#4f46e5',
+                background_color: '#ffffff',
+                display: 'standalone'
+            };
+            zip.file('site.webmanifest', JSON.stringify(manifest, null, 2));
+            zip.file('favicon-html-snippet.txt',
+                '<link rel="icon" href="/favicon.ico" sizes="any">\n' +
+                '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">\n' +
+                '<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">\n' +
+                '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n' +
+                '<link rel="manifest" href="/site.webmanifest">'
+            );
+
+            updateProgress(90, 'Packing ZIP Kit…', 'Compressing files');
             outputBlob = await zip.generateAsync({ type: 'blob' });
+            outputFileName = baseName + '_favicon_kit.zip';
+            livePreviewIconUrl = renderIconCanvas(32).toDataURL('image/png');
 
-            const previewUrl = await renderPdfPage(64);
-            document.getElementById('resultPreview').src            = previewUrl;
-            document.getElementById('resultTitle').textContent      = 'ICO Pack Created! 🎉';
-            document.getElementById('resultSubtitle').textContent   = 'Your complete favicon pack is ready';
-            document.getElementById('resultDimensions').textContent = '16–128px';
-            document.getElementById('resultFormat').textContent     = 'ZIP';
-            document.getElementById('resultFileSize').textContent   = formatSize(outputBlob.size);
-            document.getElementById('resultFileName').textContent   = selectedFileName + '_ico_pack.zip';
-            document.getElementById('formatBadge').textContent      = 'ICO + PNG Multi-size Pack';
-
-        /* ── Single ICO ── */
+            document.getElementById('resultPreview').src = renderIconCanvas(128).toDataURL('image/png');
+            document.getElementById('resultTitle').textContent = 'Complete Favicon Kit Created! 📦';
+            document.getElementById('resultSubtitle').textContent = 'Includes Multi-Size ICO, PNGs, Apple Touch, Android & WebManifest';
+            document.getElementById('resultDimensions').textContent = '16–512px';
+            document.getElementById('resultFormat').textContent = 'ZIP';
+            document.getElementById('resultFileSize').textContent = formatSize(outputBlob.size);
+            document.getElementById('resultFileName').textContent = outputFileName;
+            document.getElementById('formatBadge').textContent = 'Complete Web + App Favicon Kit';
         } else {
-            outputIsZip  = false;
-            const size   = parseInt(sizeVal);
+            const size = parseInt(sizeVal, 10);
+            updateProgress(45, 'Rendering ' + size + '×' + size + '…', 'Processing high-res PDF page');
+            const pngUrl = renderIconCanvas(size).toDataURL('image/png');
+            const pngBytes = dataURLtoBytes(pngUrl);
+            outputBlob = buildMultiICO([{ size, pngBytes }]);
+            outputFileName = baseName + '.ico';
+            livePreviewIconUrl = renderIconCanvas(32).toDataURL('image/png');
 
-            updateProgress(40, `Rendering ${size}×${size}…`, 'Processing PDF page');
-            const url      = await renderPdfPage(size);
-            const pngBytes = dataURLtoBytes(url);
-            outputBlob     = buildICO(pngBytes, size);
-
-            updateProgress(80, 'Building ICO…', 'Finalizing file');
-
-            document.getElementById('resultPreview').src            = url;
-            document.getElementById('resultTitle').textContent      = 'ICO Created Successfully! 🎉';
-            document.getElementById('resultSubtitle').textContent   = 'Your favicon icon is ready to download';
+            document.getElementById('resultPreview').src = renderIconCanvas(Math.min(128, Math.max(64, size))).toDataURL('image/png');
+            document.getElementById('resultTitle').textContent = 'ICO Created Successfully! 🎉';
+            document.getElementById('resultSubtitle').textContent = 'Your favicon icon is ready to download';
             document.getElementById('resultDimensions').textContent = size + '×' + size;
-            document.getElementById('resultFormat').textContent     = '.ICO';
-            document.getElementById('resultFileSize').textContent   = formatSize(outputBlob.size);
-            document.getElementById('resultFileName').textContent   = selectedFileName + '.ico';
-            document.getElementById('formatBadge').textContent      = 'Windows ICO Format';
+            document.getElementById('resultFormat').textContent = '.ICO';
+            document.getElementById('resultFileSize').textContent = formatSize(outputBlob.size);
+            document.getElementById('resultFileName').textContent = outputFileName;
+            document.getElementById('formatBadge').textContent = 'Windows Single-Size ICO';
         }
 
-        updateProgress(100, 'Done!', 'File is ready');
-        await new Promise(r => setTimeout(r, 450));
+        updateProgress(100, 'Done!', 'Ready to download');
+        await new Promise(r => setTimeout(r, 320));
         showSection('resultSection');
-
     } catch (err) {
         console.error(err);
         showSection('optionsSection');
@@ -1349,58 +1570,58 @@ async function generateICO() {
     }
 }
 
-/* ════════════════════════════════════════
-   DOWNLOAD
-════════════════════════════════════════ */
 function downloadResult() {
     if (!outputBlob) return;
-    const name = outputIsZip
-        ? selectedFileName + '_ico_pack.zip'
-        : selectedFileName + '.ico';
-    const url  = URL.createObjectURL(outputBlob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = name;
+    const url = URL.createObjectURL(outputBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = outputFileName;
+    a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
-    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 600);
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 10000);
 }
 
-/* ════════════════════════════════════════
-   COPY HTML TAG
-════════════════════════════════════════ */
+function testLiveTabFavicon() {
+    if (!livePreviewIconUrl) return;
+    let link = document.querySelector('link[rel="icon"]');
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+    link.href = livePreviewIconUrl;
+    notify('Look up at this browser tab — your live favicon is active!', 'success');
+}
+
 function copyHTMLTag() {
-    const fname = outputIsZip ? 'favicon.ico' : selectedFileName + '.ico';
-    const tag   = `<link rel="icon" type="image/x-icon" href="${fname}">`;
-    if (navigator.clipboard) {
+    const isZip = outputFileName.endsWith('.zip');
+    const tag = isZip
+        ? '<link rel="icon" href="/favicon.ico" sizes="any">\n<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">\n<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n<link rel="manifest" href="/site.webmanifest">'
+        : '<link rel="icon" type="image/x-icon" href="/' + outputFileName + '">';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(tag)
-            .then(() => alert('✅ HTML favicon tag copied!'))
-            .catch(() => prompt('Copy this tag:', tag));
+            .then(() => notify('HTML favicon tag copied to clipboard!', 'success'))
+            .catch(() => showError('Clipboard blocked — copy from kit TXT file.'));
     } else {
-        prompt('Copy this tag:', tag);
+        showError('Clipboard not supported in this browser.');
     }
 }
 
-/* ════════════════════════════════════════
-   RESET
-════════════════════════════════════════ */
 function resetTool() {
-    pdfData     = null;
-    outputBlob  = null;
-    outputIsZip = false;
+    pdfDocProxy = null;
+    cachedPageCanvas = null;
+    outputBlob = null;
     fileInput.value = '';
-
-    ['originalPreview','icoMainPreview',
-     'preview16','preview32','preview48','preview64',
-     'resultPreview'].forEach(id => {
+    ['originalPreview', 'icoMainPreview', 'preview16', 'preview32', 'preview48', 'preview64', 'tabIconLight', 'tabIconDark', 'resultPreview'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) { el.src = ''; el.style.display = ''; }
+        if (el) { el.src = ''; if (id === 'originalPreview') el.style.display = 'none'; }
     });
-
     document.getElementById('originalLoading').style.display = 'none';
     showSection('uploadSection');
 }
 </script>
+
 <script src="js/adsense.js"></script>
 <script src="js/site-tracker.js"></script>
 

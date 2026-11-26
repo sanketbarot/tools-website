@@ -122,12 +122,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* ── FAQ TOGGLE ── */
 function toggleFaq(el) {
-    const isActive = el.classList.contains('active');
-    // Close all open items
-    document.querySelectorAll('.faq-item.active').forEach(item => {
-        if (item !== el) item.classList.remove('active');
+    const isActive = el.classList.contains('active') || el.classList.contains('open');
+    document.querySelectorAll('.faq-item.active, .faq-item.open').forEach(item => {
+        if (item !== el) item.classList.remove('active', 'open');
     });
     el.classList.toggle('active', !isActive);
+    el.classList.toggle('open', !isActive);
 }
 window.toggleFaq = toggleFaq;
 

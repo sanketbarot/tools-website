@@ -106,6 +106,236 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 <link rel="stylesheet" href="css/tool-page.css">
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/ads.css">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer=""></script>
+<style>
+/* Font Identifier — Bento SaaS Light/Dark Theme */
+.tab-content { width: 100%; }
+.tool-tabs {
+    display: flex; gap: 8px; padding: 6px;
+    background: var(--surface-muted, #f1f5f9);
+    border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: 14px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.tool-tab {
+    flex: 1; min-width: 140px; padding: 11px 16px; border: none; border-radius: 10px;
+    background: transparent; color: var(--text-medium, #64748b);
+    font-size: 13.5px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;
+}
+.tool-tab:hover { color: var(--text-dark, #0f172a); }
+.tool-tab.active {
+    background: var(--bg-card, #ffffff); color: var(--primary, #4f46e5);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.error-box {
+    display: none; align-items: center; gap: 10px; padding: 12px 16px;
+    margin: 0 0 16px; border-radius: 12px;
+    background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #dc2626; font-size: 13.5px; font-weight: 600;
+}
+.error-box i { font-size: 16px; flex-shrink: 0; }
+
+/* Interactive Cropper */
+.fi-crop-stage {
+    position: relative; background: #0f172a; border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--border-subtle, #e2e8f0); margin-bottom: 14px;
+    display: flex; justify-content: center; align-items: center; max-height: 430px;
+}
+.fi-crop-stage canvas {
+    display: block; max-width: 100%; max-height: 420px; cursor: crosshair; touch-action: none;
+}
+.fi-crop-bar {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; padding: 12px 14px; border-radius: 12px;
+    background: var(--surface-muted, #f8fafc); border: 1px solid var(--border-subtle, #e2e8f0);
+}
+.fi-crop-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fi-sample-row {
+    display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-bottom: 14px;
+}
+.fi-chk-inline {
+    display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600;
+    color: var(--text-medium, #475569); cursor: pointer; padding: 6px 10px;
+    border-radius: 9px; border: 1px solid var(--border-subtle, #e2e8f0);
+    background: var(--bg-card, #ffffff); user-select: none;
+}
+.fi-chk-inline input { accent-color: var(--primary, #4f46e5); width: 15px; height: 15px; }
+
+.options-panel {
+    background: var(--bg-card, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; text-align: left;
+}
+.options-panel h4 {
+    font-size: 14px; font-weight: 700; margin: 0 0 12px;
+    display: flex; align-items: center; gap: 8px; color: var(--text-dark, #0f172a);
+}
+
+.option-field { margin-bottom: 12px; }
+.option-field label {
+    display: block; font-size: 12px; font-weight: 700;
+    color: var(--text-medium, #475569); margin-bottom: 6px;
+}
+.option-field input[type="text"], .option-field select {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--border-subtle, #e2e8f0);
+    border-radius: 10px; background: var(--surface-muted, #f8fafc);
+    color: var(--text-dark, #0f172a); font-size: 13.5px; outline: none; box-sizing: border-box;
+}
+.option-field input[type="text"]:focus {
+    border-color: var(--primary, #4f46e5); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+}
+
+.fi-compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;
+}
+.image-preview-box {
+    background: var(--surface-muted, #f8fafc); border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: 12px; padding: 12px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px;
+}
+.image-preview-box small { font-size: 11px; font-weight: 700; color: var(--text-medium, #64748b); text-transform: uppercase; margin-bottom: 8px; }
+.image-preview-box img { max-width: 100%; max-height: 130px; border-radius: 8px; object-fit: contain; }
+
+.font-preview-text {
+    width: 100%; min-height: 92px; padding: 16px;
+    background: var(--surface-muted, #f8fafc); border: 1.5px dashed var(--border-subtle, #cbd5e1);
+    border-radius: 12px; font-size: 28px; color: var(--text-dark, #0f172a);
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    word-break: break-word; line-height: 1.3; outline: none; box-sizing: border-box;
+}
+
+.fi-telemetry-row {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px;
+}
+.fi-metric-pill {
+    background: var(--surface-muted, #f8fafc); border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: 10px; padding: 9px 10px; text-align: center;
+}
+.fi-metric-pill small { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-light, #64748b); margin-bottom: 3px; }
+.fi-metric-pill strong { display: block; font-size: 12.5px; font-weight: 700; color: var(--text-dark, #0f172a); }
+
+.font-result-card {
+    display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+    background: var(--surface-muted, #f8fafc); border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: 12px; margin-bottom: 12px;
+}
+.font-icon-box {
+    width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.font-info { flex: 1; min-width: 0; }
+.font-info h4 { font-size: 16px; font-weight: 800; margin: 0 0 3px; color: var(--text-dark, #0f172a); }
+.font-info p { font-size: 12.5px; color: var(--text-medium, #64748b); margin: 0; }
+
+.font-match-badge {
+    padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.badge-high { background: rgba(22, 163, 74, 0.14); color: #16a34a; }
+.badge-medium { background: rgba(245, 158, 11, 0.16); color: #d97706; }
+.badge-low { background: rgba(239, 68, 68, 0.14); color: #dc2626; }
+
+.ai-analysis-card {
+    background: rgba(79, 70, 229, 0.06); border: 1px solid rgba(79, 70, 229, 0.2);
+    border-radius: 11px; padding: 12px 15px; margin-bottom: 14px;
+}
+.ai-analysis-card h5 { font-size: 12.5px; font-weight: 700; color: var(--primary, #4f46e5); margin: 0 0 5px; display: flex; align-items: center; gap: 7px; }
+.ai-analysis-card p { font-size: 13px; color: var(--text-medium, #475569); margin: 0; line-height: 1.5; }
+
+.font-links-area { display: flex; flex-wrap: wrap; gap: 10px; }
+.font-link-btn {
+    padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 700;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s;
+}
+.btn-google-fonts { background: #4f46e5; color: #fff; }
+.btn-google-fonts:hover { filter: brightness(1.08); }
+.btn-whatfont { background: var(--surface-muted, #f1f5f9); color: var(--text-dark, #0f172a); border: 1px solid var(--border-subtle, #cbd5e1); }
+.btn-whatfont:hover { border-color: #4f46e5; color: #4f46e5; }
+
+.similar-fonts-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 10px;
+}
+.similar-font-item {
+    padding: 13px 14px; border-radius: 11px; cursor: pointer;
+    background: var(--surface-muted, #f8fafc); border: 1.5px solid var(--border-subtle, #e2e8f0);
+    font-size: 16px; font-weight: 700; color: var(--text-dark, #0f172a);
+    transition: all 0.18s; text-align: left;
+}
+.similar-font-item:hover, .similar-font-item.selected {
+    border-color: var(--primary, #4f46e5); background: rgba(79, 70, 229, 0.08);
+    transform: translateY(-1px);
+}
+.similar-font-item small {
+    display: block; font-family: var(--font-body, sans-serif);
+    font-size: 11px; font-weight: 600; color: var(--text-medium, #64748b); margin-top: 4px;
+}
+
+.css-font-result {
+    position: relative; background: #0f172a; color: #e2e8f0;
+    border-radius: 12px; padding: 14px 16px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px;
+}
+.copy-css-btn {
+    position: absolute; top: 10px; right: 10px; padding: 5px 11px; border-radius: 7px;
+    border: 1px solid rgba(148, 163, 184, 0.35); background: rgba(255, 255, 255, 0.1);
+    color: #fff; font-size: 11.5px; font-weight: 700; cursor: pointer;
+}
+.copy-css-btn:hover { background: #4f46e5; border-color: #4f46e5; }
+
+.split-mode-info {
+    background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.28);
+    border-radius: 11px; padding: 12px 15px; font-size: 12.5px;
+    color: var(--text-dark, #0f172a); line-height: 1.55;
+}
+.select-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.select-action-btn {
+    padding: 7px 14px; border-radius: 99px; border: 1px solid var(--border-subtle, #e2e8f0);
+    background: var(--surface-muted, #f8fafc); color: var(--text-medium, #475569);
+    font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.16s;
+}
+.select-action-btn:hover, .select-action-btn.active-filter {
+    background: var(--primary, #4f46e5); border-color: var(--primary, #4f46e5); color: #fff;
+}
+.download-single-btn {
+    padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 700;
+    text-decoration: none; background: rgba(79, 70, 229, 0.1);
+    color: var(--primary, #4f46e5); border: 1px solid rgba(79, 70, 229, 0.22);
+    white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;
+}
+.download-single-btn:hover { background: var(--primary, #4f46e5); color: #fff; }
+.result-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px; }
+
+/* Dark Mode Overrides */
+html[data-theme="dark"] .tool-tabs { background: #0b1120; border-color: rgba(148, 163, 184, 0.2); }
+html[data-theme="dark"] .tool-tab.active { background: #131c2e; color: #818cf8; }
+html[data-theme="dark"] .options-panel,
+html[data-theme="dark"] .fi-chk-inline {
+    background: #131c2e; border-color: rgba(148, 163, 184, 0.2);
+}
+html[data-theme="dark"] .fi-crop-bar,
+html[data-theme="dark"] .option-field input[type="text"],
+html[data-theme="dark"] .option-field select,
+html[data-theme="dark"] .image-preview-box,
+html[data-theme="dark"] .font-preview-text,
+html[data-theme="dark"] .fi-metric-pill,
+html[data-theme="dark"] .font-result-card,
+html[data-theme="dark"] .similar-font-item,
+html[data-theme="dark"] .select-action-btn,
+html[data-theme="dark"] .btn-whatfont {
+    background: #0b1120; border-color: rgba(148, 163, 184, 0.22); color: #f1f5f9;
+}
+html[data-theme="dark"] .select-action-btn.active-filter { background: #6366f1; border-color: #6366f1; }
+html[data-theme="dark"] .ai-analysis-card { background: rgba(129, 140, 248, 0.14); border-color: rgba(129, 140, 248, 0.3); }
+html[data-theme="dark"] .ai-analysis-card h5 { color: #a5b4fc; }
+html[data-theme="dark"] .error-box { background: rgba(239, 68, 68, 0.15); border-color: rgba(248, 113, 113, 0.35); color: #fca5a5; }
+html[data-theme="dark"] .badge-high { color: #86efac; }
+html[data-theme="dark"] .badge-medium { color: #fcd34d; }
+html[data-theme="dark"] .badge-low { color: #fca5a5; }
+
+@media (max-width: 768px) {
+    .fi-compare-grid, .fi-sample-row { grid-template-columns: 1fr; }
+    .fi-telemetry-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
 
     
     
@@ -211,30 +441,66 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             <div id="tab-image" class="tab-content">
 
                 <!-- ERROR -->
-                <div class="error-box" id="errorBox" role="alert" aria-live="polite">
+                <div class="error-box" id="errorBox" role="alert" aria-live="polite" style="display:none;">
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                     <span id="errorText">Something went wrong.</span>
                 </div>
 
                 <!-- UPLOAD SECTION -->
                 <div id="uploadSection" data-section="">
-                    <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Upload image — click or drag and drop" onclick="document.getElementById('fileInput').click()" onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('fileInput').click()">
+                    <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Upload image — click, drag and drop, or paste screenshot" onclick="if(event.target.id!=='fileInput')document.getElementById('fileInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('fileInput').click();}">
                         <div class="upload-zone-content">
                             <div class="upload-icon" aria-hidden="true">
                                 <i class="fas fa-font"></i>
                             </div>
                             <h2>Upload Image to Identify Font</h2>
-                            <p>Drop your image here or click to browse</p>
+                            <p>Drop JPG, PNG, WebP here, click to browse — or press Ctrl+V to paste a screenshot</p>
                             <button class="upload-btn" type="button" onclick="event.stopPropagation();document.getElementById('fileInput').click()">
                                 <i class="fas fa-plus" aria-hidden="true"></i> Select Image
                             </button>
-                            <input type="file" id="fileInput" accept="image/*" hidden="" aria-label="Select image for font identification">
                             <div class="upload-hints" aria-label="Tool features">
-                                <span><i class="fas fa-robot" aria-hidden="true"></i> AI Powered</span>
-                                <span><i class="fas fa-image" aria-hidden="true"></i> JPG, PNG, WebP</span>
-                                <span><i class="fas fa-infinity" aria-hidden="true"></i> Free</span>
+                                <span><i class="fas fa-crosshairs" aria-hidden="true"></i> Interactive Region Crop</span>
+                                <span><i class="fas fa-shapes" aria-hidden="true"></i> Visual Glyph Matching</span>
+                                <span><i class="fas fa-lock" aria-hidden="true"></i> 100% Browser-Based</span>
                             </div>
                         </div>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*,.jpg,.jpeg,.png,.webp,.bmp,.gif,.avif,.jfif" hidden="" aria-label="Select image for font identification">
+                </div>
+
+                <!-- CROP & TARGET WORD SECTION -->
+                <div id="cropSection" data-section="" style="display:none;">
+                    <div class="fi-crop-bar">
+                        <div style="font-size:13px;font-weight:700;color:var(--text-dark);">
+                            <i class="fas fa-crop-alt" style="color:var(--primary);margin-right:6px;" aria-hidden="true"></i>
+                            Drag a box around the exact headline or text to analyze (or use full image)
+                        </div>
+                        <div class="fi-crop-controls">
+                            <label class="fi-chk-inline">
+                                <input type="checkbox" id="chkInvertColors" onchange="renderCropCanvas()">
+                                <span>Light text on dark BG</span>
+                            </label>
+                            <button type="button" class="btn-outline" style="padding:6px 12px;font-size:12px;" onclick="resetCropBox()">
+                                <i class="fas fa-expand" aria-hidden="true"></i> Full Image
+                            </button>
+                            <button type="button" class="btn-danger-sm" onclick="resetImageTool()" aria-label="Cancel and upload another">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="fi-crop-stage">
+                        <canvas id="cropCanvas"></canvas>
+                    </div>
+
+                    <div class="fi-sample-row">
+                        <div class="option-field" style="margin-bottom:0;">
+                            <label for="manualSampleText">Optional: Type characters shown in box (boosts visual shape matching accuracy)</label>
+                            <input type="text" id="manualSampleText" placeholder="Leave blank for automatic OCR text detection...">
+                        </div>
+                        <button type="button" class="action-btn" id="identifyBtn" onclick="runFontIdentification()" style="width:auto;padding:12px 24px;white-space:nowrap;">
+                            <i class="fas fa-magic" aria-hidden="true"></i> Identify Font
+                        </button>
                     </div>
                 </div>
 
@@ -242,8 +508,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                 <div id="processingSection" data-section="" style="display:none;">
                     <div class="processing-area" role="status" aria-live="polite">
                         <div class="spinner" aria-hidden="true"></div>
-                        <h3>AI Analyzing Font...</h3>
-                        <p id="processingMsg">Detecting font characteristics from your image</p>
+                        <h3>Analyzing Typography &amp; Shapes...</h3>
+                        <p id="processingMsg">Measuring stroke weight, serifs &amp; glyph proportions</p>
                         <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-fill" id="progressFill"></div>
                         </div>
@@ -255,27 +521,36 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                 <div id="resultSection" data-section="" style="display:none;">
                     <div class="result-area">
 
-                        <!-- Uploaded Image Preview -->
-                        <div class="image-preview-box" id="imagePreviewBox">
-                            <img id="uploadedImagePreview" src="" alt="Uploaded image for font detection">
+                        <div class="fi-compare-grid">
+                            <div class="image-preview-box">
+                                <small>Analyzed Crop Region</small>
+                                <img id="uploadedImagePreview" src="" alt="Analyzed font sample crop">
+                            </div>
+                            <div class="image-preview-box">
+                                <small>Live Font Preview (Editable)</small>
+                                <div class="font-preview-text" id="fontPreviewText" contenteditable="true" style="min-height:80px;border:none;background:transparent;padding:4px;">
+                                    AaBbCcDd 123
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fi-telemetry-row" id="telemetryRow">
+                            <div class="fi-metric-pill"><small>Detected Text</small><strong id="telText">—</strong></div>
+                            <div class="fi-metric-pill"><small>Category</small><strong id="telCat">—</strong></div>
+                            <div class="fi-metric-pill"><small>Weight</small><strong id="telWeight">—</strong></div>
+                            <div class="fi-metric-pill"><small>Style</small><strong id="telStyle">—</strong></div>
+                            <div class="fi-metric-pill"><small>Contrast</small><strong id="telContrast">—</strong></div>
                         </div>
 
                         <!-- Best Match -->
-                        <div class="options-panel glass-light">
+                        <div class="options-panel">
                             <h4>
-                                <i class="fas fa-star" style="color:#f59e0b;"></i>
-                                Best Font Match
+                                <i class="fas fa-star" style="color:#f59e0b;" aria-hidden="true"></i>
+                                Closest Matched Font
                             </h4>
 
-                            <div class="font-preview-text" id="fontPreviewText">
-                                AaBbCcDd 123
-                            </div>
-
-                            <!-- Top Match Card -->
                             <div class="font-result-card" id="topMatchCard">
-                                <div class="font-icon-box">
-                                    <i class="fas fa-font"></i>
-                                </div>
+                                <div class="font-icon-box" id="topFontGlyph">Aa</div>
                                 <div class="font-info">
                                     <h4 id="topFontName">—</h4>
                                     <p id="topFontDesc">—</p>
@@ -283,54 +558,55 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                                 <span class="font-match-badge badge-high" id="topFontMatch">—</span>
                             </div>
 
-                            <!-- AI Analysis Details -->
                             <div class="ai-analysis-card" id="aiAnalysisCard">
-                                <h5><i class="fas fa-robot"></i> AI Analysis</h5>
+                                <h5><i class="fas fa-microscope" aria-hidden="true"></i> Typographic Feature Analysis</h5>
                                 <p id="aiAnalysisText">—</p>
                             </div>
 
-                            <!-- Font Links -->
                             <div class="font-links-area" id="fontLinksArea">
                                 <a href="#" id="googleFontsLink" class="font-link-btn btn-google-fonts" target="_blank" rel="noopener noreferrer">
-                                    <i class="fab fa-google"></i> View on Google Fonts
+                                    <i class="fab fa-google" aria-hidden="true"></i> Get on Google Fonts
                                 </a>
+                                <button type="button" class="font-link-btn btn-whatfont" onclick="openTopInChecker()">
+                                    <i class="fas fa-sliders-h" aria-hidden="true"></i> Inspect in CSS Checker
+                                </button>
                                 <a href="https://www.myfonts.com/pages/whatthefont" class="font-link-btn btn-whatfont" target="_blank" rel="noopener noreferrer">
-                                    <i class="fas fa-search"></i> Try WhatTheFont
+                                    <i class="fas fa-external-link-alt" aria-hidden="true"></i> Commercial Search
                                 </a>
                             </div>
                         </div>
 
                         <!-- Similar Fonts -->
-                        <div class="options-panel glass-light" id="similarFontsPanel" style="display:none;">
+                        <div class="options-panel" id="similarFontsPanel" style="display:none;">
                             <h4>
-                                <i class="fas fa-layer-group" style="color:#6366f1;"></i>
-                                Similar Fonts
+                                <i class="fas fa-layer-group" style="color:#6366f1;" aria-hidden="true"></i>
+                                Similar &amp; Alternative Matches <small style="font-weight:500;color:var(--text-medium);margin-left:auto;">Click any font to compare live</small>
                             </h4>
                             <div class="similar-fonts-grid" id="similarFontsGrid"></div>
                         </div>
 
                         <!-- CSS Code -->
-                        <div class="options-panel glass-light">
+                        <div class="options-panel">
                             <h4>
-                                <i class="fas fa-code" style="color:#6366f1;"></i>
-                                CSS Import Code
+                                <i class="fas fa-code" style="color:#6366f1;" aria-hidden="true"></i>
+                                Ready-to-Use CSS Code
                             </h4>
                             <div class="css-font-result" id="cssCodeBlock">
                                 <button class="copy-css-btn" onclick="copyCSSCode()" type="button">
-                                    <i class="fas fa-copy"></i> Copy
+                                    <i class="fas fa-copy" aria-hidden="true"></i> Copy
                                 </button>
-                                <pre id="cssCodeText" style="margin:0;white-space:pre-wrap;padding-right:60px;"></pre>
+                                <pre id="cssCodeText" style="margin:0;white-space:pre-wrap;padding-right:70px;"></pre>
                             </div>
                         </div>
 
                         <!-- Actions -->
                         <div class="result-actions">
+                            <button class="btn-outline" type="button" onclick="reAdjustCrop()">
+                                <i class="fas fa-crop-alt" aria-hidden="true"></i> Re-crop Same Image
+                            </button>
                             <button class="btn-outline" type="button" onclick="resetImageTool()">
                                 <i class="fas fa-redo" aria-hidden="true"></i> Try Another Image
                             </button>
-                            <a href="https://www.myfonts.com/pages/whatthefont" class="btn-outline" target="_blank" rel="noopener noreferrer">
-                                <i class="fas fa-external-link-alt" aria-hidden="true"></i> Advanced Detection
-                            </a>
                         </div>
 
                     </div>
@@ -360,11 +636,25 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                         The quick brown fox jumps over the lazy dog
                     </div>
 
-                    <div class="option-field" style="margin-top:12px;">
-                        <label for="fontSizeSlider">
-                            Preview Size: <strong id="fontSizeVal">24px</strong>
-                        </label>
-                        <input type="range" id="fontSizeSlider" min="12" max="72" value="24" oninput="changeFontSize(this.value)" style="width:100%;margin-top:8px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:12px;">
+                        <div class="option-field" style="margin-bottom:0;">
+                            <label for="fontSizeSlider">Size: <strong id="fontSizeVal">28px</strong></label>
+                            <input type="range" id="fontSizeSlider" min="12" max="72" value="28" oninput="previewCSSFont()" style="width:100%;">
+                        </div>
+                        <div class="option-field" style="margin-bottom:0;">
+                            <label for="fontWeightSelect">Weight</label>
+                            <select id="fontWeightSelect" onchange="previewCSSFont()">
+                                <option value="300">300 Light</option>
+                                <option value="400" selected>400 Regular</option>
+                                <option value="600">600 SemiBold</option>
+                                <option value="700">700 Bold</option>
+                                <option value="800">800 ExtraBold</option>
+                            </select>
+                        </div>
+                        <div class="option-field" style="margin-bottom:0;">
+                            <label for="fontSpacingSlider">Letter Spacing: <strong id="fontSpacingVal">0px</strong></label>
+                            <input type="range" id="fontSpacingSlider" min="-2" max="10" step="0.5" value="0" oninput="previewCSSFont()" style="width:100%;">
+                        </div>
                     </div>
 
                     <div class="split-mode-info" style="margin-top:16px;">
@@ -420,6 +710,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                         <button class="select-action-btn" onclick="filterFonts('serif', this)" type="button">Serif</button>
                         <button class="select-action-btn" onclick="filterFonts('monospace', this)" type="button">Monospace</button>
                         <button class="select-action-btn" onclick="filterFonts('display', this)" type="button">Display</button>
+                        <button class="select-action-btn" onclick="filterFonts('handwriting', this)" type="button">Script</button>
                     </div>
 
                     <div id="fontBrowseList" style="max-height:420px;overflow-y:auto;padding-right:4px;"></div>
@@ -449,32 +740,40 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             <h2 id="related-heading">Related Tools</h2>
             <p>More free AI &amp; PDF tools — all browser-based, no signup needed.</p>
         </div>
-        <div class="related-grid" id="relatedGrid"></div>
+        <div class="related-grid" id="relatedGrid">
+            <a href="ocr-pdf.html" class="related-card glass" aria-label="OCR PDF">
+                <div class="related-icon ri-indigo"><i class="fas fa-eye" aria-hidden="true"></i></div>
+                <h4>OCR PDF</h4>
+                <p>Extract text from scans</p>
+            </a>
+            <a href="color-picker.html" class="related-card glass" aria-label="Color Picker">
+                <div class="related-icon ri-pink"><i class="fas fa-eye-dropper" aria-hidden="true"></i></div>
+                <h4>Color Picker</h4>
+                <p>Extract colors from images</p>
+            </a>
+            <a href="image-resizer.html" class="related-card glass" aria-label="Image Resizer">
+                <div class="related-icon ri-blue"><i class="fas fa-expand-arrows-alt" aria-hidden="true"></i></div>
+                <h4>Image Resizer</h4>
+                <p>Resize &amp; scale images fast</p>
+            </a>
+            <a href="image-compressor.html" class="related-card glass" aria-label="Image Compressor">
+                <div class="related-icon ri-green"><i class="fas fa-compress" aria-hidden="true"></i></div>
+                <h4>Image Compressor</h4>
+                <p>Compress JPG, PNG &amp; WebP</p>
+            </a>
+            <a href="crop-jpg.html" class="related-card glass" aria-label="Crop Image">
+                <div class="related-icon ri-orange"><i class="fas fa-crop-alt" aria-hidden="true"></i></div>
+                <h4>Crop JPG / PNG</h4>
+                <p>Trim &amp; circle-crop photos</p>
+            </a>
+            <a href="jpg-to-pdf.html" class="related-card glass" aria-label="JPG to PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-file-pdf" aria-hidden="true"></i></div>
+                <h4>JPG to PDF</h4>
+                <p>Convert images into PDF</p>
+            </a>
+        </div>
     </div>
 </section>
-<script>
-(function renderRelated(){
-    const tools=[
-        {href:'compress-pdf.html',    icon:'fa-compress-arrows-alt', color:'icon-green',  label:'Compress PDF',     desc:'Reduce file size'},
-        {href:'merge-pdf.html',       icon:'fa-object-group',        color:'icon-teal',   label:'Merge PDF',        desc:'Combine multiple PDFs'},
-        {href:'pdf-to-jpg.html',      icon:'fa-file-image',          color:'icon-pink',   label:'PDF to JPG',       desc:'Extract pages'},
-        {href:'jpg-to-pdf.html',      icon:'fa-image',               color:'icon-orange', label:'JPG to PDF',       desc:'Convert images'},
-        {href:'image-resizer.html',   icon:'fa-expand-arrows-alt',   color:'icon-blue',   label:'Image Resizer',    desc:'Resize images free'},
-        {href:'image-compressor.html',icon:'fa-file-image',          color:'icon-purple', label:'Image Compressor', desc:'Reduce image size'},
-        {href:'color-picker.html',    icon:'fa-eye-dropper',         color:'icon-indigo', label:'Color Picker',     desc:'Pick colors from image'},
-    ];
-    const g=document.getElementById('relatedGrid');
-    if(!g)return;
-    const f=document.createDocumentFragment();
-    tools.forEach(({href,icon,color,label,desc})=>{
-        const a=document.createElement('a');
-        a.href=href; a.className='related-card glass'; a.setAttribute('aria-label',label);
-        a.innerHTML=`<div class="related-icon ${color}"><i class="fas ${icon}" aria-hidden="true"></i></div><h4>${label}</h4><p>${desc}</p>`;
-        f.appendChild(a);
-    });
-    g.appendChild(f);
-})();
-</script>
 
 <!-- ═══════════════════════════════════════
      HOW TO
@@ -659,115 +958,136 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <script>
 /* ════════════════════════════════════════
-   FOOTER YEAR
+   INIT & TAB NAVIGATION
 ════════════════════════════════════════ */
-(function() {
+(function initApp() {
     const el = document.getElementById('currentYear');
     if (el) el.textContent = new Date().getFullYear();
 })();
 
-/* ════════════════════════════════════════
-   MOBILE MENU
-════════════════════════════════════════ */
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function () {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        const isOpen = nav.classList.toggle('open');
-        ham.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    };
-}
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        if (nav) nav.classList.remove('open');
-        if (ham) ham.setAttribute('aria-expanded', 'false');
-    }
-});
-
-/* ════════════════════════════════════════
-   FAQ
-════════════════════════════════════════ */
-function toggleFaq(item) {
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
-}
-
-/* ════════════════════════════════════════
-   TAB SWITCHING
-════════════════════════════════════════ */
 function switchTab(tab) {
     document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
     document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + tab).style.display = 'block';
     document.getElementById('tab-' + tab + '-btn').classList.add('active');
-    if (tab === 'browse') buildFontBrowseList('all', '');
+    if (tab === 'browse') buildFontBrowseList(currentCategory, currentSearch);
 }
 
 /* ════════════════════════════════════════
-   FONT DATABASE
+   CURATED TYPOGRAPHY DATABASE (45+ FONTS)
+   Features: weight (300-900), italic, serif (0-1), contrast (0-1),
+   widthRatio (w/h), mono (0/1), condensed (0/1), display (0/1)
 ════════════════════════════════════════ */
 const fontDatabase = [
-    { name:'Roboto',           category:'sans-serif', google:true,  popular:true  },
-    { name:'Open Sans',        category:'sans-serif', google:true,  popular:true  },
-    { name:'Lato',             category:'sans-serif', google:true,  popular:true  },
-    { name:'Montserrat',       category:'sans-serif', google:true,  popular:true  },
-    { name:'Poppins',          category:'sans-serif', google:true,  popular:true  },
-    { name:'Inter',            category:'sans-serif', google:true,  popular:true  },
-    { name:'Nunito',           category:'sans-serif', google:true,  popular:false },
-    { name:'Raleway',          category:'sans-serif', google:true,  popular:false },
-    { name:'Ubuntu',           category:'sans-serif', google:true,  popular:false },
-    { name:'Oswald',           category:'sans-serif', google:true,  popular:true  },
-    { name:'Source Sans Pro',  category:'sans-serif', google:true,  popular:false },
-    { name:'Noto Sans',        category:'sans-serif', google:true,  popular:false },
-    { name:'Fira Sans',        category:'sans-serif', google:true,  popular:false },
-    { name:'Arial',            category:'sans-serif', google:false, popular:true  },
-    { name:'Helvetica',        category:'sans-serif', google:false, popular:true  },
-    { name:'Verdana',          category:'sans-serif', google:false, popular:false },
-    { name:'Playfair Display', category:'serif',      google:true,  popular:true  },
-    { name:'Merriweather',     category:'serif',      google:true,  popular:true  },
-    { name:'Lora',             category:'serif',      google:true,  popular:false },
-    { name:'PT Serif',         category:'serif',      google:true,  popular:false },
-    { name:'Georgia',          category:'serif',      google:false, popular:true  },
-    { name:'Times New Roman',  category:'serif',      google:false, popular:true  },
-    { name:'Palatino',         category:'serif',      google:false, popular:false },
-    { name:'Fira Code',        category:'monospace',  google:true,  popular:true  },
-    { name:'Source Code Pro',  category:'monospace',  google:true,  popular:false },
-    { name:'JetBrains Mono',   category:'monospace',  google:true,  popular:true  },
-    { name:'Courier New',      category:'monospace',  google:false, popular:false },
-    { name:'Roboto Mono',      category:'monospace',  google:true,  popular:false },
-    { name:'Bebas Neue',       category:'display',    google:true,  popular:true  },
-    { name:'Righteous',        category:'display',    google:true,  popular:false },
-    { name:'Pacifico',         category:'display',    google:true,  popular:true  },
-    { name:'Lobster',          category:'display',    google:true,  popular:true  },
-    { name:'Dancing Script',   category:'display',    google:true,  popular:false },
-    { name:'Impact',           category:'display',    google:false, popular:true  },
+    // Sans-Serif (Geometric, Neo-Grotesque, Humanist)
+    { name:'Inter',            category:'sans-serif', google:true,  weight:500, serif:0.0, contrast:0.08, widthRatio:0.78, mono:0, italic:0, desc:'Clean Neo-Grotesque UI Sans' },
+    { name:'Roboto',           category:'sans-serif', google:true,  weight:400, serif:0.0, contrast:0.10, widthRatio:0.74, mono:0, italic:0, desc:'Neutral Modern Grotesque Sans' },
+    { name:'Open Sans',        category:'sans-serif', google:true,  weight:400, serif:0.0, contrast:0.12, widthRatio:0.77, mono:0, italic:0, desc:'Friendly Humanist Sans' },
+    { name:'Poppins',          category:'sans-serif', google:true,  weight:600, serif:0.0, contrast:0.05, widthRatio:0.86, mono:0, italic:0, desc:'Geometric Circular Sans' },
+    { name:'Montserrat',       category:'sans-serif', google:true,  weight:700, serif:0.0, contrast:0.08, widthRatio:0.90, mono:0, italic:0, desc:'Wide Urban Geometric Sans' },
+    { name:'Lato',             category:'sans-serif', google:true,  weight:400, serif:0.0, contrast:0.12, widthRatio:0.76, mono:0, italic:0, desc:'Warm Semi-Rounded Sans' },
+    { name:'Nunito',           category:'sans-serif', google:true,  weight:600, serif:0.0, contrast:0.06, widthRatio:0.80, mono:0, italic:0, desc:'Rounded Friendly Geometric Sans' },
+    { name:'Raleway',          category:'sans-serif', google:true,  weight:300, serif:0.0, contrast:0.14, widthRatio:0.82, mono:0, italic:0, desc:'Elegant Thin Geometric Sans' },
+    { name:'Work Sans',        category:'sans-serif', google:true,  weight:500, serif:0.0, contrast:0.10, widthRatio:0.80, mono:0, italic:0, desc:'Editorial Grotesque Sans' },
+    { name:'DM Sans',          category:'sans-serif', google:true,  weight:500, serif:0.0, contrast:0.06, widthRatio:0.82, mono:0, italic:0, desc:'Low-Contrast Geometric Sans' },
+    { name:'Plus Jakarta Sans',category:'sans-serif', google:true,  weight:700, serif:0.0, contrast:0.08, widthRatio:0.83, mono:0, italic:0, desc:'Modern Tech Display Sans' },
+    { name:'Ubuntu',           category:'sans-serif', google:true,  weight:500, serif:0.0, contrast:0.12, widthRatio:0.78, mono:0, italic:0, desc:'Humanist Tech Sans' },
+    { name:'Fira Sans',        category:'sans-serif', google:true,  weight:400, serif:0.0, contrast:0.14, widthRatio:0.75, mono:0, italic:0, desc:'Crisp Technical Sans' },
+    { name:'Source Sans 3',    category:'sans-serif', google:true,  weight:400, serif:0.0, contrast:0.14, widthRatio:0.74, mono:0, italic:0, desc:'Adobe Humanist UI Sans' },
+    { name:'Noto Sans',        category:'sans-serif', google:true,  weight:400, serif:0.0, contrast:0.12, widthRatio:0.77, mono:0, italic:0, desc:'Universal Multilingual Sans' },
+    { name:'Barlow',           category:'sans-serif', google:true,  weight:600, serif:0.0, contrast:0.08, widthRatio:0.68, mono:0, italic:0, desc:'Slightly Condensed Industrial Sans' },
+    { name:'Rubik',            category:'sans-serif', google:true,  weight:500, serif:0.0, contrast:0.07, widthRatio:0.84, mono:0, italic:0, desc:'Slightly Rounded Wide Sans' },
+    { name:'Helvetica',        category:'sans-serif', google:false, weight:500, serif:0.0, contrast:0.08, widthRatio:0.78, mono:0, italic:0, desc:'Classic Swiss Grotesque' },
+    { name:'Arial',            category:'sans-serif', google:false, weight:400, serif:0.0, contrast:0.10, widthRatio:0.78, mono:0, italic:0, desc:'Standard System Grotesque' },
+    { name:'Verdana',          category:'sans-serif', google:false, weight:400, serif:0.0, contrast:0.08, widthRatio:0.92, mono:0, italic:0, desc:'Wide Screen Sans-Serif' },
+    { name:'Trebuchet MS',     category:'sans-serif', google:false, weight:400, serif:0.0, contrast:0.15, widthRatio:0.76, mono:0, italic:0, desc:'Humanist Display Sans' },
+
+    // Serif (Editorial High-Contrast, Slab, Old-Style)
+    { name:'Playfair Display', category:'serif',      google:true,  weight:700, serif:1.0, contrast:0.88, widthRatio:0.82, mono:0, italic:0, desc:'High-Contrast Editorial Transitional Serif' },
+    { name:'Merriweather',     category:'serif',      google:true,  weight:400, serif:1.0, contrast:0.42, widthRatio:0.84, mono:0, italic:0, desc:'Sturdy Screen-Optimized Serif' },
+    { name:'Lora',             category:'serif',      google:true,  weight:500, serif:1.0, contrast:0.62, widthRatio:0.78, mono:0, italic:0, desc:'Calligraphic Contemporary Serif' },
+    { name:'PT Serif',         category:'serif',      google:true,  weight:400, serif:1.0, contrast:0.50, widthRatio:0.77, mono:0, italic:0, desc:'Transitional Book Serif' },
+    { name:'Libre Baskerville',category:'serif',      google:true,  weight:400, serif:1.0, contrast:0.72, widthRatio:0.84, mono:0, italic:0, desc:'Classic Sharp-Serif Web Font' },
+    { name:'Cinzel',           category:'serif',      google:true,  weight:600, serif:1.0, contrast:0.76, widthRatio:0.94, mono:0, italic:0, desc:'Roman Inscription All-Caps Serif' },
+    { name:'Roboto Slab',      category:'serif',      google:true,  weight:600, serif:0.9, contrast:0.16, widthRatio:0.80, mono:0, italic:0, desc:'Geometric Slab-Serif' },
+    { name:'Arvo',             category:'serif',      google:true,  weight:700, serif:0.9, contrast:0.14, widthRatio:0.85, mono:0, italic:0, desc:'Bold Geometric Slab-Serif' },
+    { name:'Georgia',          category:'serif',      google:false, weight:400, serif:1.0, contrast:0.55, widthRatio:0.82, mono:0, italic:0, desc:'Classic Screen Old-Style Serif' },
+    { name:'Times New Roman',  category:'serif',      google:false, weight:400, serif:1.0, contrast:0.65, widthRatio:0.72, mono:0, italic:0, desc:'Traditional Newspaper Serif' },
+
+    // Monospace
+    { name:'JetBrains Mono',   category:'monospace',  google:true,  weight:500, serif:0.1, contrast:0.08, widthRatio:0.72, mono:1, italic:0, desc:'Developer Fixed-Width Mono' },
+    { name:'Fira Code',        category:'monospace',  google:true,  weight:400, serif:0.1, contrast:0.08, widthRatio:0.72, mono:1, italic:0, desc:'Programming Ligature Monospace' },
+    { name:'Roboto Mono',      category:'monospace',  google:true,  weight:400, serif:0.1, contrast:0.08, widthRatio:0.70, mono:1, italic:0, desc:'Crisp Fixed-Width Code Font' },
+    { name:'Source Code Pro',  category:'monospace',  google:true,  weight:500, serif:0.1, contrast:0.10, widthRatio:0.72, mono:1, italic:0, desc:'Adobe Fixed-Width Coding Font' },
+    { name:'Courier New',      category:'monospace',  google:false, weight:400, serif:0.7, contrast:0.05, widthRatio:0.74, mono:1, italic:0, desc:'Typewriter Slab Monospace' },
+
+    // Condensed & Heavy Display
+    { name:'Bebas Neue',       category:'display',    google:true,  weight:700, serif:0.0, contrast:0.10, widthRatio:0.46, mono:0, italic:0, desc:'Tall Condensed All-Caps Display' },
+    { name:'Oswald',           category:'display',    google:true,  weight:600, serif:0.0, contrast:0.12, widthRatio:0.50, mono:0, italic:0, desc:'Condensed Headline Grotesque' },
+    { name:'Anton',            category:'display',    google:true,  weight:800, serif:0.0, contrast:0.08, widthRatio:0.54, mono:0, italic:0, desc:'Heavy Condensed Poster Impact' },
+    { name:'Righteous',        category:'display',    google:true,  weight:600, serif:0.0, contrast:0.12, widthRatio:0.86, mono:0, italic:0, desc:'Retro Rounded Geometric Display' },
+    { name:'Impact',           category:'display',    google:false, weight:900, serif:0.0, contrast:0.08, widthRatio:0.52, mono:0, italic:0, desc:'Ultra-Heavy Condensed Display' },
+
+    // Script / Handwriting
+    { name:'Pacifico',         category:'handwriting',google:true,  weight:500, serif:0.2, contrast:0.35, widthRatio:0.86, mono:0, italic:1, desc:'Brush Script Retro Cursive' },
+    { name:'Lobster',          category:'handwriting',google:true,  weight:700, serif:0.3, contrast:0.45, widthRatio:0.78, mono:0, italic:1, desc:'Bold Condensed Script Display' },
+    { name:'Dancing Script',   category:'handwriting',google:true,  weight:600, serif:0.2, contrast:0.38, widthRatio:0.80, mono:0, italic:1, desc:'Flowing Casual Calligraphy Script' },
+    { name:'Caveat',           category:'handwriting',google:true,  weight:600, serif:0.1, contrast:0.18, widthRatio:0.74, mono:0, italic:1, desc:'Natural Marker Handwriting' },
 ];
 
+const loadedGoogleFonts = new Set(['Plus Jakarta Sans', 'Nunito']);
+function ensureGoogleFont(fontName, isGoogle) {
+    if (!isGoogle || !fontName || loadedGoogleFonts.has(fontName)) return;
+    loadedGoogleFonts.add(fontName);
+    const slug = fontName.trim().replace(/\s+/g, '+');
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=' + slug + ':ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,700&display=swap';
+    document.head.appendChild(link);
+}
+
 /* ════════════════════════════════════════
-   IMAGE UPLOAD & FONT DETECTION
+   IMAGE UPLOAD, PASTE & REGION CROPPER
 ════════════════════════════════════════ */
+let sourceImage   = null; // HTMLImageElement
+let cropRect      = { x: 0, y: 0, w: 1, h: 1 }; // normalized 0..1
+let isDragging    = false;
+let dragStart     = null;
+let lastResultSet = null;
+let selectedMatch = null;
+
 const dropZone  = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 
-dropZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropZone.classList.add('drag-over');
+['dragenter', 'dragover'].forEach(evt => {
+    dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('drag-over', 'dragover'); });
+    window.addEventListener(evt, e => e.preventDefault());
 });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+['dragleave', 'drop'].forEach(evt => {
+    dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.remove('drag-over', 'dragover'); });
+});
+window.addEventListener('drop', e => e.preventDefault());
 dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    const file = Array.from(e.dataTransfer.files).find(f => f.type.startsWith('image/'));
-    if (file) analyzeFont(file);
-    else showError('Please drop an image file!');
+    const file = Array.from((e.dataTransfer && e.dataTransfer.files) || []).find(f =>
+        (f.type && f.type.startsWith('image/')) || /\.(jpe?g|png|webp|bmp|gif|avif|jfif)$/i.test(f.name || '')
+    );
+    if (file) loadImageForCrop(file);
+    else showError('Please drop a valid image file (JPG, PNG, WebP, GIF, BMP).');
 });
 fileInput.addEventListener('change', () => {
-    if (fileInput.files[0]) {
-        analyzeFont(fileInput.files[0]);
-        fileInput.value = '';
+    if (fileInput.files && fileInput.files[0]) loadImageForCrop(fileInput.files[0]);
+    fileInput.value = '';
+});
+document.addEventListener('paste', e => {
+    const tabImg = document.getElementById('tab-image');
+    if (!tabImg || tabImg.style.display === 'none') return;
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    for (const item of items) {
+        if (item.type && item.type.startsWith('image/')) {
+            const f = item.getAsFile();
+            if (f) { loadImageForCrop(f); break; }
+        }
     }
 });
 
@@ -781,222 +1101,552 @@ function showError(msg) {
     const el = document.getElementById('errorBox');
     document.getElementById('errorText').textContent = msg;
     el.style.display = 'flex';
-    setTimeout(() => el.style.display = 'none', 7000);
+    if (el._timer) clearTimeout(el._timer);
+    el._timer = setTimeout(() => { el.style.display = 'none'; }, 8000);
+}
+
+function hideError() {
+    const el = document.getElementById('errorBox');
+    if (el) el.style.display = 'none';
 }
 
 function updateProgress(pct, msg) {
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressText').textContent = pct + '%';
-    if (msg) document.getElementById('processingMsg').textContent = msg;
+    const f = document.getElementById('progressFill');
+    const t = document.getElementById('progressText');
+    const p = document.getElementById('processingMsg');
+    if (f) f.style.width = pct + '%';
+    if (t) t.textContent = Math.round(pct) + '%';
+    if (p && msg) p.textContent = msg;
 }
 
-/* ════════════════════════════════════════
-   ANALYZE FONT (Real AI via Anthropic API)
-════════════════════════════════════════ */
-async function analyzeFont(file) {
-    // Show image preview immediately
-    const reader = new FileReader();
-    let base64Data = '';
-    reader.onload = e => {
-        document.getElementById('uploadedImagePreview').src = e.target.result;
-        base64Data = e.target.result.split(',')[1];
+function loadImageForCrop(file) {
+    hideError();
+    if (!file || file.size === 0) { showError('Empty image file.'); return; }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+        URL.revokeObjectURL(url);
+        sourceImage = img;
+        document.getElementById('manualSampleText').value = '';
+        document.getElementById('chkInvertColors').checked = false;
+        resetCropBox();
+        showSection('cropSection');
+        renderCropCanvas();
     };
-    reader.readAsDataURL(file);
+    img.onerror = () => {
+        URL.revokeObjectURL(url);
+        showError('Could not load image file. Please try JPG, PNG, or WebP.');
+    };
+    img.src = url;
+}
 
+function resetCropBox() {
+    cropRect = { x: 0, y: 0, w: 1, h: 1 };
+    renderCropCanvas();
+}
+
+function renderCropCanvas() {
+    const canvas = document.getElementById('cropCanvas');
+    if (!canvas || !sourceImage) return;
+    const maxW = 760, maxH = 400;
+    const scale = Math.min(maxW / sourceImage.naturalWidth, maxH / sourceImage.naturalHeight, 1);
+    canvas.width  = Math.max(1, Math.round(sourceImage.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(sourceImage.naturalHeight * scale));
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
+
+    const hasSubCrop = !(cropRect.x === 0 && cropRect.y === 0 && cropRect.w === 1 && cropRect.h === 1);
+    if (hasSubCrop) {
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.55)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const rx = Math.round(cropRect.x * canvas.width);
+        const ry = Math.round(cropRect.y * canvas.height);
+        const rw = Math.max(4, Math.round(cropRect.w * canvas.width));
+        const rh = Math.max(4, Math.round(cropRect.h * canvas.height));
+        ctx.drawImage(
+            sourceImage,
+            cropRect.x * sourceImage.naturalWidth, cropRect.y * sourceImage.naturalHeight,
+            cropRect.w * sourceImage.naturalWidth, cropRect.h * sourceImage.naturalHeight,
+            rx, ry, rw, rh
+        );
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(rx, ry, rw, rh);
+    }
+}
+
+(function bindCropPointer() {
+    const canvas = document.getElementById('cropCanvas');
+    if (!canvas) return;
+    const getNorm = e => {
+        const rect = canvas.getBoundingClientRect();
+        const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        return {
+            x: Math.max(0, Math.min(1, cx / rect.width)),
+            y: Math.max(0, Math.min(1, cy / rect.height))
+        };
+    };
+    const start = e => { if (!sourceImage) return; isDragging = true; dragStart = getNorm(e); };
+    const move  = e => {
+        if (!isDragging || !dragStart) return;
+        e.preventDefault();
+        const cur = getNorm(e);
+        const x = Math.min(dragStart.x, cur.x), y = Math.min(dragStart.y, cur.y);
+        const w = Math.abs(cur.x - dragStart.x), h = Math.abs(cur.y - dragStart.y);
+        if (w > 0.02 && h > 0.02) { cropRect = { x, y, w, h }; renderCropCanvas(); }
+    };
+    const end   = () => { isDragging = false; dragStart = null; };
+    canvas.addEventListener('mousedown', start);
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, { passive: true });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('touchend', end);
+})();
+
+/* ════════════════════════════════════════
+   TYPOGRAPHIC COMPUTER VISION ENGINE
+   1) Otsu Binarization + Polarity Detect
+   2) Stroke Width / Weight / Contrast / Serif / Monospace / Italic / Aspect Ratio
+   3) Optional Tesseract Text Extraction
+   4) Offscreen Live Font Silhouette Correlation
+════════════════════════════════════════ */
+function extractCroppedCanvas() {
+    const sx = Math.round(cropRect.x * sourceImage.naturalWidth);
+    const sy = Math.round(cropRect.y * sourceImage.naturalHeight);
+    const sw = Math.max(10, Math.round(cropRect.w * sourceImage.naturalWidth));
+    const sh = Math.max(10, Math.round(cropRect.h * sourceImage.naturalHeight));
+
+    const maxDim = 640;
+    const scale = Math.min(1.5, maxDim / Math.max(sw, sh));
+    const c = document.createElement('canvas');
+    c.width  = Math.max(24, Math.round(sw * scale));
+    c.height = Math.max(24, Math.round(sh * scale));
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(sourceImage, sx, sy, sw, sh, 0, 0, c.width, c.height);
+    return c;
+}
+
+function otsuThreshold(gray) {
+    const hist = new Uint32Array(256);
+    for (let i = 0; i < gray.length; i++) hist[gray[i]]++;
+    const total = gray.length;
+    let sum = 0;
+    for (let t = 0; t < 256; t++) sum += t * hist[t];
+    let sumB = 0, wB = 0, maxVar = 0, bestT = 128;
+    for (let t = 0; t < 256; t++) {
+        wB += hist[t];
+        if (wB === 0) continue;
+        const wF = total - wB;
+        if (wF === 0) break;
+        sumB += t * hist[t];
+        const mB = sumB / wB;
+        const mF = (sum - sumB) / wF;
+        const v = wB * wF * (mB - mF) * (mB - mF);
+        if (v > maxVar) { maxVar = v; bestT = t; }
+    }
+    return bestT;
+}
+
+function analyzeTypographyFeatures(canvas, forceInvert) {
+    const w = canvas.width, h = canvas.height;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const data = ctx.getImageData(0, 0, w, h).data;
+    const gray = new Uint8Array(w * h);
+
+    // Border average brightness to auto-detect dark background
+    let borderSum = 0, borderCnt = 0;
+    for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+            const idx = (y * w + x) * 4;
+            const lum = Math.round(0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
+            gray[y * w + x] = lum;
+            if (x < 3 || x >= w - 3 || y < 3 || y >= h - 3) { borderSum += lum; borderCnt++; }
+        }
+    }
+    const borderMean = borderCnt ? (borderSum / borderCnt) : 255;
+    const autoDarkBg = borderMean < 120;
+    const isLightOnDark = forceInvert ? !autoDarkBg : autoDarkBg;
+
+    const thresh = otsuThreshold(gray);
+    const bin = new Uint8Array(w * h); // 1 = foreground ink
+    let inkTotal = 0;
+    for (let i = 0; i < gray.length; i++) {
+        const fg = isLightOnDark ? (gray[i] > thresh) : (gray[i] < thresh);
+        if (fg) { bin[i] = 1; inkTotal++; }
+    }
+
+    // Tight foreground bounding box & per-column ink projection (rough glyph blobs)
+    let minX = w, maxX = 0, minY = h, maxY = 0;
+    const colInk = new Uint16Array(w);
+    const rowInk = new Uint16Array(h);
+    for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+            if (bin[y * w + x]) {
+                if (x < minX) minX = x; if (x > maxX) maxX = x;
+                if (y < minY) minY = y; if (y > maxY) maxY = y;
+                colInk[x]++; rowInk[y]++;
+            }
+        }
+    }
+    const textH = Math.max(8, (maxY - minY + 1) || h);
+    const textW = Math.max(8, (maxX - minX + 1) || w);
+
+    // Horizontal run-length distribution -> median stroke thickness
+    const runs = [];
+    for (let y = minY; y <= maxY; y++) {
+        let run = 0;
+        for (let x = minX; x <= maxX; x++) {
+            if (bin[y * w + x]) run++;
+            else if (run > 0) { runs.push(run); run = 0; }
+        }
+        if (run > 0) runs.push(run);
+    }
+    runs.sort((a, b) => a - b);
+    const medStroke = runs.length ? runs[Math.floor(runs.length * 0.5)] : 2;
+    const strokeRatio = medStroke / textH;
+    const estWeight = strokeRatio >= 0.19 ? 800 : strokeRatio >= 0.145 ? 700 : strokeRatio >= 0.105 ? 600 : strokeRatio >= 0.075 ? 400 : 300;
+
+    // Stroke contrast: spread between 20th & 85th percentile horizontal runs
+    const p20 = runs.length ? runs[Math.floor(runs.length * 0.2)] : 1;
+    const p85 = runs.length ? runs[Math.floor(runs.length * 0.85)] : 2;
+    const strokeContrast = Math.min(1, Math.max(0, (p85 - p20) / Math.max(1, p85)));
+
+    // Segment character blobs horizontally via vertical projection
+    const chars = [];
+    let inChar = false, cStart = 0;
+    const colGapThresh = Math.max(1, Math.floor(textH * 0.03));
+    for (let x = minX; x <= maxX; x++) {
+        if (colInk[x] >= colGapThresh && !inChar) { inChar = true; cStart = x; }
+        else if ((colInk[x] < colGapThresh || x === maxX) && inChar) {
+            inChar = false;
+            const cw = x - cStart + 1;
+            if (cw >= 2) chars.push({ x0: cStart, x1: x, w: cw });
+        }
+    }
+    const charWidths = chars.map(c => c.w).sort((a, b) => a - b);
+    const medCharW = charWidths.length ? charWidths[Math.floor(charWidths.length * 0.5)] : textH * 0.72;
+    const widthRatio = Math.max(0.35, Math.min(1.15, medCharW / textH));
+
+    // Monospace check: low variance in character widths + stride regularity
+    let monoScore = 0;
+    if (chars.length >= 4) {
+        const meanW = charWidths.reduce((s, v) => s + v, 0) / charWidths.length;
+        const stdW = Math.sqrt(charWidths.reduce((s, v) => s + (v - meanW) * (v - meanW), 0) / charWidths.length);
+        const cv = stdW / Math.max(1, meanW);
+        if (cv < 0.18) monoScore = 1;
+        else if (cv < 0.27) monoScore = 0.5;
+    }
+
+    // Top/bottom horizontal flare check (Serifs & Terminals expand ink at top/bottom 16% vs middle 40%)
+    const topBandEnd = Math.min(maxY, minY + Math.max(2, Math.floor(textH * 0.16)));
+    const midBandStart = Math.min(maxY, minY + Math.floor(textH * 0.35));
+    const midBandEnd = Math.min(maxY, minY + Math.floor(textH * 0.65));
+    const botBandStart = Math.max(minY, maxY - Math.max(2, Math.floor(textH * 0.16)));
+
+    let topEdgeAvg = 0, botEdgeAvg = 0, midAvg = 0;
+    for (let y = minY; y <= topBandEnd; y++) topEdgeAvg += rowInk[y];
+    topEdgeAvg /= Math.max(1, topBandEnd - minY + 1);
+    for (let y = botBandStart; y <= maxY; y++) botEdgeAvg += rowInk[y];
+    botEdgeAvg /= Math.max(1, maxY - botBandStart + 1);
+    for (let y = midBandStart; y <= midBandEnd; y++) midAvg += rowInk[y];
+    midAvg /= Math.max(1, midBandEnd - midBandStart + 1);
+
+    const terminalFlare = Math.max(topEdgeAvg, botEdgeAvg) / Math.max(1, midAvg);
+    const serifScore = terminalFlare >= 1.28 && strokeContrast >= 0.42 ? 0.9
+        : terminalFlare >= 1.18 && strokeContrast >= 0.28 ? 0.6 : 0.05;
+
+    // Slant / Italic detection via X-centroid tilt per character band
+    let slantSum = 0, slantCnt = 0;
+    for (const c of chars) {
+        let topX = 0, topN = 0, botX = 0, botN = 0;
+        for (let y = minY; y <= topBandEnd; y++) {
+            for (let x = c.x0; x <= c.x1; x++) if (bin[y * w + x]) { topX += x; topN++; }
+        }
+        for (let y = botBandStart; y <= maxY; y++) {
+            for (let x = c.x0; x <= c.x1; x++) if (bin[y * w + x]) { botX += x; botN++; }
+        }
+        if (topN > 2 && botN > 2) {
+            slantSum += ((topX / topN) - (botX / botN)) / Math.max(1, textH * 0.7);
+            slantCnt++;
+        }
+    }
+    const slantSlope = slantCnt ? (slantSum / slantCnt) : 0;
+    const isItalic = slantSlope > 0.11;
+
+    return {
+        isLightOnDark, bin, w, h,
+        cropBox: { minX, minY, maxX, maxY, textW, textH },
+        estWeight, strokeContrast, widthRatio, monoScore, serifScore,
+        isItalic, inkTotal
+    };
+}
+
+function normalizeMaskToGrid(bin, bw, bh, box, gw = 64, gh = 24) {
+    const grid = new Float32Array(gw * gh);
+    const sx = box.minX, sy = box.minY;
+    const sw = Math.max(1, box.maxX - box.minX + 1);
+    const sh = Math.max(1, box.maxY - box.minY + 1);
+    for (let gy = 0; gy < gh; gy++) {
+        const y = Math.min(bh - 1, Math.floor(sy + (gy / gh) * sh));
+        for (let gx = 0; gx < gw; gx++) {
+            const x = Math.min(bw - 1, Math.floor(sx + (gx / gw) * sw));
+            grid[gy * gw + gx] = bin[y * bw + x] ? 1 : 0;
+        }
+    }
+    return grid;
+}
+
+async function computeVisualSimilarity(sampleText, fontObj, weight, italic, cropGrid) {
+    if (!sampleText || sampleText.trim().length < 2) return null;
+    ensureGoogleFont(fontObj.name, fontObj.google);
+    try {
+        await Promise.race([
+            document.fonts.load((italic ? 'italic ' : '') + weight + ' 36px "' + fontObj.name + '"'),
+            new Promise(r => setTimeout(r, 1500))
+        ]);
+    } catch (_) {}
+
+    const c = document.createElement('canvas');
+    c.width = 320; c.height = 80;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = '#000000';
+    ctx.font = (italic ? 'italic ' : '') + weight + ' 42px "' + fontObj.name + '", ' + (fontObj.category === 'handwriting' ? 'cursive' : fontObj.category);
+    ctx.textBaseline = 'top';
+    ctx.fillText(sampleText.trim().slice(0, 18), 8, 12);
+
+    const data = ctx.getImageData(0, 0, c.width, c.height).data;
+    const fBin = new Uint8Array(c.width * c.height);
+    let fMinX = c.width, fMaxX = 0, fMinY = c.height, fMaxY = 0;
+    for (let y = 0; y < c.height; y++) {
+        for (let x = 0; x < c.width; x++) {
+            const lum = data[(y * c.width + x) * 4];
+            if (lum < 150) {
+                fBin[y * c.width + x] = 1;
+                if (x < fMinX) fMinX = x; if (x > fMaxX) fMaxX = x;
+                if (y < fMinY) fMinY = y; if (y > fMaxY) fMaxY = y;
+            }
+        }
+    }
+    if (fMaxX <= fMinX || fMaxY <= fMinY) return null;
+    const fGrid = normalizeMaskToGrid(fBin, c.width, c.height, { minX: fMinX, maxX: fMaxX, minY: fMinY, maxY: fMaxY });
+    let inter = 0, union = 0;
+    for (let i = 0; i < cropGrid.length; i++) {
+        const a = cropGrid[i] > 0.5 ? 1 : 0;
+        const b = fGrid[i] > 0.5 ? 1 : 0;
+        if (a && b) inter++;
+        if (a || b) union++;
+    }
+    return union ? (inter / union) : 0;
+}
+
+function scoreFontGeometry(f, feat) {
+    // Lower distance => better score
+    const dWeight   = Math.abs(f.weight - feat.estWeight) / 600;
+    const dContrast = Math.abs(f.contrast - feat.strokeContrast);
+    const dWidth    = Math.abs(f.widthRatio - feat.widthRatio) / 0.5;
+    const dSerif    = Math.abs(f.serif - feat.serifScore);
+    const dMono     = Math.abs(f.mono - feat.monoScore);
+    const dItalic   = Math.abs(f.italic - (feat.isItalic ? 1 : 0));
+
+    const dist = (dSerif * 2.4) + (dMono * 2.2) + (dWidth * 1.8) + (dContrast * 1.6) + (dWeight * 1.2) + (dItalic * 1.3);
+    const geomPct = Math.max(40, Math.min(97, Math.round(98 - dist * 13)));
+    return geomPct;
+}
+
+async function runFontIdentification() {
+    if (!sourceImage) { showError('Upload an image first.'); return; }
+    hideError();
     showSection('processingSection');
-    updateProgress(10, 'Reading image...');
+    updateProgress(12, 'Extracting target region...');
 
-    // Wait for FileReader to finish
-    await new Promise(r => setTimeout(r, 300));
-
-    updateProgress(25, 'Sending to AI...');
+    const cropCanvas = extractCroppedCanvas();
+    const previewDataUrl = cropCanvas.toDataURL('image/png');
+    document.getElementById('uploadedImagePreview').src = previewDataUrl;
 
     try {
-        // Determine media type
-        const mediaType = file.type || 'image/jpeg';
+        updateProgress(28, 'Measuring stroke weight, serifs & proportions...');
+        await new Promise(r => setTimeout(r, 30));
+        const forceInvert = document.getElementById('chkInvertColors').checked;
+        const feat = analyzeTypographyFeatures(cropCanvas, forceInvert);
+        const cropGrid = normalizeMaskToGrid(feat.bin, feat.w, feat.h, feat.cropBox);
 
-        updateProgress(40, 'AI analyzing font characteristics...');
-
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 1000,
-                messages: [{
-                    role: 'user',
-                    content: [
-                        {
-                            type: 'image',
-                            source: {
-                                type: 'base64',
-                                media_type: mediaType,
-                                data: base64Data
-                            }
-                        },
-                        {
-                            type: 'text',
-                            text: `Analyze the font(s) in this image and respond ONLY with a JSON object (no markdown, no backticks, just raw JSON) in this exact format:
-{
-  "topFont": {
-    "name": "Font Name",
-    "category": "sans-serif|serif|monospace|display",
-    "confidence": 95,
-    "isGoogleFont": true,
-    "description": "Short description like: Bold sans-serif • Google Fonts • Free"
-  },
-  "similarFonts": [
-    {"name": "Font Name 2", "category": "sans-serif", "similarity": 88},
-    {"name": "Font Name 3", "category": "serif", "similarity": 75},
-    {"name": "Font Name 4", "category": "sans-serif", "similarity": 70}
-  ],
-  "analysis": "Brief 1-2 sentence description of the font characteristics you observed (stroke weight, serif/sans-serif, style, mood, etc.)"
-}
-
-Rules:
-- topFont.name must be a real, well-known font name
-- confidence is a number 1-100
-- similarFonts should have 3-6 entries
-- similarity is a number 1-100
-- isGoogleFont is true if available on Google Fonts
-- If no clear text is visible, still make your best guess from any visual
-- Return ONLY the JSON, nothing else`
-                        }
-                    ]
-                }]
-            })
-        });
-
-        updateProgress(80, 'Processing AI results...');
-
-        if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
+        let detectedText = (document.getElementById('manualSampleText').value || '').trim();
+        if (!detectedText && typeof Tesseract !== 'undefined') {
+            updateProgress(45, 'Running local OCR to extract text characters...');
+            try {
+                const w = await Tesseract.createWorker('eng');
+                const ocrRes = await w.recognize(previewDataUrl);
+                await w.terminate();
+                const words = (ocrRes.data && ocrRes.data.text ? ocrRes.data.text : '')
+                    .replace(/[\r\n]+/g, ' ').trim();
+                if (words.length >= 2) detectedText = words.slice(0, 26);
+            } catch (_) {}
         }
 
-        const data = await response.json();
-        const rawText = data.content.map(b => b.text || '').join('');
+        updateProgress(68, 'Scoring typographic feature profiles...');
+        const geomRanked = fontDatabase.map(f => ({
+            font: f,
+            geomScore: scoreFontGeometry(f, feat),
+            visScore: null,
+            finalScore: 0
+        })).sort((a, b) => b.geomScore - a.geomScore);
 
-        updateProgress(90, 'Preparing results...');
-
-        // Parse JSON — strip any accidental markdown fences
-        let parsed;
-        try {
-            const clean = rawText.replace(/```json|```/g, '').trim();
-            parsed = JSON.parse(clean);
-        } catch(e) {
-            throw new Error('Could not parse AI response. Please try again.');
+        // Visual glyph template correlation across Top 10 geometric matches
+        const sampleWord = detectedText ? detectedText.split(/\s+/).sort((a, b) => b.length - a.length)[0] : '';
+        if (sampleWord && sampleWord.length >= 2) {
+            updateProgress(80, 'Correlating live font glyphs against "' + sampleWord + '"...');
+            const topCandidates = geomRanked.slice(0, 10);
+            for (let i = 0; i < topCandidates.length; i++) {
+                const c = topCandidates[i];
+                const iou = await computeVisualSimilarity(sampleWord, c.font, feat.estWeight, feat.isItalic, cropGrid);
+                c.visScore = iou;
+                if (iou !== null) {
+                    const iouPct = Math.min(99, Math.max(35, Math.round(35 + iou * 115)));
+                    c.finalScore = Math.round(c.geomScore * 0.45 + iouPct * 0.55);
+                } else {
+                    c.finalScore = c.geomScore;
+                }
+            }
+            for (let i = 10; i < geomRanked.length; i++) geomRanked[i].finalScore = geomRanked[i].geomScore;
+        } else {
+            geomRanked.forEach(c => { c.finalScore = c.geomScore; });
         }
 
-        updateProgress(100, 'Done!');
-        await new Promise(r => setTimeout(r, 300));
+        geomRanked.sort((a, b) => b.finalScore - a.finalScore);
+        updateProgress(100, 'Finalizing typography report...');
+        await new Promise(r => setTimeout(r, 150));
 
-        showFontResult(parsed);
-
+        renderIdentificationResult(geomRanked, feat, detectedText);
     } catch (err) {
-        console.error('Font identification error:', err);
-        showSection('uploadSection');
-        showError('Error identifying font: ' + (err.message || 'Please try again.'));
+        console.error('Font detection error:', err);
+        showSection('cropSection');
+        showError('Analysis error: ' + (err && err.message ? err.message : 'Please try cropping tighter around text.'));
+    } finally {
+        cropCanvas.width = 0; cropCanvas.height = 0;
     }
 }
 
-/* ════════════════════════════════════════
-   SHOW FONT RESULT
-════════════════════════════════════════ */
-function showFontResult(result) {
-    const topFont = result.topFont;
-    const similar  = result.similarFonts || [];
+function renderIdentificationResult(ranked, feat, detectedText) {
+    const top = ranked[0];
+    lastResultSet = { ranked, feat, detectedText };
+    selectedMatch = top.font;
 
-    // Font preview text
-    const previewEl = document.getElementById('fontPreviewText');
-    previewEl.style.fontFamily = `'${topFont.name}', ${topFont.category}`;
+    // Telemetry summary
+    document.getElementById('telText').textContent     = detectedText ? detectedText.slice(0, 16) : '(Visual match)';
+    document.getElementById('telCat').textContent      = top.font.category;
+    document.getElementById('telWeight').textContent   = feat.estWeight >= 800 ? 'Heavy ' + feat.estWeight : feat.estWeight >= 700 ? 'Bold 700' : feat.estWeight >= 600 ? 'SemiBold 600' : feat.estWeight <= 300 ? 'Light 300' : 'Regular 400';
+    document.getElementById('telStyle').textContent    = feat.isItalic ? 'Italic / Oblique' : 'Normal Upright';
+    document.getElementById('telContrast').textContent = feat.strokeContrast >= 0.55 ? 'High Contrast' : feat.strokeContrast >= 0.25 ? 'Medium' : 'Monoline / Low';
 
-    // Load Google Font for preview
-    if (topFont.isGoogleFont) {
-        const slug = topFont.name.replace(/\s+/g, '+');
-        const link = document.createElement('link');
-        link.rel  = 'stylesheet';
-        link.href = `https://fonts.googleapis.com/css2?family=${slug}:wght@400;700&display=swap`;
-        document.head.appendChild(link);
-    }
+    // Analysis summary
+    const widthDesc = feat.widthRatio < 0.58 ? 'narrow/condensed proportions' : feat.widthRatio > 0.85 ? 'wide/open letterforms' : 'balanced proportions';
+    document.getElementById('aiAnalysisText').textContent =
+        'Detected ' + (feat.monoScore >= 0.8 ? 'fixed-width monospace spacing, ' : '') +
+        (feat.serifScore >= 0.55 ? 'serif terminal flares, ' : 'clean sans-serif terminals, ') +
+        'estimated weight ~' + feat.estWeight + ', and ' + widthDesc + '.' +
+        (detectedText ? ' Verified glyph silhouette against "' + detectedText + '".' : '');
 
-    // Top match card
-    document.getElementById('topFontName').textContent = topFont.name;
-    document.getElementById('topFontDesc').textContent = topFont.description ||
-        `${topFont.category.charAt(0).toUpperCase() + topFont.category.slice(1)} • ${topFont.isGoogleFont ? 'Google Fonts • Free' : 'System Font'}`;
-
-    const conf = topFont.confidence || 90;
-    const matchEl = document.getElementById('topFontMatch');
-    matchEl.textContent = `${conf}% Match`;
-    matchEl.className = 'font-match-badge ' + (conf >= 85 ? 'badge-high' : conf >= 70 ? 'badge-medium' : 'badge-low');
-
-    // Google Fonts link
-    if (topFont.isGoogleFont) {
-        const slug = topFont.name.replace(/\s+/g, '+');
-        document.getElementById('googleFontsLink').href = `https://fonts.google.com/specimen/${slug}`;
-        document.getElementById('googleFontsLink').style.display = 'inline-flex';
-    } else {
-        document.getElementById('googleFontsLink').style.display = 'none';
-    }
-
-    // AI Analysis text
-    document.getElementById('aiAnalysisText').textContent = result.analysis || '';
-
-    // Similar fonts
+    // Similar fonts grid
+    const simPanel = document.getElementById('similarFontsPanel');
     const grid = document.getElementById('similarFontsGrid');
     grid.innerHTML = '';
-    if (similar.length > 0) {
-        document.getElementById('similarFontsPanel').style.display = 'block';
-        similar.forEach(font => {
-            if (font.isGoogleFont !== false) {
-                const slug = font.name.replace(/\s+/g, '+');
-                const link = document.createElement('link');
-                link.rel  = 'stylesheet';
-                link.href = `https://fonts.googleapis.com/css2?family=${slug}:wght@400;700&display=swap`;
-                document.head.appendChild(link);
-            }
-            const div = document.createElement('div');
-            div.className = 'similar-font-item';
-            div.style.fontFamily = `'${font.name}', ${font.category}`;
-            div.innerHTML = `${font.name}<small>${font.similarity}% similar • ${font.category}</small>`;
-            div.onclick = () => {
-                previewEl.style.fontFamily = `'${font.name}', ${font.category}`;
+    const alts = ranked.slice(1, 7);
+    if (alts.length) {
+        simPanel.style.display = 'block';
+        alts.forEach(item => {
+            ensureGoogleFont(item.font.name, item.font.google);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'similar-font-item';
+            btn.style.fontFamily = "'" + item.font.name + "', " + (item.font.category === 'handwriting' ? 'cursive' : item.font.category);
+            btn.innerHTML = item.font.name + '<small>' + item.finalScore + '% match · ' + item.font.category + '</small>';
+            btn.onclick = () => {
+                grid.querySelectorAll('.similar-font-item').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                applySelectedResultFont(item.font, item.finalScore, feat, detectedText);
             };
-            grid.appendChild(div);
+            grid.appendChild(btn);
         });
     } else {
-        document.getElementById('similarFontsPanel').style.display = 'none';
+        simPanel.style.display = 'none';
     }
 
-    // CSS Code
-    const cssCode = topFont.isGoogleFont
-        ? `/* Google Fonts Import */\n@import url('https://fonts.googleapis.com/css2?family=${topFont.name.replace(/\s+/g,'+')}:wght@400;600;700&display=swap');\n\n/* Usage */\nbody {\n  font-family: '${topFont.name}', ${topFont.category};\n}`
-        : `/* System Font */\nbody {\n  font-family: '${topFont.name}', ${topFont.category};\n}`;
-
-    document.getElementById('cssCodeText').textContent = cssCode;
-
+    applySelectedResultFont(top.font, top.finalScore, feat, detectedText);
     showSection('resultSection');
 }
 
-/* ════════════════════════════════════════
-   COPY CSS CODE
-════════════════════════════════════════ */
+function applySelectedResultFont(font, score, feat, detectedText) {
+    selectedMatch = font;
+    ensureGoogleFont(font.name, font.google);
+
+    const cssCat = font.category === 'handwriting' ? 'cursive' : font.category;
+    const prevEl = document.getElementById('fontPreviewText');
+    prevEl.textContent = detectedText || 'The quick brown fox jumps';
+    prevEl.style.fontFamily = "'" + font.name + "', " + cssCat;
+    prevEl.style.fontWeight = String(feat.estWeight || 400);
+    prevEl.style.fontStyle  = feat.isItalic ? 'italic' : 'normal';
+
+    const glyphBox = document.getElementById('topFontGlyph');
+    glyphBox.style.fontFamily = "'" + font.name + "', " + cssCat;
+    glyphBox.style.fontWeight = String(feat.estWeight || 700);
+    glyphBox.style.fontStyle  = feat.isItalic ? 'italic' : 'normal';
+
+    document.getElementById('topFontName').textContent = font.name;
+    document.getElementById('topFontDesc').textContent = font.desc + ' • ' + (font.google ? 'Google Fonts (Free)' : 'System Font');
+
+    const matchEl = document.getElementById('topFontMatch');
+    matchEl.textContent = score + '% Match';
+    matchEl.className = 'font-match-badge ' + (score >= 82 ? 'badge-high' : score >= 68 ? 'badge-medium' : 'badge-low');
+
+    const gfLink = document.getElementById('googleFontsLink');
+    if (font.google) {
+        gfLink.href = 'https://fonts.google.com/specimen/' + font.name.replace(/\s+/g, '+');
+        gfLink.style.display = 'inline-flex';
+    } else {
+        gfLink.style.display = 'none';
+    }
+
+    const cssCode = font.google
+        ? "/* Google Fonts Import */\n@import url('https://fonts.googleapis.com/css2?family=" + font.name.replace(/\s+/g, '+') + ":wght@400;600;700&display=swap');\n\n/* Usage */\n.headline {\n  font-family: '" + font.name + "', " + cssCat + ";\n  font-weight: " + (feat.estWeight || 400) + ";\n  font-style: " + (feat.isItalic ? 'italic' : 'normal') + ";\n}"
+        : "/* System Font */\n.headline {\n  font-family: '" + font.name + "', " + cssCat + ";\n  font-weight: " + (feat.estWeight || 400) + ";\n}";
+    document.getElementById('cssCodeText').textContent = cssCode;
+}
+
+function openTopInChecker() {
+    if (!selectedMatch) return;
+    switchTab('css');
+    setCSSFont(selectedMatch.name, selectedMatch.category, selectedMatch.google);
+}
+
 function copyCSSCode() {
     const text = document.getElementById('cssCodeText').textContent;
+    if (!navigator.clipboard) return;
     navigator.clipboard.writeText(text).then(() => {
         const btn = document.querySelector('.copy-css-btn');
         const orig = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        setTimeout(() => btn.innerHTML = orig, 2000);
+        btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> Copied!';
+        setTimeout(() => { btn.innerHTML = orig; }, 1800);
     });
 }
 
-/* ════════════════════════════════════════
-   RESET
-════════════════════════════════════════ */
+function reAdjustCrop() {
+    if (sourceImage) { showSection('cropSection'); renderCropCanvas(); }
+    else resetImageTool();
+}
+
 function resetImageTool() {
+    sourceImage = null; lastResultSet = null; selectedMatch = null;
     document.getElementById('uploadedImagePreview').src = '';
+    document.getElementById('manualSampleText').value = '';
     document.getElementById('progressFill').style.width = '0%';
     document.getElementById('progressText').textContent = '0%';
+    hideError();
     showSection('uploadSection');
 }
 
@@ -1004,34 +1654,48 @@ function resetImageTool() {
    CSS FONT CHECKER (TAB 2)
 ════════════════════════════════════════ */
 function previewCSSFont() {
-    const val = document.getElementById('cssFontInput').value;
-    document.getElementById('cssFontPreview').style.fontFamily = val;
+    const val = document.getElementById('cssFontInput').value || 'sans-serif';
+    const size = document.getElementById('fontSizeSlider').value;
+    const weight = document.getElementById('fontWeightSelect').value;
+    const spacing = document.getElementById('fontSpacingSlider').value;
+
+    const firstFamily = val.split(',')[0].replace(/['"]/g, '').trim();
+    const dbMatch = fontDatabase.find(f => f.name.toLowerCase() === firstFamily.toLowerCase());
+    if (dbMatch && dbMatch.google) ensureGoogleFont(dbMatch.name, true);
+    else if (firstFamily && !/^(sans-serif|serif|monospace|cursive|system-ui|arial|georgia|times|verdana)$/i.test(firstFamily)) {
+        ensureGoogleFont(firstFamily, true);
+    }
+
+    const prev = document.getElementById('cssFontPreview');
+    prev.style.fontFamily    = val;
+    prev.style.fontSize      = size + 'px';
+    prev.style.fontWeight    = weight;
+    prev.style.letterSpacing = spacing + 'px';
+    document.getElementById('fontSizeVal').textContent    = size + 'px';
+    document.getElementById('fontSpacingVal').textContent = spacing + 'px';
 }
-function setCSSFont(fontName) {
-    document.getElementById('cssFontInput').value = `'${fontName}', sans-serif`;
+
+function setCSSFont(fontName, cat = 'sans-serif', isGoogle = false) {
+    ensureGoogleFont(fontName, isGoogle);
+    document.getElementById('cssFontInput').value = "'" + fontName + "', " + (cat === 'handwriting' ? 'cursive' : cat);
     previewCSSFont();
-}
-function changeFontSize(size) {
-    document.getElementById('cssFontPreview').style.fontSize = size + 'px';
-    document.getElementById('fontSizeVal').textContent = size + 'px';
 }
 
 /* ════════════════════════════════════════
-   BROWSE FONTS (TAB 3)
+   BROWSE FONTS (TAB 3 — XSS-SAFE)
 ════════════════════════════════════════ */
-let currentCategory    = 'all';
-let currentSearch      = '';
-let loadedGoogleFonts  = new Set();
+let currentCategory = 'all';
+let currentSearch   = '';
 
 function filterFonts(cat, btn) {
     currentCategory = cat;
-    document.querySelectorAll('.active-filter').forEach(b => b.classList.remove('active-filter'));
+    document.querySelectorAll('.select-action-btn').forEach(b => b.classList.remove('active-filter'));
     if (btn) btn.classList.add('active-filter');
     buildFontBrowseList(cat, currentSearch);
 }
 
 function searchFonts(query) {
-    currentSearch = query.toLowerCase();
+    currentSearch = (query || '').toLowerCase();
     buildFontBrowseList(currentCategory, currentSearch);
 }
 
@@ -1049,61 +1713,64 @@ function buildFontBrowseList(category, search) {
     container.innerHTML = '';
 
     if (filtered.length === 0) {
-        container.innerHTML = `<div style="text-align:center;padding:30px;color:#64748b;">
-            <i class="fas fa-search" style="font-size:32px;opacity:0.3;"></i>
-            <p style="margin-top:10px;">No fonts found.</p>
-        </div>`;
+        container.innerHTML = '<div style="text-align:center;padding:30px;color:#64748b;"><i class="fas fa-search" style="font-size:32px;opacity:0.3;"></i><p style="margin-top:10px;">No fonts found.</p></div>';
         return;
     }
 
     filtered.forEach(font => {
-        if (font.google && !loadedGoogleFonts.has(font.name)) {
-            const slug = font.name.replace(/\s+/g, '+');
-            const link = document.createElement('link');
-            link.rel  = 'stylesheet';
-            link.href = `https://fonts.googleapis.com/css2?family=${slug}:wght@400;700&display=swap`;
-            document.head.appendChild(link);
-            loadedGoogleFonts.add(font.name);
-        }
+        ensureGoogleFont(font.name, font.google);
+        const cssCat = font.category === 'handwriting' ? 'cursive' : font.category;
 
-        const div = document.createElement('div');
-        div.className = 'font-result-card';
-        div.innerHTML = `
-            <div class="font-icon-box" style="font-family:'${font.name}',${font.category};font-size:20px;font-weight:700;">Aa</div>
-            <div class="font-info">
-                <h4 style="font-family:'${font.name}',${font.category};">${font.name}</h4>
-                <p style="font-family:'${font.name}',${font.category};font-size:13px;color:#64748b;">${previewText}</p>
-                <p style="font-size:11px;margin-top:4px;">
-                    <span style="background:rgba(99,102,241,0.1);color:#6366f1;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">${font.category}</span>
-                    ${font.google
-                        ? '<span style="background:rgba(34,197,94,0.1);color:#16a34a;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;margin-left:4px;">Google Fonts</span>'
-                        : '<span style="background:rgba(100,116,139,0.1);color:#64748b;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;margin-left:4px;">System</span>'}
-                </p>
-            </div>
-            ${font.google
-                ? `<a href="https://fonts.google.com/specimen/${font.name.replace(/\s+/g,'+')}"
-                      target="_blank" rel="noopener noreferrer"
-                      class="download-single-btn"
-                      onclick="event.stopPropagation()">
-                      <i class="fas fa-external-link-alt"></i> Get Font
-                   </a>`
-                : ''}`;
-        container.appendChild(div);
+        const card = document.createElement('div');
+        card.className = 'font-result-card';
+        card.style.cursor = 'pointer';
+        card.onclick = () => {
+            switchTab('css');
+            setCSSFont(font.name, font.category, font.google);
+        };
+
+        const glyph = document.createElement('div');
+        glyph.className = 'font-icon-box';
+        glyph.style.fontFamily = "'" + font.name + "', " + cssCat;
+        glyph.style.fontWeight = '700';
+        glyph.textContent = 'Aa';
+
+        const info = document.createElement('div');
+        info.className = 'font-info';
+        const h4 = document.createElement('h4');
+        h4.style.fontFamily = "'" + font.name + "', " + cssCat;
+        h4.textContent = font.name;
+
+        const pPrev = document.createElement('p');
+        pPrev.style.fontFamily = "'" + font.name + "', " + cssCat;
+        pPrev.style.fontSize = '15px';
+        pPrev.textContent = previewText; // XSS-safe textContent!
+
+        const tags = document.createElement('p');
+        tags.style.cssText = 'font-size:11px;margin-top:5px;';
+        tags.innerHTML = '<span style="background:rgba(99,102,241,0.12);color:#6366f1;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">' + font.category + '</span> ' +
+            (font.google
+                ? '<span style="background:rgba(22,163,74,0.12);color:#16a34a;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">Google Fonts</span>'
+                : '<span style="background:rgba(100,116,139,0.14);color:#64748b;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">System</span>');
+
+        info.appendChild(h4);
+        info.appendChild(pPrev);
+        info.appendChild(tags);
+        card.appendChild(glyph);
+        card.appendChild(info);
+
+        if (font.google) {
+            const a = document.createElement('a');
+            a.href = 'https://fonts.google.com/specimen/' + font.name.replace(/\s+/g, '+');
+            a.target = '_blank'; a.rel = 'noopener noreferrer';
+            a.className = 'download-single-btn';
+            a.onclick = e => e.stopPropagation();
+            a.innerHTML = '<i class="fas fa-external-link-alt" aria-hidden="true"></i> Get Font';
+            card.appendChild(a);
+        }
+        container.appendChild(card);
     });
 }
-
-/* ════════════════════════════════════════
-   FILTER BUTTON ACTIVE STATE
-════════════════════════════════════════ */
-document.querySelectorAll('.select-action-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const siblings = this.closest('div').querySelectorAll('.select-action-btn');
-        siblings.forEach(b => b.classList.remove('active-filter'));
-        this.classList.add('active-filter');
-    });
-});
-
-console.log('✅ AI ToolCor Font Identifier loaded');
 </script>
 
 <script src="js/adsense.js"></script>

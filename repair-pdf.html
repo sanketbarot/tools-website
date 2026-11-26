@@ -156,74 +156,97 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <style>
         *{box-sizing:border-box}
-        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:12px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
-        .success-toast{position:fixed;top:20px;right:20px;background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.2);animation:slideIn .3s ease}
+        #uploadSection,#repairSection,#resultSection,#failSection{padding:8px 0}
+        .icon-orange{background:linear-gradient(135deg,#f59e0b,#d97706)}
+
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.28);border-radius:12px;padding:12px 16px;color:#dc2626;font-size:13px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        [data-theme="dark"] .error-box{color:#fca5a5}
+        .success-toast{position:fixed;top:20px;right:20px;background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:10050;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.22);animation:slideIn .3s ease}
         @keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
-        .file-info-card{display:flex;align-items:center;gap:14px;padding:16px 20px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.65);border-radius:16px;margin-bottom:16px}
-        .file-info-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent-dark))}
+
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;margin-bottom:14px}
+        .file-info-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#f59e0b,#d97706)}
         .file-info-details{flex:1;min-width:0}
-        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;color:#1e293b}
+        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 3px;color:var(--text-dark,#1e293b)}
         .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-        .file-meta span{font-size:11px;color:#64748b;display:flex;align-items:center;gap:4px;font-weight:500}
-        .size-badge{background:rgba(16,185,129,.1);color:var(--accent-dark);padding:2px 10px;border-radius:20px;font-weight:600;font-size:11px!important}
-        .repair-log{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.65);border-radius:16px;margin-bottom:16px;overflow:hidden}
-        .rl-header{padding:14px 18px;border-bottom:1px solid rgba(0,0,0,.05);display:flex;align-items:center;gap:8px}
-        .rl-header h4{margin:0;font-size:14px;font-weight:700;color:#1e293b;flex:1}
-        .rl-status{font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px}
-        .rl-status.running{background:rgba(79,70,229,.1);color:#6366f1}
-        .rl-status.done{background:rgba(34,197,94,.1);color:#16a34a}
-        .rl-status.fail{background:rgba(239,68,68,.1);color:#dc2626}
-        .rl-body{padding:14px 18px;max-height:400px;overflow-y:auto}
-        .log-entry{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.03)}
-        .log-entry:last-child{border-bottom:none}
-        .le-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px}
-        .le-icon.info{background:rgba(79,70,229,.12);color:#6366f1}
-        .le-icon.ok{background:rgba(34,197,94,.12);color:#16a34a}
-        .le-icon.warn{background:rgba(245,158,11,.12);color:#d97706}
-        .le-icon.err{background:rgba(239,68,68,.12);color:#dc2626}
-        .le-icon.fix{background:rgba(34,197,94,.15);color:#15803d}
-        .le-icon.run{background:rgba(79,70,229,.12);color:#6366f1;animation:pulse 1s infinite}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-        .le-text{flex:1;font-size:12px;color:#475569;line-height:1.5;font-weight:500}
-        .le-text strong{color:#1e293b}
-        .strategy-card{padding:12px 16px;border-radius:12px;border:1.5px solid #e2e8f0;margin-bottom:8px;transition:all .2s}
-        .strategy-card.active{border-color:#6366f1;background:rgba(79,70,229,.05)}
-        .strategy-card.success{border-color:#22c55e;background:rgba(34,197,94,.05)}
-        .strategy-card.failed{border-color:#ef4444;background:rgba(239,68,68,.03);opacity:.5}
-        .sc-header{display:flex;align-items:center;gap:8px}
+        .file-meta span{font-size:11px;color:var(--text-light,#64748b);display:inline-flex;align-items:center;gap:4px;font-weight:500}
+        .size-badge{background:rgba(245,158,11,.14);color:#b45309;padding:2px 10px;border-radius:20px;font-weight:600;font-size:11px!important}
+        [data-theme="dark"] .size-badge{color:#fcd34d;background:rgba(245,158,11,.2)}
+
+        /* Diagnostic summary pills */
+        .diag-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+        .diag-pill{background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:11px;padding:10px 12px}
+        .diag-pill small{display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-light,#64748b);margin-bottom:3px}
+        .diag-pill strong{font-size:12px;font-weight:700;color:var(--text-dark,#1e293b)}
+        .diag-pill strong.ok{color:#16a34a}
+        .diag-pill strong.warn{color:#d97706}
+        .diag-pill strong.bad{color:#dc2626}
+
+        /* Mode bar */
+        .mode-bar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 16px;background:var(--surface-muted,#f8fafc);border:1px solid var(--border-subtle,#e2e8f0);border-radius:12px;margin-bottom:14px}
+        .mode-bar label{font-size:12px;font-weight:600;color:var(--text-dark,#1e293b);display:inline-flex;align-items:center;gap:7px}
+        .mode-bar select{padding:6px 10px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:8px;background:var(--bg-card,#ffffff);color:var(--text-dark,#1e293b);font-size:12px;font-weight:600}
+
+        /* Strategy cards & Log */
+        .strategy-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+        .strategy-card{padding:11px 14px;border-radius:12px;border:1.5px solid var(--border-subtle,#e2e8f0);background:var(--bg-card,#ffffff);transition:all .2s}
+        .strategy-card.active{border-color:#6366f1;background:rgba(79,70,229,.07)}
+        .strategy-card.success{border-color:#22c55e;background:rgba(34,197,94,.08)}
+        .strategy-card.failed{border-color:rgba(239,68,68,.3);opacity:.72}
+        .sc-header{display:flex;align-items:center;gap:9px}
         .sc-num{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
-        .sc-num.n1{background:#6366f1}.sc-num.n2{background:#3b82f6}.sc-num.n3{background:#f59e0b}.sc-num.n4{background:#ef4444}.sc-num.n5{background:#8b5cf6}
-        .sc-title{font-size:12px;font-weight:700;color:#1e293b;flex:1}
-        .sc-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px}
-        .sc-status.pending{background:rgba(148,163,184,.1);color:#94a3b8}
-        .sc-status.running{background:rgba(79,70,229,.1);color:#6366f1}
-        .sc-status.success{background:rgba(34,197,94,.1);color:#16a34a}
-        .sc-status.failed{background:rgba(239,68,68,.1);color:#dc2626}
-        .sc-status.skipped{background:rgba(148,163,184,.08);color:#94a3b8}
-        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
-        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:14px;padding:14px 18px;min-width:100px}
-        .result-stat strong{display:block;font-size:22px;color:var(--primary,#6366f1);line-height:1;margin-bottom:4px}
-        .result-stat small{color:#64748b;font-size:11px;font-weight:600;text-transform:uppercase}
-        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,var(--accent),var(--accent-dark))}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
-        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
-        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
-        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(79,70,229,.2)}
-        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
-        .faq-question h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
-        .faq-item.open .faq-question h4{color:#6366f1}
-        .faq-question i{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
-        .faq-item.open .faq-question i{transform:rotate(180deg);color:#6366f1}
-        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
-        .faq-item.open .faq-answer{max-height:500px;opacity:1}
-        .faq-answer-inner{padding:0 22px 20px}
-        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(79,70,229,.1);padding-top:16px;margin:0 22px;padding-left:0;padding-right:0}
-        .faq-answer-inner p{font-size:14px;line-height:1.7;color:#64748b;margin:0}
-        .faq-answer-inner p strong{color:#1e293b}
-        .faq-num{width:28px;height:28px;background:rgba(79,70,229,.1);color:#6366f1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .faq-item.open .faq-num{background:#6366f1;color:#fff}
-        @media(max-width:768px){.result-stats{gap:10px}.result-stat{min-width:80px}}
-        @media(max-width:480px){.file-info-card{flex-wrap:wrap;padding:14px}.faq-question{padding:14px}}
+        .sc-num.n1{background:#6366f1}.sc-num.n2{background:#3b82f6}.sc-num.n3{background:#f59e0b}.sc-num.n4{background:#8b5cf6}.sc-num.n5{background:#ec4899}
+        .sc-info{flex:1;min-width:0}
+        .sc-title{font-size:13px;font-weight:700;color:var(--text-dark,#1e293b)}
+        .sc-desc{font-size:11px;color:var(--text-light,#64748b)}
+        .sc-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;flex-shrink:0}
+        .sc-status.pending{background:rgba(148,163,184,.15);color:#64748b}
+        .sc-status.running{background:rgba(79,70,229,.16);color:#6366f1}
+        .sc-status.success{background:rgba(34,197,94,.16);color:#16a34a}
+        .sc-status.failed{background:rgba(239,68,68,.14);color:#dc2626}
+        .sc-status.skipped{background:rgba(148,163,184,.1);color:#94a3b8}
+
+        .repair-log{background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;margin-bottom:14px;overflow:hidden}
+        .rl-header{padding:12px 16px;border-bottom:1px solid var(--border-subtle,#e2e8f0);display:flex;align-items:center;gap:8px;background:var(--surface-muted,#f8fafc)}
+        .rl-header h4{margin:0;font-size:13px;font-weight:700;color:var(--text-dark,#1e293b);flex:1}
+        .rl-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:7px}
+        .rl-status.running{background:rgba(79,70,229,.14);color:#6366f1}
+        .rl-status.warn{background:rgba(245,158,11,.15);color:#d97706}
+        .rl-status.done{background:rgba(34,197,94,.14);color:#16a34a}
+        .rl-status.fail{background:rgba(239,68,68,.14);color:#dc2626}
+        .rl-body{padding:12px 16px;max-height:300px;overflow-y:auto;font-family:ui-monospace,Consolas,monospace}
+        .log-entry{display:flex;align-items:flex-start;gap:9px;padding:5px 0;border-bottom:1px dashed var(--border-subtle,#e2e8f0)}
+        .log-entry:last-child{border-bottom:none}
+        .le-icon{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px}
+        .le-icon.info{background:rgba(79,70,229,.14);color:#6366f1}
+        .le-icon.ok{background:rgba(34,197,94,.14);color:#16a34a}
+        .le-icon.warn{background:rgba(245,158,11,.14);color:#d97706}
+        .le-icon.err{background:rgba(239,68,68,.14);color:#dc2626}
+        .le-icon.fix{background:rgba(34,197,94,.16);color:#15803d}
+        .le-icon.run{background:rgba(79,70,229,.14);color:#6366f1}
+        .le-text{flex:1;font-size:11.5px;color:var(--text-light,#475569);line-height:1.45;word-break:break-word}
+        .le-text strong{color:var(--text-dark,#1e293b)}
+
+        /* Result & Modal */
+        .result-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:var(--surface-muted,#f8fafc);border:1px solid var(--border-subtle,#e2e8f0);border-radius:12px;padding:13px 16px;min-width:105px}
+        .result-stat strong{display:block;font-size:20px;color:var(--primary,#6366f1);line-height:1;margin-bottom:4px}
+        .result-stat small{color:var(--text-light,#64748b);font-size:11px;font-weight:600;text-transform:uppercase}
+        .result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+        .rp-modal{position:fixed;inset:0;background:rgba(15,23,42,.74);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px}
+        .rp-modal.open{display:flex}
+        .rp-modal-box{width:100%;max-width:900px;height:86vh;background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+        .rp-modal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border-subtle,#e2e8f0)}
+        .rp-modal-head h4{margin:0;font-size:15px;font-weight:700;color:var(--text-dark,#1e293b)}
+        .rp-modal-body{flex:1;background:#1e293b}
+        .rp-modal-body iframe{width:100%;height:100%;border:0}
+
+        @media(max-width:768px){
+            .diag-strip{grid-template-columns:1fr 1fr}
+            .result-stats{gap:10px}.result-stat{min-width:84px;padding:10px 12px}
+        }
+        @media(max-width:480px){.file-info-card{flex-wrap:wrap;padding:14px}}
     </style>
     
     
@@ -260,7 +283,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
         
             <a href="blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <a href="login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -276,25 +299,37 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
+<main>
 <section class="tool-area">
 <div class="container">
 <div class="tool-wrapper glass">
 
-    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+    <div class="error-box" id="errorBox" role="alert"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
 
     <!-- UPLOAD -->
     <div id="uploadSection" data-section="">
-        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="mode-bar">
+            <label for="repairMode"><i class="fas fa-sliders-h" style="color:#f59e0b"></i> Recovery Priority:
+                <select id="repairMode">
+                    <option value="auto" selected="">Auto (5-Stage Progressive Recovery)</option>
+                    <option value="xref">Start at Binary XRef Rebuild</option>
+                    <option value="render">Force Visual Page Render Recovery (2.0x)</option>
+                </select>
+            </label>
+            <span style="font-size:11px;color:var(--text-light)"><i class="fas fa-shield-alt" style="color:#16a34a"></i> 100% Browser-Based • No Upload</span>
+        </div>
+
+        <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Upload damaged PDF file" onclick="document.getElementById('fileInput').click()" onkeydown="if(event.key==='Enter')document.getElementById('fileInput').click()">
             <div class="upload-zone-content">
                 <div class="upload-icon"><i class="fas fa-wrench"></i></div>
-                <h2>Upload Damaged PDF</h2>
-                <p>Drop your corrupted or broken PDF here</p>
-                <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF</button>
+                <h2>Upload Damaged or Corrupted PDF</h2>
+                <p>Drop your broken PDF here — handles missing headers, shifted offsets, broken XRef, and damaged streams</p>
+                <button class="upload-btn" type="button" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select Damaged PDF</button>
                 <input type="file" id="fileInput" accept=".pdf,application/pdf,application/octet-stream" hidden="">
                 <div class="upload-hints">
                     <span><i class="fas fa-lock"></i> 100% Private</span>
-                    <span><i class="fas fa-wrench"></i> Binary Repair</span>
-                    <span><i class="fas fa-laptop"></i> Browser Only</span>
+                    <span><i class="fas fa-microchip"></i> Binary XRef + FlateDecode</span>
+                    <span><i class="fas fa-images"></i> JPG/PNG Salvage</span>
                 </div>
                 <p style="margin-top:12px;font-size:12px;color:var(--text-light)"><i class="fas fa-shield-alt"></i> Files never leave your device!</p>
             </div>
@@ -309,20 +344,29 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                 <h4 id="fileName">document.pdf</h4>
                 <div class="file-meta">
                     <span class="size-badge" id="fileSize">0 KB</span>
-                    <span id="fileStatus"><i class="fas fa-spinner fa-spin" style="color:#6366f1"></i> Repairing...</span>
+                    <span id="fileStatus"><i class="fas fa-spinner fa-spin" style="color:#6366f1"></i> Scanning &amp; repairing...</span>
                 </div>
             </div>
-            <div class="files-actions"><button class="btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i></button></div>
+            <div class="files-actions"><button class="btn-danger-sm" type="button" onclick="resetTool()" aria-label="Reset"><i class="fas fa-times"></i></button></div>
         </div>
-        <div style="margin-bottom:16px">
-            <div class="strategy-card" id="s1"><div class="sc-header"><div class="sc-num n1">1</div><div class="sc-title">Direct Load &amp; Rebuild</div><div class="sc-status pending" id="ss1">Pending</div></div></div>
-            <div class="strategy-card" id="s2"><div class="sc-header"><div class="sc-num n2">2</div><div class="sc-title">Binary Header + Page Fix</div><div class="sc-status pending" id="ss2">Pending</div></div></div>
-            <div class="strategy-card" id="s3"><div class="sc-header"><div class="sc-num n3">3</div><div class="sc-title">PDF.js Render Recovery</div><div class="sc-status pending" id="ss3">Pending</div></div></div>
-            <div class="strategy-card" id="s4"><div class="sc-header"><div class="sc-num n4">4</div><div class="sc-title">Full Binary Reconstruction</div><div class="sc-status pending" id="ss4">Pending</div></div></div>
-            <div class="strategy-card" id="s5"><div class="sc-header"><div class="sc-num n5">5</div><div class="sc-title">Deep Content Extraction</div><div class="sc-status pending" id="ss5">Pending</div></div></div>
+
+        <div class="diag-strip" id="diagStrip">
+            <div class="diag-pill"><small>%PDF Header</small><strong id="diagHeader">Checking...</strong></div>
+            <div class="diag-pill"><small>XRef / StartXRef</small><strong id="diagXref">Checking...</strong></div>
+            <div class="diag-pill"><small>%%EOF Trailer</small><strong id="diagEof">Checking...</strong></div>
+            <div class="diag-pill"><small>Raw Objects</small><strong id="diagObjs">Checking...</strong></div>
         </div>
+
+        <div class="strategy-list">
+            <div class="strategy-card" id="s1"><div class="sc-header"><div class="sc-num n1">1</div><div class="sc-info"><div class="sc-title">Binary Sanitize &amp; Structural Rebuild</div><div class="sc-desc">Strips leading/trailing garbage bytes, repairs header/EOF, and rebuilds valid page tree</div></div><div class="sc-status pending" id="ss1">Pending</div></div></div>
+            <div class="strategy-card" id="s2"><div class="sc-header"><div class="sc-num n2">2</div><div class="sc-info"><div class="sc-title">Full XRef Table &amp; Catalog Reconstruction</div><div class="sc-desc">Scans object offsets natively, locates /Catalog, and generates fresh cross-reference table</div></div><div class="sc-status pending" id="ss2">Pending</div></div></div>
+            <div class="strategy-card" id="s3"><div class="sc-header"><div class="sc-num n3">3</div><div class="sc-info"><div class="sc-title">PDF.js Loose Render Recovery</div><div class="sc-desc">Parses leniently with fault tolerance and saves every readable page cleanly</div></div><div class="sc-status pending" id="ss3">Pending</div></div></div>
+            <div class="strategy-card" id="s4"><div class="sc-header"><div class="sc-num n4">4</div><div class="sc-info"><div class="sc-title">FlateDecode Decompression &amp; Media Carve</div><div class="sc-desc">Decompresses damaged zlib streams and rescues embedded JPEG &amp; PNG images</div></div><div class="sc-status pending" id="ss4">Pending</div></div></div>
+            <div class="strategy-card" id="s5"><div class="sc-header"><div class="sc-num n5">5</div><div class="sc-info"><div class="sc-title">Emergency Raw Text Salvage</div><div class="sc-desc">Extracts printable human text runs when structural tables are completely destroyed</div></div><div class="sc-status pending" id="ss5">Pending</div></div></div>
+        </div>
+
         <div class="repair-log">
-            <div class="rl-header"><i class="fas fa-terminal" style="color:#6366f1"></i><h4>Repair Log</h4><div class="rl-status running" id="logStatus"><i class="fas fa-spinner fa-spin"></i> Running</div></div>
+            <div class="rl-header"><i class="fas fa-terminal" style="color:#6366f1"></i><h4>Diagnostic &amp; Recovery Log</h4><div class="rl-status running" id="logStatus"><i class="fas fa-spinner fa-spin"></i> Running</div></div>
             <div class="rl-body" id="logBody"></div>
         </div>
     </div>
@@ -331,19 +375,24 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <div id="resultSection" data-section="" style="display:none">
         <div class="result-area">
             <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
-            <h2 id="resultTitle">PDF Repaired! 🔧</h2>
-            <p id="resultSub">Fixed</p>
+            <h2 id="resultTitle">PDF Repaired Successfully! 🔧</h2>
+            <p id="resultSub">Recovered cleanly and verified readable</p>
             <div class="result-stats">
-                <div class="result-stat"><strong id="rPages">0</strong><small>Pages</small></div>
-                <div class="result-stat"><strong id="rStrat">—</strong><small>Strategy</small></div>
-                <div class="result-stat"><strong id="rSize">0 KB</strong><small>Size</small></div>
+                <div class="result-stat"><strong id="rPages">0</strong><small>Recovered Pages</small></div>
+                <div class="result-stat"><strong id="rStrat">—</strong><small>Stage</small></div>
+                <div class="result-stat"><strong id="rSize">0 KB</strong><small>File Size</small></div>
             </div>
             <div class="result-info glass-light">
                 <div class="info-item"><i class="fas fa-file-pdf" style="color:#dc2626"></i><span id="rFileName">repaired.pdf</span></div>
                 <div class="info-item"><i class="fas fa-check-circle" style="color:#16a34a"></i><span id="rMethod">Repaired</span></div>
             </div>
-            <button class="download-btn" onclick="doDownload()"><i class="fas fa-download"></i> Download Repaired PDF</button>
-            <div class="result-actions"><button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Repair Another</button></div>
+            <button class="download-btn" type="button" onclick="doDownload()"><i class="fas fa-download"></i> Download Repaired PDF</button>
+            <div class="result-actions">
+                <button class="btn-outline" type="button" onclick="resetTool()"><i class="fas fa-redo"></i> Repair Another</button>
+                <button class="btn-outline" type="button" onclick="previewResultPdf()"><i class="fas fa-eye"></i> Preview PDF</button>
+                <button class="btn-outline" type="button" onclick="downloadRepairReport()"><i class="fas fa-file-alt"></i> Download Log</button>
+                <a class="btn-outline" href="compress-pdf.html" style="text-decoration:none"><i class="fas fa-compress-alt"></i> Compress PDF</a>
+            </div>
         </div>
     </div>
 
@@ -351,20 +400,78 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <div id="failSection" data-section="" style="display:none">
         <div class="result-area">
             <div class="result-icon" style="background:rgba(239,68,68,.15)"><i class="fas fa-times-circle" style="color:#ef4444;font-size:32px"></i></div>
-            <h2>Could Not Repair 😔</h2>
-            <p>All strategies failed. File may be too severely damaged.</p>
-            <div class="result-actions" style="margin-top:20px"><button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Try Another</button></div>
+            <h2>Unable to Recover File 😔</h2>
+            <p id="failDesc">All 5 recovery stages exhausted. The file may be encrypted with an unknown cipher or contain zero valid PDF/media data.</p>
+            <div class="result-actions" style="margin-top:18px">
+                <button class="btn-outline" type="button" onclick="resetTool()"><i class="fas fa-redo"></i> Try Another File</button>
+                <button class="btn-outline" type="button" onclick="downloadRepairReport()"><i class="fas fa-file-alt"></i> Export Diagnostic Log</button>
+            </div>
         </div>
     </div>
 
 </div>
 </div>
 </section>
+</main>
+
+<!-- Preview Modal -->
+<div class="rp-modal" id="rpModal" role="dialog" aria-modal="true" aria-labelledby="rpModalTitle">
+    <div class="rp-modal-box">
+        <div class="rp-modal-head">
+            <h4 id="rpModalTitle">Repaired PDF Preview</h4>
+            <button type="button" class="btn-danger-sm" onclick="closeRpModal()"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="rp-modal-body">
+            <iframe id="rpPreviewFrame" title="Repaired PDF Preview"></iframe>
+        </div>
+    </div>
+</div>
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
 
 
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related PDF Security &amp; Edit Tools</h2>
+            <p>Everything you need to edit, secure, repair, and finalize PDFs.</p>
+        </div>
+        <div class="related-grid">
+            <a href="merge-pdf.html" class="related-card" aria-label="Merge PDF">
+                <div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div>
+                <h4>Merge PDF</h4>
+                <p>Combine multiple PDFs into one</p>
+            </a>
+            <a href="compress-pdf.html" class="related-card" aria-label="Compress PDF">
+                <div class="related-icon ri-green"><i class="fas fa-compress-alt" aria-hidden="true"></i></div>
+                <h4>Compress PDF</h4>
+                <p>Reduce PDF size with target KB</p>
+            </a>
+            <a href="protect-pdf.html" class="related-card" aria-label="Protect PDF">
+                <div class="related-icon ri-red"><i class="fas fa-lock" aria-hidden="true"></i></div>
+                <h4>Protect PDF</h4>
+                <p>Lock PDF with password security</p>
+            </a>
+            <a href="unlock-pdf.html" class="related-card" aria-label="Unlock PDF">
+                <div class="related-icon ri-green"><i class="fas fa-unlock-alt" aria-hidden="true"></i></div>
+                <h4>Unlock PDF</h4>
+                <p>Remove PDF password restrictions</p>
+            </a>
+            <a href="sign-pdf.html" class="related-card" aria-label="Sign PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-signature" aria-hidden="true"></i></div>
+                <h4>Sign PDF</h4>
+                <p>Draw or type PDF signatures</p>
+            </a>
+            <a href="edit-pdf.html" class="related-card" aria-label="Edit PDF">
+                <div class="related-icon ri-blue"><i class="fas fa-edit" aria-hidden="true"></i></div>
+                <h4>Edit PDF</h4>
+                <p>Add text &amp; annotations to PDF</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How It Works</h2></div>
@@ -378,10 +485,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <section class="faq-section">
     <div class="container">
-        <div class="section-header"><h2>FAQ</h2></div>
+        <div class="section-header"><h2>Frequently Asked Questions</h2></div>
         <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>What corruption types can be fixed?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Broken headers, corrupted xref, damaged trailers, truncated files, corrupted streams, broken page trees, random byte damage — all fixable with our 5-strategy system.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Is my file uploaded?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>No!</strong> Everything runs in your browser. 100% private.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>What corruption types can be fixed?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Broken headers, corrupted xref, damaged trailers, truncated files, corrupted streams, broken page trees, random byte damage — all fixable with our 5-strategy system.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Is my file uploaded?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>No!</strong> Everything runs in your browser. 100% private.</p></div></div></div>
         </div>
     </div>
 </section>
@@ -453,65 +560,103 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-let rawBytes=null,selectedFile=null,resultBlob=null;
+let rawBytes=null,selectedFile=null,resultBlob=null,previewUrl=null;
+let blankFallbackBlob=null,blankFallbackInfo=null;
+let logLines=[];
 
-function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
-if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
-function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('fileInput');
+
+(function(){
+    const yr=document.getElementById('currentYear');
+    if(yr)yr.textContent=new Date().getFullYear();
+})();
+
+function showSection(id){
+    document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');
+    const el=document.getElementById(id);
+    if(el)el.style.display='block';
+    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'smooth'}));
+}
 function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
-function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',6500)}
 function hideError(){document.getElementById('errorBox').style.display='none'}
-function tick(ms){return new Promise(r=>setTimeout(r,ms||30))}
-function toast(m){const t=document.createElement('div');t.className='success-toast';t.innerHTML='<i class="fas fa-check-circle"></i>'+m;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)},2500)}
+function tick(ms){return new Promise(r=>setTimeout(r,ms||25))}
+function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function toast(m){const t=document.createElement('div');t.className='success-toast';t.innerHTML='<i class="fas fa-check-circle"></i>'+escH(m);document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)},2500)}
+
+function sanitizeWinAnsi(str){
+    return (str||'')
+        .replace(/[\u2018\u2019]/g,"'")
+        .replace(/[\u201C\u201D]/g,'"')
+        .replace(/[\u2013\u2014]/g,'-')
+        .replace(/\u2026/g,'...')
+        .replace(/[^\x20-\x7E]/g,' ');
+}
+
+function isHumanReadableText(str){
+    const s=(str||'').trim();
+    if(s.length<3)return false;
+    let alphaNum=0,spaces=0,weird=0;
+    for(let i=0;i<s.length;i++){
+        const ch=s.charCodeAt(i);
+        if((ch>=65&&ch<=90)||(ch>=97&&ch<=122)||(ch>=48&&ch<=57))alphaNum++;
+        else if(ch===32)spaces++;
+        else if(",.?!:-()/\"'".includes(s[i])){}
+        else weird++;
+    }
+    if(weird/s.length>0.06)return false;
+    if((alphaNum+spaces)/s.length<0.74)return false;
+    const words=s.match(/[a-zA-Z]{3,}/g)||[];
+    const vowelWords=words.filter(w=>/[aeiouyAEIOUY]/.test(w));
+    return vowelWords.length>=1||/^\d{2,}([.,/-]\d+)*$/.test(s);
+}
 
 function log(type,text){
     const icons={info:'fas fa-info-circle',ok:'fas fa-check',warn:'fas fa-exclamation-triangle',err:'fas fa-times',fix:'fas fa-wrench',run:'fas fa-spinner fa-spin'};
     const el=document.getElementById('logBody');
     el.innerHTML+=`<div class="log-entry"><div class="le-icon ${type}"><i class="${icons[type]||'fas fa-info'}"></i></div><div class="le-text">${text}</div></div>`;
     el.scrollTop=el.scrollHeight;
+    logLines.push('['+type.toUpperCase()+'] '+text.replace(/<[^>]+>/g,''));
 }
 
 function setSS(n,s){
-    const map={pending:'Pending',running:'Running...',success:'✓ Success',failed:'✗ Failed',skipped:'Skipped'};
+    const map={pending:'Pending',running:'Running...',success:'Recovered',failed:'Failed',skipped:'Skipped'};
     document.getElementById('ss'+n).className='sc-status '+s;
     document.getElementById('ss'+n).textContent=map[s]||s;
     document.getElementById('s'+n).className='strategy-card '+({running:'active',success:'success',failed:'failed'}[s]||'');
 }
 
-/* ═══ BYTE HELPERS ═══ */
-// Find byte pattern in array (like indexOf but for bytes)
+const latinDecoder=new TextDecoder('latin1');
+function bytesToLatin1(bytes){return latinDecoder.decode(bytes)}
+/* 1:1 byte-exact encoder for PDF binary dictionaries & XRef alignment */
+function latin1ToBytes(s){
+    const out=new Uint8Array(s.length);
+    for(let i=0;i<s.length;i++)out[i]=s.charCodeAt(i)&0xFF;
+    return out;
+}
+
 function findBytes(haystack,needle,start){
     start=start||0;
-    outer:for(let i=start;i<=haystack.length-needle.length;i++){
-        for(let j=0;j<needle.length;j++){
-            if(haystack[i+j]!==needle[j])continue outer;
-        }
+    const nLen=needle.length,limit=haystack.length-nLen;
+    outer:for(let i=start;i<=limit;i++){
+        if(haystack[i]!==needle[0])continue;
+        for(let j=1;j<nLen;j++)if(haystack[i+j]!==needle[j])continue outer;
         return i;
     }
     return -1;
 }
 
-// Find byte pattern searching backwards
 function findBytesLast(haystack,needle){
-    outer:for(let i=haystack.length-needle.length;i>=0;i--){
-        for(let j=0;j<needle.length;j++){
-            if(haystack[i+j]!==needle[j])continue outer;
-        }
+    const nLen=needle.length;
+    outer:for(let i=haystack.length-nLen;i>=0;i--){
+        if(haystack[i]!==needle[0])continue;
+        for(let j=1;j<nLen;j++)if(haystack[i+j]!==needle[j])continue outer;
         return i;
     }
     return -1;
 }
 
-// Convert string to byte array
-function strToBytes(s){return new TextEncoder().encode(s)}
-
-// Convert byte range to string (latin1-safe)
-function bytesToStr(bytes,start,len){
-    let s='';for(let i=start;i<start+len&&i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);
-    return s;
-}
-
-// Concat byte arrays
 function concatBytes(...arrays){
     const total=arrays.reduce((s,a)=>s+a.length,0);
     const out=new Uint8Array(total);let off=0;
@@ -519,457 +664,683 @@ function concatBytes(...arrays){
     return out;
 }
 
-// Deep clone bytes
-function cloneBytes(bytes){const c=new Uint8Array(bytes.length);c.set(bytes);return c}
+function replaceByteToken(bytes,searchStr,replaceStr){
+    const sB=latin1ToBytes(searchStr),rB=latin1ToBytes(replaceStr);
+    if(sB.length!==rB.length)return 0;
+    let pos=0,hits=0;
+    while(true){
+        const idx=findBytes(bytes,sB,pos);
+        if(idx<0)break;
+        for(let k=0;k<rB.length;k++)bytes[idx+k]=rB[k];
+        hits++;
+        pos=idx+sB.length;
+    }
+    return hits;
+}
 
-/* ═══ FILE ═══ */
-const dropZone=document.getElementById('dropZone'),fileInput=document.getElementById('fileInput');
-dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
-dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+function sanitizePdfEnvelope(src){
+    let bytes=new Uint8Array(src);
+    const notes=[];
+
+    const hdr=findBytes(bytes,latin1ToBytes('%PDF-'),0);
+    const txtHead=bytesToLatin1(bytes.slice(0,Math.min(bytes.length,4096)));
+    const firstObjM=/(?:^|[\r\n\x00-\x20])(\d{1,5}\s+\d{1,3}\s+obj)\b/.exec(txtHead);
+
+    if(hdr>0&&hdr<65536){
+        bytes=bytes.slice(hdr);
+        notes.push('Stripped '+hdr+' leading junk byte(s) before %PDF-');
+    }else if(hdr<0){
+        if(firstObjM){
+            const objByteStart=txtHead.indexOf(firstObjM[1],firstObjM.index);
+            const minHdr=latin1ToBytes('%PDF-1.4\n%abcd\n');
+            if(objByteStart>=minHdr.length){
+                bytes.set(latin1ToBytes('%PDF-1.4\n%'),0);
+                for(let k=10;k<objByteStart-1;k++){
+                    if(bytes[k]===0x0A||bytes[k]===0x0D||bytes[k]<0x20)bytes[k]=0x20;
+                }
+                bytes[objByteStart-1]=0x0A;
+                notes.push('Restored %PDF-1.4 header in-place preserving object offsets');
+            }else{
+                bytes=concatBytes(minHdr,bytes.slice(objByteStart));
+                notes.push('Restored %PDF-1.4 header cleanly before first object');
+            }
+        }else{
+            bytes=concatBytes(latin1ToBytes('%PDF-1.4\n'),bytes);
+            notes.push('Prepended missing %PDF-1.4 header');
+        }
+    }
+
+    let fixedKw=0;
+    fixedKw+=replaceByteToken(bytes,'/Type /Xages','/Type /Pages');
+    fixedKw+=replaceByteToken(bytes,'/Type/Xages','/Type/Pages');
+    fixedKw+=replaceByteToken(bytes,'/Type /xages','/Type /Pages');
+    fixedKw+=replaceByteToken(bytes,'/Type /Xage','/Type /Page');
+    fixedKw+=replaceByteToken(bytes,'/Type/Xage','/Type/Page');
+    fixedKw+=replaceByteToken(bytes,'/Type /xage','/Type /Page');
+    fixedKw+=replaceByteToken(bytes,'XXXXXXXX','/Catalog');
+    if(fixedKw>0)notes.push('Fixed '+fixedKw+' damaged PDF keyword token(s) (/Page, /Pages, /Catalog)');
+
+    const eof=findBytesLast(bytes,latin1ToBytes('%%EOF'));
+    if(eof<0){
+        bytes=concatBytes(bytes,latin1ToBytes('\n%%EOF\n'));
+        notes.push('Appended missing %%EOF marker');
+    }else if(bytes.length-(eof+5)>64){
+        bytes=concatBytes(bytes.slice(0,eof+5),latin1ToBytes('\n'));
+        notes.push('Trimmed trailing junk after %%EOF');
+    }
+    return{bytes,notes};
+}
+
+function setDiag(id,text,cls){
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.textContent=text;
+    el.className=cls||'';
+}
+
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover','drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover','drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragover','drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
 fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
 
 async function handleFile(file){
     hideError();
+    if(!file||file.size===0){showError('Selected file is empty (0 bytes).');return}
     selectedFile=file;rawBytes=new Uint8Array(await file.arrayBuffer());
+    logLines=[];blankFallbackBlob=null;blankFallbackInfo=null;
     document.getElementById('fileName').textContent=file.name;
     document.getElementById('fileSize').textContent=szF(file.size);
-    document.getElementById('fileStatus').innerHTML='<i class="fas fa-spinner fa-spin" style="color:#6366f1"></i> Repairing...';
+    document.getElementById('fileStatus').innerHTML='<i class="fas fa-spinner fa-spin" style="color:#6366f1"></i> Scanning &amp; repairing...';
     document.getElementById('logBody').innerHTML='';
     for(let i=1;i<=5;i++)setSS(i,'pending');
     document.getElementById('logStatus').className='rl-status running';
     document.getElementById('logStatus').innerHTML='<i class="fas fa-spinner fa-spin"></i> Running';
     resultBlob=null;
     showSection('repairSection');
-    await tick(100);
+    await tick(60);
     await runRepair();
 }
 
-/* ═══════════════════════════════════════════════════════
-   MAIN REPAIR — 5 strategies, each operates on RAW BYTES
-   Key fix: Never use TextEncoder on binary data!
-   All byte operations preserve original binary content.
-═══════════════════════════════════════════════════════ */
+function runDiagnostics(){
+    const hdr=findBytes(rawBytes,latin1ToBytes('%PDF-'),0);
+    const eof=findBytesLast(rawBytes,latin1ToBytes('%%EOF'));
+    const xref=findBytesLast(rawBytes,latin1ToBytes('xref'));
+    const sxref=findBytesLast(rawBytes,latin1ToBytes('startxref'));
+    const txtSample=bytesToLatin1(rawBytes);
+    const objHits=(txtSample.match(/(?:^|[\r\n])[ \t]*\d+[ \t]+\d+[ \t]+obj/g)||[]).length;
+
+    if(hdr===0)setDiag('diagHeader','Valid (@0)','ok');
+    else if(hdr>0)setDiag('diagHeader','Offset @'+hdr,'warn');
+    else setDiag('diagHeader','Missing','bad');
+
+    if(xref>=0&&sxref>=0)setDiag('diagXref','Present','ok');
+    else if(xref>=0||txtSample.includes('/Type/XRef')||txtSample.includes('/Type /XRef'))setDiag('diagXref','Partial / Stream','warn');
+    else setDiag('diagXref','Missing','bad');
+
+    if(eof>=0&&rawBytes.length-eof<=20)setDiag('diagEof','Valid','ok');
+    else if(eof>=0)setDiag('diagEof','Trailing bytes','warn');
+    else setDiag('diagEof','Truncated','bad');
+
+    setDiag('diagObjs',objHits>0?(objHits+' detected'):'None',objHits>0?'ok':'bad');
+    return{hdr,eof,xref,sxref,objHits,txtSample};
+}
+
+/* Verifies BOTH page geometry AND whether at least one sampled page renders visible text/pixels */
+async function verifyPdfHasContent(blob){
+    const ab=await blob.arrayBuffer();
+    const doc=await pdfjsLib.getDocument({data:new Uint8Array(ab),verbosity:0,stopAtErrors:false}).promise;
+    const total=doc.numPages;
+    if(total<=0)throw new Error('0 pages');
+
+    const samplePages=[1];
+    if(total>=2)samplePages.push(Math.ceil(total/2));
+    if(total>=3&&!samplePages.includes(total))samplePages.push(total);
+
+    let hasInk=false;
+    for(const pNum of samplePages){
+        const pg=await doc.getPage(pNum);
+        const vp=pg.getViewport({scale:0.45});
+        if(vp.width<=0||vp.height<=0)continue;
+        const tc=await pg.getTextContent();
+        if(tc.items&&tc.items.some(it=>(it.str||'').trim().length>0)){hasInk=true;break;}
+
+        const c=document.createElement('canvas');
+        c.width=Math.max(16,Math.round(vp.width));
+        c.height=Math.max(16,Math.round(vp.height));
+        const ctx=c.getContext('2d');
+        ctx.fillStyle='#ffffff';ctx.fillRect(0,0,c.width,c.height);
+        await pg.render({canvasContext:ctx,viewport:vp}).promise;
+        const d=ctx.getImageData(0,0,c.width,c.height).data;
+        let colored=0;
+        for(let i=0;i<d.length;i+=16){
+            if(d[i]<246||d[i+1]<246||d[i+2]<246){colored++;if(colored>8){hasInk=true;break;}}
+        }
+        if(hasInk)break;
+    }
+    return{numPages:total,hasInk};
+}
+
+/* Progressive DecompressionStream reader: recovers ALL decompressed bytes emitted BEFORE stream corruption! */
+async function tryInflateStream(u8,allowPartial){
+    if(typeof DecompressionStream==='undefined')return null;
+    for(const fmt of['deflate','deflate-raw']){
+        const chunks=[];
+        let totalLen=0;
+        try{
+            const ds=new DecompressionStream(fmt);
+            const writer=ds.writable.getWriter();
+            const reader=ds.readable.getReader();
+
+            const readLoop=(async()=>{
+                try{
+                    while(true){
+                        const{value,done}=await reader.read();
+                        if(done)break;
+                        if(value&&value.byteLength){chunks.push(value);totalLen+=value.byteLength;}
+                    }
+                }catch(_){}
+            })();
+
+            await writer.write(u8).catch(()=>{});
+            await writer.close().catch(()=>{});
+            await readLoop;
+
+            if(totalLen>0){
+                const out=new Uint8Array(totalLen);
+                let off=0;for(const ch of chunks){out.set(ch,off);off+=ch.length;}
+                return out;
+            }
+        }catch(_){
+            if(allowPartial&&totalLen>16){
+                const out=new Uint8Array(totalLen);
+                let off=0;for(const ch of chunks){out.set(ch,off);off+=ch.length;}
+                return out;
+            }
+        }
+    }
+    return null;
+}
+
+async function extractObjectsIncludingObjStm(bytes){
+    const txt=bytesToLatin1(bytes);
+    const streamRanges=[];
+    const objStms=[];
+    const sB=latin1ToBytes('stream'),eB=latin1ToBytes('endstream');
+    let p=0;
+    while(p<bytes.length){
+        const i=findBytes(bytes,sB,p);if(i<0)break;
+        const dStart=(bytes[i+6]===0x0D&&bytes[i+7]===0x0A)?i+8:(bytes[i+6]===0x0A||bytes[i+6]===0x0D)?i+7:-1;
+        if(dStart<0){p=i+6;continue;}
+        const ei=findBytes(bytes,eB,dStart);if(ei<0)break;
+        let dEnd=ei;if(bytes[dEnd-1]===0x0A)dEnd--;if(bytes[dEnd-1]===0x0D)dEnd--;
+        streamRanges.push([i,ei+9]);
+
+        const dictHead=txt.slice(Math.max(0,i-240),i);
+        if(/\/ObjStm\b/.test(dictHead)){
+            const nM=/\/N\s+(\d+)/.exec(dictHead);
+            const fM=/\/First\s+(\d+)/.exec(dictHead);
+            if(nM&&fM){
+                objStms.push({n:parseInt(nM[1],10),first:parseInt(fM[1],10),slice:bytes.slice(dStart,dEnd)});
+            }
+        }
+        p=ei+9;
+    }
+
+    function inStream(pos){
+        for(const[a,b]of streamRanges)if(pos>=a&&pos<=b)return true;
+        return false;
+    }
+
+    const objRx=/(?:^|[\r\n\x00-\x20])[ \t]*(\d{1,6})[ \t]+(\d{1,3})[ \t]+obj(?=\s|<<|\[|\/|\()/g;
+    const objects=[];
+    let m;
+    while((m=objRx.exec(txt))!==null){
+        const rawStart=m.index+m[0].search(/\d/);
+        if(inStream(rawStart))continue;
+        const num=parseInt(m[1],10),gen=parseInt(m[2],10);
+        if(num>0&&num<300000)objects.push({num,gen,offset:rawStart});
+    }
+
+    const extraPieces=[];
+    for(const os of objStms){
+        const dec=await tryInflateStream(os.slice,true);
+        if(!dec)continue;
+        const dTxt=bytesToLatin1(dec);
+        const hdrPairs=dTxt.slice(0,os.first).trim().split(/\s+/).map(Number);
+        const pairs=[];
+        for(let k=0;k+1<hdrPairs.length&&pairs.length<os.n;k+=2){
+            pairs.push({num:hdrPairs[k],off:os.first+hdrPairs[k+1]});
+        }
+        for(let k=0;k<pairs.length;k++){
+            const end=k+1<pairs.length?pairs[k+1].off:dTxt.length;
+            const body=dTxt.slice(pairs[k].off,end).trim();
+            if(body)extraPieces.push({num:pairs[k].num,block:`${pairs[k].num} 0 obj\n${body}\nendobj\n`});
+        }
+    }
+    return{objects,extraPieces,txt};
+}
+
 async function runRepair(){
-    log('info','<strong>Starting repair</strong> — '+szF(rawBytes.length));
+    const mode=document.getElementById('repairMode').value;
+    log('info','<strong>Diagnostic scan started</strong> ('+szF(rawBytes.length)+')');
+    const diag=runDiagnostics();
+    log('info','Header='+diag.hdr+', EOF='+diag.eof+', Objects~'+diag.objHits);
 
-    if(await strategy1())return success(1,'Direct rebuild');
-    if(await strategy2())return success(2,'Binary fix + rebuild');
-    if(await strategy3())return success(3,'Render recovery');
-    if(await strategy4())return success(4,'Full reconstruction');
-    if(await strategy5())return success(5,'Content extraction');
+    if(mode==='render'){
+        setSS(1,'skipped');setSS(2,'skipped');
+        if(await strategy3())return finishSuccess(3,'Visual PDF.js render recovery',false);
+        if(await strategy4())return finishSuccess(4,'Partial stream decompression & media carve',false);
+        if(await strategy5())return finishSuccess(5,'Emergency text salvage',false);
+    }else if(mode==='xref'){
+        setSS(1,'skipped');
+        if(await strategy2())return finishSuccess(2,'Full XRef & object graph rebuild',false);
+        if(await strategy3())return finishSuccess(3,'Visual PDF.js render recovery',false);
+        if(await strategy4())return finishSuccess(4,'Partial stream decompression & media carve',false);
+        if(await strategy5())return finishSuccess(5,'Emergency text salvage',false);
+    }else{
+        if(await strategy1())return finishSuccess(1,'Binary sanitize & structural rebuild',false);
+        if(await strategy2())return finishSuccess(2,'Full XRef & object graph rebuild',false);
+        if(await strategy3())return finishSuccess(3,'Visual PDF.js render recovery',false);
+        if(await strategy4())return finishSuccess(4,'Partial stream decompression & media carve',false);
+        if(await strategy5())return finishSuccess(5,'Emergency text salvage',false);
+    }
 
-    log('err','<strong>All 5 strategies failed.</strong>');
+    if(blankFallbackBlob){
+        resultBlob=blankFallbackBlob;
+        log('warn','All deep content extraction found no additional stream data; returning structurally repaired blank-page shell.');
+        return finishSuccess(blankFallbackInfo.stage,blankFallbackInfo.method+' (streams damaged/empty)',true);
+    }
+
+    log('err','<strong>All attempted recovery stages failed.</strong>');
     document.getElementById('logStatus').className='rl-status fail';
-    document.getElementById('logStatus').innerHTML='✗ Failed';
-    document.getElementById('fileStatus').innerHTML='<i class="fas fa-times-circle" style="color:#ef4444"></i> Cannot repair';
+    document.getElementById('logStatus').innerHTML='Failed';
+    document.getElementById('fileStatus').innerHTML='<i class="fas fa-times-circle" style="color:#ef4444"></i> Unrecoverable';
     showSection('failSection');
 }
 
-/* ═══ STRATEGY 1: Direct pdf-lib load ═══ */
 async function strategy1(){
-    setSS(1,'running');log('run','<strong>Strategy 1:</strong> Direct load with pdf-lib...');
-    await tick(100);
+    setSS(1,'running');log('run','<strong>Stage 1:</strong> Sanitizing header/keywords &amp; structural load...');
+    await tick(60);
     try{
-        const src=await PDFLib.PDFDocument.load(rawBytes,{ignoreEncryption:true,throwOnInvalidObject:false,updateMetadata:false});
+        const env=sanitizePdfEnvelope(rawBytes);
+        env.notes.forEach(n=>log('fix',n));
+
+        const src=await PDFLib.PDFDocument.load(env.bytes,{ignoreEncryption:true,throwOnInvalidObject:false,updateMetadata:false});
         const pc=src.getPageCount();
-        if(pc===0)throw new Error('0 pages');
-        log('info','Loaded: '+pc+' pages');
+        if(pc===0)throw new Error('0 pages parsed');
 
         const newDoc=await PDFLib.PDFDocument.create();
         let copied=0;
         for(let i=0;i<pc;i++){
-            try{const[pg]=await newDoc.copyPages(src,[i]);newDoc.addPage(pg);copied++}catch(e){}
+            try{const[pg]=await newDoc.copyPages(src,[i]);newDoc.addPage(pg);copied++;}catch(_){}
         }
-        if(copied===0)throw new Error('No pages copied');
+        if(copied===0)throw new Error('Could not copy pages');
 
-        newDoc.setCreator('PDFTools Repair');
-        resultBlob=new Blob([await newDoc.save()],{type:'application/pdf'});
-        log('fix','Rebuilt: '+copied+' pages');
+        newDoc.setCreator('AI ToolCor Repair');
+        const candidate=new Blob([await newDoc.save({useObjectStreams:false})],{type:'application/pdf'});
+        const check=await verifyPdfHasContent(candidate);
+        if(!check.hasInk){
+            blankFallbackBlob=candidate;
+            blankFallbackInfo={stage:1,method:'Binary structural rebuild'};
+            log('warn','Stage 1 parsed '+check.numPages+' page(s), but rendered blank — escalating to deeper stream recovery...');
+            setSS(1,'failed');
+            return false;
+        }
+        resultBlob=candidate;
+        log('fix','Rebuilt &amp; visually verified '+check.numPages+' page(s) with readable content');
         setSS(1,'success');return true;
     }catch(e){
-        log('err','Strategy 1: '+e.message.slice(0,80));
+        log('err','Stage 1: '+escH((e.message||'Failed').slice(0,95)));
         setSS(1,'failed');return false;
     }
 }
 
-/* ═══ STRATEGY 2: Binary-level fix + reload ═══
-   KEY FIX: Work on raw bytes, don't use TextEncoder/TextDecoder
-   on the whole file — that corrupts binary streams!
-*/
 async function strategy2(){
-    setSS(2,'running');log('run','<strong>Strategy 2:</strong> Binary repair...');
-    await tick(100);
+    setSS(2,'running');log('run','<strong>Stage 2:</strong> Deep object scan, ObjStm unpack &amp; XRef rebuild...');
+    await tick(60);
     try{
-        let bytes=cloneBytes(rawBytes);
-        let fixes=0;
+        const env=sanitizePdfEnvelope(rawBytes);
+        const scanned=await extractObjectsIncludingObjStm(env.bytes);
+        let bodyBytes=env.bytes;
 
-        // Fix 1: Check & fix header (first 9 bytes)
-        const headerBytes=strToBytes('%PDF-1.4\n');
-        const hasHeader=(bytes[0]===0x25&&bytes[1]===0x50&&bytes[2]===0x44&&bytes[3]===0x46&&bytes[4]===0x2D);
-        if(!hasHeader){
-            // Prepend header — keep ALL original bytes after
-            bytes=concatBytes(headerBytes,bytes);
-            log('fix','Prepended %PDF-1.4 header');fixes++;
+        const lastEndObj=findBytesLast(bodyBytes,latin1ToBytes('endobj'));
+        if(lastEndObj>0)bodyBytes=bodyBytes.slice(0,lastEndObj+6);
+
+        let addedStr='';
+        if(scanned.extraPieces.length>0){
+            addedStr+='\n';
+            let curOff=bodyBytes.length+1;
+            for(const ep of scanned.extraPieces){
+                const b=latin1ToBytes(ep.block);
+                scanned.objects.push({num:ep.num,gen:0,offset:curOff});
+                addedStr+=ep.block;
+                curOff+=b.length;
+            }
+            log('fix','Unpacked '+scanned.extraPieces.length+' object(s) from compressed ObjStm');
+        }
+        if(addedStr)bodyBytes=concatBytes(bodyBytes,latin1ToBytes(addedStr));
+
+        const objMap=new Map();
+        for(const o of scanned.objects)objMap.set(o.num,o);
+        log('info','Indexed '+objMap.size+' PDF objects cleanly');
+        if(objMap.size<2)throw new Error('Insufficient PDF objects');
+
+        const fullTxt=bytesToLatin1(bodyBytes);
+        let rootNum=0;
+        const catMatch=/\/Type\s*\/Catalog\b/.exec(fullTxt);
+        if(catMatch){
+            let best=-1;
+            for(const o of objMap.values())if(o.offset<=catMatch.index&&o.offset>best){best=o.offset;rootNum=o.num;}
         }
 
-        // Fix 2: Fix /Type /Xage → /Type /Page (byte-level search)
-        // Pattern: 2F 54 79 70 65 20 2F 58 61 67 65 → change 58(X) to 50(P)
-        const xagePattern=[0x2F,0x54,0x79,0x70,0x65,0x20,0x2F,0x58,0x61,0x67,0x65]; // /Type /Xage
-        let pos=0,pagesFix=0;
-        while(true){
-            const idx=findBytes(bytes,xagePattern,pos);
-            if(idx<0)break;
-            bytes[idx+7]=0x50; // X(58) → P(50)
-            pagesFix++;
-            pos=idx+11;
-        }
-        // Also check lowercase /Type /xage
-        const xageLC=[0x2F,0x54,0x79,0x70,0x65,0x20,0x2F,0x78,0x61,0x67,0x65];
-        pos=0;
-        while(true){
-            const idx=findBytes(bytes,xageLC,pos);
-            if(idx<0)break;
-            bytes[idx+7]=0x50;
-            pagesFix++;
-            pos=idx+11;
-        }
-        if(pagesFix>0){log('fix','Fixed '+pagesFix+' /Type /Xage → /Type /Page');fixes++}
-
-        // Fix 3: Ensure %%EOF at end
-        const eofBytes=strToBytes('%%EOF');
-        const lastEOF=findBytesLast(bytes,eofBytes);
-        if(lastEOF<0||lastEOF<bytes.length-20){
-            bytes=concatBytes(bytes,strToBytes('\n%%EOF\n'));
-            log('fix','Appended %%EOF');fixes++;
-        }
-
-        // Fix 4: Check for startxref — if missing, add dummy
-        const startxrefBytes=strToBytes('startxref');
-        const hasStartXref=findBytesLast(bytes,startxrefBytes)>=0;
-        if(!hasStartXref){
-            // Find xref position
-            const xrefBytes=strToBytes('xref');
-            const xrefPos=findBytesLast(bytes,xrefBytes);
-            if(xrefPos>0){
-                const sxr='\nstartxref\n'+xrefPos+'\n%%EOF\n';
-                bytes=concatBytes(bytes,strToBytes(sxr));
-                log('fix','Added startxref pointing to xref at '+xrefPos);fixes++;
+        let maxId=Math.max(...objMap.keys());
+        if(!rootNum||!/\/Type\s*\/Pages\b/.test(fullTxt)){
+            const leafPages=[];
+            const pgRx=/\/Type\s*\/Page\b(?!s)/g;
+            let pm;
+            while((pm=pgRx.exec(fullTxt))!==null){
+                let best=-1,bestNum=0;
+                for(const o of objMap.values())if(o.offset<=pm.index&&o.offset>best){best=o.offset;bestNum=o.num;}
+                if(bestNum&&!leafPages.includes(bestNum))leafPages.push(bestNum);
+            }
+            if(leafPages.length>0){
+                const pagesId=++maxId,catId=++maxId;
+                const synthPages=`\n${pagesId} 0 obj\n<< /Type /Pages /Kids [${leafPages.map(n=>n+' 0 R').join(' ')}] /Count ${leafPages.length} >>\nendobj\n`;
+                const synthCat=`${catId} 0 obj\n<< /Type /Catalog /Pages ${pagesId} 0 R >>\nendobj\n`;
+                const offP=bodyBytes.length+1;
+                bodyBytes=concatBytes(bodyBytes,latin1ToBytes(synthPages));
+                const offC=bodyBytes.length;
+                bodyBytes=concatBytes(bodyBytes,latin1ToBytes(synthCat));
+                objMap.set(pagesId,{num:pagesId,gen:0,offset:offP});
+                objMap.set(catId,{num:catId,gen:0,offset:offC});
+                rootNum=catId;
+                log('fix','Synthesized fresh Catalog & Pages node linking '+leafPages.length+' page(s)');
             }
         }
+        if(!rootNum)rootNum=Math.min(...objMap.keys());
 
-        if(fixes===0){log('info','No fixable byte patterns found');setSS(2,'failed');return false}
-        log('info','Applied '+fixes+' binary fixes. Loading...');
+        const size=maxId+1;
+        let xref='\nxref\n0 '+size+'\n0000000000 65535 f \n';
+        for(let i=1;i<size;i++){
+            const o=objMap.get(i);
+            xref+=o?(String(o.offset).padStart(10,'0')+' '+String(o.gen).padStart(5,'0')+' n \n'):'0000000000 65535 f \n';
+        }
+        const xrefOff=bodyBytes.length+1;
+        const tail=xref+`trailer\n<< /Size ${size} /Root ${rootNum} 0 R >>\nstartxref\n${xrefOff}\n%%EOF\n`;
+        const rebuilt=concatBytes(bodyBytes,latin1ToBytes(tail));
 
-        // Try loading fixed bytes
-        const src=await PDFLib.PDFDocument.load(bytes,{ignoreEncryption:true,throwOnInvalidObject:false,updateMetadata:false});
+        const src=await PDFLib.PDFDocument.load(rebuilt,{ignoreEncryption:true,throwOnInvalidObject:false,updateMetadata:false});
         const pc=src.getPageCount();
-        if(pc===0)throw new Error('0 pages after fixes');
+        if(pc===0)throw new Error('0 pages resolvable after XRef rebuild');
 
         const newDoc=await PDFLib.PDFDocument.create();
         let copied=0;
         for(let i=0;i<pc;i++){
-            try{const[pg]=await newDoc.copyPages(src,[i]);newDoc.addPage(pg);copied++}catch(e){}
+            try{const[pg]=await newDoc.copyPages(src,[i]);newDoc.addPage(pg);copied++;}catch(_){}
         }
-        if(copied===0)throw new Error('No pages copied');
+        if(copied===0)throw new Error('Could not copy rebuilt pages');
 
-        newDoc.setCreator('PDFTools Repair');
-        resultBlob=new Blob([await newDoc.save()],{type:'application/pdf'});
-        log('fix','Strategy 2: '+copied+' pages after '+fixes+' binary fixes');
+        newDoc.setCreator('AI ToolCor Repair (XRef)');
+        const candidate=new Blob([await newDoc.save({useObjectStreams:false})],{type:'application/pdf'});
+        const check=await verifyPdfHasContent(candidate);
+        if(!check.hasInk){
+            if(!blankFallbackBlob){
+                blankFallbackBlob=candidate;
+                blankFallbackInfo={stage:2,method:'XRef & object graph rebuild'};
+            }
+            log('warn','Stage 2 rebuilt '+check.numPages+' page(s), but rendered blank — trying visual/partial stream recovery...');
+            setSS(2,'failed');
+            return false;
+        }
+        resultBlob=candidate;
+        log('fix','Recovered & visually verified '+check.numPages+' page(s) cleanly');
         setSS(2,'success');return true;
     }catch(e){
-        log('err','Strategy 2: '+e.message.slice(0,80));
+        log('err','Stage 2: '+escH((e.message||'Failed').slice(0,95)));
         setSS(2,'failed');return false;
     }
 }
 
-/* ═══ STRATEGY 3: PDF.js render recovery ═══ */
 async function strategy3(){
-    setSS(3,'running');log('run','<strong>Strategy 3:</strong> PDF.js render...');
-    await tick(100);
+    setSS(3,'running');log('run','<strong>Stage 3:</strong> Fault-tolerant PDF.js visual recovery...');
+    await tick(60);
     try{
-        // Apply binary fixes before PDF.js attempt
-        let bytes=cloneBytes(rawBytes);
-
-        // Fix header
-        if(!(bytes[0]===0x25&&bytes[1]===0x50)){
-            bytes=concatBytes(strToBytes('%PDF-1.4\n'),bytes);
-        }
-
-        // Fix /Type /Xage
-        const xp=[0x2F,0x54,0x79,0x70,0x65,0x20,0x2F,0x58,0x61,0x67,0x65];
-        let p=0;
-        while(true){const i=findBytes(bytes,xp,p);if(i<0)break;bytes[i+7]=0x50;p=i+11}
-        const xpLC=[0x2F,0x54,0x79,0x70,0x65,0x20,0x2F,0x78,0x61,0x67,0x65];
-        p=0;
-        while(true){const i=findBytes(bytes,xpLC,p);if(i<0)break;bytes[i+7]=0x50;p=i+11}
-
-        // Ensure %%EOF
-        if(findBytesLast(bytes,strToBytes('%%EOF'))<0){
-            bytes=concatBytes(bytes,strToBytes('\n%%EOF\n'));
-        }
-
-        log('info','Loading with PDF.js after binary fixes...');
-
-        const pdfDoc=await pdfjsLib.getDocument({data:bytes.slice(0),verbosity:0}).promise;
-        log('info','PDF.js loaded: '+pdfDoc.numPages+' pages');
+        const env=sanitizePdfEnvelope(rawBytes);
+        const pdfDoc=await pdfjsLib.getDocument({data:env.bytes.slice(0),verbosity:0,stopAtErrors:false}).promise;
+        log('info','PDF.js opened '+pdfDoc.numPages+' page(s)');
 
         const newDoc=await PDFLib.PDFDocument.create();
-        let rendered=0;
+        let recovered=0,inkPages=0;
 
         for(let i=1;i<=pdfDoc.numPages;i++){
             try{
-                log('info','Rendering page '+i+'...');
                 const pg=await pdfDoc.getPage(i);
-                const vp=pg.getViewport({scale:2});
-                const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+                const origVP=pg.getViewport({scale:1});
+                const vp=pg.getViewport({scale:2.0});
+                const c=document.createElement('canvas');
+                c.width=Math.round(vp.width);c.height=Math.round(vp.height);
                 const ctx=c.getContext('2d');
-                ctx.fillStyle='#fff';ctx.fillRect(0,0,vp.width,vp.height);
+                ctx.fillStyle='#ffffff';ctx.fillRect(0,0,c.width,c.height);
                 await pg.render({canvasContext:ctx,viewport:vp}).promise;
 
-                const dataUrl=c.toDataURL('image/jpeg',.92);
-                const b64=dataUrl.split(',')[1];
-                const imgBytes=Uint8Array.from(atob(b64),ch=>ch.charCodeAt(0));
+                const d=ctx.getImageData(0,0,c.width,c.height).data;
+                let hasInk=false;
+                for(let k=0;k<d.length;k+=40){if(d[k]<246||d[k+1]<246||d[k+2]<246){hasInk=true;break;}}
+                if(hasInk)inkPages++;
 
-                const origVP=pg.getViewport({scale:1});
+                const dataUrl=c.toDataURL('image/jpeg',0.92);
+                const imgBytes=Uint8Array.from(atob(dataUrl.split(',')[1]),ch=>ch.charCodeAt(0));
                 const jpg=await newDoc.embedJpg(imgBytes);
-                const newPage=newDoc.addPage([origVP.width,origVP.height]);
-                newPage.drawImage(jpg,{x:0,y:0,width:origVP.width,height:origVP.height});
-                rendered++;
-            }catch(e){log('warn','Page '+i+': '+e.message.slice(0,40))}
-            await tick(50);
+                const outPg=newDoc.addPage([origVP.width,origVP.height]);
+                outPg.drawImage(jpg,{x:0,y:0,width:origVP.width,height:origVP.height});
+                recovered++;
+                log(hasInk?'fix':'warn',(hasInk?'Recovered visual page ':'Page ')+i+'/'+pdfDoc.numPages+(hasInk?'':' rendered blank'));
+            }catch(pe){
+                log('warn','Skipped damaged page '+i+': '+escH((pe.message||'error').slice(0,50)));
+            }
+            await tick(20);
         }
 
-        if(rendered===0)throw new Error('No pages rendered');
-        newDoc.setCreator('PDFTools Repair (Render)');
-        resultBlob=new Blob([await newDoc.save()],{type:'application/pdf'});
-        log('fix','Rendered '+rendered+' pages as images');
+        if(recovered===0)throw new Error('Zero pages could be rendered');
+        newDoc.setCreator('AI ToolCor Repair (Render)');
+        const candidate=new Blob([await newDoc.save()],{type:'application/pdf'});
+        if(inkPages===0){
+            if(!blankFallbackBlob){blankFallbackBlob=candidate;blankFallbackInfo={stage:3,method:'Visual PDF.js render'};}
+            log('warn','All PDF.js rendered pages were blank — attempting stream-level text & media salvage...');
+            setSS(3,'failed');return false;
+        }
+        resultBlob=candidate;
         setSS(3,'success');return true;
     }catch(e){
-        log('err','Strategy 3: '+e.message.slice(0,80));
+        log('err','Stage 3: '+escH((e.message||'Failed').slice(0,95)));
         setSS(3,'failed');return false;
     }
 }
 
-/* ═══ STRATEGY 4: Full binary reconstruction ═══
-   Scans for all "N G obj" patterns, fixes page refs,
-   rebuilds xref table from scratch
-*/
+function extractPdfOperatorsText(str){
+    const out=[];
+    const litRx=/\(([^()\\]*(?:\\.[^()\\]*)*)\)\s*(?:Tj|'|")/g;
+    let m;
+    while((m=litRx.exec(str))!==null){
+        const cl=sanitizeWinAnsi(m[1].replace(/\\([nrt()\\])/g,'$1')).trim();
+        if(isHumanReadableText(cl))out.push(cl);
+    }
+    const tjRx=/\[([\s\S]*?)\]\s*TJ/g;
+    while((m=tjRx.exec(str))!==null){
+        const inner=m[1].match(/\(([^()\\]*(?:\\.[^()\\]*)*)\)/g);
+        if(inner){
+            const combined=sanitizeWinAnsi(inner.map(x=>x.slice(1,-1).replace(/\\([nrt()\\])/g,'$1')).join('')).trim();
+            if(isHumanReadableText(combined))out.push(combined);
+        }
+    }
+    return out;
+}
+
+/* Stage 4: Progressive Chunked Stream Decompression + Embedded JPEG & PNG Media Carve */
 async function strategy4(){
-    setSS(4,'running');log('run','<strong>Strategy 4:</strong> Full binary reconstruction...');
-    await tick(100);
+    setSS(4,'running');log('run','<strong>Stage 4:</strong> Partial FlateDecode inflation &amp; carving JPEG/PNG media...');
+    await tick(60);
     try{
-        let bytes=cloneBytes(rawBytes);
+        const textLines=[];
+        const sStart=latin1ToBytes('stream'),sEnd=latin1ToBytes('endstream');
+        let pos=0,streamCount=0;
+        while(pos<rawBytes.length){
+            const idx=findBytes(rawBytes,sStart,pos);
+            if(idx<0)break;
+            let dataStart=idx+6;
+            if(rawBytes[dataStart]===0x0D&&rawBytes[dataStart+1]===0x0A)dataStart+=2;
+            else if(rawBytes[dataStart]===0x0A||rawBytes[dataStart]===0x0D)dataStart+=1;
+            else{pos=idx+6;continue;}
 
-        // Fix header
-        if(!(bytes[0]===0x25&&bytes[1]===0x50)){
-            bytes=concatBytes(strToBytes('%PDF-1.4\n'),bytes);
-        }
+            const eIdx=findBytes(rawBytes,sEnd,dataStart);
+            if(eIdx<0)break;
+            let dataEnd=eIdx;
+            if(rawBytes[dataEnd-1]===0x0A)dataEnd--;
+            if(rawBytes[dataEnd-1]===0x0D)dataEnd--;
+            const slice=rawBytes.slice(dataStart,Math.max(dataStart,dataEnd));
+            streamCount++;
 
-        // Fix page references
-        const xp=[0x2F,0x54,0x79,0x70,0x65,0x20,0x2F,0x58,0x61,0x67,0x65];
-        let p=0;while(true){const i=findBytes(bytes,xp,p);if(i<0)break;bytes[i+7]=0x50;p=i+11}
-        const xpLC=[0x2F,0x54,0x79,0x70,0x65,0x20,0x2F,0x78,0x61,0x67,0x65];
-        p=0;while(true){const i=findBytes(bytes,xpLC,p);if(i<0)break;bytes[i+7]=0x50;p=i+11}
-
-        // Scan for all objects "N G obj"
-        const objPattern=/(\d+)\s+(\d+)\s+obj/g;
-        const txt=bytesToStr(bytes,0,bytes.length);
-        const objects=[];
-        let m;
-        while((m=objPattern.exec(txt))!==null){
-            objects.push({num:parseInt(m[1]),gen:parseInt(m[2]),offset:m.index});
-        }
-        log('info','Found '+objects.length+' objects in raw scan');
-
-        if(objects.length<2)throw new Error('Too few objects: '+objects.length);
-
-        // Find Root catalog
-        let rootNum=0;
-        const catalogIdx=txt.indexOf('/Type /Catalog');
-        if(catalogIdx>=0){
-            // Find which object contains this
-            for(const obj of objects){
-                if(obj.offset<catalogIdx){
-                    const nextObj=objects.find(o=>o.offset>obj.offset);
-                    if(!nextObj||nextObj.offset>catalogIdx){
-                        rootNum=obj.num;break;
+            if(slice.length>4&&slice.length<8000000){
+                const decoded=await tryInflateStream(slice,true);
+                const targetBytes=decoded||(slice[0]>=0x09&&slice[0]<=0x7E?slice:null);
+                if(targetBytes){
+                    const textStr=bytesToLatin1(targetBytes);
+                    if(textStr.includes('Tj')||textStr.includes('TJ')||textStr.includes('BT')){
+                        textLines.push(...extractPdfOperatorsText(textStr));
                     }
                 }
             }
+            pos=eIdx+9;
         }
-        if(!rootNum&&objects.length>0)rootNum=objects[0].num;
-        log('info','Root catalog: object '+rootNum);
+        log('info','Scanned '+streamCount+' stream(s), extracted '+textLines.length+' readable line(s)');
 
-        // Build new xref table
-        const maxObj=Math.max(...objects.map(o=>o.num))+1;
-        let xref='xref\n0 '+maxObj+'\n';
-        xref+='0000000000 65535 f \n';
-        const objMap={};
-        objects.forEach(o=>{objMap[o.num]=o});
-        for(let i=1;i<maxObj;i++){
-            if(objMap[i]){
-                xref+=String(objMap[i].offset).padStart(10,'0')+' 00000 n \n';
-            }else{
-                xref+='0000000000 65535 f \n';
+        const media=[];
+        for(let i=0;i<rawBytes.length-4;i++){
+            if(rawBytes[i]===0xFF&&rawBytes[i+1]===0xD8&&rawBytes[i+2]===0xFF){
+                for(let j=i+4;j<Math.min(i+8000000,rawBytes.length-1);j++){
+                    if(rawBytes[j]===0xFF&&rawBytes[j+1]===0xD9){
+                        const img=rawBytes.slice(i,j+2);
+                        if(img.length>800)media.push({kind:'jpg',bytes:img});
+                        i=j+1;break;
+                    }
+                }
+            }else if(rawBytes[i]===0x89&&rawBytes[i+1]===0x50&&rawBytes[i+2]===0x4E&&rawBytes[i+3]===0x47){
+                const iend=findBytes(rawBytes,[0x49,0x45,0x4E,0x44,0xAE,0x42,0x60,0x82],i+8);
+                if(iend>i&&iend-i<8000000){
+                    media.push({kind:'png',bytes:rawBytes.slice(i,iend+8)});
+                    i=iend+7;
+                }
+            }
+        }
+        log('info','Carved '+media.length+' embedded image(s)');
+
+        if(textLines.length===0&&media.length===0)throw new Error('No readable text or media found');
+
+        const doc=await PDFLib.PDFDocument.create();
+        const font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const fontB=await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+
+        if(textLines.length>0){
+            let pg=doc.addPage([595,842]),y=792;
+            pg.drawText('Recovered Document Text',{x:48,y,size:16,font:fontB,color:PDFLib.rgb(0.1,0.12,0.2)});
+            y-=26;
+            for(const rawLine of textLines){
+                const words=rawLine.split(/\s+/).filter(Boolean);
+                let line='';
+                for(const w of words){
+                    const test=line?line+' '+w:w;
+                    let tw=0;try{tw=font.widthOfTextAtSize(test,11);}catch(_){tw=test.length*6;}
+                    if(tw>495){
+                        if(y<54){pg=doc.addPage([595,842]);y=792;}
+                        if(line)pg.drawText(line,{x:48,y,size:11,font,color:PDFLib.rgb(0.15,0.15,0.18)});
+                        y-=15;line=w;
+                    }else line=test;
+                }
+                if(line){
+                    if(y<54){pg=doc.addPage([595,842]);y=792;}
+                    pg.drawText(line,{x:48,y,size:11,font,color:PDFLib.rgb(0.15,0.15,0.18)});
+                    y-=17;
+                }
             }
         }
 
-        // Find where old xref starts and truncate
-        const oldXrefIdx=findBytesLast(bytes,strToBytes('xref'));
-        let bodyBytes=oldXrefIdx>0?bytes.slice(0,oldXrefIdx):bytes;
-
-        // Append new xref + trailer
-        const xrefOffset=bodyBytes.length;
-        const trailer=`${xref}trailer\n<< /Size ${maxObj} /Root ${rootNum} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
-        const finalBytes=concatBytes(bodyBytes,strToBytes(trailer));
-
-        log('info','Rebuilt xref with '+objects.length+' objects. Loading...');
-
-        // Try loading
-        const src=await PDFLib.PDFDocument.load(finalBytes,{ignoreEncryption:true,throwOnInvalidObject:false});
-        const pc=src.getPageCount();
-        if(pc===0)throw new Error('0 pages');
-
-        const newDoc=await PDFLib.PDFDocument.create();
-        let copied=0;
-        for(let i=0;i<pc;i++){
-            try{const[pg]=await newDoc.copyPages(src,[i]);newDoc.addPage(pg);copied++}catch(e){}
+        for(const item of media){
+            try{
+                const img=item.kind==='jpg'?await doc.embedJpg(item.bytes):await doc.embedPng(item.bytes);
+                const pg=doc.addPage([595,842]);
+                let w=img.width,h=img.height;
+                if(w>515){h*=515/w;w=515;}
+                if(h>760){w*=760/h;h=760;}
+                pg.drawImage(img,{x:(595-w)/2,y:(842-h)/2,width:w,height:h});
+            }catch(_){}
         }
-        if(copied===0)throw new Error('No pages copied');
 
-        newDoc.setCreator('PDFTools Repair (Reconstruction)');
-        resultBlob=new Blob([await newDoc.save()],{type:'application/pdf'});
-        log('fix','Reconstructed: '+copied+' pages from '+objects.length+' objects');
+        if(doc.getPageCount()===0)throw new Error('No pages assembled');
+        doc.setCreator('AI ToolCor Repair (Media/Stream Salvage)');
+        resultBlob=new Blob([await doc.save()],{type:'application/pdf'});
+        log('fix','Salvaged '+doc.getPageCount()+' clean recovery page(s)');
         setSS(4,'success');return true;
     }catch(e){
-        log('err','Strategy 4: '+e.message.slice(0,80));
+        log('err','Stage 4: '+escH((e.message||'Failed').slice(0,95)));
         setSS(4,'failed');return false;
     }
 }
 
-/* ═══ STRATEGY 5: Deep extraction ═══ */
 async function strategy5(){
-    setSS(5,'running');log('run','<strong>Strategy 5:</strong> Deep content extraction...');
-    await tick(100);
+    setSS(5,'running');log('run','<strong>Stage 5:</strong> Scanning raw bytes for readable ASCII text...');
+    await tick(60);
     try{
-        const txt=bytesToStr(rawBytes,0,rawBytes.length);
+        const txt=bytesToLatin1(rawBytes);
+        const runs=txt.match(/[A-Za-z][A-Za-z0-9 ,.;:!?'"\/()-]{12,}/g)||[];
+        const clean=runs.filter(r=>isHumanReadableText(r)&&!/^(\d+\s+\d+\s+obj|endobj|endstream|xref|trailer|startxref|FlateDecode|Filter|Length|MediaBox|Resources)$/i.test(r.trim())).slice(0,600);
+        if(clean.length===0)throw new Error('Zero human-readable strings found');
 
-        // Extract text from streams
-        const textChunks=[];
-        const streamRx=/stream\r?\n([\s\S]*?)\r?\nendstream/g;
-        let sm;
-        while((sm=streamRx.exec(txt))!==null){
-            const data=sm[1];
-            // Extract (...) text
-            const litRx=/\(([^)]{2,})\)/g;
-            let lm;
-            while((lm=litRx.exec(data))!==null){
-                const clean=lm[1].replace(/\\[nrtbf()\\]/g,' ').trim();
-                if(clean.length>1&&/[a-zA-Z0-9]/.test(clean))textChunks.push(clean);
-            }
-            // TJ operator
-            const tjRx=/\[([^\]]*)\]\s*TJ/g;
-            let tj;
-            while((tj=tjRx.exec(data))!==null){
-                const parts=tj[1].match(/\(([^)]*)\)/g);
-                if(parts){
-                    const t=parts.map(p=>p.slice(1,-1)).join('').trim();
-                    if(t.length>0)textChunks.push(t);
-                }
-            }
+        const doc=await PDFLib.PDFDocument.create();
+        const font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const fontB=await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+        let pg=doc.addPage([595,842]),y=792;
+        pg.drawText('Emergency Recovered Text',{x:48,y,size:15,font:fontB,color:PDFLib.rgb(0.1,0.1,0.15)});
+        y-=24;
+
+        for(const s of clean){
+            const safe=sanitizeWinAnsi(s).slice(0,88).trim();
+            if(!safe)continue;
+            if(y<52){pg=doc.addPage([595,842]);y=792;}
+            pg.drawText(safe,{x:48,y,size:10,font,color:PDFLib.rgb(0.2,0.2,0.22)});
+            y-=14;
         }
-        log('info','Extracted '+textChunks.length+' text chunks');
-
-        // Extract JPEG images
-        const images=[];
-        for(let i=0;i<rawBytes.length-3;i++){
-            if(rawBytes[i]===0xFF&&rawBytes[i+1]===0xD8&&rawBytes[i+2]===0xFF){
-                for(let j=i+3;j<Math.min(i+5000000,rawBytes.length-1);j++){
-                    if(rawBytes[j]===0xFF&&rawBytes[j+1]===0xD9){
-                        const img=rawBytes.slice(i,j+2);
-                        if(img.length>500)images.push(img);
-                        i=j+1;break;
-                    }
-                }
-            }
-        }
-        log('info','Found '+images.length+' JPEG image(s)');
-
-        if(textChunks.length===0&&images.length===0)throw new Error('No content found');
-
-        const{PDFDocument,StandardFonts,rgb}=PDFLib;
-        const doc=await PDFDocument.create();
-        const font=await doc.embedFont(StandardFonts.Helvetica);
-        const fontB=await doc.embedFont(StandardFonts.HelveticaBold);
-
-        if(textChunks.length>0){
-            let page=doc.addPage([595,842]);let y=800;
-            page.drawText('Recovered Content',{x:50,y,size:18,font:fontB,color:rgb(.1,.1,.1)});
-            y-=30;
-            page.drawLine({start:{x:50,y},end:{x:545,y},thickness:1.5,color:rgb(.2,.2,.2)});
-            y-=20;
-
-            for(const chunk of textChunks){
-                if(y<60){page=doc.addPage([595,842]);y=800}
-                const words=chunk.split(/\s+/);let line='';
-                for(const w of words){
-                    const test=line?line+' '+w:w;
-                    if(font.widthOfTextAtSize(test,11)>495){
-                        if(line){page.drawText(line,{x:50,y,size:11,font,color:rgb(.15,.15,.15)});y-=15}
-                        line=w;
-                    }else line=test;
-                }
-                if(line){page.drawText(line,{x:50,y,size:11,font,color:rgb(.15,.15,.15)});y-=15}
-                y-=4;
-            }
-        }
-
-        for(const imgBytes of images){
-            try{
-                const jpg=await doc.embedJpg(imgBytes);
-                const page=doc.addPage([595,842]);
-                let w=jpg.width,h=jpg.height;
-                if(w>515){h*=515/w;w=515}
-                if(h>762){w*=762/h;h=762}
-                page.drawImage(jpg,{x:(595-w)/2,y:(842-h)/2,width:w,height:h});
-            }catch(e){}
-        }
-
-        if(doc.getPageCount()===0)throw new Error('No pages created');
-
-        doc.setCreator('PDFTools Repair (Extraction)');
         resultBlob=new Blob([await doc.save()],{type:'application/pdf'});
-        log('fix','Extracted: '+textChunks.length+' text + '+images.length+' images → '+doc.getPageCount()+' pages');
+        log('fix','Extracted '+clean.length+' readable lines into '+doc.getPageCount()+' page(s)');
         setSS(5,'success');return true;
     }catch(e){
-        log('err','Strategy 5: '+e.message.slice(0,80));
+        log('err','Stage 5: '+escH((e.message||'Failed').slice(0,95)));
         setSS(5,'failed');return false;
     }
 }
 
-/* ═══ SUCCESS ═══ */
-function success(n,method){
-    document.getElementById('logStatus').className='rl-status done';
-    document.getElementById('logStatus').innerHTML='<i class="fas fa-check-circle"></i> Repaired';
-    document.getElementById('fileStatus').innerHTML='<i class="fas fa-check-circle" style="color:#16a34a"></i> Repaired';
+function finishSuccess(n,method,isBlankShell){
+    document.getElementById('logStatus').className='rl-status '+(isBlankShell?'warn':'done');
+    document.getElementById('logStatus').innerHTML=isBlankShell?'<i class="fas fa-exclamation-triangle"></i> Partial Shell':'<i class="fas fa-check-circle"></i> Recovered';
+    document.getElementById('fileStatus').innerHTML=isBlankShell?'<i class="fas fa-exclamation-circle" style="color:#d97706"></i> Blank Shell Only':'<i class="fas fa-check-circle" style="color:#16a34a"></i> Repaired';
     for(let i=n+1;i<=5;i++)setSS(i,'skipped');
-    log('ok','<strong>✅ Repaired with Strategy '+n+'!</strong>');
+    log(isBlankShell?'warn':'ok','<strong>'+(isBlankShell?'Partial Recovery':'Repaired')+' via Stage '+n+': '+escH(method)+'</strong>');
 
     resultBlob.arrayBuffer().then(async buf=>{
         try{
-            const doc=await pdfjsLib.getDocument({data:new Uint8Array(buf)}).promise;
+            const doc=await pdfjsLib.getDocument({data:new Uint8Array(buf),verbosity:0}).promise;
             document.getElementById('rPages').textContent=doc.numPages;
-        }catch(e){document.getElementById('rPages').textContent='?'}
+        }catch(_){document.getElementById('rPages').textContent='?';}
 
-        document.getElementById('rStrat').textContent='#'+n;
+        document.getElementById('rStrat').textContent='Stage #'+n;
         document.getElementById('rSize').textContent=szF(resultBlob.size);
         document.getElementById('rFileName').textContent=(selectedFile?.name||'file').replace(/\.pdf$/i,'')+'_repaired.pdf';
-        document.getElementById('rMethod').textContent='Strategy '+n+': '+method;
-        document.getElementById('resultTitle').textContent='PDF Repaired! 🔧';
-        document.getElementById('resultSub').textContent='Fixed via Strategy #'+n+': '+method;
+        document.getElementById('rMethod').textContent='Stage '+n+': '+method;
+        document.getElementById('resultTitle').textContent=isBlankShell?'Partial PDF Structure Recovered ⚠️':'PDF Repaired Successfully! 🔧';
+        document.getElementById('resultSub').textContent=isBlankShell
+            ?'Page shells were restored, but internal stream payloads were destroyed/blank in the damaged file.'
+            :'Fixed & visually verified using Stage #'+n+': '+method;
         showSection('resultSection');
-        toast('PDF repaired!');
+        toast(isBlankShell?'Partial shell restored':'PDF repaired cleanly!');
     });
 }
 
@@ -982,10 +1353,36 @@ function doDownload(){
     setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
 }
 
+function previewResultPdf(){
+    if(!resultBlob)return;
+    if(previewUrl)URL.revokeObjectURL(previewUrl);
+    previewUrl=URL.createObjectURL(resultBlob);
+    document.getElementById('rpPreviewFrame').src=previewUrl;
+    document.getElementById('rpModal').classList.add('open');
+}
+
+function closeRpModal(){
+    document.getElementById('rpModal').classList.remove('open');
+    document.getElementById('rpPreviewFrame').src='about:blank';
+    if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
+}
+
+function downloadRepairReport(){
+    const text='AI ToolCor Repair Report\nFile: '+(selectedFile?.name||'unknown')+'\n\n'+logLines.join('\n');
+    const blob=new Blob([text],{type:'text/plain'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='repair_log.txt';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
+}
+
 function resetTool(){
-    rawBytes=null;selectedFile=null;resultBlob=null;
+    closeRpModal();
+    rawBytes=null;selectedFile=null;resultBlob=null;blankFallbackBlob=null;blankFallbackInfo=null;logLines=[];
     fileInput.value='';hideError();showSection('uploadSection');
 }
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRpModal();});
 </script>
 <script src="js/adsense.js"></script>
 <script src="js/site-tracker.js"></script>

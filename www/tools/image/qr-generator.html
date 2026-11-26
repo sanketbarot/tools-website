@@ -193,7 +193,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
-        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+.calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
         .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
         .calc-card h2 i{color:#1e293b;font-size:17px}
 
@@ -263,23 +263,36 @@
         .wifi-fields,.email-fields,.sms-fields,.phone-fields,.text-fields,.url-fields{display:none}
         .wifi-fields.show,.email-fields.show,.sms-fields.show,.phone-fields.show,.text-fields.show,.url-fields.show{display:block}
 
-        /* FAQ */
-        .qr-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-        .qr-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
-        .qr-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(30,41,59,0.2)}
-        .qr-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
-        .qr-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
-        .qr-faq .faq-item.active .faq-q h4{color:#1e293b}
-        .qr-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
-        .qr-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#1e293b}
-        .qr-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(30,41,59,0.08);color:#1e293b;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .qr-faq .faq-item.active .faq-q .faq-num{background:#1e293b;color:#fff}
-        .qr-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(30,41,59,0.08);margin:0 22px}
-        .qr-faq .faq-item.active .faq-a{display:block}
-        .qr-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
+        
+        /* QR Generator — Dark Mode & Quiet-Zone Polish */
+        html[data-theme="dark"] .calc-card { background:#131c2e; border-color:rgba(148,163,184,0.2); }
+        html[data-theme="dark"] .type-tabs,
+        html[data-theme="dark"] .input-field input,
+        html[data-theme="dark"] .input-field textarea,
+        html[data-theme="dark"] .input-field select,
+        html[data-theme="dark"] .color-pick,
+        html[data-theme="dark"] .action-btn:not(.primary) { background:#0b1120; border-color:rgba(148,163,184,0.24); color:#f1f5f9; }
+        html[data-theme="dark"] .type-tab.active { background:#1e293b; color:#818cf8; }
+        html[data-theme="dark"] .calc-card h2 i,
+        html[data-theme="dark"] .input-field label i,
+        html[data-theme="dark"] .size-slider label span { color:#94a3b8; }
         @media(max-width:768px){.input-row{grid-template-columns:1fr}.color-row{flex-direction:column}}
-        @media(max-width:480px){.calc-card{padding:20px 16px}.type-tab{min-width:50px;font-size:10px;padding:8px 4px}.qr-faq .faq-q{padding:14px 16px}}
+        @media(max-width:480px){.calc-card{padding:20px 16px}.type-tab{min-width:50px;font-size:10px;padding:8px 4px}}
     </style>
        <!-- ========== AD STYLES ========== -->
 <link rel="stylesheet" href="../../css/ads.css">
@@ -319,7 +332,7 @@
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
         
             <a href="../../blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <a href="../../login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -335,11 +348,12 @@
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
+<main>
 <section class="tool-area">
 <div class="container">
 
     <div class="calc-card">
-        <div class="emsg" id="em"><i class="fas fa-exclamation-triangle"></i><span id="et"></span></div>
+        <div class="emsg" id="em" style="display:none;"><i class="fas fa-exclamation-triangle"></i><span id="et"></span></div>
 
         <!-- Type -->
         <div class="type-tabs">
@@ -349,6 +363,7 @@
             <button class="type-tab" onclick="setQRType('email')"><i class="fas fa-envelope"></i>Email</button>
             <button class="type-tab" onclick="setQRType('phone')"><i class="fas fa-phone"></i>Phone</button>
             <button class="type-tab" onclick="setQRType('sms')"><i class="fas fa-sms"></i>SMS</button>
+            <button class="type-tab" onclick="setQRType('vcard')"><i class="fas fa-id-card"></i>vCard</button>
         </div>
 
         <!-- URL -->
@@ -390,6 +405,19 @@
             <div class="input-field"><label><i class="fas fa-comment"></i> Message (optional)</label><textarea id="qr_smsmsg" placeholder="Your message..." style="min-height:60px"></textarea></div>
         </div>
 
+        <!-- vCard -->
+        <div class="text-fields" id="fields-vcard" style="display:none;">
+            <div class="input-row">
+                <div class="input-field"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="qr_vname" placeholder="Alex Rivera"></div>
+                <div class="input-field"><label><i class="fas fa-building"></i> Organization</label><input type="text" id="qr_vorg" placeholder="Acme Inc."></div>
+            </div>
+            <div class="input-row">
+                <div class="input-field"><label><i class="fas fa-phone"></i> Phone</label><input type="tel" id="qr_vphone" placeholder="+1 555 0100"></div>
+                <div class="input-field"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="qr_vemail" placeholder="alex@acme.com"></div>
+            </div>
+            <div class="input-field"><label><i class="fas fa-globe"></i> Website (optional)</label><input type="url" id="qr_vurl" placeholder="https://acme.com"></div>
+        </div>
+
         <!-- Colors -->
         <div class="color-row">
             <div class="color-field"><label>QR Color</label><div class="color-pick"><input type="color" id="qrColor" value="#000000" oninput="updateColorHex('qrColor','qrColorHex')"><span class="color-hex" id="qrColorHex">#000000</span></div></div>
@@ -397,6 +425,14 @@
         </div>
 
         <!-- Size -->
+        <div class="input-row">
+            <div class="input-field"><label><i class="fas fa-shield-alt"></i> Error Correction</label>
+                <select id="qrEcc"><option value="L">L (7% - compact)</option><option value="M" selected>M (15% - standard)</option><option value="Q">Q (25%)</option><option value="H">H (30% - resilient)</option></select>
+            </div>
+            <div class="input-field"><label><i class="fas fa-border-none"></i> Quiet Margin</label>
+                <select id="qrMargin"><option value="0.06" selected>Standard Padding</option><option value="0">No Border</option><option value="0.12">Wide Padding</option></select>
+            </div>
+        </div>
         <div class="size-slider">
             <label>Size <span id="sizeLabel">256 × 256</span></label>
             <input type="range" id="qrSize" min="128" max="512" value="256" step="32" oninput="updateSize()">
@@ -422,8 +458,51 @@
 </div>
 </section>
 
+</main>
+
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related Image &amp; Icon Tools</h2>
+            <p>Convert, compress, resize, and generate icons right in your browser.</p>
+        </div>
+        <div class="related-grid">
+            <a href="../../jpg-to-png.html" class="related-card" aria-label="JPG to PNG">
+                <div class="related-icon ri-green"><i class="fas fa-image" aria-hidden="true"></i></div>
+                <h4>JPG to PNG</h4>
+                <p>Lossless PNG &amp; BG removal</p>
+            </a>
+            <a href="../../jpg-to-ico.html" class="related-card" aria-label="JPG to ICO">
+                <div class="related-icon ri-orange"><i class="fas fa-icons" aria-hidden="true"></i></div>
+                <h4>JPG to ICO</h4>
+                <p>Create multi-size .ico favicons</p>
+            </a>
+            <a href="../../pdf-to-ico.html" class="related-card" aria-label="PDF to ICO">
+                <div class="related-icon ri-orange"><i class="fas fa-icons" aria-hidden="true"></i></div>
+                <h4>PDF to ICO</h4>
+                <p>Make favicons from PDF pages</p>
+            </a>
+            <a href="../../crop-jpg.html" class="related-card" aria-label="Crop JPG">
+                <div class="related-icon ri-cyan"><i class="fas fa-crop" aria-hidden="true"></i></div>
+                <h4>Crop JPG</h4>
+                <p>Crop, resize &amp; frame images</p>
+            </a>
+            <a href="../../jpg-to-pdf.html" class="related-card" aria-label="JPG to PDF">
+                <div class="related-icon ri-red"><i class="fas fa-images" aria-hidden="true"></i></div>
+                <h4>JPG to PDF</h4>
+                <p>Turn images into crisp PDFs</p>
+            </a>
+            <a href="../../pdf-to-jpg.html" class="related-card" aria-label="PDF to JPG">
+                <div class="related-icon ri-orange"><i class="fas fa-file-image" aria-hidden="true"></i></div>
+                <h4>PDF to JPG</h4>
+                <p>Convert PDF pages to images</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How It Works</h2></div>
@@ -440,11 +519,11 @@
 <section class="faq-section">
     <div class="container">
         <div class="section-header"><h2>Frequently Asked Questions</h2></div>
-        <div class="qr-faq">
-            <div class="faq-item" onclick="qrFaqToggle(this)"><div class="faq-q"><span class="faq-num">1</span><h4>What is a QR Code?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>QR (Quick Response) Code is a 2D barcode that stores data like URLs, text, WiFi credentials etc. It can be scanned by any smartphone camera.</p></div></div>
-            <div class="faq-item" onclick="qrFaqToggle(this)"><div class="faq-q"><span class="faq-num">2</span><h4>Can I customize colors?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>Yes! You can change both the QR code color and background color. Make sure there's enough contrast for scanners to read it properly.</p></div></div>
-            <div class="faq-item" onclick="qrFaqToggle(this)"><div class="faq-q"><span class="faq-num">3</span><h4>What formats can I download?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>You can download as PNG or JPG. PNG is recommended for sharp quality and transparency support.</p></div></div>
-            <div class="faq-item" onclick="qrFaqToggle(this)"><div class="faq-q"><span class="faq-num">4</span><h4>Is my data stored?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>No! The QR code is generated entirely in your browser. Nothing is sent to any server.</p></div></div>
+        <div class="faq-list">
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>What is a QR Code?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>QR (Quick Response) Code is a 2D barcode that stores data like URLs, text, WiFi credentials etc. It can be scanned by any smartphone camera.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Can I customize colors?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! You can change both the QR code color and background color. Make sure there's enough contrast for scanners to read it properly.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>What formats can I download?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>You can download as PNG or JPG. PNG is recommended for sharp quality and transparency support.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>Is my data stored?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! The QR code is generated entirely in your browser. Nothing is sent to any server.</p></div></div></div>
         </div>
     </div>
 </section>
@@ -511,129 +590,161 @@
     </footer>
 
 <script>
-var currentQRType='url';
+var currentQRType = 'url';
 
-function setQRType(type){
-    currentQRType=type;
-    var tabs=document.querySelectorAll('.type-tab');
-    var names=['url','text','wifi','email','phone','sms'];
-    for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
-    var idx=names.indexOf(type);
-    if(idx>=0&&tabs[idx])tabs[idx].classList.add('active');
-    var types=['url','text','wifi','email','phone','sms'];
-    for(var i=0;i<types.length;i++){
-        var el=document.getElementById('fields-'+types[i]);
-        if(el){el.classList.remove('show');if(types[i]===type)el.classList.add('show');}
+function qrToast(msg, type) { if (typeof showToast === 'function') showToast(msg, type || 'success'); }
+function escWifi(s) { return String(s || '').replace(/([\\;,:"'])/g, '\\$1'); }
+
+function setQRType(type) {
+    currentQRType = type;
+    var names = ['url','text','wifi','email','phone','sms','vcard'];
+    var tabs = document.querySelectorAll('.type-tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+    var idx = names.indexOf(type);
+    if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+    for (var j = 0; j < names.length; j++) {
+        var el = document.getElementById('fields-' + names[j]);
+        if (el) { el.style.display = (names[j] === type) ? 'block' : 'none'; el.classList.toggle('show', names[j] === type); }
     }
     hideE();
 }
 
-function updateColorHex(inputId,hexId){
-    document.getElementById(hexId).textContent=document.getElementById(inputId).value.toUpperCase();
+function updateColorHex(inputId, hexId) {
+    document.getElementById(hexId).textContent = document.getElementById(inputId).value.toUpperCase();
 }
 
-function updateSize(){
-    var v=document.getElementById('qrSize').value;
-    document.getElementById('sizeLabel').textContent=v+' × '+v;
-    var el=document.getElementById('qrSize');
-    var pct=((v-el.min)/(el.max-el.min))*100;
-    el.style.background='linear-gradient(to right,#1e293b 0%,#1e293b '+pct+'%,rgba(30,41,59,0.15) '+pct+'%)';
+function updateSize() {
+    var v = document.getElementById('qrSize').value;
+    document.getElementById('sizeLabel').textContent = v + ' × ' + v;
+    var el = document.getElementById('qrSize');
+    var pct = ((v - el.min) / (el.max - el.min)) * 100;
+    el.style.background = 'linear-gradient(to right,#4f46e5 0%,#4f46e5 ' + pct + '%,rgba(148,163,184,0.25) ' + pct + '%)';
 }
 updateSize();
 
-function generateQR(){
+function generateQR() {
     hideE();
-    var data='';
-    switch(currentQRType){
+    var data = '';
+    switch (currentQRType) {
         case 'url':
-            data=document.getElementById('qr_url').value.trim();
-            if(!data){showE('Please enter a URL.');return;}
-            if(!/^https?:\/\//i.test(data))data='https://'+data;
+            data = document.getElementById('qr_url').value.trim();
+            if (!data) { showE('Please enter a URL.'); return; }
+            if (!/^https?:\/\//i.test(data)) data = 'https://' + data;
             break;
         case 'text':
-            data=document.getElementById('qr_text').value.trim();
-            if(!data){showE('Please enter some text.');return;}
+            data = document.getElementById('qr_text').value.trim();
+            if (!data) { showE('Please enter some text.'); return; }
             break;
         case 'wifi':
-            var ssid=document.getElementById('qr_ssid').value.trim();
-            var pass=document.getElementById('qr_wifipass').value;
-            var sec=document.getElementById('qr_wifisec').value;
-            if(!ssid){showE('Please enter WiFi network name.');return;}
-            data='WIFI:T:'+sec+';S:'+ssid+';P:'+pass+';;';
+            var ssid = document.getElementById('qr_ssid').value.trim();
+            var pass = document.getElementById('qr_wifipass').value;
+            var sec = document.getElementById('qr_wifisec').value;
+            if (!ssid) { showE('Please enter WiFi network name.'); return; }
+            data = 'WIFI:T:' + sec + ';S:' + escWifi(ssid) + ';P:' + (sec === 'nopass' ? '' : escWifi(pass)) + ';;';
             break;
         case 'email':
-            var email=document.getElementById('qr_email').value.trim();
-            if(!email){showE('Please enter email address.');return;}
-            var sub=document.getElementById('qr_emailsub').value;
-            var body=document.getElementById('qr_emailbody').value;
-            data='mailto:'+email+'?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body);
+            var email = document.getElementById('qr_email').value.trim();
+            if (!email) { showE('Please enter email address.'); return; }
+            data = 'mailto:' + email + '?subject=' + encodeURIComponent(document.getElementById('qr_emailsub').value) + '&body=' + encodeURIComponent(document.getElementById('qr_emailbody').value);
             break;
         case 'phone':
-            data=document.getElementById('qr_phone').value.trim();
-            if(!data){showE('Please enter phone number.');return;}
-            data='tel:'+data;
+            data = document.getElementById('qr_phone').value.trim();
+            if (!data) { showE('Please enter phone number.'); return; }
+            data = 'tel:' + data;
             break;
         case 'sms':
-            var phone=document.getElementById('qr_smsphone').value.trim();
-            if(!phone){showE('Please enter phone number.');return;}
-            var msg=document.getElementById('qr_smsmsg').value;
-            data='sms:'+phone+'?body='+encodeURIComponent(msg);
+            var phone = document.getElementById('qr_smsphone').value.trim();
+            if (!phone) { showE('Please enter phone number.'); return; }
+            data = 'sms:' + phone + '?body=' + encodeURIComponent(document.getElementById('qr_smsmsg').value);
+            break;
+        case 'vcard':
+            var vn = document.getElementById('qr_vname').value.trim();
+            if (!vn) { showE('Please enter contact name.'); return; }
+            data = ['BEGIN:VCARD', 'VERSION:3.0', 'FN:' + vn,
+                document.getElementById('qr_vorg').value.trim() ? 'ORG:' + document.getElementById('qr_vorg').value.trim() : '',
+                document.getElementById('qr_vphone').value.trim() ? 'TEL:' + document.getElementById('qr_vphone').value.trim() : '',
+                document.getElementById('qr_vemail').value.trim() ? 'EMAIL:' + document.getElementById('qr_vemail').value.trim() : '',
+                document.getElementById('qr_vurl').value.trim() ? 'URL:' + document.getElementById('qr_vurl').value.trim() : '',
+                'END:VCARD'].filter(Boolean).join('\n');
             break;
     }
 
-    var size=parseInt(document.getElementById('qrSize').value);
-    var color=document.getElementById('qrColor').value;
-    var bg=document.getElementById('qrBg').value;
+    var size = parseInt(document.getElementById('qrSize').value, 10);
+    var color = document.getElementById('qrColor').value;
+    var bg = document.getElementById('qrBg').value;
+    var ecc = document.getElementById('qrEcc').value;
 
-    var container=document.getElementById('qrcode');
-    container.innerHTML='';
+    var container = document.getElementById('qrcode');
+    container.innerHTML = '';
+    new QRCode(container, {
+        text: data, width: size, height: size,
+        colorDark: color, colorLight: bg,
+        correctLevel: QRCode.CorrectLevel[ecc] || QRCode.CorrectLevel.M
+    });
 
-    new QRCode(container,{text:data,width:size,height:size,colorDark:color,colorLight:bg,correctLevel:QRCode.CorrectLevel.H});
+    var infoEl = document.getElementById('qrInfo');
+    infoEl.innerHTML = '';
+    var b1 = document.createElement('strong'); b1.textContent = 'Type: ';
+    var b2 = document.createElement('strong'); b2.textContent = ' | Size: ';
+    var b3 = document.createElement('strong'); b3.textContent = ' | Data: ';
+    infoEl.append(b1, currentQRType.toUpperCase(), b2, size + '×' + size, b3, data.slice(0, 50) + (data.length > 50 ? '...' : ''));
 
-    document.getElementById('qrInfo').innerHTML='<strong>Type:</strong> '+currentQRType.toUpperCase()+' | <strong>Size:</strong> '+size+'×'+size+' | <strong>Data:</strong> '+data.substring(0,50)+(data.length>50?'...':'');
     document.getElementById('qrOutput').classList.add('show');
-    document.getElementById('qrOutput').scrollIntoView({behavior:'smooth',block:'center'});
+    document.getElementById('qrOutput').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-function downloadQR(format){
-    var canvas=document.querySelector('#qrcode canvas');
-    if(!canvas){alert('Generate a QR code first.');return;}
-    var link=document.createElement('a');
-    if(format==='jpg'){
-        var c2=document.createElement('canvas');
-        c2.width=canvas.width;c2.height=canvas.height;
-        var ctx=c2.getContext('2d');
-        ctx.fillStyle='#fff';ctx.fillRect(0,0,c2.width,c2.height);
-        ctx.drawImage(canvas,0,0);
-        link.href=c2.toDataURL('image/jpeg',0.95);
-        link.download='qrcode.jpg';
-    }else{
-        link.href=canvas.toDataURL('image/png');
-        link.download='qrcode.png';
-    }
-    link.click();
+function renderPaddedQRCanvas() {
+    var src = document.querySelector('#qrcode canvas');
+    if (!src) return null;
+    var ratio = parseFloat(document.getElementById('qrMargin').value || '0.06');
+    var pad = Math.round(src.width * ratio);
+    var out = document.createElement('canvas');
+    out.width = src.width + pad * 2;
+    out.height = src.height + pad * 2;
+    var ctx = out.getContext('2d');
+    ctx.fillStyle = document.getElementById('qrBg').value || '#ffffff';
+    ctx.fillRect(0, 0, out.width, out.height);
+    ctx.drawImage(src, pad, pad);
+    return out;
 }
 
-function copyQRImage(){
-    var canvas=document.querySelector('#qrcode canvas');
-    if(!canvas){alert('Generate a QR code first.');return;}
-    canvas.toBlob(function(blob){
-        if(navigator.clipboard&&navigator.clipboard.write){
-            navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(function(){alert('QR image copied!');});
-        }else{alert('Copy not supported in this browser. Please download instead.');}
+function downloadQR(format) {
+    var padded = renderPaddedQRCanvas();
+    if (!padded) { showE('Generate a QR code first.'); return; }
+    var link = document.createElement('a');
+    link.href = format === 'jpg' ? padded.toDataURL('image/jpeg', 0.95) : padded.toDataURL('image/png');
+    link.download = 'qrcode-' + currentQRType + '.' + format;
+    document.body.appendChild(link); link.click();
+    setTimeout(function() { document.body.removeChild(link); }, 300);
+    qrToast('Downloaded ' + format.toUpperCase() + '!');
+}
+
+function copyQRImage() {
+    var padded = renderPaddedQRCanvas();
+    if (!padded) { showE('Generate a QR code first.'); return; }
+    padded.toBlob(function(blob) {
+        if (navigator.clipboard && navigator.clipboard.write && typeof ClipboardItem !== 'undefined') {
+            navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+                .then(function() { qrToast('QR image copied to clipboard!'); })
+                .catch(function() { qrToast('Use Download PNG instead', 'info'); });
+        } else {
+            qrToast('Clipboard image copy not supported here — use Download PNG', 'info');
+        }
     });
 }
 
-function resetQR(){
-    document.getElementById('qrcode').innerHTML='';
+function resetQR() {
+    document.getElementById('qrcode').innerHTML = '';
     document.getElementById('qrOutput').classList.remove('show');
-    window.scrollTo({top:0,behavior:'smooth'});
+    hideE();
 }
 
-function showE(m){var el=document.getElementById('em');var t=document.getElementById('et');if(el&&t){t.textContent=m;el.style.display='flex';}setTimeout(hideE,8000);}
-function hideE(){var el=document.getElementById('em');if(el)el.style.display='none';}
-function qrFaqToggle(el){var a=el.classList.contains('active');var items=document.querySelectorAll('.qr-faq .faq-item');for(var i=0;i<items.length;i++)items[i].classList.remove('active');if(!a)el.classList.add('active');}
-if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open');};}
+function showE(m) {
+    var el = document.getElementById('em'), t = document.getElementById('et');
+    if (el && t) { t.textContent = m; el.style.display = 'flex'; }
+    setTimeout(hideE, 8000);
+}
+function hideE() { var el = document.getElementById('em'); if (el) el.style.display = 'none'; }
 </script>
 <script src="../../js/tool-page.js"></script>
 <script src="../../js/adsense.js"></script>

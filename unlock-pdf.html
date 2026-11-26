@@ -188,219 +188,277 @@
     <link rel="stylesheet" href="css/ads.css">
 
     <style>
-        .file-info-card {
-            display:flex; align-items:center; gap:14px;
-            padding:16px 18px; background:rgba(255,255,255,0.45);
-            border:1px solid rgba(255,255,255,0.60);
-            border-radius:14px; margin-bottom:20px;
-        }
-        .file-info-icon {
-            width:52px; height:52px;
-            background:linear-gradient(135deg,#ef4444,#dc2626);
-            border-radius:12px; display:flex;
-            align-items:center; justify-content:center;
-            font-size:22px; color:#fff; flex-shrink:0;
-        }
-        .file-info-details { flex:1; min-width:0; }
-        .file-info-details h4 {
-            font-size:14px; font-weight:700;
-            white-space:nowrap; overflow:hidden;
-            text-overflow:ellipsis; margin-bottom:5px;
-            color:var(--text-dark,#1e293b);
-        }
-        .file-meta { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-        .file-meta span {
-            font-size:12px; color:var(--text-light,#64748b);
-            display:flex; align-items:center; gap:4px;
-        }
-        .size-badge {
-            background:rgba(239,68,68,0.10); color:#dc2626;
-            padding:2px 10px; border-radius:20px;
-            font-weight:600; font-size:12px !important;
-        }
-        .lock-status-card {
-            display:flex; align-items:center; gap:16px;
-            padding:18px 20px; border-radius:14px;
-            margin-bottom:20px; border:2px solid;
-        }
-        .lock-status-card.locked     { background:rgba(239,68,68,0.06);  border-color:rgba(239,68,68,0.22); }
-        .lock-status-card.restricted { background:rgba(245,158,11,0.06); border-color:rgba(245,158,11,0.22); }
-        .lock-status-card.open       { background:rgba(34,197,94,0.06);  border-color:rgba(34,197,94,0.22); }
-        .lock-icon-wrap {
-            width:52px; height:52px; border-radius:50%;
-            display:flex; align-items:center; justify-content:center;
-            font-size:22px; flex-shrink:0;
-        }
-        .liwrap-red   { background:rgba(239,68,68,0.12); color:#dc2626; }
-        .liwrap-amber { background:rgba(245,158,11,0.12); color:#d97706; }
-        .liwrap-green { background:rgba(34,197,94,0.12);  color:#16a34a; }
-        .lock-status-info h4 { font-size:15px; font-weight:700; margin-bottom:4px; }
-        .ls-red   { color:#dc2626; }
-        .ls-amber { color:#d97706; }
-        .ls-green { color:#16a34a; }
-        .lock-status-info p { font-size:13px; color:var(--text-light,#64748b); margin:0; }
-        .pw-field label {
-            display:block; font-size:12px; font-weight:700;
-            text-transform:uppercase; letter-spacing:0.5px;
-            color:var(--text-light,#64748b); margin-bottom:8px;
-        }
-        .pw-input-wrap { position:relative; display:flex; align-items:center; }
-        .pw-input-wrap input {
-            width:100%; padding:13px 48px 13px 16px;
-            border:1.5px solid #e2e8f0; border-radius:12px;
-            font-size:15px; background:rgba(255,255,255,0.80);
-            color:var(--text-dark,#1e293b); outline:none;
-            transition:border-color 0.2s, box-shadow 0.2s;
-            font-family:'Courier New',monospace;
-            letter-spacing:2px; box-sizing:border-box;
-        }
-        .pw-input-wrap input:focus {
-            border-color:var(--primary,#6366f1);
-            box-shadow:0 0 0 3px rgba(79,70,229,0.10);
-        }
-        .pw-input-wrap input.shake {
-            border-color:#ef4444;
-            box-shadow:0 0 0 3px rgba(239,68,68,0.10);
-            animation:shakeAnim 0.45s ease;
-        }
-        @keyframes shakeAnim {
-            0%,100%{ transform:translateX(0); }
-            20%    { transform:translateX(-7px); }
-            40%    { transform:translateX(7px); }
-            60%    { transform:translateX(-4px); }
-            80%    { transform:translateX(4px); }
-        }
-        .toggle-pw-btn {
-            position:absolute; right:12px; background:none; border:none;
-            color:var(--text-light,#94a3b8); cursor:pointer;
-            font-size:16px; padding:4px; transition:color 0.2s;
-        }
-        .toggle-pw-btn:hover { color:var(--primary,#6366f1); }
-        .attempt-list {
-            display:flex; flex-direction:column; gap:5px;
-            margin-bottom:14px; max-height:150px; overflow-y:auto;
-        }
-        .attempt-item {
-            display:flex; align-items:center; gap:9px;
-            padding:7px 12px; border-radius:8px;
-            font-size:12px; font-weight:600;
-        }
-        .attempt-item.fail { background:rgba(239,68,68,0.07); color:#dc2626; }
-        .attempt-item.ok   { background:rgba(34,197,94,0.08);  color:#16a34a; }
-        .compare-row {
-            display:flex; align-items:center; gap:20px;
-            justify-content:center; padding:22px;
-            background:rgba(255,255,255,0.38);
-            border:1px solid rgba(255,255,255,0.55);
-            border-radius:16px; margin:18px 0; flex-wrap:wrap;
-        }
-        .cmp-box { text-align:center; min-width:110px; }
-        .cmp-icon { font-size:42px; margin-bottom:7px; display:block; }
-        .cmp-icon.red   { color:#dc2626; }
-        .cmp-icon.green { color:#16a34a; }
-        .cmp-label { font-size:11px; color:var(--text-light,#64748b); font-weight:600; text-transform:uppercase; }
-        .cmp-name { font-size:12px; font-weight:700; color:var(--text-dark,#1e293b); margin-top:3px; word-break:break-all; }
-        .cmp-arrow { font-size:26px; color:var(--primary,#6366f1); opacity:0.55; }
-        .result-stats {
-            display:flex; justify-content:center;
-            gap:18px; flex-wrap:wrap; margin:16px 0;
-        }
-        .result-stat {
-            text-align:center; background:rgba(255,255,255,0.38);
-            border:1px solid rgba(255,255,255,0.55);
-            border-radius:12px; padding:13px 16px; min-width:100px;
-        }
-        .result-stat strong { display:block; font-size:20px; color:var(--primary,#6366f1); line-height:1; margin-bottom:4px; }
-        .result-stat small  { color:var(--text-light,#64748b); font-size:11px; font-weight:600; text-transform:uppercase; }
-        .error-box {
-            background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25);
-            border-radius:10px; padding:12px 16px; color:#dc2626;
-            font-size:14px; margin-bottom:16px; display:none;
-            align-items:center; gap:8px; font-weight:500;
-        }
-        .icon-red    { background:linear-gradient(135deg,#ef4444,#dc2626); }
-        .icon-blue   { background:linear-gradient(135deg,#3b82f6,#2563eb); }
-        .icon-green  { background:linear-gradient(135deg,#22c55e,#16a34a); }
-        .icon-orange { background:linear-gradient(135deg,var(--accent),var(--accent-dark)); }
-        .icon-purple { background:linear-gradient(135deg,#a855f7,#9333ea); }
-        .icon-teal   { background:linear-gradient(135deg,#14b8a6,#0d9488); }
-        .progress-detail {
-            font-size:12px; color:var(--text-light,#64748b);
-            margin-top:8px; text-align:center;
-        }
-        .faq-section { padding:50px 0; }
-        .faq-list    { max-width:750px; margin:0 auto; }
-        .faq-item {
-            background:rgba(255,255,255,0.65); backdrop-filter:blur(12px);
-            border:1px solid rgba(255,255,255,0.6); border-radius:14px;
-            margin-bottom:12px; overflow:hidden; cursor:pointer;
-            transition:all 0.3s ease; box-shadow:0 2px 10px rgba(0,0,0,0.04);
-        }
-        .faq-item:hover { background:rgba(255,255,255,0.80); box-shadow:0 4px 18px rgba(0,0,0,0.07); transform:translateY(-1px); }
-        .faq-item.open  { background:rgba(255,255,255,0.85); border-color:rgba(79,70,229,0.20); box-shadow:0 6px 25px rgba(79,70,229,0.10); }
-        .faq-question { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; gap:14px; }
-        .faq-question h4 { font-size:15px; font-weight:600; color:var(--text-dark,#1e293b); margin:0; line-height:1.4; flex:1; }
-        .faq-item.open .faq-question h4 { color:var(--primary,#6366f1); }
-        .faq-question i { font-size:13px; color:var(--text-light,#94a3b8); transition:transform 0.35s ease, color 0.3s ease; flex-shrink:0; width:20px; text-align:center; }
-        .faq-item.open .faq-question i { transform:rotate(180deg); color:var(--primary,#6366f1); }
-        .faq-answer { max-height:0; overflow:hidden; transition:max-height 0.4s ease, opacity 0.3s ease; opacity:0; }
-        .faq-item.open .faq-answer { max-height:400px; opacity:1; }
-        .faq-answer-inner { padding:0 22px 20px; }
-        .faq-item.open .faq-answer-inner { border-top:1px solid rgba(79,70,229,0.10); padding-top:16px; margin:0 22px; padding-left:0; padding-right:0; }
-        .faq-answer-inner p { font-size:14px; line-height:1.7; color:var(--text-light,#64748b); margin:0; }
-        .faq-answer-inner p strong { color:var(--text-dark,#1e293b); }
-        .faq-num { width:28px; height:28px; background:rgba(79,70,229,0.10); color:var(--primary,#6366f1); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; transition:all 0.3s ease; }
-        .faq-item.open .faq-num { background:var(--primary,#6366f1); color:#fff; }
+/* Unlock PDF — Bento SaaS Light/Dark Theme */
+.error-box {
+    display: none; align-items: center; gap: 10px; padding: 12px 16px;
+    margin: 0 0 16px; border-radius: 12px;
+    background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #dc2626; font-size: 13.5px; font-weight: 600;
+}
+.error-box i { font-size: 16px; flex-shrink: 0; }
+.progress-detail {
+    font-size: 12.5px; color: var(--text-medium, #64748b);
+    margin-top: 6px; min-height: 18px;
+}
+.file-info-card {
+    display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+    background: var(--bg-card, #ffffff); border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 14px; margin-bottom: 16px;
+}
+.file-info-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(239, 68, 68, 0.12); color: #ef4444;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+}
+.file-info-details { flex: 1; min-width: 0; }
+.file-info-details h4 {
+    font-size: 14px; font-weight: 700; margin: 0 0 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    color: var(--text-main, #0f172a);
+}
+.file-meta {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    font-size: 12px; color: var(--text-muted, #64748b);
+}
+.size-badge {
+    background: rgba(79,70,229, 0.12); color: #6366f1;
+    padding: 2px 8px; border-radius: 99px; font-weight: 700; font-size: 11px;
+}
+.btn-danger-sm {
+    width: 34px; height: 34px; border: 1px solid rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.08); color: #ef4444; border-radius: 9px;
+    cursor: pointer; font-size: 14px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.2s; flex-shrink: 0;
+}
+.btn-danger-sm:hover { background: rgba(239, 68, 68, 0.18); }
 
-        @media(max-width:768px) {
-            .compare-row { flex-direction:column; gap:12px; }
-            .cmp-arrow   { transform:rotate(90deg); }
-            .result-stats { gap:10px; }
-            .result-stat  { min-width:80px; padding:11px 12px; }
-            .lock-status-card { flex-direction:column; text-align:center; }
-            .faq-question { padding:16px 18px; gap:10px; }
-            .faq-question h4 { font-size:14px; }
-            .faq-answer-inner { padding:0 18px 18px; }
-            .faq-item.open .faq-answer-inner { margin:0 18px; }
-            .faq-num { width:24px; height:24px; font-size:11px; }
-        }
-        @media(max-width:480px) {
-            .file-info-card { flex-wrap:wrap; }
-            .faq-question   { padding:14px; }
-            .faq-question h4 { font-size:13px; }
-            .faq-item { border-radius:10px; margin-bottom:8px; }
-        }
+.lock-status-card {
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 14px; border: 1px solid;
+}
+.lock-status-card.locked { background: rgba(239, 68, 68, 0.07); border-color: rgba(239, 68, 68, 0.25); }
+.lock-status-card.restricted { background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.28); }
+.lock-status-card.unlocked { background: rgba(22, 163, 74, 0.08); border-color: rgba(22, 163, 74, 0.25); }
+.lock-icon-wrap {
+    width: 46px; height: 46px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+}
+.liwrap-red { background: rgba(239, 68, 68, 0.14); color: #ef4444; }
+.liwrap-amber { background: rgba(245, 158, 11, 0.16); color: #d97706; }
+.liwrap-green { background: rgba(22, 163, 74, 0.14); color: #16a34a; }
+.lock-status-info h4 { font-size: 15px; font-weight: 700; margin: 0 0 3px; }
+.ls-red { color: #dc2626; }
+.ls-amber { color: #d97706; }
+.ls-green { color: #16a34a; }
+.lock-status-info p { font-size: 12.5px; color: var(--text-muted, #64748b); margin: 0; }
 
-        /* ════════════════════════════════════════
-           RELATED TOOLS
-        ════════════════════════════════════════ */
-        .related-tools { padding:56px 0 48px; }
-        .related-tools .section-header { text-align:center; margin-bottom:32px; }
-        .related-tools .section-header h2 { font-size:clamp(1.4rem,3vw,1.9rem); font-weight:800; color:var(--text-dark,#1e293b); margin:0 0 8px; }
-        .related-tools .section-header p  { color:var(--text-light,#64748b); font-size:0.95rem; margin:0; }
-        .related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; }
-        .related-card {
-            display:flex; flex-direction:column; align-items:center; text-align:center;
-            padding:20px 12px 16px; border-radius:16px;
-            background:rgba(255,255,255,0.6); backdrop-filter:blur(14px);
-            border:1.5px solid rgba(255,255,255,0.5);
-            box-shadow:0 4px 20px rgba(0,0,0,0.06);
-            text-decoration:none; transition:transform 0.22s,box-shadow 0.22s,border-color 0.22s;
-        }
-        .related-card:hover { transform:translateY(-4px); box-shadow:0 14px 36px rgba(0,0,0,0.13); border-color:rgba(22,163,74,0.22); }
-        .related-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:10px; flex-shrink:0; }
-        .related-card h4 { font-size:12.5px; font-weight:700; color:var(--text-dark,#1e293b); margin:0 0 4px; line-height:1.3; }
-        .related-card p  { font-size:11px; color:var(--text-light,#64748b); margin:0; line-height:1.4; }
-        .ri-blue   { background:rgba(59,130,246,0.12);  color:#2563eb; }
-        .ri-green  { background:rgba(34,197,94,0.12);   color:#16a34a; }
-        .ri-orange { background:rgba(16,185,129,0.12);  color:var(--accent-dark); }
-        .ri-pink   { background:rgba(236,72,153,0.12);  color:#db2777; }
-        .ri-purple { background:rgba(139,92,246,0.12);  color:var(--primary); }
-        .ri-teal   { background:rgba(20,184,166,0.12);  color:#0d9488; }
-        .ri-indigo { background:rgba(79,70,229,0.12);  color:#4f46e5; }
-        .ri-red    { background:rgba(239,68,68,0.12);   color:#dc2626; }
-        @media(max-width:480px){ .related-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;} .related-card{padding:14px 8px 12px;} .related-icon{width:38px;height:38px;font-size:16px;} .related-card h4{font-size:12px;} }
-    </style>
+.options-panel {
+    background: var(--bg-card, #ffffff); border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 14px; padding: 18px 20px; margin-bottom: 16px;
+}
+.options-panel h4 {
+    font-size: 14px; font-weight: 700; margin: 0 0 12px;
+    display: flex; align-items: center; gap: 8px; color: var(--text-main, #0f172a);
+}
+.options-panel h4 i { color: #6366f1; }
+
+.ul-perm-grid {
+    display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px;
+}
+.ul-perm-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; padding: 5px 10px;
+    border-radius: 99px; border: 1px solid;
+}
+.ul-perm-pill.denied {
+    background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.25); color: #dc2626;
+}
+.ul-perm-pill.allowed {
+    background: rgba(22, 163, 74, 0.08); border-color: rgba(22, 163, 74, 0.25); color: #16a34a;
+}
+
+.ul-sub-label {
+    display: block; font-size: 12.5px; font-weight: 700;
+    color: var(--text-main, #0f172a); margin: 14px 0 8px;
+}
+.ul-mode-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px;
+}
+.ul-dpi-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px;
+}
+.ul-choice-btn {
+    border: 1.5px solid var(--border-color, #e2e8f0);
+    background: var(--bg-soft, #f8fafc); border-radius: 11px;
+    padding: 11px 12px; text-align: left; cursor: pointer;
+    transition: all 0.18s; color: var(--text-main, #0f172a);
+}
+.ul-choice-btn:hover { border-color: #6366f1; }
+.ul-choice-btn.active {
+    border-color: #6366f1; background: rgba(79,70,229, 0.09);
+    box-shadow: 0 0 0 3px rgba(79,70,229, 0.14);
+}
+.ul-choice-btn strong {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700; margin-bottom: 3px;
+}
+.ul-choice-btn small {
+    display: block; font-size: 11.5px; color: var(--text-muted, #64748b); line-height: 1.35;
+}
+.ul-rec-tag {
+    font-size: 10px; font-weight: 700; padding: 1px 6px;
+    border-radius: 99px; background: #16a34a; color: #fff; margin-left: auto;
+}
+
+.pw-field label {
+    display: block; font-size: 12.5px; font-weight: 600;
+    color: var(--text-main, #0f172a); margin-bottom: 6px;
+}
+.pw-input-wrap { position: relative; }
+.pw-input-wrap input {
+    width: 100%; padding: 12px 44px 12px 14px;
+    border: 1.5px solid var(--border-color, #e2e8f0); border-radius: 11px;
+    background: var(--bg-soft, #f8fafc); color: var(--text-main, #0f172a);
+    font-size: 14px; font-family: inherit; outline: none;
+    box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.pw-input-wrap input:focus {
+    border-color: #6366f1; box-shadow: 0 0 0 3px rgba(79,70,229, 0.14);
+}
+.pw-input-wrap input.error-border {
+    border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14);
+}
+.toggle-pw-btn {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--text-muted, #64748b);
+    cursor: pointer; font-size: 15px; padding: 4px;
+}
+.attempt-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.attempt-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    border-radius: 8px; font-size: 12.5px;
+}
+.attempt-item.wrong {
+    background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.22); color: #dc2626;
+}
+
+.action-btn {
+    width: 100%; padding: 14px 20px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff;
+    font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s; box-shadow: 0 4px 16px rgba(79,70,229, 0.28);
+}
+.action-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(79,70,229, 0.36); }
+.action-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.compare-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px; margin: 16px 0; flex-wrap: wrap;
+}
+.cmp-box {
+    background: var(--bg-soft, #f8fafc); border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 12px; padding: 14px 18px; text-align: center; flex: 1; min-width: 130px;
+}
+.cmp-icon { font-size: 26px; margin-bottom: 6px; display: block; }
+.cmp-icon.red { color: #ef4444; }
+.cmp-icon.green { color: #16a34a; }
+.cmp-label { font-size: 11px; color: var(--text-muted, #64748b); text-transform: uppercase; letter-spacing: 0.5px; }
+.cmp-name { font-size: 12.5px; font-weight: 700; color: var(--text-main, #0f172a); margin-top: 3px; word-break: break-all; }
+.cmp-arrow { font-size: 20px; color: var(--text-muted, #64748b); }
+
+.result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
+.result-stat {
+    background: var(--bg-soft, #f8fafc); border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 11px; padding: 12px; text-align: center;
+}
+.result-stat strong { display: block; font-size: 17px; font-weight: 800; color: var(--text-main, #0f172a); }
+.result-stat small { font-size: 11px; color: var(--text-muted, #64748b); }
+.result-actions {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px;
+}
+
+.download-btn {
+    width: 100%; padding: 14px 20px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #16a34a, #15803d); color: #fff;
+    font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s; box-shadow: 0 4px 16px rgba(22, 163, 74, 0.28); margin-top: 14px;
+}
+.download-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(22, 163, 74, 0.36); }
+
+.btn-outline {
+    padding: 9px 16px; border: 1.5px solid var(--border-color, #e2e8f0);
+    background: var(--bg-card, #ffffff); color: var(--text-main, #0f172a);
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    font-family: inherit; cursor: pointer; display: inline-flex; align-items: center;
+    gap: 7px; text-decoration: none; transition: all 0.2s;
+}
+.btn-outline:hover { border-color: #6366f1; color: #6366f1; }
+
+.ul-method-note {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+    border-radius: 99px; font-size: 12px; font-weight: 600;
+    background: rgba(79,70,229, 0.1); color: #6366f1; margin-top: 8px;
+}
+
+/* Preview Modal */
+.ul-modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(2, 6, 23, 0.72); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 18px;
+}
+.ul-modal-overlay.open { display: flex; }
+.ul-modal-box {
+    width: 100%; max-width: 920px; height: 86vh;
+    background: var(--bg-card, #ffffff); border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+.ul-modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 18px; border-bottom: 1px solid var(--border-color, #e2e8f0);
+    gap: 10px;
+}
+.ul-modal-head h3 {
+    margin: 0; font-size: 15px; font-weight: 700; color: var(--text-main, #0f172a);
+    display: flex; align-items: center; gap: 8px;
+}
+.ul-modal-actions { display: flex; gap: 8px; align-items: center; }
+.ul-modal-body { flex: 1; background: #1e293b; }
+.ul-modal-body iframe { width: 100%; height: 100%; border: none; display: block; }
+
+/* Dark Mode Overrides */
+html[data-theme="dark"] .file-info-card,
+html[data-theme="dark"] .options-panel,
+html[data-theme="dark"] .btn-outline,
+html[data-theme="dark"] .ul-modal-box {
+    background: #131c2e; border-color: rgba(148, 163, 184, 0.2);
+}
+html[data-theme="dark"] .cmp-box,
+html[data-theme="dark"] .result-stat,
+html[data-theme="dark"] .ul-choice-btn,
+html[data-theme="dark"] .pw-input-wrap input {
+    background: #0b1120; border-color: rgba(148, 163, 184, 0.22); color: #f1f5f9;
+}
+html[data-theme="dark"] .ul-choice-btn.active {
+    background: rgba(79,70,229, 0.16); border-color: #818cf8;
+}
+html[data-theme="dark"] .ls-red { color: #f87171; }
+html[data-theme="dark"] .ls-amber { color: #fbbf24; }
+html[data-theme="dark"] .ls-green { color: #4ade80; }
+html[data-theme="dark"] .ul-perm-pill.denied { color: #fca5a5; }
+html[data-theme="dark"] .ul-perm-pill.allowed { color: #86efac; }
+html[data-theme="dark"] .ul-method-note { color: #a5b4fc; background: rgba(79,70,229, 0.18); }
+html[data-theme="dark"] .error-box { background: rgba(239, 68, 68, 0.14); border-color: rgba(248, 113, 113, 0.35); color: #fca5a5; }
+
+@media (max-width: 640px) {
+    .ul-mode-grid, .ul-dpi-grid { grid-template-columns: 1fr; }
+    .result-stats { grid-template-columns: 1fr; }
+}
+</style>
     
     
     
@@ -484,7 +542,7 @@
     <div class="container">
         <div class="tool-wrapper glass">
 
-            <div class="error-box" id="errorBox" role="alert" aria-live="polite">
+            <div class="error-box" id="errorBox" role="alert" aria-live="polite" style="display:none;">
                 <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                 <span id="errorText">Something went wrong.</span>
             </div>
@@ -527,7 +585,7 @@
                             <h4 id="fileName">document.pdf</h4>
                             <div class="file-meta">
                                 <span class="size-badge" id="fileSize">0 KB</span>
-                                <span><i class="fas fa-hdd" aria-hidden="true"></i> PDF File</span>
+                                <span id="filePages"><i class="fas fa-copy" aria-hidden="true"></i> Analyzing...</span>
                             </div>
                         </div>
                         <div class="files-actions">
@@ -544,17 +602,17 @@
                         </div>
                         <div class="lock-status-info">
                             <h4 class="ls-red" id="lockTitle">Analyzing PDF...</h4>
-                            <p id="lockDesc">Checking security settings</p>
+                            <p id="lockDesc">Checking encryption and permission flags</p>
                         </div>
                     </div>
 
-                    <!-- Password Section -->
+                    <!-- Open-Password Section -->
                     <div id="pwSection" style="display:none;">
-                        <div class="options-panel glass-light">
-                            <h4><i class="fas fa-key" aria-hidden="true"></i> Enter PDF Password</h4>
+                        <div class="options-panel">
+                            <h4><i class="fas fa-key" aria-hidden="true"></i> Enter PDF Open Password</h4>
                             <div class="attempt-list" id="attemptList" style="display:none;" role="log" aria-label="Password attempts"></div>
-                            <div class="pw-field" style="margin-bottom:12px;">
-                                <label for="pwInput">Password</label>
+                            <div class="pw-field" style="margin-bottom:10px;">
+                                <label for="pwInput">Document Password</label>
                                 <div class="pw-input-wrap">
                                     <input type="password" id="pwInput" placeholder="Enter PDF password..." autocomplete="current-password" aria-label="PDF password" onkeydown="if(event.key==='Enter') doUnlock()">
                                     <button class="toggle-pw-btn" type="button" onclick="togglePw()" aria-label="Toggle password visibility">
@@ -562,9 +620,26 @@
                                     </button>
                                 </div>
                             </div>
-                            <p style="font-size:12px;color:var(--text-light);margin:0;">
-                                <i class="fas fa-info-circle" aria-hidden="true"></i>
-                                Enter the password that was used to protect this PDF file.
+
+                            <span class="ul-sub-label">Output Resolution Quality</span>
+                            <div class="ul-dpi-grid" id="pwDpiGrid" role="radiogroup" aria-label="Output resolution quality">
+                                <button type="button" class="ul-choice-btn" data-scale="1.5" data-q="0.88" onclick="setDpiChoice(this)">
+                                    <strong>1.5x Compact</strong>
+                                    <small>108 DPI · Smaller file size</small>
+                                </button>
+                                <button type="button" class="ul-choice-btn active" data-scale="2.0" data-q="0.92" onclick="setDpiChoice(this)">
+                                    <strong>2.0x Sharp <span class="ul-rec-tag">Rec</span></strong>
+                                    <small>144 DPI · Best balance</small>
+                                </button>
+                                <button type="button" class="ul-choice-btn" data-scale="3.0" data-q="0.95" onclick="setDpiChoice(this)">
+                                    <strong>3.0x Print</strong>
+                                    <small>216 DPI · Ultra crisp text</small>
+                                </button>
+                            </div>
+
+                            <p style="font-size:12px;color:var(--text-muted);margin:12px 0 0;">
+                                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                Password verification &amp; decryption happen 100% locally in your browser.
                             </p>
                         </div>
                         <button class="action-btn" id="unlockBtn" type="button" onclick="doUnlock()">
@@ -572,26 +647,66 @@
                         </button>
                     </div>
 
-                    <!-- Restrictions only -->
+                    <!-- Restrictions Only (Owner Password) -->
                     <div id="restrictSection" style="display:none;">
-                        <div class="options-panel glass-light" style="text-align:center;padding:26px;">
-                            <i class="fas fa-lock-open" style="font-size:50px;color:#16a34a;margin-bottom:14px;display:block;" aria-hidden="true"></i>
-                            <h4 style="font-size:16px;font-weight:700;margin-bottom:8px;color:#16a34a;">No Open Password Required!</h4>
-                            <p style="font-size:13px;color:var(--text-light);">
-                                This PDF has permission restrictions but no open password. Click below to remove all restrictions.
+                        <div class="options-panel">
+                            <h4><i class="fas fa-shield-alt" aria-hidden="true"></i> Permission Restrictions Detected</h4>
+                            <p style="font-size:13px;color:var(--text-muted);margin:0 0 8px;">
+                                This PDF opens without a user password, but restricts permissions below. We can unlock it instantly without a password:
                             </p>
+                            <div class="ul-perm-grid" id="permGrid"></div>
+
+                            <span class="ul-sub-label">Unlock Mode</span>
+                            <div class="ul-mode-grid" id="restrictModeGrid" role="radiogroup" aria-label="Unlock mode">
+                                <button type="button" class="ul-choice-btn active" data-mode="lossless" onclick="setRestrictMode('lossless', this)">
+                                    <strong><i class="fas fa-bolt" aria-hidden="true"></i> Lossless Vector <span class="ul-rec-tag">Rec</span></strong>
+                                    <small>Strips restrictions while preserving 100% selectable text &amp; vectors (auto-verified)</small>
+                                </button>
+                                <button type="button" class="ul-choice-btn" data-mode="raster" onclick="setRestrictMode('raster', this)">
+                                    <strong><i class="fas fa-image" aria-hidden="true"></i> High-DPI Rebuild</strong>
+                                    <small>Re-renders pages into a fresh DRM-free PDF (fallback for encrypted streams)</small>
+                                </button>
+                            </div>
+
+                            <div id="restrictDpiWrap" style="display:none;">
+                                <span class="ul-sub-label">Rebuild Resolution Quality</span>
+                                <div class="ul-dpi-grid">
+                                    <button type="button" class="ul-choice-btn" data-scale="1.5" data-q="0.88" onclick="setDpiChoice(this)">
+                                        <strong>1.5x Compact</strong>
+                                        <small>108 DPI · Smaller file</small>
+                                    </button>
+                                    <button type="button" class="ul-choice-btn active" data-scale="2.0" data-q="0.92" onclick="setDpiChoice(this)">
+                                        <strong>2.0x Sharp <span class="ul-rec-tag">Rec</span></strong>
+                                        <small>144 DPI · Crisp &amp; fast</small>
+                                    </button>
+                                    <button type="button" class="ul-choice-btn" data-scale="3.0" data-q="0.95" onclick="setDpiChoice(this)">
+                                        <strong>3.0x Print</strong>
+                                        <small>216 DPI · Print quality</small>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <button class="action-btn" type="button" onclick="doRemoveRestrictions()">
+                        <button class="action-btn" id="removeRestrictBtn" type="button" onclick="doRemoveRestrictions()">
                             <i class="fas fa-unlock-alt" aria-hidden="true"></i> Remove All Restrictions
                         </button>
                     </div>
 
-                    <!-- Already open -->
-                    <div id="alreadyOpenSection" style="display:none;" role="status">
-                        <div class="options-panel glass-light" style="text-align:center;padding:22px;">
+                    <!-- Already Unlocked -->
+                    <div id="alreadyOpenSection" style="display:none;">
+                        <div class="options-panel" style="text-align:center;padding:26px;">
                             <i class="fas fa-check-circle" style="font-size:48px;color:#16a34a;margin-bottom:12px;display:block;" aria-hidden="true"></i>
-                            <h4 style="font-size:15px;font-weight:700;color:#16a34a;margin-bottom:6px;">PDF is Already Unlocked!</h4>
-                            <p style="font-size:13px;color:var(--text-light);">This PDF has no password protection.</p>
+                            <h4 style="font-size:16px;font-weight:700;margin:0 0 8px;justify-content:center;color:#16a34a;">PDF Is Already Unlocked!</h4>
+                            <p style="font-size:13px;color:var(--text-muted);margin:0 0 18px;">
+                                This PDF has no open password or permission restrictions. Want to encrypt it or inspect a clean copy?
+                            </p>
+                            <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+                                <button class="action-btn" type="button" style="width:auto;padding:11px 18px;" onclick="doCleanResave()">
+                                    <i class="fas fa-broom" aria-hidden="true"></i> Export Clean Unencrypted Copy
+                                </button>
+                                <a href="protect-pdf.html" class="btn-outline">
+                                    <i class="fas fa-lock" aria-hidden="true"></i> Protect PDF with Password
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -619,7 +734,10 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <h2>PDF Unlocked Successfully! 🔓</h2>
-                    <p>Password protection has been removed</p>
+                    <p>Password &amp; permission restrictions have been removed</p>
+                    <div class="ul-method-note" id="rMethodBadge">
+                        <i class="fas fa-check" aria-hidden="true"></i> <span>Unlocked cleanly</span>
+                    </div>
                     <div class="compare-row" aria-label="File comparison">
                         <div class="cmp-box">
                             <i class="fas fa-file-pdf cmp-icon red" aria-hidden="true"></i>
@@ -646,7 +764,7 @@
                             <strong style="color:#16a34a;">
                                 <i class="fas fa-lock-open" aria-hidden="true"></i>
                             </strong>
-                            <small>Unlocked</small>
+                            <small>No Password</small>
                         </div>
                     </div>
                     <div class="result-info glass-light">
@@ -656,13 +774,22 @@
                         </div>
                         <div class="info-item">
                             <i class="fas fa-check-circle" style="color:#16a34a;" aria-hidden="true"></i>
-                            <span>No Password Required</span>
+                            <span>Print, Copy &amp; Edit Allowed</span>
                         </div>
                     </div>
                     <button class="download-btn" type="button" onclick="doDownload()">
                         <i class="fas fa-download" aria-hidden="true"></i> Download Unlocked PDF
                     </button>
                     <div class="result-actions">
+                        <button class="btn-outline" type="button" onclick="openUlPreview()">
+                            <i class="fas fa-eye" aria-hidden="true"></i> Preview Unlocked PDF
+                        </button>
+                        <a href="compress-pdf.html" class="btn-outline">
+                            <i class="fas fa-compress-alt" aria-hidden="true"></i> Compress PDF
+                        </a>
+                        <a href="protect-pdf.html" class="btn-outline">
+                            <i class="fas fa-lock" aria-hidden="true"></i> Protect PDF
+                        </a>
                         <button class="btn-outline" type="button" onclick="resetTool()">
                             <i class="fas fa-redo" aria-hidden="true"></i> Unlock Another
                         </button>
@@ -675,6 +802,26 @@
 </section>
 </main>
 
+<!-- Unlocked PDF Preview Modal -->
+<div class="ul-modal-overlay" id="ulModal" role="dialog" aria-modal="true" aria-labelledby="ulModalTitle" onclick="if(event.target===this) closeUlPreview()">
+    <div class="ul-modal-box">
+        <div class="ul-modal-head">
+            <h3 id="ulModalTitle"><i class="fas fa-lock-open" style="color:#16a34a;" aria-hidden="true"></i> Unlocked PDF Preview</h3>
+            <div class="ul-modal-actions">
+                <button type="button" class="btn-outline" onclick="doDownload()" style="padding:7px 14px;">
+                    <i class="fas fa-download" aria-hidden="true"></i> Download
+                </button>
+                <button type="button" class="btn-outline" onclick="closeUlPreview()" style="padding:7px 12px;" aria-label="Close preview">
+                    <i class="fas fa-times" aria-hidden="true"></i> Close
+                </button>
+            </div>
+        </div>
+        <div class="ul-modal-body">
+            <iframe id="ulPreviewFrame" title="Unlocked PDF Preview"></iframe>
+        </div>
+    </div>
+</div>
+
 <!-- ═══════════════════════════════════════
      RELATED TOOLS
 ═══════════════════════════════════════ -->
@@ -684,7 +831,38 @@
             <h2 id="related-heading">Related PDF Tools</h2>
             <p>Everything you need to work with PDFs — all free, all browser-based.</p>
         </div>
-        <div class="related-grid" id="relatedGrid"></div>
+        <div class="related-grid" id="relatedGrid">
+            <a href="protect-pdf.html" class="related-card glass" aria-label="Protect PDF">
+                <div class="related-icon ri-indigo"><i class="fas fa-lock" aria-hidden="true"></i></div>
+                <h4>Protect PDF</h4>
+                <p>Add password &amp; permissions</p>
+            </a>
+            <a href="redact-pdf.html" class="related-card glass" aria-label="Redact PDF">
+                <div class="related-icon ri-pink"><i class="fas fa-user-secret" aria-hidden="true"></i></div>
+                <h4>Redact PDF</h4>
+                <p>Permanently black out text</p>
+            </a>
+            <a href="repair-pdf.html" class="related-card glass" aria-label="Repair PDF">
+                <div class="related-icon ri-orange"><i class="fas fa-wrench" aria-hidden="true"></i></div>
+                <h4>Repair PDF</h4>
+                <p>Fix damaged or corrupt PDFs</p>
+            </a>
+            <a href="compress-pdf.html" class="related-card glass" aria-label="Compress PDF">
+                <div class="related-icon ri-green"><i class="fas fa-compress-alt" aria-hidden="true"></i></div>
+                <h4>Compress PDF</h4>
+                <p>Reduce file size cleanly</p>
+            </a>
+            <a href="sign-pdf.html" class="related-card glass" aria-label="Sign PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-signature" aria-hidden="true"></i></div>
+                <h4>Sign PDF</h4>
+                <p>Add e-signatures to pages</p>
+            </a>
+            <a href="merge-pdf.html" class="related-card glass" aria-label="Merge PDF">
+                <div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div>
+                <h4>Merge PDF</h4>
+                <p>Combine multiple PDFs into one</p>
+            </a>
+        </div>
     </div>
 </section>
 
@@ -778,7 +956,7 @@
                 </div>
                 <div class="faq-answer">
                     <div class="faq-answer-inner">
-                        <p>The content is rendered at high resolution and embedded as images. Text may not be selectable, but all visual content is <strong>100% preserved</strong>.</p>
+                        <p>For permission-restricted PDFs without encrypted content streams, <strong>Lossless Vector Unlock</strong> preserves 100% selectable text and formatting. For open-password or stream-encrypted PDFs, pages are rebuilt cleanly at crisp High-DPI (up to 3x Print quality) with original page size and rotation intact.</p>
                     </div>
                 </div>
             </div>
@@ -862,67 +1040,47 @@
 
 <script>
 /* ════════════════════════════════════════
-   FOOTER YEAR
+   FOOTER YEAR & WORKER
 ════════════════════════════════════════ */
-(function() {
+(function initYear() {
     const year = new Date().getFullYear();
-    // બધા possible IDs try કરે
-    const ids = ['currentYear', 'footerYear', 'year', 'footer-year'];
-    ids.forEach(function(id) {
+    ['currentYear', 'footerYear', 'year', 'footer-year'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = year;
     });
 })();
-/* ════════════════════════════════════════
-   PDF.js Worker
-════════════════════════════════════════ */
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
 
 /* ════════════════════════════════════════
    STATE
 ════════════════════════════════════════ */
-let rawBytes     = null;
-let selectedFile = null;
-let unlockedBlob = null;
-let attemptCount = 0;
-let pdfPageCount = 0;
-let verifiedPw   = null;
-
-/* ════════════════════════════════════════
-   MOBILE MENU
-════════════════════════════════════════ */
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function() {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        const isOpen = nav.classList.toggle('open');
-        ham.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    };
-}
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        if (nav) nav.classList.remove('open');
-        if (ham) ham.setAttribute('aria-expanded', 'false');
-    }
-});
+let rawBytes       = null;
+let selectedFile   = null;
+let unlockedBlob   = null;
+let previewUrl     = null;
+let attemptCount   = 0;
+let pdfPageCount   = 0;
+let verifiedPw     = null;
+let analyzedDoc    = null;
+let restrictMode   = 'lossless';
+let renderScale    = 2.0;
+let renderQuality  = 0.92;
 
 /* ════════════════════════════════════════
    HELPERS
 ════════════════════════════════════════ */
-function toggleFaq(el) {
-    const open = el.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!open) el.classList.add('open');
-}
-
 function showSection(id) {
     document.querySelectorAll('[data-section]').forEach(s => s.style.display = 'none');
     const el = document.getElementById(id);
     if (el) el.style.display = 'block';
+    const wrap = document.querySelector('.tool-wrapper');
+    if (wrap && id !== 'uploadSection') {
+        window.scrollTo({ top: Math.max(0, wrap.offsetTop - 80), behavior: 'smooth' });
+    }
 }
 
 function setProgress(pct, title, sub, detail) {
@@ -932,17 +1090,18 @@ function setProgress(pct, title, sub, detail) {
     const s = document.getElementById('processSubtitle');
     const d = document.getElementById('progressDetail');
     const bar = document.querySelector('.progress-bar');
-    if (f) f.style.width = pct + '%';
-    if (t) t.textContent = Math.round(pct) + '%';
-    if (bar) bar.setAttribute('aria-valuenow', Math.round(pct));
-    if (h && title)          h.textContent = title;
-    if (s && sub)            s.textContent = sub;
+    const r = Math.min(100, Math.max(0, Math.round(pct)));
+    if (f) f.style.width = r + '%';
+    if (t) t.textContent = r + '%';
+    if (bar) bar.setAttribute('aria-valuenow', r);
+    if (h && title) h.textContent = title;
+    if (s && sub) s.textContent = sub;
     if (d && detail !== undefined) d.textContent = detail;
 }
 
 function szF(bytes) {
     if (!bytes) return '0 B';
-    const k = 1024, u = ['B','KB','MB','GB'];
+    const k = 1024, u = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + u[i];
 }
@@ -952,7 +1111,7 @@ function showError(msg) {
     document.getElementById('errorText').textContent = msg;
     el.style.display = 'flex';
     if (el._timer) clearTimeout(el._timer);
-    el._timer = setTimeout(() => el.style.display = 'none', 8000);
+    el._timer = setTimeout(() => { el.style.display = 'none'; }, 9000);
 }
 
 function hideError() {
@@ -960,7 +1119,24 @@ function hideError() {
     if (el) el.style.display = 'none';
 }
 
-function tick() { return new Promise(r => setTimeout(r, 30)); }
+function tick(ms = 10) { return new Promise(r => setTimeout(r, ms)); }
+
+function setDpiChoice(btn) {
+    const group = btn.closest('.ul-dpi-grid');
+    if (group) group.querySelectorAll('.ul-choice-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderScale   = parseFloat(btn.dataset.scale || '2.0');
+    renderQuality = parseFloat(btn.dataset.q || '0.92');
+}
+
+function setRestrictMode(mode, btn) {
+    restrictMode = mode;
+    const grid = document.getElementById('restrictModeGrid');
+    if (grid) grid.querySelectorAll('.ul-choice-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const dpiWrap = document.getElementById('restrictDpiWrap');
+    if (dpiWrap) dpiWrap.style.display = mode === 'raster' ? 'block' : 'none';
+}
 
 /* ════════════════════════════════════════
    DRAG & DROP + FILE INPUT
@@ -968,383 +1144,447 @@ function tick() { return new Promise(r => setTimeout(r, 30)); }
 const dropZone  = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 
-dropZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropZone.classList.add('drag-over');
+['dragenter', 'dragover'].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.add('dragover', 'drag-over');
+    });
 });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+['dragleave', 'drop'].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover', 'drag-over');
+    });
+});
 dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handleFile(f);
 });
 fileInput.addEventListener('change', () => {
     if (fileInput.files[0]) handleFile(fileInput.files[0]);
 });
 
-/* ════════════════════════════════════════
-   HANDLE FILE
-════════════════════════════════════════ */
 async function handleFile(file) {
     hideError();
-    if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-        showError('Please select a valid PDF file.');
+    if (!file || (!file.type.includes('pdf') && !/\.pdf$/i.test(file.name))) {
+        showError('Please upload a valid PDF file (.pdf).');
         return;
     }
+    if (file.size === 0) {
+        showError('This PDF file is empty (0 bytes).');
+        return;
+    }
+
     selectedFile = file;
+    attemptCount = 0;
+    verifiedPw   = null;
+    analyzedDoc  = null;
+
     const ab = await file.arrayBuffer();
     rawBytes = new Uint8Array(ab);
 
+    // Quick %PDF signature scan in first 1024 bytes
+    const headStr = new TextDecoder('latin1').decode(rawBytes.subarray(0, 1024));
+    if (!headStr.includes('%PDF-')) {
+        showError('Missing %PDF- header. This file appears corrupted — try Repair PDF first.');
+        rawBytes = null;
+        return;
+    }
+
     document.getElementById('fileName').textContent = file.name;
     document.getElementById('fileSize').textContent = szF(file.size);
+    document.getElementById('filePages').innerHTML  = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Analyzing...';
+    document.getElementById('attemptList').innerHTML = '';
+    document.getElementById('attemptList').style.display = 'none';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwSection').style.display = 'none';
+    document.getElementById('restrictSection').style.display = 'none';
+    document.getElementById('alreadyOpenSection').style.display = 'none';
 
     showSection('optionsSection');
     await analyzePDF();
 }
 
 /* ════════════════════════════════════════
-   ANALYZE PDF
+   ANALYZE PDF SECURITY FLAGS
 ════════════════════════════════════════ */
+function updateLockCard(state, title, desc) {
+    const card = document.getElementById('lockCard');
+    const wrap = document.getElementById('lockIconWrap');
+    const icon = document.getElementById('lockIcon');
+    const h    = document.getElementById('lockTitle');
+    const p    = document.getElementById('lockDesc');
+
+    card.className = 'lock-status-card ' + (state === 'locked' ? 'locked' : state === 'restricted' ? 'restricted' : 'unlocked');
+    wrap.className = 'lock-icon-wrap ' + (state === 'locked' ? 'liwrap-red' : state === 'restricted' ? 'liwrap-amber' : 'liwrap-green');
+    h.className    = state === 'locked' ? 'ls-red' : state === 'restricted' ? 'ls-amber' : 'ls-green';
+    icon.className = state === 'locked' ? 'fas fa-lock' : state === 'restricted' ? 'fas fa-user-shield' : 'fas fa-lock-open';
+    h.textContent  = title;
+    p.textContent  = desc;
+}
+
+function renderPermissions(perms) {
+    const grid = document.getElementById('permGrid');
+    grid.innerHTML = '';
+    if (!perms || !Array.isArray(perms) || typeof pdfjsLib.PermissionFlag === 'undefined') {
+        const p = document.createElement('span');
+        p.className = 'ul-perm-pill denied';
+        p.innerHTML = '<i class="fas fa-shield-alt" aria-hidden="true"></i> Owner Encryption Active';
+        grid.appendChild(p);
+        return;
+    }
+    const PF = pdfjsLib.PermissionFlag;
+    const checks = [
+        { flag: PF.PRINT,          label: 'Printing' },
+        { flag: PF.COPY,           label: 'Copy Text' },
+        { flag: PF.MODIFY_CONTENTS,label: 'Edit Pages' },
+        { flag: PF.MODIFY_ANNOTATIONS, label: 'Comments & Forms' },
+        { flag: PF.ASSEMBLE,       label: 'Assemble' },
+    ];
+    for (const c of checks) {
+        if (c.flag === undefined) continue;
+        const ok = perms.includes(c.flag);
+        const pill = document.createElement('span');
+        pill.className = 'ul-perm-pill ' + (ok ? 'allowed' : 'denied');
+        pill.innerHTML = '<i class="fas ' + (ok ? 'fa-check' : 'fa-ban') + '" aria-hidden="true"></i> ' + c.label + (ok ? ' Allowed' : ' Blocked');
+        grid.appendChild(pill);
+    }
+}
+
 async function analyzePDF() {
-    setLockUI('loading');
-    document.getElementById('pwSection').style.display          = 'none';
-    document.getElementById('restrictSection').style.display    = 'none';
-    document.getElementById('alreadyOpenSection').style.display = 'none';
-
+    updateLockCard('locked', 'Analyzing PDF...', 'Inspecting encryption & permission flags');
+    let pdfJsDoc = null;
     try {
-        try {
-            const doc = await pdfjsLib.getDocument({
-                data: rawBytes.slice(0)
-            }).promise;
-
-            pdfPageCount = doc.numPages;
-            const isEnc = doc._pdfInfo ? doc._pdfInfo.encrypted : false;
-
-            if (isEnc) {
-                setLockUI('restricted');
-                document.getElementById('restrictSection').style.display = 'block';
-            } else {
-                setLockUI('open');
-                document.getElementById('alreadyOpenSection').style.display = 'block';
-            }
-
-        } catch (err) {
-            const errName = err.name || '';
-            const errMsg  = (err.message || '').toLowerCase();
-
-            if (errName === 'PasswordException' ||
-                errMsg.includes('password') ||
-                errMsg.includes('encrypted')) {
-                setLockUI('locked');
-                document.getElementById('pwSection').style.display = 'block';
-            } else {
-                throw err;
-            }
+        pdfJsDoc = await pdfjsLib.getDocument({ data: rawBytes.slice(), stopAtErrors: false }).promise;
+    } catch (err) {
+        const isPw = err && (err.name === 'PasswordException' || /password/i.test(err.message || ''));
+        if (isPw) {
+            pdfPageCount = 0;
+            document.getElementById('filePages').innerHTML = '<i class="fas fa-lock" aria-hidden="true"></i> Encrypted Pages';
+            updateLockCard('locked', 'Open Password Required', 'This PDF is encrypted and requires a password to open');
+            document.getElementById('pwSection').style.display = 'block';
+            setTimeout(() => document.getElementById('pwInput').focus(), 120);
+            return;
         }
-    } catch(e) {
-        console.warn('Analyze error:', e);
-        setLockUI('locked');
-        document.getElementById('pwSection').style.display = 'block';
+        document.getElementById('filePages').innerHTML = '<i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Damaged PDF';
+        updateLockCard('locked', 'Damaged or Invalid PDF', 'Could not parse PDF structure');
+        showError('Could not read this PDF (' + (err && err.message ? err.message : 'invalid structure') + '). If damaged, try Repair PDF first.');
+        return;
+    }
+
+    analyzedDoc  = pdfJsDoc;
+    pdfPageCount = pdfJsDoc.numPages;
+    document.getElementById('filePages').innerHTML =
+        '<i class="fas fa-copy" aria-hidden="true"></i> ' + pdfPageCount + ' Page' + (pdfPageCount === 1 ? '' : 's');
+
+    // Check owner encryption / permission flags via pdf-lib AND pdfjs permissions AND raw /Encrypt token
+    let pdfLibEncrypted = false;
+    try {
+        await PDFLib.PDFDocument.load(rawBytes.slice());
+    } catch (e) {
+        if (/encrypt/i.test((e && e.message) || '')) pdfLibEncrypted = true;
+    }
+
+    let perms = null;
+    try { perms = await pdfJsDoc.getPermissions(); } catch (_) {}
+
+    const rawTextHeadTail =
+        new TextDecoder('latin1').decode(rawBytes.subarray(0, Math.min(rawBytes.length, 4096))) +
+        new TextDecoder('latin1').decode(rawBytes.subarray(Math.max(0, rawBytes.length - 16384)));
+    const hasEncryptToken = /\/Encrypt\s+\d+\s+\d+\s+R/.test(rawTextHeadTail);
+
+    if (pdfLibEncrypted || perms !== null || hasEncryptToken) {
+        updateLockCard('restricted', 'Permission Restricted PDF', 'No open password needed — owner restrictions active');
+        renderPermissions(perms);
+        setRestrictMode('lossless', document.querySelector('#restrictModeGrid .ul-choice-btn[data-mode="lossless"]'));
+        document.getElementById('restrictSection').style.display = 'block';
+    } else {
+        updateLockCard('unlocked', 'No Password Protection Found', 'This PDF has no open password or editing restrictions');
+        document.getElementById('alreadyOpenSection').style.display = 'block';
     }
 }
 
 /* ════════════════════════════════════════
-   LOCK STATUS UI
-════════════════════════════════════════ */
-function setLockUI(state) {
-    const card  = document.getElementById('lockCard');
-    const wrap  = document.getElementById('lockIconWrap');
-    const icon  = document.getElementById('lockIcon');
-    const title = document.getElementById('lockTitle');
-    const desc  = document.getElementById('lockDesc');
-
-    const cfg = {
-        loading: {
-            card:'lock-status-card locked', wrap:'lock-icon-wrap liwrap-red',
-            icon:'fas fa-spinner fa-spin', tClass:'ls-red',
-            t:'Analyzing PDF...', d:'Checking security settings'
-        },
-        locked: {
-            card:'lock-status-card locked', wrap:'lock-icon-wrap liwrap-red',
-            icon:'fas fa-lock', tClass:'ls-red',
-            t:'Password Protected', d:'This PDF requires a password to open.'
-        },
-        restricted: {
-            card:'lock-status-card restricted', wrap:'lock-icon-wrap liwrap-amber',
-            icon:'fas fa-lock', tClass:'ls-amber',
-            t:'Permission Restricted', d:'Has restrictions but no open password.'
-        },
-        open: {
-            card:'lock-status-card open', wrap:'lock-icon-wrap liwrap-green',
-            icon:'fas fa-lock-open', tClass:'ls-green',
-            t:'No Protection Found', d:'This PDF has no password or restrictions.'
-        }
-    };
-
-    const c = cfg[state] || cfg.loading;
-    card.className  = c.card;
-    wrap.className  = c.wrap;
-    icon.className  = c.icon;
-    title.className = c.tClass;
-    title.textContent = c.t;
-    desc.textContent  = c.d;
-}
-
-/* ════════════════════════════════════════
-   TOGGLE PASSWORD VISIBILITY
+   PASSWORD UI HELPERS
 ════════════════════════════════════════ */
 function togglePw() {
     const inp  = document.getElementById('pwInput');
     const icon = document.getElementById('eyeIcon');
-    if (inp.type === 'password') {
-        inp.type = 'text';
-        icon.className = 'fas fa-eye-slash';
-    } else {
-        inp.type = 'password';
-        icon.className = 'fas fa-eye';
-    }
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+}
+
+function addAttempt(pw) {
+    attemptCount++;
+    const list = document.getElementById('attemptList');
+    list.style.display = 'flex';
+    const item = document.createElement('div');
+    item.className = 'attempt-item wrong';
+    const icon = document.createElement('i');
+    icon.className = 'fas fa-times-circle';
+    icon.setAttribute('aria-hidden', 'true');
+    const span = document.createElement('span');
+    const masked = pw.length > 2 ? pw[0] + '*'.repeat(Math.min(pw.length - 2, 8)) + pw[pw.length - 1] : '*'.repeat(pw.length);
+    span.textContent = 'Attempt #' + attemptCount + ': "' + masked + '" — Incorrect password';
+    item.appendChild(icon);
+    item.appendChild(span);
+    list.appendChild(item);
 }
 
 /* ════════════════════════════════════════
-   RENDER PDF PAGES TO IMAGES
+   CORE UNLOCK ENGINES
 ════════════════════════════════════════ */
-async function renderPDFToImages(pdfJsDoc, onProgress) {
-    const totalPages = pdfJsDoc.numPages;
-    const images     = [];
+async function measureInkScore(pdfDoc, pageNum) {
+    const page = await pdfDoc.getPage(pageNum);
+    const vp   = page.getViewport({ scale: 0.35 });
+    const c    = document.createElement('canvas');
+    c.width    = Math.max(1, Math.round(vp.width));
+    c.height   = Math.max(1, Math.round(vp.height));
+    const ctx  = c.getContext('2d', { willReadFrequently: true });
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, c.width, c.height);
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    const data = ctx.getImageData(0, 0, c.width, c.height).data;
+    let ink = 0;
+    for (let i = 0; i < data.length; i += 4) {
+        if (data[i] < 245 || data[i + 1] < 245 || data[i + 2] < 245) ink++;
+    }
+    c.width = 0; c.height = 0;
+    return ink;
+}
 
-    const canvas = document.createElement('canvas');
-    const ctx    = canvas.getContext('2d');
-    canvas.style.display = 'none';
-    document.body.appendChild(canvas);
+async function tryLosslessUnlock(origPdfJsDoc) {
+    const srcDoc = await PDFLib.PDFDocument.load(rawBytes.slice(), {
+        ignoreEncryption: true,
+        updateMetadata: false
+    });
+    const outDoc = await PDFLib.PDFDocument.create();
+    const indices = srcDoc.getPageIndices();
+    const copied = await outDoc.copyPages(srcDoc, indices);
+    copied.forEach(p => outDoc.addPage(p));
 
+    const t = srcDoc.getTitle();   if (t) outDoc.setTitle(t);
+    const a = srcDoc.getAuthor();  if (a) outDoc.setAuthor(a);
+    const s = srcDoc.getSubject(); if (s) outDoc.setSubject(s);
+    outDoc.setProducer('AI ToolCor Unlock PDF');
+
+    const outBytes = await outDoc.save();
+
+    // Verification gate: ensure pdf-lib didn't copy raw ciphertext streams producing blank pages!
+    let testDoc;
     try {
-        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-            const page     = await pdfJsDoc.getPage(pageNum);
-            const viewport = page.getViewport({ scale: 2.0 });
-
-            canvas.width  = viewport.width;
-            canvas.height = viewport.height;
-
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            await page.render({
-                canvasContext: ctx,
-                viewport:      viewport,
-                background:    'white'
-            }).promise;
-
-            const imgDataUrl = canvas.toDataURL('image/jpeg', 0.92);
-            const imgBase64  = imgDataUrl.split(',')[1];
-            const binaryStr  = atob(imgBase64);
-            const imgBytes   = new Uint8Array(binaryStr.length);
-            for (let i = 0; i < binaryStr.length; i++) {
-                imgBytes[i] = binaryStr.charCodeAt(i);
-            }
-
-            images.push({
-                bytes:      imgBytes,
-                width:      viewport.width,
-                height:     viewport.height,
-                origWidth:  page.view[2] - page.view[0],
-                origHeight: page.view[3] - page.view[1],
-            });
-
-            if (onProgress) onProgress(pageNum, totalPages);
-            await tick();
+        testDoc = await pdfjsLib.getDocument({ data: outBytes.slice() }).promise;
+    } catch (_) {
+        return { ok: false, reason: 'encrypted_streams' };
+    }
+    if (!testDoc || testDoc.numPages !== origPdfJsDoc.numPages) {
+        return { ok: false, reason: 'page_mismatch' };
+    }
+    const samplePages = testDoc.numPages > 1 ? [1, testDoc.numPages] : [1];
+    for (const pNum of samplePages) {
+        const origInk = await measureInkScore(origPdfJsDoc, pNum);
+        const testInk = await measureInkScore(testDoc, pNum);
+        if (origInk > 20 && testInk < Math.max(5, Math.floor(origInk * 0.15))) {
+            return { ok: false, reason: 'blank_after_lossless' };
         }
-    } finally {
-        document.body.removeChild(canvas);
+    }
+    try { await testDoc.destroy(); } catch (_) {}
+    return { ok: true, bytes: outBytes, pages: testDoc.numPages };
+}
+
+async function rebuildViaCanvas(pdfJsDoc, scale, quality) {
+    const total  = pdfJsDoc.numPages;
+    const ulDoc  = await PDFLib.PDFDocument.create();
+    ulDoc.setProducer('AI ToolCor Unlock PDF');
+
+    for (let pageNum = 1; pageNum <= total; pageNum++) {
+        const pctBase = 15 + Math.round(((pageNum - 1) / total) * 78);
+        setProgress(pctBase, 'Decrypting & Rebuilding...', 'Rendering page ' + pageNum + ' of ' + total + ' (' + scale + 'x)', '');
+        await tick(0);
+
+        const page     = await pdfJsDoc.getPage(pageNum);
+        // Use rotated visual viewport (scale 1.0) so /Rotate 90/270 pages keep exact dimensions!
+        const origVP   = page.getViewport({ scale: 1.0 });
+        const viewport = page.getViewport({ scale });
+
+        const canvas   = document.createElement('canvas');
+        canvas.width   = Math.max(1, Math.round(viewport.width));
+        canvas.height  = Math.max(1, Math.round(viewport.height));
+        const ctx      = canvas.getContext('2d');
+        ctx.fillStyle  = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        canvas.width = 0; canvas.height = 0;
+
+        const binStr  = atob(dataUrl.split(',')[1]);
+        const imgArr  = new Uint8Array(binStr.length);
+        for (let k = 0; k < binStr.length; k++) imgArr[k] = binStr.charCodeAt(k);
+
+        const img    = await ulDoc.embedJpg(imgArr);
+        const newPg  = ulDoc.addPage([origVP.width, origVP.height]);
+        newPg.drawImage(img, { x: 0, y: 0, width: origVP.width, height: origVP.height });
     }
 
-    return images;
+    setProgress(96, 'Finalizing Unlocked PDF...', 'Writing unencrypted document', '');
+    await tick(15);
+    return await ulDoc.save();
 }
 
 /* ════════════════════════════════════════
-   BUILD PDF FROM IMAGES
-════════════════════════════════════════ */
-async function buildPDFFromImages(images) {
-    const newDoc = await PDFLib.PDFDocument.create();
-
-    for (const img of images) {
-        const jpgImage = await newDoc.embedJpg(img.bytes);
-        const page     = newDoc.addPage([img.origWidth, img.origHeight]);
-        page.drawImage(jpgImage, {
-            x: 0, y: 0,
-            width:  img.origWidth,
-            height: img.origHeight,
-        });
-    }
-
-    newDoc.setCreator('PDFTools - Free Online PDF Unlocker');
-    newDoc.setProducer('PDFTools');
-
-    return await newDoc.save();
-}
-
-/* ════════════════════════════════════════
-   DO UNLOCK
+   ACTIONS
 ════════════════════════════════════════ */
 async function doUnlock() {
-    const pw  = document.getElementById('pwInput').value;
-    const inp = document.getElementById('pwInput');
-    const btn = document.getElementById('unlockBtn');
-
+    hideError();
+    const pw = document.getElementById('pwInput').value;
     if (!pw) {
-        inp.classList.add('shake');
-        setTimeout(() => inp.classList.remove('shake'), 500);
+        document.getElementById('pwInput').classList.add('error-border');
         showError('Please enter the PDF password.');
         return;
     }
+    document.getElementById('pwInput').classList.remove('error-border');
 
+    const btn = document.getElementById('unlockBtn');
     btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Verifying Password...';
+
+    let pdfJsDoc;
+    try {
+        pdfJsDoc = await pdfjsLib.getDocument({ data: rawBytes.slice(), password: pw }).promise;
+    } catch (_) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-lock-open" aria-hidden="true"></i> Unlock PDF';
+        document.getElementById('pwInput').classList.add('error-border');
+        document.getElementById('pwInput').value = '';
+        document.getElementById('pwInput').focus();
+        addAttempt(pw);
+        showError('Incorrect password — please try again.');
+        return;
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-lock-open" aria-hidden="true"></i> Unlock PDF';
+    verifiedPw   = pw;
+    pdfPageCount = pdfJsDoc.numPages;
+
+    showSection('processingSection');
+    setProgress(10, 'Password Verified!', 'Preparing to unlock ' + pdfPageCount + ' page(s)', '');
+
+    try {
+        const outBytes = await rebuildViaCanvas(pdfJsDoc, renderScale, renderQuality);
+        try { await pdfJsDoc.destroy(); } catch (_) {}
+        unlockedBlob = new Blob([outBytes], { type: 'application/pdf' });
+        setProgress(100, 'PDF Unlocked!', 'Done', '');
+        await tick(200);
+        showResult(pdfPageCount, 'High-DPI Visual Unlock (' + renderScale + 'x)');
+    } catch (err) {
+        showSection('optionsSection');
+        showError('Failed to unlock PDF: ' + (err && err.message ? err.message : 'Unknown error'));
+    }
+}
+
+async function doRemoveRestrictions() {
     hideError();
     showSection('processingSection');
-    setProgress(5, 'Verifying password...', 'Checking credentials', '');
+    setProgress(10, 'Removing Restrictions...', 'Inspecting document security', '');
 
     try {
-        let pdfJsDoc;
+        const doc = analyzedDoc || await pdfjsLib.getDocument({ data: rawBytes.slice() }).promise;
+        pdfPageCount = doc.numPages;
 
-        try {
-            pdfJsDoc = await pdfjsLib.getDocument({
-                data:     rawBytes.slice(0),
-                password: pw
-            }).promise;
-
-            pdfPageCount = pdfJsDoc.numPages;
-
-        } catch(err) {
-            attemptCount++;
-            addAttempt(pw, false);
-
-            showSection('optionsSection');
-            inp.value = '';
-            inp.classList.add('shake');
-            setTimeout(() => { inp.classList.remove('shake'); inp.focus(); }, 500);
-            btn.disabled = false;
-            showError(`❌ Wrong password (attempt ${attemptCount}). Please try again.`);
-            return;
+        if (restrictMode === 'lossless') {
+            setProgress(35, 'Applying Lossless Unlock...', 'Stripping owner restrictions & verifying readable text', '');
+            await tick(20);
+            const res = await tryLosslessUnlock(doc);
+            if (res.ok) {
+                unlockedBlob = new Blob([res.bytes], { type: 'application/pdf' });
+                setProgress(100, 'Restrictions Removed!', 'Lossless vector copy verified', '');
+                await tick(200);
+                showResult(pdfPageCount, 'Lossless Vector Unlock (Selectable Text)');
+                return;
+            }
+            // Seamless automatic fallback when encrypted content streams require visual rebuild
+            setProgress(45, 'Stream Encryption Detected', 'Switching automatically to High-DPI Rebuild for clean pages', '');
+            await tick(40);
+            const fallbackBytes = await rebuildViaCanvas(doc, renderScale, renderQuality);
+            unlockedBlob = new Blob([fallbackBytes], { type: 'application/pdf' });
+            setProgress(100, 'Restrictions Removed!', 'Clean rebuilt PDF ready', '');
+            await tick(200);
+            showResult(pdfPageCount, 'Auto-Verified High-DPI Unlock (' + renderScale + 'x)');
+        } else {
+            const outBytes = await rebuildViaCanvas(doc, renderScale, renderQuality);
+            unlockedBlob = new Blob([outBytes], { type: 'application/pdf' });
+            setProgress(100, 'Restrictions Removed!', 'Done', '');
+            await tick(200);
+            showResult(pdfPageCount, 'High-DPI Visual Unlock (' + renderScale + 'x)');
         }
-
-        addAttempt(pw, true);
-        verifiedPw = pw;
-
-        setProgress(15, 'Password verified ✓', 'Rendering pages...', `0 of ${pdfPageCount} pages`);
-        await tick();
-
-        const images = await renderPDFToImages(pdfJsDoc, (current, total) => {
-            const pct = 15 + ((current / total) * 65);
-            setProgress(
-                pct,
-                'Rendering pages...',
-                `Processing page ${current} of ${total}`,
-                `Page ${current}/${total} — rendering at 2× quality`
-            );
-        });
-
-        setProgress(82, 'Building PDF...', 'Creating unlocked document', '');
-        await tick();
-
-        const newBytes = await buildPDFFromImages(images);
-        unlockedBlob   = new Blob([newBytes], { type: 'application/pdf' });
-
-        setProgress(100, 'Done!', 'PDF unlocked successfully!', '');
-        await new Promise(r => setTimeout(r, 600));
-
-        showResult();
-
-    } catch(e) {
-        console.error('Unlock error:', e);
+    } catch (err) {
         showSection('optionsSection');
-        btn.disabled = false;
-        showError('Unlock failed: ' + e.message);
+        showError('Failed to remove restrictions: ' + (err && err.message ? err.message : 'Unknown error'));
     }
 }
 
-/* ════════════════════════════════════════
-   REMOVE RESTRICTIONS
-════════════════════════════════════════ */
-async function doRemoveRestrictions() {
+async function doCleanResave() {
+    hideError();
     showSection('processingSection');
-    setProgress(10, 'Loading PDF...', 'Reading document', '');
-    await tick();
-
+    setProgress(25, 'Re-saving Clean PDF...', 'Removing unused structures', '');
     try {
-        const pdfJsDoc = await pdfjsLib.getDocument({
-            data: rawBytes.slice(0)
-        }).promise;
-
-        pdfPageCount = pdfJsDoc.numPages;
-
-        setProgress(20, 'Rendering pages...', `0 of ${pdfPageCount} pages`, '');
-        await tick();
-
-        const images = await renderPDFToImages(pdfJsDoc, (current, total) => {
-            const pct = 20 + ((current / total) * 65);
-            setProgress(
-                pct,
-                'Rendering pages...',
-                `Processing page ${current} of ${total}`,
-                `Page ${current}/${total}`
-            );
-        });
-
-        setProgress(88, 'Building PDF...', 'Creating unrestricted document', '');
-        await tick();
-
-        const newBytes = await buildPDFFromImages(images);
-        unlockedBlob   = new Blob([newBytes], { type: 'application/pdf' });
-
-        setProgress(100, 'Done!', 'Restrictions removed!', '');
-        await new Promise(r => setTimeout(r, 600));
-
-        showResult();
-
-    } catch(e) {
-        console.error('Remove restrictions error:', e);
+        const src = await PDFLib.PDFDocument.load(rawBytes.slice(), { ignoreEncryption: true });
+        src.setProducer('AI ToolCor Unlock PDF');
+        const outBytes = await src.save();
+        unlockedBlob = new Blob([outBytes], { type: 'application/pdf' });
+        setProgress(100, 'Done!', '', '');
+        await tick(150);
+        showResult(pdfPageCount || src.getPageCount(), 'Lossless Clean Unencrypted Copy');
+    } catch (err) {
         showSection('optionsSection');
-        showError('Failed: ' + e.message);
+        showError('Could not clean-save PDF: ' + (err && err.message ? err.message : 'Unknown error'));
     }
 }
 
 /* ════════════════════════════════════════
-   ATTEMPT HISTORY
+   RESULT, PREVIEW MODAL, DOWNLOAD & RESET
 ════════════════════════════════════════ */
-function addAttempt(pw, success) {
-    const list   = document.getElementById('attemptList');
-    list.style.display = 'flex';
-    const masked = pw.substring(0, 2) + '*'.repeat(Math.max(0, pw.length - 2));
-    const item   = document.createElement('div');
-    item.className = 'attempt-item ' + (success ? 'ok' : 'fail');
-    item.setAttribute('role', 'listitem');
-    item.innerHTML = success
-        ? `<i class="fas fa-check-circle" aria-hidden="true"></i> Password accepted: "${masked}"`
-        : `<i class="fas fa-times-circle" aria-hidden="true"></i> Wrong password: "${masked}" — attempt ${attemptCount}`;
-    list.appendChild(item);
-    list.scrollTop = list.scrollHeight;
-}
+function showResult(pages, methodLabel) {
+    const origN = selectedFile ? selectedFile.name : 'locked.pdf';
+    const newN  = origN.replace(/\.pdf$/i, '') + '_unlocked.pdf';
 
-/* ════════════════════════════════════════
-   SHOW RESULT
-════════════════════════════════════════ */
-function showResult() {
-    const origName = selectedFile ? selectedFile.name : 'document.pdf';
-    const newName  = origName.replace(/\.pdf$/i, '') + '_unlocked.pdf';
-
-    document.getElementById('origName').textContent  = origName;
-    document.getElementById('newName').textContent   = newName;
-    document.getElementById('rPages').textContent    = pdfPageCount;
-    document.getElementById('rSize').textContent     = szF(unlockedBlob ? unlockedBlob.size : 0);
-    document.getElementById('rFileName').textContent = newName;
+    document.getElementById('origName').textContent  = origN;
+    document.getElementById('newName').textContent   = newN;
+    document.getElementById('rPages').textContent    = pages;
+    document.getElementById('rSize').textContent     = szF(unlockedBlob.size);
+    document.getElementById('rFileName').textContent = newN;
+    const badge = document.querySelector('#rMethodBadge span');
+    if (badge) badge.textContent = methodLabel || 'Unlocked cleanly';
 
     showSection('resultSection');
 }
 
-/* ════════════════════════════════════════
-   DOWNLOAD
-════════════════════════════════════════ */
+function openUlPreview() {
+    if (!unlockedBlob) return;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(unlockedBlob);
+    document.getElementById('ulPreviewFrame').src = previewUrl;
+    document.getElementById('ulModal').classList.add('open');
+}
+
+function closeUlPreview() {
+    const modal = document.getElementById('ulModal');
+    if (modal) modal.classList.remove('open');
+    const frame = document.getElementById('ulPreviewFrame');
+    if (frame) frame.src = 'about:blank';
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeUlPreview();
+});
+
 function doDownload() {
-    if (!unlockedBlob) { showError('No unlocked PDF available.'); return; }
+    if (!unlockedBlob) return;
     const name = selectedFile
         ? selectedFile.name.replace(/\.pdf$/i, '') + '_unlocked.pdf'
         : 'unlocked.pdf';
@@ -1352,13 +1592,12 @@ function doDownload() {
     const a   = document.createElement('a');
     a.href = url; a.download = name;
     document.body.appendChild(a); a.click();
-    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 600);
 }
 
-/* ════════════════════════════════════════
-   RESET
-════════════════════════════════════════ */
 function resetTool() {
+    closeUlPreview();
+    if (analyzedDoc) { try { analyzedDoc.destroy(); } catch (_) {} analyzedDoc = null; }
     rawBytes = null; selectedFile = null; unlockedBlob = null;
     attemptCount = 0; pdfPageCount = 0; verifiedPw = null;
     fileInput.value = '';
@@ -1419,30 +1658,6 @@ function resetTool() {
     else setTimeout(setup, 200);
 })();
 
-/* ════════════════════════════════════════
-   RELATED TOOLS
-════════════════════════════════════════ */
-(function renderRelated() {
-    const tools = [
-        { href:'merge-pdf.html',    icon:'fa-object-group', color:'ri-teal',   label:'Merge PDF',     desc:'Combine multiple PDFs' },
-        { href:'split-pdf.html',    icon:'fa-cut',          color:'ri-blue',   label:'Split PDF',     desc:'Divide into pages' },
-        { href:'compress-pdf.html', icon:'fa-compress-alt', color:'ri-green',  label:'Compress PDF',  desc:'Reduce file size' },
-        { href:'sign-pdf.html',     icon:'fa-signature',    color:'ri-purple', label:'Sign PDF',      desc:'Add signatures' },
-        { href:'ocr-pdf.html',      icon:'fa-eye',          color:'ri-indigo', label:'OCR PDF',       desc:'Scanned PDF to text' },
-        { href:'jpg-to-pdf.html',   icon:'fa-image',        color:'ri-orange', label:'JPG to PDF',    desc:'Images to PDF' },
-        { href:'pdf-to-jpg.html',   icon:'fa-file-image',   color:'ri-pink',   label:'PDF to JPG',    desc:'Extract page images' },
-    ];
-    const g = document.getElementById('relatedGrid');
-    if (!g) return;
-    const f = document.createDocumentFragment();
-    tools.forEach(({ href, icon, color, label, desc }) => {
-        const a = document.createElement('a');
-        a.href = href; a.className = 'related-card glass'; a.setAttribute('aria-label', label);
-        a.innerHTML = `<div class="related-icon ${color}"><i class="fas ${icon}" aria-hidden="true"></i></div><h4>${label}</h4><p>${desc}</p>`;
-        f.appendChild(a);
-    });
-    g.appendChild(f);
-})();
 </script>
 <script src="js/site-tracker.js"></script>
 

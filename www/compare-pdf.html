@@ -192,135 +192,127 @@
 <link rel="stylesheet" href="css/ads.css">
 
 <!-- ========== SCRIPTS ========== -->
-<script defer="" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
     <style>
         *{box-sizing:border-box}
+        #uploadSection,#processingSection,#resultSection{padding:8px 0}
+        .icon-purple{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
 
-        /* ── Upload Dual Zone ── */
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.28);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        [data-theme="dark"] .error-box{color:#fca5a5}
+
+        /* Dual Upload */
         .dual-upload{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-        .upload-slot{background:rgba(255,255,255,.45);border:2px dashed #e2e8f0;border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
-        .upload-slot:hover,.upload-slot.drag-over{border-color:var(--primary,#6366f1);background:rgba(79,70,229,.05)}
-        .upload-slot.loaded{border-style:solid;border-color:#22c55e;background:rgba(34,197,94,.05)}
-        .upload-slot.loaded-b{border-color:#3b82f6;background:rgba(59,130,246,.05)}
+        .upload-slot{background:var(--bg-card,#ffffff);border:2px dashed var(--border-subtle,#cbd5e1);border-radius:16px;padding:22px 16px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+        .upload-slot:hover,.upload-slot.dragover,.upload-slot.drag-over{border-color:var(--primary,#6366f1);background:rgba(79,70,229,.06)}
+        .upload-slot.loaded{border-style:solid;border-color:#22c55e;background:rgba(34,197,94,.06)}
+        .upload-slot.loaded-b{border-style:solid;border-color:#3b82f6;background:rgba(59,130,246,.06)}
         .slot-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;margin:0 auto 10px}
         .slot-icon.a{background:linear-gradient(135deg,#22c55e,#16a34a)}
         .slot-icon.b{background:linear-gradient(135deg,#3b82f6,#2563eb)}
-        .slot-title{font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:4px}
-        .slot-desc{font-size:12px;color:var(--text-light);margin-bottom:12px}
-        .slot-file-info{display:none;text-align:left;padding:10px 12px;background:rgba(255,255,255,.7);border-radius:10px;margin-top:8px}
+        .slot-title{font-size:14px;font-weight:700;color:var(--text-dark,#1e293b);margin-bottom:4px}
+        .slot-desc{font-size:12px;color:var(--text-light,#64748b);margin-bottom:12px}
+        .slot-file-info{display:none;text-align:left;padding:10px 12px;background:var(--surface-muted,#f8fafc);border:1px solid var(--border-subtle,#e2e8f0);border-radius:10px;margin-top:10px}
         .slot-file-info.show{display:block}
-        .slot-file-name{font-size:12px;font-weight:700;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
-        .slot-file-meta{font-size:11px;color:var(--text-light);display:flex;gap:8px}
-        .slot-clear{position:absolute;top:10px;right:10px;width:22px;height:22px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:11px;cursor:pointer;border:none;z-index:2}
+        .slot-file-name{font-size:12px;font-weight:700;color:var(--text-dark,#1e293b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+        .slot-file-meta{font-size:11px;color:var(--text-light,#64748b);display:flex;gap:8px}
+        .slot-clear{position:absolute;top:10px;right:10px;width:24px;height:24px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:none;z-index:2}
         .upload-slot.loaded .slot-clear,.upload-slot.loaded-b .slot-clear{display:flex}
 
-        /* ── Compare View ── */
-        .compare-workspace{background:#0f172a;border-radius:16px;overflow:hidden;margin-bottom:16px}
+        /* Options */
+        .options-panel{background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;padding:16px;margin-bottom:16px}
+        .options-panel h4{margin:0 0 12px;font-size:14px;font-weight:700;color:var(--text-dark,#1e293b);display:flex;align-items:center;gap:8px}
+        .opt-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-light,#64748b);display:block;margin-bottom:7px}
+        .opt-pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+        .opt-pill{padding:7px 13px;border-radius:9px;border:1.5px solid var(--border-subtle,#e2e8f0);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);user-select:none;display:inline-flex;align-items:center;gap:6px}
+        .opt-pill:hover{border-color:var(--primary,#6366f1)}
+        .opt-pill.active{background:var(--primary,#6366f1);color:#fff;border-color:var(--primary,#6366f1)}
+        .opt-pill input{display:none}
+
+        /* Compare Workspace */
+        .compare-workspace{background:#0f172a;border-radius:16px;overflow:hidden;margin-bottom:16px;border:1px solid rgba(255,255,255,.08)}
         .cw-toolbar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
         .tb-group{display:flex;align-items:center;gap:4px}
-        .tb-sep{width:1px;height:24px;background:rgba(255,255,255,.12);margin:0 4px}
-        .tb-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
-        .tb-btn:hover{background:rgba(255,255,255,.16);color:#fff}
+        .tb-sep{width:1px;height:22px;background:rgba(255,255,255,.12);margin:0 3px}
+        .tb-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:8px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.84);background:rgba(255,255,255,.09)}
+        .tb-btn:hover{background:rgba(255,255,255,.18);color:#fff}
         .tb-btn.active{background:#6366f1;color:#fff}
-        .tb-btn:disabled{opacity:.3;pointer-events:none}
-        .tb-text{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;min-width:70px;text-align:center;user-select:none}
+        .tb-btn:disabled{opacity:.35;pointer-events:none}
+        .tb-text{color:rgba(255,255,255,.78);font-size:11px;font-weight:600;min-width:56px;text-align:center;user-select:none}
         .tb-spacer{flex:1}
 
-        /* View modes */
         .compare-body{display:flex;overflow:hidden;min-height:400px;max-height:72vh}
-
-        /* Side-by-side mode */
-        .side-pane{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:16px;gap:16px}
+        .side-pane{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:16px;gap:12px}
         .side-pane.pane-a{border-right:2px solid rgba(255,255,255,.08)}
-        .pane-header{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:700px}
-        .pane-label{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;color:#fff}
+        .pane-header{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:720px}
+        .pane-label{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;color:#fff}
         .pane-label.la{background:#16a34a}.pane-label.lb{background:#2563eb}
-        .page-canvas-wrap{position:relative;line-height:0;border-radius:4px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+        .page-canvas-wrap{position:relative;line-height:0;border-radius:4px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.45)}
         .page-canvas-wrap canvas{display:block}
-        .diff-overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2}
+        .diff-overlay{position:absolute;inset:0;pointer-events:none;z-index:2}
 
-        /* Overlay mode */
-        .overlay-pane{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:16px;gap:16px;display:none}
+        .overlay-pane{flex:1;overflow:auto;display:none;flex-direction:column;align-items:center;padding:16px;gap:12px}
+        .overlay-ctrl{display:flex;align-items:center;gap:12px;color:#cbd5e1;font-size:12px}
         .overlay-wrap{position:relative;line-height:0}
-        .overlay-wrap canvas{display:block;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+        .overlay-wrap canvas{display:block;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,.45)}
         .overlay-canvas{position:absolute;top:0;left:0;width:100%;height:100%}
 
-        /* Slider mode */
-        .slider-pane{flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:16px;display:none}
-        .slider-wrap{position:relative;line-height:0;overflow:hidden;cursor:col-resize}
-        .slider-wrap canvas{display:block;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-        .slider-b-canvas{position:absolute;top:0;left:0;height:100%;overflow:hidden}
-        .slider-divider{position:absolute;top:0;width:3px;background:#fff;cursor:col-resize;z-index:5;box-shadow:0 0 6px rgba(0,0,0,.5)}
-        .slider-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1e293b;font-size:14px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
-        .slider-label-a,.slider-label-b{position:absolute;top:10px;font-size:11px;font-weight:700;color:#fff;padding:3px 8px;border-radius:4px}
-        .slider-label-a{left:10px;background:#16a34a}
-        .slider-label-b{right:10px;background:#2563eb}
+        .slider-pane{flex:1;overflow:auto;display:none;justify-content:center;align-items:flex-start;padding:16px}
+        .slider-wrap{position:relative;line-height:0;overflow:hidden;user-select:none;touch-action:none}
+        .slider-wrap canvas{display:block;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,.45)}
+        .slider-b-canvas{position:absolute;top:0;right:0;height:100%;overflow:hidden}
+        .slider-b-canvas canvas{position:absolute;top:0;right:0}
+        .slider-divider{position:absolute;top:0;height:100%;width:3px;background:#ffffff;cursor:col-resize;z-index:5;box-shadow:0 0 8px rgba(0,0,0,.6)}
+        .slider-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;background:#ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0f172a;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+        .slider-label-a,.slider-label-b{position:absolute;top:10px;font-size:11px;font-weight:700;color:#fff;padding:3px 8px;border-radius:5px;z-index:4;pointer-events:none}
+        .slider-label-a{left:10px;background:#16a34a}.slider-label-b{right:10px;background:#2563eb}
 
-        /* Diff panel */
-        .diff-panel{background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:16px;overflow:hidden}
-        .diff-panel-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,.06);background:rgba(255,255,255,.4)}
-        .diff-panel-head h4{margin:0;font-size:14px;font-weight:700;color:var(--text-dark)}
-        .diff-tabs{display:flex;gap:0}
-        .diff-tab{padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--text-light);border-bottom:2px solid transparent;transition:all .2s}
-        .diff-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
-        .diff-stats{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,.06);flex-wrap:wrap}
-        .diff-stat{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:700}
-        .diff-stat.added{background:rgba(34,197,94,.1);color:#16a34a}
-        .diff-stat.removed{background:rgba(239,68,68,.1);color:#dc2626}
-        .diff-stat.changed{background:rgba(245,158,11,.1);color:#d97706}
-        .diff-stat.same{background:rgba(79,70,229,.1);color:#4f46e5}
-        .diff-list{max-height:280px;overflow-y:auto}
-        .diff-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(0,0,0,.04);transition:background .15s;cursor:pointer}
-        .diff-item:hover{background:rgba(79,70,229,.05)}
+        .pixeldiff-pane{flex:1;overflow:auto;display:none;flex-direction:column;align-items:center;padding:16px;gap:10px}
+        .pixeldiff-pane canvas{display:block;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,.45)}
+
+        /* Diff Panel */
+        .diff-panel{background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;margin-bottom:16px;overflow:hidden}
+        .diff-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--border-subtle,#e2e8f0);background:var(--surface-muted,#f8fafc)}
+        .diff-panel-head h4{margin:0;font-size:14px;font-weight:700;color:var(--text-dark,#1e293b);display:flex;align-items:center;gap:8px}
+        .diff-head-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .diff-tabs{display:flex;gap:4px}
+        .diff-tab{padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;border:none;border-radius:8px;background:transparent;color:var(--text-light,#64748b);transition:all .15s}
+        .diff-tab.active{color:#fff;background:var(--primary,#6366f1)}
+        .diff-stats{display:flex;gap:10px;padding:12px 16px;flex-wrap:wrap}
+        .diff-stat{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700}
+        .diff-stat.added{background:rgba(34,197,94,.12);color:#16a34a}
+        .diff-stat.removed{background:rgba(239,68,68,.12);color:#dc2626}
+        .diff-stat.changed{background:rgba(245,158,11,.12);color:#d97706}
+        .diff-stat.visual{background:rgba(139,92,246,.12);color:var(--primary)}
+        .diff-stat.same{background:rgba(79,70,229,.12);color:#4f46e5}
+        [data-theme="dark"] .diff-stat.added{color:#86efac}
+        [data-theme="dark"] .diff-stat.removed{color:#fca5a5}
+        [data-theme="dark"] .diff-stat.changed{color:#fcd34d}
+        [data-theme="dark"] .diff-stat.visual{color:#c4b5fd}
+        [data-theme="dark"] .diff-stat.same{color:#a5b4fc}
+
+        .diff-list{max-height:300px;overflow-y:auto}
+        .diff-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border-subtle,#e2e8f0);transition:background .15s;cursor:pointer}
+        .diff-item:hover{background:rgba(79,70,229,.06)}
         .diff-item:last-child{border-bottom:none}
         .diff-badge{flex-shrink:0;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px}
         .diff-badge.add{background:rgba(34,197,94,.15);color:#16a34a}
         .diff-badge.rem{background:rgba(239,68,68,.15);color:#dc2626}
         .diff-badge.chg{background:rgba(245,158,11,.15);color:#d97706}
-        .diff-badge.fmt{background:rgba(79,70,229,.15);color:#4f46e5}
         .diff-info{flex:1;min-width:0}
-        .diff-info-title{font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:2px}
-        .diff-info-text{font-size:11px;color:var(--text-light);line-height:1.5;word-break:break-word}
-        .diff-pg{font-size:10px;font-weight:700;color:var(--text-light);flex-shrink:0;margin-top:2px}
-        .diff-empty{padding:24px;text-align:center;color:var(--text-light);font-size:13px;font-style:italic}
+        .diff-info-title{font-size:12px;font-weight:700;color:var(--text-dark,#1e293b);margin-bottom:2px}
+        .diff-info-text{font-size:11px;color:var(--text-light,#64748b);line-height:1.45;word-break:break-word}
+        .diff-pg{font-size:10px;font-weight:700;color:var(--text-light,#64748b);flex-shrink:0;margin-top:2px}
+        .diff-empty{padding:24px;text-align:center;color:var(--text-light,#64748b);font-size:13px;font-style:italic}
 
-        /* Highlighted text diff */
-        .text-diff-wrap{padding:16px;font-family:monospace;font-size:12px;line-height:1.8;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto}
-        .td-add{background:rgba(34,197,94,.2);color:#15803d;border-radius:2px;padding:0 2px}
-        .td-rem{background:rgba(239,68,68,.15);color:#dc2626;border-radius:2px;padding:0 2px;text-decoration:line-through}
-        .td-same{color:var(--text-dark)}
-
-        /* Options */
-        .opt-pills{display:flex;gap:6px;flex-wrap:wrap}
-        .opt-pill{padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6);color:var(--text-dark);user-select:none}
-        .opt-pill:hover{border-color:var(--primary)}
-        .opt-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-        .opt-pill input{display:none}
-
-        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
-        .info-banner{background:rgba(79,70,229,.07);border:1px solid rgba(79,70,229,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
-
-        .progress-detail{font-size:12px;color:var(--text-light);margin-top:8px;text-align:center}
-        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,var(--accent),var(--accent-dark))}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
-
-        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
-        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
-        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(79,70,229,.2)}
-        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
-        .faq-question h4{font-size:15px;font-weight:600;color:var(--text-dark);margin:0;flex:1}
-        .faq-item.open .faq-question h4{color:var(--primary)}
-        .faq-question i{font-size:13px;color:var(--text-light);transition:transform .35s,color .3s;flex-shrink:0}
-        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary)}
-        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
-        .faq-item.open .faq-answer{max-height:400px;opacity:1}
-        .faq-answer-inner{padding:0 22px 20px}
-        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(79,70,229,.1);padding-top:16px;margin:0 22px;padding-left:0;padding-right:0}
-        .faq-answer-inner p{font-size:14px;line-height:1.7;color:var(--text-light);margin:0}
-        .faq-answer-inner p strong{color:var(--text-dark)}
-        .faq-num{width:28px;height:28px;background:rgba(79,70,229,.1);color:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .faq-item.open .faq-num{background:var(--primary);color:#fff}
+        .text-diff-wrap{padding:16px;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.75;white-space:pre-wrap;word-break:break-word;max-height:320px;overflow-y:auto}
+        .td-add{background:rgba(34,197,94,.22);color:#15803d;border-radius:3px;padding:1px 3px}
+        .td-rem{background:rgba(239,68,68,.18);color:#dc2626;border-radius:3px;padding:1px 3px;text-decoration:line-through}
+        .td-same{color:var(--text-dark,#1e293b)}
+        [data-theme="dark"] .td-add{color:#86efac}
+        [data-theme="dark"] .td-rem{color:#fca5a5}
+        .progress-detail{font-size:12px;color:var(--text-light,#64748b);margin-top:8px;text-align:center}
 
         @media(max-width:768px){
             .dual-upload{grid-template-columns:1fr}
@@ -328,17 +320,7 @@
             .side-pane.pane-a{border-right:none;border-bottom:2px solid rgba(255,255,255,.08)}
             .tb-btn{padding:6px 8px;font-size:11px}
         }
-        @media(max-width:480px){
-            .faq-question{padding:14px}
-            .faq-item{border-radius:10px;margin-bottom:8px}
-            .diff-stats{gap:6px}
-        }
     </style>
-    <!-- ========== AD STYLES ========== -->
-<link rel="stylesheet" href="css/ads.css">
-    
-    
-    
     <!-- ========== GOOGLE ANALYTICS ========== -->
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -392,36 +374,36 @@
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
+<main>
 <section class="tool-area">
 <div class="container">
 <div class="tool-wrapper glass">
 
-    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+    <div class="error-box" id="errorBox" role="alert"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
 
     <!-- UPLOAD -->
     <div id="uploadSection" data-section="">
         <div class="dual-upload">
-            <!-- Slot A -->
-            <div class="upload-slot" id="slotA" onclick="triggerFile('a')">
-                <button class="slot-clear" onclick="clearFile('a',event)">×</button>
+            <div class="upload-slot" id="slotA" onclick="triggerFile('a')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')triggerFile('a')">
+                <button class="slot-clear" type="button" onclick="clearFile('a',event)" aria-label="Clear file A">&times;</button>
                 <div class="slot-icon a"><i class="fas fa-file-pdf"></i></div>
-                <div class="slot-title">Original PDF</div>
-                <div class="slot-desc">Upload the original / older version</div>
-                <button class="upload-btn" style="font-size:12px;padding:8px 16px" onclick="event.stopPropagation();triggerFile('a')"><i class="fas fa-plus"></i> Choose File A</button>
-                <input type="file" id="fileA" accept=".pdf" hidden="">
+                <div class="slot-title">Original PDF (A)</div>
+                <div class="slot-desc">Upload the baseline / older version</div>
+                <button class="upload-btn" type="button" style="font-size:12px;padding:8px 16px" onclick="event.stopPropagation();triggerFile('a')"><i class="fas fa-plus"></i> Choose File A</button>
+                <input type="file" id="fileA" accept=".pdf,application/pdf" hidden="">
                 <div class="slot-file-info" id="infoA">
                     <div class="slot-file-name" id="nameA"></div>
                     <div class="slot-file-meta"><span id="sizeA"></span><span id="pagesA"></span></div>
                 </div>
             </div>
-            <!-- Slot B -->
-            <div class="upload-slot" id="slotB" onclick="triggerFile('b')">
-                <button class="slot-clear" onclick="clearFile('b',event)">×</button>
+
+            <div class="upload-slot" id="slotB" onclick="triggerFile('b')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')triggerFile('b')">
+                <button class="slot-clear" type="button" onclick="clearFile('b',event)" aria-label="Clear file B">&times;</button>
                 <div class="slot-icon b"><i class="fas fa-file-pdf"></i></div>
-                <div class="slot-title">Modified PDF</div>
-                <div class="slot-desc">Upload the modified / newer version</div>
-                <button class="upload-btn" style="font-size:12px;padding:8px 16px" onclick="event.stopPropagation();triggerFile('b')"><i class="fas fa-plus"></i> Choose File B</button>
-                <input type="file" id="fileB" accept=".pdf" hidden="">
+                <div class="slot-title">Modified PDF (B)</div>
+                <div class="slot-desc">Upload the updated / newer version</div>
+                <button class="upload-btn" type="button" style="font-size:12px;padding:8px 16px" onclick="event.stopPropagation();triggerFile('b')"><i class="fas fa-plus"></i> Choose File B</button>
+                <input type="file" id="fileB" accept=".pdf,application/pdf" hidden="">
                 <div class="slot-file-info" id="infoB">
                     <div class="slot-file-name" id="nameB"></div>
                     <div class="slot-file-meta"><span id="sizeB"></span><span id="pagesB"></span></div>
@@ -429,38 +411,33 @@
             </div>
         </div>
 
-        <!-- Options -->
-        <div class="options-panel glass-light" style="margin-bottom:16px">
-            <h4 style="margin-bottom:10px"><i class="fas fa-sliders-h"></i> Comparison Options</h4>
-            <div style="margin-bottom:12px">
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px">Compare Mode</label>
-                <div class="opt-pills">
-                    <label class="opt-pill active" onclick="setOptPill(this,'mode')"><input type="radio" name="mode" value="text" checked=""> <i class="fas fa-font"></i> Text</label>
-                    <label class="opt-pill" onclick="setOptPill(this,'mode')"><input type="radio" name="mode" value="visual"> <i class="fas fa-eye"></i> Visual</label>
-                    <label class="opt-pill" onclick="setOptPill(this,'mode')"><input type="radio" name="mode" value="both"> <i class="fas fa-layer-group"></i> Both</label>
-                </div>
+        <div class="options-panel">
+            <h4><i class="fas fa-sliders-h"></i> Comparison Options</h4>
+            <span class="opt-lbl">Compare Mode</span>
+            <div class="opt-pills">
+                <label class="opt-pill" onclick="setOptPill(this,'mode')"><input type="radio" name="mode" value="text"> <i class="fas fa-font"></i> Text Only</label>
+                <label class="opt-pill" onclick="setOptPill(this,'mode')"><input type="radio" name="mode" value="visual"> <i class="fas fa-eye"></i> Visual Only (Scanned)</label>
+                <label class="opt-pill active" onclick="setOptPill(this,'mode')"><input type="radio" name="mode" value="both" checked=""> <i class="fas fa-layer-group"></i> Text + Visual (Best)</label>
             </div>
-            <div>
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px">Options</label>
-                <div class="opt-pills">
-                    <label class="opt-pill active" onclick="togglePill(this)"><input type="checkbox" name="ignoreCase" checked=""> Ignore Case</label>
-                    <label class="opt-pill active" onclick="togglePill(this)"><input type="checkbox" name="ignoreSpaces" checked=""> Ignore Extra Spaces</label>
-                    <label class="opt-pill" onclick="togglePill(this)"><input type="checkbox" name="ignoreNumbers"> Ignore Numbers</label>
-                </div>
+            <span class="opt-lbl">Text Matching Filters</span>
+            <div class="opt-pills" style="margin-bottom:0">
+                <label class="opt-pill active" onclick="togglePill(this)"><input type="checkbox" name="ignoreCase" checked=""> Ignore Case</label>
+                <label class="opt-pill active" onclick="togglePill(this)"><input type="checkbox" name="ignoreSpaces" checked=""> Ignore Extra Spaces</label>
+                <label class="opt-pill" onclick="togglePill(this)"><input type="checkbox" name="ignoreNumbers"> Ignore Numbers</label>
             </div>
         </div>
 
-        <button class="action-btn" id="compareBtn" onclick="startCompare()" disabled="">
-            <i class="fas fa-not-equal"></i> Compare PDFs
+        <button class="action-btn" id="compareBtn" type="button" onclick="startCompare()" disabled="">
+            <i class="fas fa-not-equal"></i> Compare Both PDFs
         </button>
     </div>
 
     <!-- PROCESSING -->
     <div id="processingSection" data-section="" style="display:none">
-        <div class="processing-area">
+        <div class="processing-area" role="status" aria-live="polite">
             <div class="spinner"></div>
             <h3 id="processTitle">Comparing PDFs...</h3>
-            <p id="processSubtitle">Extracting text</p>
+            <p id="processSubtitle">Analyzing documents</p>
             <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
             <span class="progress-text" id="progressText">0%</span>
             <div class="progress-detail" id="progressDetail"></div>
@@ -470,57 +447,58 @@
     <!-- RESULT -->
     <div id="resultSection" data-section="" style="display:none">
 
-        <!-- Summary bar -->
-        <div class="diff-panel" style="margin-bottom:16px">
+        <div class="diff-panel">
             <div class="diff-panel-head">
                 <h4><i class="fas fa-chart-bar"></i> Comparison Summary</h4>
-                <button class="btn-outline" style="padding:6px 14px;font-size:12px" onclick="resetTool()"><i class="fas fa-redo"></i> New Compare</button>
+                <div class="diff-head-actions">
+                    <button class="btn-outline" type="button" style="padding:6px 12px;font-size:12px" onclick="downloadDiffReport()"><i class="fas fa-file-download"></i> Export Diff Report</button>
+                    <button class="btn-outline" type="button" style="padding:6px 12px;font-size:12px" onclick="resetTool()"><i class="fas fa-redo"></i> New Compare</button>
+                </div>
             </div>
             <div class="diff-stats">
                 <div class="diff-stat added"><i class="fas fa-plus-circle"></i> <span id="statAdded">0</span> Added</div>
                 <div class="diff-stat removed"><i class="fas fa-minus-circle"></i> <span id="statRemoved">0</span> Removed</div>
                 <div class="diff-stat changed"><i class="fas fa-exchange-alt"></i> <span id="statChanged">0</span> Changed</div>
-                <div class="diff-stat same"><i class="fas fa-equals"></i> <span id="statSame">0</span>% Same</div>
+                <div class="diff-stat visual" id="statVisWrap" style="display:none"><i class="fas fa-images"></i> <span id="statVisPct">0</span>% Visual Diff</div>
+                <div class="diff-stat same"><i class="fas fa-equals"></i> <span id="statSame">0</span>% Match</div>
             </div>
         </div>
 
-        <!-- Compare Workspace -->
         <div class="compare-workspace">
             <div class="cw-toolbar">
-                <!-- View modes -->
                 <div class="tb-group">
-                    <button class="tb-btn active" id="btnSide" onclick="setView('side')"><i class="fas fa-columns"></i> Side by Side</button>
-                    <button class="tb-btn" id="btnOverlay" onclick="setView('overlay')"><i class="fas fa-layer-group"></i> Overlay</button>
-                    <button class="tb-btn" id="btnSlider" onclick="setView('slider')"><i class="fas fa-arrows-alt-h"></i> Slider</button>
+                    <button class="tb-btn active" type="button" id="btnSide" onclick="setView('side')"><i class="fas fa-columns"></i> Side by Side</button>
+                    <button class="tb-btn" type="button" id="btnOverlay" onclick="setView('overlay')"><i class="fas fa-layer-group"></i> Overlay</button>
+                    <button class="tb-btn" type="button" id="btnSlider" onclick="setView('slider')"><i class="fas fa-arrows-alt-h"></i> Slider</button>
+                    <button class="tb-btn" type="button" id="btnPixel" onclick="setView('pixel')"><i class="fas fa-highlighter"></i> Pixel Diff</button>
                 </div>
                 <div class="tb-sep"></div>
-                <!-- Highlight toggle -->
                 <div class="tb-group">
-                    <button class="tb-btn active" id="btnHighlight" onclick="toggleHighlight()"><i class="fas fa-highlighter"></i> Highlights</button>
+                    <button class="tb-btn active" type="button" id="btnHighlight" onclick="toggleHighlight()" title="Toggle text diff highlights"><i class="fas fa-marker"></i> Highlights</button>
+                    <button class="tb-btn active" type="button" id="btnSync" onclick="toggleSyncScroll()" title="Sync scrolling between panes"><i class="fas fa-link"></i> Sync</button>
                 </div>
                 <div class="tb-sep"></div>
-                <!-- Zoom -->
                 <div class="tb-group">
-                    <button class="tb-btn" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+                    <button class="tb-btn" type="button" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
                     <span class="tb-text" id="zoomText">100%</span>
-                    <button class="tb-btn" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
-                    <button class="tb-btn" onclick="zoomFit()"><i class="fas fa-expand"></i></button>
+                    <button class="tb-btn" type="button" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
+                    <button class="tb-btn" type="button" onclick="zoomFit()"><i class="fas fa-expand"></i></button>
                 </div>
                 <div class="tb-spacer"></div>
-                <!-- Page nav -->
                 <div class="tb-group">
-                    <button class="tb-btn" onclick="goPrev()" id="prevBtn" disabled=""><i class="fas fa-chevron-left"></i></button>
+                    <button class="tb-btn" type="button" onclick="jumpDiffPage(-1)" title="Previous changed page"><i class="fas fa-step-backward"></i></button>
+                    <button class="tb-btn" type="button" onclick="goPrev()" id="prevBtn" disabled=""><i class="fas fa-chevron-left"></i></button>
                     <span class="tb-text" id="pageText">1 / 1</span>
-                    <button class="tb-btn" onclick="goNext()" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                    <button class="tb-btn" type="button" onclick="goNext()" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                    <button class="tb-btn" type="button" onclick="jumpDiffPage(1)" title="Next changed page"><i class="fas fa-step-forward"></i></button>
                 </div>
             </div>
 
             <div class="compare-body" id="compareBody">
-                <!-- Side by side -->
                 <div class="side-pane pane-a" id="paneA">
                     <div class="pane-header">
                         <span class="pane-label la"><i class="fas fa-file-pdf"></i> Original</span>
-                        <span id="pageInfoA" style="color:rgba(255,255,255,.5);font-size:11px"></span>
+                        <span id="pageInfoA" style="color:rgba(255,255,255,.55);font-size:11px"></span>
                     </div>
                     <div class="page-canvas-wrap" id="wrapA">
                         <canvas id="canvasA"></canvas>
@@ -530,7 +508,7 @@
                 <div class="side-pane" id="paneB">
                     <div class="pane-header">
                         <span class="pane-label lb"><i class="fas fa-file-pdf"></i> Modified</span>
-                        <span id="pageInfoB" style="color:rgba(255,255,255,.5);font-size:11px"></span>
+                        <span id="pageInfoB" style="color:rgba(255,255,255,.55);font-size:11px"></span>
                     </div>
                     <div class="page-canvas-wrap" id="wrapB">
                         <canvas id="canvasB"></canvas>
@@ -538,16 +516,18 @@
                     </div>
                 </div>
 
-                <!-- Overlay pane (hidden by default) -->
-                <div class="overlay-pane" id="overlayPaneEl" style="display:none">
+                <div class="overlay-pane" id="overlayPaneEl">
+                    <div class="overlay-ctrl">
+                        <span>Modified Opacity:</span>
+                        <input type="range" id="overlayAlpha" min="0" max="100" value="50" oninput="document.getElementById('overlayTopCanvas').style.opacity=(this.value/100)">
+                    </div>
                     <div class="overlay-wrap" id="overlayWrap">
                         <canvas id="overlayBaseCanvas"></canvas>
                         <canvas id="overlayTopCanvas" class="overlay-canvas"></canvas>
                     </div>
                 </div>
 
-                <!-- Slider pane -->
-                <div class="slider-pane" id="sliderPaneEl" style="display:none">
+                <div class="slider-pane" id="sliderPaneEl">
                     <div class="slider-wrap" id="sliderWrap">
                         <canvas id="sliderCanvasA"></canvas>
                         <div class="slider-b-canvas" id="sliderBWrap">
@@ -560,16 +540,20 @@
                         <div class="slider-label-b">Modified</div>
                     </div>
                 </div>
+
+                <div class="pixeldiff-pane" id="pixelPaneEl">
+                    <span style="color:#cbd5e1;font-size:12px" id="pixelDiffInfo">Pixel differences highlighted in bright red/magenta</span>
+                    <canvas id="pixelDiffCanvas"></canvas>
+                </div>
             </div>
         </div>
 
-        <!-- Diff panel -->
         <div class="diff-panel">
             <div class="diff-panel-head">
                 <h4><i class="fas fa-list-ul"></i> Differences Found</h4>
                 <div class="diff-tabs">
-                    <button class="diff-tab active" onclick="switchDiffTab('list',this)">List View</button>
-                    <button class="diff-tab" onclick="switchDiffTab('text',this)">Text Diff</button>
+                    <button class="diff-tab active" type="button" onclick="switchDiffTab('list',this)">List View</button>
+                    <button class="diff-tab" type="button" onclick="switchDiffTab('text',this)">Inline Text Diff</button>
                 </div>
             </div>
             <div id="diffListView" class="diff-list"></div>
@@ -581,11 +565,53 @@
 </div>
 </div>
 </section>
+</main>
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
 
 
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related PDF Security &amp; Edit Tools</h2>
+            <p>Everything you need to edit, secure, repair, and finalize PDFs.</p>
+        </div>
+        <div class="related-grid">
+            <a href="merge-pdf.html" class="related-card" aria-label="Merge PDF">
+                <div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div>
+                <h4>Merge PDF</h4>
+                <p>Combine multiple PDFs into one</p>
+            </a>
+            <a href="compress-pdf.html" class="related-card" aria-label="Compress PDF">
+                <div class="related-icon ri-green"><i class="fas fa-compress-alt" aria-hidden="true"></i></div>
+                <h4>Compress PDF</h4>
+                <p>Reduce PDF size with target KB</p>
+            </a>
+            <a href="protect-pdf.html" class="related-card" aria-label="Protect PDF">
+                <div class="related-icon ri-red"><i class="fas fa-lock" aria-hidden="true"></i></div>
+                <h4>Protect PDF</h4>
+                <p>Lock PDF with password security</p>
+            </a>
+            <a href="unlock-pdf.html" class="related-card" aria-label="Unlock PDF">
+                <div class="related-icon ri-green"><i class="fas fa-unlock-alt" aria-hidden="true"></i></div>
+                <h4>Unlock PDF</h4>
+                <p>Remove PDF password restrictions</p>
+            </a>
+            <a href="sign-pdf.html" class="related-card" aria-label="Sign PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-signature" aria-hidden="true"></i></div>
+                <h4>Sign PDF</h4>
+                <p>Draw or type PDF signatures</p>
+            </a>
+            <a href="edit-pdf.html" class="related-card" aria-label="Edit PDF">
+                <div class="related-icon ri-blue"><i class="fas fa-edit" aria-hidden="true"></i></div>
+                <h4>Edit PDF</h4>
+                <p>Add text &amp; annotations to PDF</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How to Compare PDFs</h2><p>Simple 3-step process</p></div>
@@ -601,10 +627,10 @@
     <div class="container">
         <div class="section-header"><h2>Frequently Asked Questions</h2></div>
         <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>What types of differences are detected?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>The tool detects <strong>added text</strong> (green), <strong>removed text</strong> (red), and <strong>changed text</strong> (yellow) at the word level across all pages.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Are my PDFs uploaded to a server?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! <strong>Everything runs in your browser</strong>. Your files never leave your device.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Can I compare scanned PDFs?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Text comparison works only with <strong>text-based PDFs</strong>. The <strong>Visual mode</strong> shows visual differences for scanned PDFs using pixel comparison.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>What view modes are available?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>Side by Side</strong>: Both pages shown simultaneously. <strong>Overlay</strong>: One on top of the other with opacity. <strong>Slider</strong>: Drag to reveal A or B with a divider.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>What types of differences are detected?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>The tool detects <strong>added text</strong> (green), <strong>removed text</strong> (red), and <strong>changed text</strong> (yellow) at the word level across all pages.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Are my PDFs uploaded to a server?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! <strong>Everything runs in your browser</strong>. Your files never leave your device.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Can I compare scanned PDFs?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Text comparison works only with <strong>text-based PDFs</strong>. The <strong>Visual mode</strong> shows visual differences for scanned PDFs using pixel comparison.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>What view modes are available?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>Side by Side</strong>: Both pages shown simultaneously. <strong>Overlay</strong>: One on top of the other with opacity. <strong>Slider</strong>: Drag to reveal A or B with a divider.</p></div></div></div>
         </div>
     </div>
 </section>
@@ -663,8 +689,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>© <span id="currentYear"></span> AI ToolCor. All rights reserved. Made with <i class="fas fa-heart" style="color:#f97316;" aria-hidden="true"></i> for productivity. 
-                   Made with <i class="fas fa-heart" aria-hidden="true" style="color:#e05"></i> for productivity.
+                <p>© <span id="currentYear"></span> AI ToolCor. All rights reserved. Made with <i class="fas fa-heart" style="color:#ec4899;" aria-hidden="true"></i> for productivity.
                 </p>
                 <div class="footer-bottom-links">
                     <a href="privacy.html">Privacy</a>
@@ -683,63 +708,75 @@
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/* ══════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════ */
 let pdfA=null,pdfB=null,bytesA=null,bytesB=null;
 let fileObjA=null,fileObjB=null;
 let pagesA=0,pagesB=0;
 let curPage=1,maxPages=1;
 let viewScale=1,baseScale=1,renderScale=1;
-let viewMode='side';
-let showHighlights=true;
-let diffs=[]; // [{page,type:'add'|'rem'|'chg',textA,textB,words}]
-let pageTextsA=[],pageTextsB=[];
-let pageItemsA=[],pageItemsB=[];
+let viewMode='side',showHighlights=true,syncScroll=true;
+let compareMode='both';
+let diffs=[];
+let changedPages=new Set();
+let pageTextsA=[],pageTextsB=[],pageItemsA=[],pageItemsB=[];
+let pageTokenSetsA={},pageTokenSetsB={};
+let pageVisualPct={};
+let sliderPct=0.5,sliderBound=false;
 
-/* ══════════════════════════════════════════════
-   HELPERS
-══════════════════════════════════════════════ */
-function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
-if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
-function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
-function setProgress(p,t,s,d){const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');if(f)f.style.width=p+'%';if(pt)pt.textContent=Math.round(p)+'%';if(t)document.getElementById('processTitle').textContent=t;if(s)document.getElementById('processSubtitle').textContent=s;if(d!==undefined)document.getElementById('progressDetail').textContent=d}
+(function(){
+    const yr=document.getElementById('currentYear');
+    if(yr)yr.textContent=new Date().getFullYear();
+})();
+
+function showSection(id){
+    document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');
+    const el=document.getElementById(id);
+    if(el)el.style.display='block';
+    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'smooth'}));
+}
+function setProgress(p,t,s,d){
+    const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');
+    if(f)f.style.width=p+'%';if(pt)pt.textContent=Math.round(p)+'%';
+    if(t)document.getElementById('processTitle').textContent=t;
+    if(s)document.getElementById('processSubtitle').textContent=s;
+    if(d!==undefined)document.getElementById('progressDetail').textContent=d;
+}
 function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
-function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',6500)}
 function hideError(){document.getElementById('errorBox').style.display='none'}
 function tick(){return new Promise(r=>setTimeout(r,20))}
+const STOP_TOKS=new Set(['a','an','the','in','on','at','to','of','is','it','or','by','as','for','and','be','with']);
+function addDiffTokens(set,str){
+    str.split(/\s+/).forEach(raw=>{
+        const w=raw.toLowerCase();
+        if(!w)return;
+        if(/\d/.test(w)||(!STOP_TOKS.has(w)&&w.length>=2))set.add(w);
+    });
+}
 function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
 function setOptPill(el,group){
     el.closest('.opt-pills').querySelectorAll('.opt-pill').forEach(p=>{if(p.querySelector('input[name="'+group+'"]'))p.classList.remove('active')});
-    el.classList.add('active');
-    el.querySelector('input').checked=true;
+    el.classList.add('active');el.querySelector('input').checked=true;
 }
 function togglePill(el){
     el.classList.toggle('active');
     el.querySelector('input').checked=el.classList.contains('active');
 }
 
-/* ══════════════════════════════════════════════
-   FILE HANDLING
-══════════════════════════════════════════════ */
 function triggerFile(slot){document.getElementById('file'+slot.toUpperCase()).click()}
-
 document.getElementById('fileA').addEventListener('change',e=>{if(e.target.files[0])handleFile('a',e.target.files[0])});
 document.getElementById('fileB').addEventListener('change',e=>{if(e.target.files[0])handleFile('b',e.target.files[0])});
 
-// Drag-drop for each slot
 ['slotA','slotB'].forEach((id,i)=>{
-    const slot=document.getElementById(id);
-    const letter=i===0?'a':'b';
-    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('drag-over')});
-    slot.addEventListener('dragleave',()=>slot.classList.remove('drag-over'));
-    slot.addEventListener('drop',e=>{e.preventDefault();slot.classList.remove('drag-over');if(e.dataTransfer.files[0])handleFile(letter,e.dataTransfer.files[0])});
+    const slot=document.getElementById(id),letter=i===0?'a':'b';
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('dragover','drag-over')});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('dragover','drag-over'));
+    slot.addEventListener('drop',e=>{e.preventDefault();slot.classList.remove('dragover','drag-over');if(e.dataTransfer.files[0])handleFile(letter,e.dataTransfer.files[0])});
 });
 
 async function handleFile(slot,file){
     hideError();
-    if(!file.name.toLowerCase().endsWith('.pdf')){showError('Please select a PDF file.');return}
+    if(!file.name.toLowerCase().endsWith('.pdf')&&file.type!=='application/pdf'){showError('Please select a PDF file.');return}
     const bytes=new Uint8Array(await file.arrayBuffer());
     try{
         const doc=await pdfjsLib.getDocument({data:bytes.slice(0)}).promise;
@@ -749,14 +786,14 @@ async function handleFile(slot,file){
             document.getElementById('slotA').className='upload-slot loaded';
             document.getElementById('nameA').textContent=file.name;
             document.getElementById('sizeA').textContent=szF(file.size);
-            document.getElementById('pagesA').textContent=pg+' pages';
+            document.getElementById('pagesA').textContent=pg+' page(s)';
             document.getElementById('infoA').className='slot-file-info show';
         }else{
             pdfB=doc;bytesB=bytes;fileObjB=file;pagesB=pg;
             document.getElementById('slotB').className='upload-slot loaded-b';
             document.getElementById('nameB').textContent=file.name;
             document.getElementById('sizeB').textContent=szF(file.size);
-            document.getElementById('pagesB').textContent=pg+' pages';
+            document.getElementById('pagesB').textContent=pg+' page(s)';
             document.getElementById('infoB').className='slot-file-info show';
         }
         document.getElementById('compareBtn').disabled=!(pdfA&&pdfB);
@@ -770,18 +807,13 @@ function clearFile(slot,e){
     document.getElementById('compareBtn').disabled=true;
 }
 
-/* ══════════════════════════════════════════════
-   EXTRACT TEXT FROM PDF WITH POSITIONS
-══════════════════════════════════════════════ */
 async function extractAllPages(pdfDoc){
     const texts=[],items=[];
     for(let i=1;i<=pdfDoc.numPages;i++){
         const pg=await pdfDoc.getPage(i);
         const content=await pg.getTextContent({normalizeWhitespace:true});
         const vp=pg.getViewport({scale:1});
-
-        // Build text string
-        let text=content.items.map(it=>it.str).join(' ').replace(/\s+/g,' ').trim();
+        const text=content.items.map(it=>it.str||'').join(' ').replace(/\s+/g,' ').trim();
         texts.push(text);
         items.push({items:content.items,vp});
         await tick();
@@ -789,155 +821,211 @@ async function extractAllPages(pdfDoc){
     return{texts,items};
 }
 
-/* ══════════════════════════════════════════════
-   DIFF ALGORITHM (Myers LCS on words)
-══════════════════════════════════════════════ */
 function tokenize(text,opts){
     let t=text||'';
     if(opts.ignoreCase)t=t.toLowerCase();
     if(opts.ignoreSpaces)t=t.replace(/\s+/g,' ').trim();
     if(opts.ignoreNumbers)t=t.replace(/\d+/g,'#');
-    return t.split(/\s+/).filter(w=>w.length>0);
+    return t.split(/\s+/).filter(Boolean);
 }
 
-function lcsLength(a,b){
+/* Fast iterative non-recursive LCS diff (safe for long documents) */
+function diffWordsIterative(a,b){
     const m=a.length,n=b.length;
+    if(m===0&&n===0)return[];
+    if(m*n>2500000){
+        /* Prefix/suffix trim + coarse fallback to prevent slow O(M*N) stalls */
+        let p=0;
+        while(p<m&&p<n&&a[p]===b[p])p++;
+        let s=0;
+        while(s<m-p&&s<n-p&&a[m-1-s]===b[n-1-s])s++;
+        const ops=[];
+        if(p>0)ops.push({type:'eql',val:a.slice(0,p).join(' '),count:p});
+        const midA=a.slice(p,m-s),midB=b.slice(p,n-s);
+        if(midA.length)ops.push({type:'rem',val:midA.join(' '),count:midA.length});
+        if(midB.length)ops.push({type:'add',val:midB.join(' '),count:midB.length});
+        if(s>0)ops.push({type:'eql',val:a.slice(m-s).join(' '),count:s});
+        return ops;
+    }
+
     const dp=Array.from({length:m+1},()=>new Int32Array(n+1));
-    for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){
-        dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+    for(let i=1;i<=m;i++){
+        const ai=a[i-1];
+        for(let j=1;j<=n;j++){
+            dp[i][j]=ai===b[j-1]?dp[i-1][j-1]+1:(dp[i-1][j]>=dp[i][j-1]?dp[i-1][j]:dp[i][j-1]);
+        }
     }
-    return dp;
-}
 
-function backtrack(dp,a,b,i,j){
-    if(i===0&&j===0)return[];
-    if(i===0)return[...backtrack(dp,a,b,i,j-1),{type:'add',val:b[j-1]}];
-    if(j===0)return[...backtrack(dp,a,b,i-1,j),{type:'rem',val:a[i-1]}];
-    if(a[i-1]===b[j-1])return[...backtrack(dp,a,b,i-1,j-1),{type:'eql',val:a[i-1]}];
-    if(dp[i-1][j]>=dp[i][j-1])return[...backtrack(dp,a,b,i-1,j),{type:'rem',val:a[i-1]}];
-    return[...backtrack(dp,a,b,i,j-1),{type:'add',val:b[j-1]}];
-}
-
-function diffWords(textA,textB,opts){
-    const a=tokenize(textA,opts);
-    const b=tokenize(textB,opts);
-    if(a.length===0&&b.length===0)return[];
-    if(a.length>2000||b.length>2000){
-        // Fallback for very long texts
-        return textA===textB?[{type:'eql',val:textA}]:[{type:'rem',val:textA},{type:'add',val:textB}];
+    const rev=[];
+    let i=m,j=n;
+    while(i>0||j>0){
+        if(i>0&&j>0&&a[i-1]===b[j-1]){rev.push({type:'eql',val:a[i-1]});i--;j--;}
+        else if(i>0&&(j===0||dp[i-1][j]>=dp[i][j-1])){rev.push({type:'rem',val:a[i-1]});i--;}
+        else{rev.push({type:'add',val:b[j-1]});j--;}
     }
-    const dp=lcsLength(a,b);
-    return backtrack(dp,a,b,a.length,b.length);
+    rev.reverse();
+    return rev;
 }
 
 function mergeDiffOps(ops){
-    // Merge consecutive same-type ops
     const merged=[];
     for(const op of ops){
+        const cnt=op.count||1;
         if(merged.length&&merged[merged.length-1].type===op.type){
             merged[merged.length-1].val+=' '+op.val;
+            merged[merged.length-1].count+=cnt;
         }else{
-            merged.push({...op});
+            merged.push({type:op.type,val:op.val,count:cnt});
         }
     }
     return merged;
 }
 
-/* ══════════════════════════════════════════════
-   START COMPARE
-══════════════════════════════════════════════ */
+async function computePageVisualDiff(pgIdx){
+    const pgA=pgIdx<pagesA?await pdfA.getPage(pgIdx+1):null;
+    const pgB=pgIdx<pagesB?await pdfB.getPage(pgIdx+1):null;
+    if(!pgA||!pgB)return 100;
+    const scale=0.65;
+    const vpA=pgA.getViewport({scale}),vpB=pgB.getViewport({scale});
+    const w=Math.max(Math.round(vpA.width),Math.round(vpB.width));
+    const h=Math.max(Math.round(vpA.height),Math.round(vpB.height));
+    const c1=document.createElement('canvas'),c2=document.createElement('canvas');
+    c1.width=c2.width=w;c1.height=c2.height=h;
+    const x1=c1.getContext('2d'),x2=c2.getContext('2d');
+    x1.fillStyle='#fff';x1.fillRect(0,0,w,h);
+    x2.fillStyle='#fff';x2.fillRect(0,0,w,h);
+    await pgA.render({canvasContext:x1,viewport:vpA}).promise;
+    await pgB.render({canvasContext:x2,viewport:vpB}).promise;
+    const d1=x1.getImageData(0,0,w,h).data,d2=x2.getImageData(0,0,w,h).data;
+    let diffPx=0;
+    const step=4*2; /* Sample every 2nd pixel for speed */
+    const totalSampled=Math.ceil((d1.length/4)/2);
+    for(let k=0;k<d1.length;k+=step){
+        if(Math.abs(d1[k]-d2[k])+Math.abs(d1[k+1]-d2[k+1])+Math.abs(d1[k+2]-d2[k+2])>38)diffPx++;
+    }
+    return +((diffPx/Math.max(1,totalSampled))*100).toFixed(2);
+}
+
 async function startCompare(){
     hideError();
     showSection('processingSection');
-    setProgress(5,'Loading PDFs...','Preparing','');
+    setProgress(5,'Analyzing PDFs...','Preparing comparison','');
     await tick();
 
     try{
         const opts={
             ignoreCase:document.querySelector('input[name="ignoreCase"]').checked,
             ignoreSpaces:document.querySelector('input[name="ignoreSpaces"]').checked,
-            ignoreNumbers:document.querySelector('input[name="ignoreNumbers"]').checked,
+            ignoreNumbers:document.querySelector('input[name="ignoreNumbers"]').checked
         };
-        const mode=document.querySelector('input[name="mode"]:checked')?.value||'text';
-
-        setProgress(15,'Extracting text from PDF A...','','');
-        await tick();
-        const resA=await extractAllPages(pdfA);
-        pageTextsA=resA.texts;pageItemsA=resA.items;
-
-        setProgress(35,'Extracting text from PDF B...','','');
-        await tick();
-        const resB=await extractAllPages(pdfB);
-        pageTextsB=resB.texts;pageItemsB=resB.items;
-
-        setProgress(55,'Computing differences...','Analysing changes','');
-        await tick();
-
+        compareMode=document.querySelector('input[name="mode"]:checked')?.value||'both';
         maxPages=Math.max(pagesA,pagesB);
-        diffs=[];
+        diffs=[];changedPages=new Set();pageTokenSetsA={};pageTokenSetsB={};pageVisualPct={};
 
-        let totalAdded=0,totalRemoved=0,totalChanged=0,totalSame=0,totalWords=0;
+        if(compareMode!=='visual'){
+            setProgress(15,'Reading Document A...','Extracting page text','');
+            const resA=await extractAllPages(pdfA);
+            pageTextsA=resA.texts;pageItemsA=resA.items;
 
-        for(let pg=0;pg<maxPages;pg++){
-            const tA=pageTextsA[pg]||'';
-            const tB=pageTextsB[pg]||'';
-
-            if(tA===''&&tB==='')continue;
-
-            const ops=mergeDiffOps(diffWords(tA,tB,opts));
-
-            for(const op of ops){
-                const words=op.val.split(' ').length;
-                totalWords+=words;
-                if(op.type==='add'){totalAdded+=words;diffs.push({page:pg+1,type:'add',textA:'',textB:op.val})}
-                else if(op.type==='rem'){totalRemoved+=words;diffs.push({page:pg+1,type:'rem',textA:op.val,textB:''})}
-                else{totalSame+=words}
-            }
-
-            // Detect changed (adjacent rem+add = changed)
-            const merged2=[];
-            for(let i=0;i<diffs.length;i++){
-                const cur=diffs[i];
-                if(i>0&&diffs[i-1].page===cur.page&&diffs[i-1].type==='rem'&&cur.type==='add'){
-                    merged2[merged2.length-1]={page:cur.page,type:'chg',textA:diffs[i-1].textA,textB:cur.textB};
-                    totalChanged++;totalRemoved--;totalAdded--;
-                }else{
-                    merged2.push(cur);
-                }
-            }
-            diffs=merged2;
+            setProgress(32,'Reading Document B...','Extracting page text','');
+            const resB=await extractAllPages(pdfB);
+            pageTextsB=resB.texts;pageItemsB=resB.items;
+        }else{
+            pageTextsA=new Array(pagesA).fill('');
+            pageTextsB=new Array(pagesB).fill('');
+            pageItemsA=[];pageItemsB=[];
         }
 
-        const similarity=totalWords>0?Math.round((totalSame/totalWords)*100):100;
+        let totalAdded=0,totalRemoved=0,totalChanged=0,totalSame=0,totalWords=0;
+        let visSum=0;
+
+        for(let pg=0;pg<maxPages;pg++){
+            setProgress(48+((pg/maxPages)*38),'Comparing Page '+(pg+1)+' of '+maxPages,'Running diff engine','');
+            await tick();
+
+            if(compareMode!=='visual'){
+                const aToks=tokenize(pageTextsA[pg]||'',opts);
+                const bToks=tokenize(pageTextsB[pg]||'',opts);
+                const rawOps=diffWordsIterative(aToks,bToks);
+                const ops=mergeDiffOps(rawOps);
+
+                const remSet=new Set(),addSet=new Set();
+                const pgDiffs=[];
+
+                for(const op of ops){
+                    const wc=op.count||1;
+                    totalWords+=wc;
+                    if(op.type==='add'){
+                        pgDiffs.push({page:pg+1,type:'add',textA:'',textB:op.val,wordsB:wc});
+                        addDiffTokens(addSet,op.val);
+                    }else if(op.type==='rem'){
+                        pgDiffs.push({page:pg+1,type:'rem',textA:op.val,textB:'',wordsA:wc});
+                        addDiffTokens(remSet,op.val);
+                    }else{
+                        totalSame+=wc;
+                    }
+                }
+
+                /* Collapse adjacent rem+add into crisp Changed blocks with accurate word counts */
+                for(let i=0;i<pgDiffs.length;i++){
+                    const cur=pgDiffs[i];
+                    if(cur.type==='rem'&&i+1<pgDiffs.length&&pgDiffs[i+1].type==='add'){
+                        const nxt=pgDiffs[i+1];
+                        diffs.push({page:pg+1,type:'chg',textA:cur.textA,textB:nxt.textB});
+                        totalChanged++;
+                        i++;
+                        changedPages.add(pg+1);
+                    }else{
+                        diffs.push(cur);
+                        if(cur.type==='add')totalAdded+=cur.wordsB;
+                        else if(cur.type==='rem')totalRemoved+=cur.wordsA;
+                        changedPages.add(pg+1);
+                    }
+                }
+                pageTokenSetsA[pg+1]=remSet;
+                pageTokenSetsB[pg+1]=addSet;
+            }
+
+            if(compareMode!=='text'){
+                const vpPct=await computePageVisualDiff(pg);
+                pageVisualPct[pg+1]=vpPct;
+                visSum+=vpPct;
+                if(vpPct>0.15){
+                    changedPages.add(pg+1);
+                    if(compareMode==='visual'){
+                        diffs.push({page:pg+1,type:'chg',textA:`Visual difference detected (${vpPct}% pixels differ)`,textB:`Page ${pg+1} modified visually`});
+                        totalChanged++;
+                    }
+                }
+            }
+        }
+
+        const avgVis=maxPages>0?+(visSum/maxPages).toFixed(1):0;
+        let similarity=totalWords>0?Math.round((totalSame/totalWords)*100):Math.round(Math.max(0,100-avgVis));
+        if(compareMode==='visual')similarity=Math.max(0,Math.round(100-avgVis));
 
         document.getElementById('statAdded').textContent=totalAdded;
         document.getElementById('statRemoved').textContent=totalRemoved;
         document.getElementById('statChanged').textContent=totalChanged;
         document.getElementById('statSame').textContent=similarity;
+        const visWrap=document.getElementById('statVisWrap');
+        if(compareMode!=='text'){visWrap.style.display='inline-flex';document.getElementById('statVisPct').textContent=avgVis;}
+        else visWrap.style.display='none';
 
-        setProgress(80,'Rendering pages...','','');
-        await tick();
-
-        // Setup view
         curPage=1;
-        const pg=await pdfA.getPage(1);
-        const vp=pg.getViewport({scale:1});
-        const scroll=document.getElementById('compareBody');
-        baseScale=Math.min((scroll.clientWidth/2-60)/vp.width,1.5);
-        viewScale=1;renderScale=baseScale*viewScale;
-
-        setProgress(90,'Building diff list...','','');
-        await tick();
+        const p1=await pdfA.getPage(1);
+        const vp1=p1.getViewport({scale:1});
+        const body=document.getElementById('compareBody');
+        baseScale=Math.min(Math.max(240,(body.clientWidth/2)-56)/vp1.width,1.45);
+        viewScale=1;
 
         buildDiffList();
         buildTextDiff(pageTextsA,pageTextsB,opts);
 
         showSection('resultSection');
-        await renderCurrentPage();
-
-        // Setup slider
-        setupSlider();
-
+        if(compareMode==='visual')setView('pixel');
+        else await renderCurrentPage();
+        setupSliderOnce();
         setProgress(100,'Done!','','');
     }catch(e){
         console.error(e);
@@ -946,9 +1034,6 @@ async function startCompare(){
     }
 }
 
-/* ══════════════════════════════════════════════
-   RENDER CURRENT PAGE
-══════════════════════════════════════════════ */
 async function renderCurrentPage(){
     renderScale=baseScale*viewScale;
     document.getElementById('zoomText').textContent=Math.round(viewScale*100)+'%';
@@ -963,182 +1048,184 @@ async function renderCurrentPage(){
     await renderPane('B',pgB);
 
     if(viewMode==='overlay')await renderOverlay(pgA,pgB);
-    if(viewMode==='slider')await renderSlider(pgA,pgB);
+    else if(viewMode==='slider')await renderSlider(pgA,pgB);
+    else if(viewMode==='pixel')await renderPixelDiff(pgA,pgB);
 
     if(showHighlights)drawDiffHighlights();
+    else clearHighlights();
 
-    // Update page info
-    if(pgA){const vp=pgA.getViewport({scale:1});document.getElementById('pageInfoA').textContent=Math.round(vp.width)+'×'+Math.round(vp.height)+' pts'}
-    if(pgB){const vp=pgB.getViewport({scale:1});document.getElementById('pageInfoB').textContent=Math.round(vp.width)+'×'+Math.round(vp.height)+' pts'}
+    if(pgA){const vp=pgA.getViewport({scale:1});document.getElementById('pageInfoA').textContent=Math.round(vp.width)+'×'+Math.round(vp.height)+' pts';}
+    else document.getElementById('pageInfoA').textContent='Missing';
+    if(pgB){const vp=pgB.getViewport({scale:1});document.getElementById('pageInfoB').textContent=Math.round(vp.width)+'×'+Math.round(vp.height)+' pts';}
+    else document.getElementById('pageInfoB').textContent='Missing';
 }
 
 async function renderPane(which,pg){
     const canvas=document.getElementById('canvas'+which);
     const overlay=document.getElementById('overlay'+which);
     const ctx=canvas.getContext('2d');
-
     if(!pg){
-        canvas.width=400;canvas.height=300;
-        ctx.fillStyle='#f1f5f9';ctx.fillRect(0,0,400,300);
+        canvas.width=400;canvas.height=300;overlay.width=400;overlay.height=300;
+        ctx.fillStyle='#1e293b';ctx.fillRect(0,0,400,300);
         ctx.fillStyle='#94a3b8';ctx.font='14px sans-serif';ctx.textAlign='center';
         ctx.fillText('No page '+(which==='A'?'in Original':'in Modified'),200,150);
-        overlay.width=400;overlay.height=300;
         return;
     }
-
     const vp=pg.getViewport({scale:renderScale});
-    canvas.width=vp.width;canvas.height=vp.height;
-    overlay.width=vp.width;overlay.height=vp.height;
-
-    ctx.fillStyle='#fff';ctx.fillRect(0,0,vp.width,vp.height);
+    canvas.width=Math.round(vp.width);canvas.height=Math.round(vp.height);
+    overlay.width=canvas.width;overlay.height=canvas.height;
+    ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);
     await pg.render({canvasContext:ctx,viewport:vp}).promise;
 }
 
-/* ══════════════════════════════════════════════
-   DRAW DIFF HIGHLIGHTS ON CANVAS
-══════════════════════════════════════════════ */
-function drawDiffHighlights(){
-    const pageDiffs=diffs.filter(d=>d.page===curPage);
-    if(pageDiffs.length===0)return;
-
-    // Draw on overlay A
-    drawHighlightsOnCanvas('A',pageDiffs,'rem');
-    drawHighlightsOnCanvas('B',pageDiffs,'add');
+function clearHighlights(){
+    ['A','B'].forEach(w=>{const o=document.getElementById('overlay'+w);o.getContext('2d').clearRect(0,0,o.width,o.height);});
 }
 
-function drawHighlightsOnCanvas(which,pageDiffs,targetType){
+function drawDiffHighlights(){
+    drawHighlightsOnCanvas('A',pageTokenSetsA[curPage],'rgba(239,68,68,0.34)');
+    drawHighlightsOnCanvas('B',pageTokenSetsB[curPage],'rgba(34,197,94,0.34)');
+}
+
+function drawHighlightsOnCanvas(which,tokSet,color){
     const overlay=document.getElementById('overlay'+which);
     const ctx=overlay.getContext('2d');
     ctx.clearRect(0,0,overlay.width,overlay.height);
+    if(!tokSet||tokSet.size===0)return;
 
-    const items=which==='A'?(pageItemsA[curPage-1]?.items||[]):(pageItemsB[curPage-1]?.items||[]);
-    const vp=which==='A'?(pageItemsA[curPage-1]?.vp):(pageItemsB[curPage-1]?.vp);
-    if(!vp||items.length===0)return;
+    const info=which==='A'?pageItemsA[curPage-1]:pageItemsB[curPage-1];
+    if(!info||!info.items||!info.vp)return;
+    const scaleVp=info.vp.clone({scale:renderScale});
 
-    const diffTexts=pageDiffs.filter(d=>d.type===targetType||(d.type==='chg')).map(d=>targetType==='rem'?d.textA:d.textB).filter(t=>t);
-    if(diffTexts.length===0)return;
+    for(const item of info.items){
+        const raw=item.str||'';
+        if(!raw.trim())continue;
+        const words=raw.toLowerCase().split(/\s+/).filter(Boolean);
+        if(!words.some(w=>tokSet.has(w)))continue;
 
-    const colorMap={rem:'rgba(239,68,68,0.35)',add:'rgba(34,197,94,0.35)',chg:'rgba(245,158,11,0.35)'};
-    const color=colorMap[targetType]||'rgba(99,102,241,0.35)';
-
-    for(const item of items){
-        if(!item.str||!item.str.trim())continue;
-        const matched=diffTexts.some(dt=>dt.toLowerCase().includes(item.str.toLowerCase().trim()));
-        if(!matched)continue;
-
-        const t=item.transform;
-        const fH=Math.abs(t[3])*renderScale;
-        const fW=item.width*renderScale;
-        const px=t[4]*renderScale;
-        const py=overlay.height-(t[5]*renderScale)-fH;
-
+        const tx=pdfjsLib.Util.transform(scaleVp.transform,item.transform);
+        const fH=Math.max(8,Math.hypot(tx[2],tx[3])||12);
+        const fW=Math.max(6,(item.width||0)*renderScale);
+        const px=tx[4],py=tx[5]-fH*0.92;
         ctx.fillStyle=color;
-        ctx.fillRect(px,py,fW+2,fH+2);
-        ctx.strokeStyle=color.replace('.35','.8');
-        ctx.lineWidth=1;
-        ctx.strokeRect(px,py,fW+2,fH+2);
+        ctx.fillRect(px-1,py-1,fW+2,fH*1.22);
     }
 }
 
-/* ══════════════════════════════════════════════
-   OVERLAY VIEW
-══════════════════════════════════════════════ */
 async function renderOverlay(pgA,pgB){
-    const baseCanvas=document.getElementById('overlayBaseCanvas');
-    const topCanvas=document.getElementById('overlayTopCanvas');
-    const bCtx=baseCanvas.getContext('2d');
-    const tCtx=topCanvas.getContext('2d');
-
+    const baseC=document.getElementById('overlayBaseCanvas'),topC=document.getElementById('overlayTopCanvas');
+    const bCtx=baseC.getContext('2d'),tCtx=topC.getContext('2d');
     const pg=pgA||pgB;if(!pg)return;
     const vp=pg.getViewport({scale:renderScale});
-    baseCanvas.width=vp.width;baseCanvas.height=vp.height;
-    topCanvas.width=vp.width;topCanvas.height=vp.height;
-    topCanvas.style.opacity='0.5';
+    baseC.width=topC.width=Math.round(vp.width);
+    baseC.height=topC.height=Math.round(vp.height);
+    topC.style.opacity=(document.getElementById('overlayAlpha').value/100);
 
-    bCtx.fillStyle='#fff';bCtx.fillRect(0,0,vp.width,vp.height);
+    bCtx.fillStyle='#fff';bCtx.fillRect(0,0,baseC.width,baseC.height);
     if(pgA)await pgA.render({canvasContext:bCtx,viewport:pgA.getViewport({scale:renderScale})}).promise;
+    tCtx.clearRect(0,0,topC.width,topC.height);
+    if(pgB)await pgB.render({canvasContext:tCtx,viewport:pgB.getViewport({scale:renderScale})}).promise;
+}
 
-    tCtx.clearRect(0,0,vp.width,vp.height);
-    if(pgB){
-        tCtx.globalAlpha=1;
-        await pgB.render({canvasContext:tCtx,viewport:pgB.getViewport({scale:renderScale})}).promise;
+async function renderSlider(pgA,pgB){
+    const cA=document.getElementById('sliderCanvasA'),cB=document.getElementById('sliderCanvasB');
+    const ctxA=cA.getContext('2d'),ctxB=cB.getContext('2d');
+    const pg=pgA||pgB;if(!pg)return;
+    const vp=pg.getViewport({scale:renderScale});
+    cA.width=cB.width=Math.round(vp.width);cA.height=cB.height=Math.round(vp.height);
+    ctxA.fillStyle='#fff';ctxA.fillRect(0,0,cA.width,cA.height);
+    if(pgA)await pgA.render({canvasContext:ctxA,viewport:pgA.getViewport({scale:renderScale})}).promise;
+    ctxB.fillStyle='#fff';ctxB.fillRect(0,0,cB.width,cB.height);
+    if(pgB)await pgB.render({canvasContext:ctxB,viewport:pgB.getViewport({scale:renderScale})}).promise;
+    applySliderPct();
+}
+
+function applySliderPct(){
+    const wrap=document.getElementById('sliderWrap');
+    const cA=document.getElementById('sliderCanvasA');
+    const w=cA.width||400;
+    wrap.style.width=w+'px';
+    const x=Math.round(sliderPct*w);
+    document.getElementById('sliderBWrap').style.width=(w-x)+'px';
+    document.getElementById('sliderDiv').style.left=(x-1.5)+'px';
+}
+
+function setupSliderOnce(){
+    if(sliderBound)return;
+    sliderBound=true;
+    const wrap=document.getElementById('sliderWrap');
+    let drag=false;
+    wrap.addEventListener('pointerdown',e=>{drag=true;if(wrap.setPointerCapture)try{wrap.setPointerCapture(e.pointerId);}catch(_){}moveSlider(e);});
+    wrap.addEventListener('pointermove',e=>{if(drag)moveSlider(e);});
+    wrap.addEventListener('pointerup',()=>{drag=false;});
+    wrap.addEventListener('pointercancel',()=>{drag=false;});
+    function moveSlider(e){
+        const r=wrap.getBoundingClientRect();
+        sliderPct=Math.max(0,Math.min(1,(e.clientX-r.left)/Math.max(1,r.width)));
+        applySliderPct();
     }
 }
 
-/* ══════════════════════════════════════════════
-   SLIDER VIEW
-══════════════════════════════════════════════ */
-async function renderSlider(pgA,pgB){
-    const cA=document.getElementById('sliderCanvasA');
-    const cB=document.getElementById('sliderCanvasB');
-    const ctxA=cA.getContext('2d');
-    const ctxB=cB.getContext('2d');
+async function renderPixelDiff(pgA,pgB){
+    const outC=document.getElementById('pixelDiffCanvas');
+    const ref=pgA||pgB;if(!ref)return;
+    const vp=ref.getViewport({scale:renderScale});
+    const w=Math.round(vp.width),h=Math.round(vp.height);
+    outC.width=w;outC.height=h;
+    const oCtx=outC.getContext('2d');
 
-    const pg=pgA||pgB;if(!pg)return;
-    const vp=pg.getViewport({scale:renderScale});
-    cA.width=vp.width;cA.height=vp.height;
-    cB.width=vp.width;cB.height=vp.height;
+    const c1=document.createElement('canvas'),c2=document.createElement('canvas');
+    c1.width=c2.width=w;c1.height=c2.height=h;
+    const x1=c1.getContext('2d'),x2=c2.getContext('2d');
+    x1.fillStyle='#fff';x1.fillRect(0,0,w,h);
+    x2.fillStyle='#fff';x2.fillRect(0,0,w,h);
+    if(pgA)await pgA.render({canvasContext:x1,viewport:pgA.getViewport({scale:renderScale})}).promise;
+    if(pgB)await pgB.render({canvasContext:x2,viewport:pgB.getViewport({scale:renderScale})}).promise;
 
-    ctxA.fillStyle='#fff';ctxA.fillRect(0,0,vp.width,vp.height);
-    if(pgA)await pgA.render({canvasContext:ctxA,viewport:pgA.getViewport({scale:renderScale})}).promise;
-
-    ctxB.fillStyle='#fff';ctxB.fillRect(0,0,vp.width,vp.height);
-    if(pgB)await pgB.render({canvasContext:ctxB,viewport:pgB.getViewport({scale:renderScale})}).promise;
-
-    // Set slider position to 50%
-    const w=vp.width;
-    const sliderWrap=document.getElementById('sliderWrap');
-    const sliderBWrap=document.getElementById('sliderBWrap');
-    const sliderDiv=document.getElementById('sliderDiv');
-    sliderWrap.style.width=w+'px';
-    sliderBWrap.style.width=(w/2)+'px';
-    sliderBWrap.style.left=(w/2)+'px';
-    sliderDiv.style.left=(w/2-1.5)+'px';
+    const d1=x1.getImageData(0,0,w,h),d2=x2.getImageData(0,0,w,h);
+    const out=oCtx.createImageData(w,h);
+    let diffCount=0;
+    for(let i=0;i<d1.data.length;i+=4){
+        const delta=Math.abs(d1.data[i]-d2.data[i])+Math.abs(d1.data[i+1]-d2.data[i+1])+Math.abs(d1.data[i+2]-d2.data[i+2]);
+        if(delta>38){
+            out.data[i]=239;out.data[i+1]=68;out.data[i+2]=68;out.data[i+3]=255;
+            diffCount++;
+        }else{
+            const gray=Math.round(0.299*d1.data[i]+0.587*d1.data[i+1]+0.114*d1.data[i+2]);
+            const muted=Math.round(gray*0.35+255*0.65);
+            out.data[i]=muted;out.data[i+1]=muted;out.data[i+2]=muted;out.data[i+3]=255;
+        }
+    }
+    oCtx.putImageData(out,0,0);
+    const pct=((diffCount/Math.max(1,w*h))*100).toFixed(2);
+    document.getElementById('pixelDiffInfo').textContent=`Page ${curPage}: ${pct}% visual pixel difference highlighted in red`;
 }
 
-function setupSlider(){
-    const sliderDiv=document.getElementById('sliderDiv');
-    let dragging=false;
+/* Synchronized pane scrolling */
+(function(){
+    const pA=document.getElementById('paneA'),pB=document.getElementById('paneB');
+    let lock=false;
+    pA.addEventListener('scroll',()=>{if(!syncScroll||lock)return;lock=true;pB.scrollTop=pA.scrollTop;pB.scrollLeft=pA.scrollLeft;lock=false;});
+    pB.addEventListener('scroll',()=>{if(!syncScroll||lock)return;lock=true;pA.scrollTop=pB.scrollTop;pA.scrollLeft=pB.scrollLeft;lock=false;});
+})();
 
-    const onMove=(e)=>{
-        if(!dragging)return;
-        const wrap=document.getElementById('sliderWrap');
-        const rect=wrap.getBoundingClientRect();
-        const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-        const pct=Math.max(0,Math.min(1,cx/rect.width));
-        const w=rect.width;
-        document.getElementById('sliderBWrap').style.width=(pct*w)+'px';
-        document.getElementById('sliderBWrap').style.left=(pct*w)+'px';
-        sliderDiv.style.left=(pct*w-1.5)+'px';
-        document.getElementById('sliderCanvasB').style.width=w+'px';
-    };
-
-    sliderDiv.addEventListener('mousedown',()=>dragging=true);
-    document.addEventListener('mousemove',onMove);
-    document.addEventListener('mouseup',()=>dragging=false);
-    sliderDiv.addEventListener('touchstart',()=>dragging=true,{passive:true});
-    document.addEventListener('touchmove',onMove,{passive:true});
-    document.addEventListener('touchend',()=>dragging=false);
+function toggleSyncScroll(){
+    syncScroll=!syncScroll;
+    document.getElementById('btnSync').classList.toggle('active',syncScroll);
 }
 
-/* ══════════════════════════════════════════════
-   VIEW CONTROLS
-══════════════════════════════════════════════ */
 function setView(mode){
     viewMode=mode;
-    ['side','overlay','slider'].forEach(m=>{
-        document.getElementById('btn'+m.charAt(0).toUpperCase()+m.slice(1)).classList.toggle('active',m===mode);
-    });
+    document.getElementById('btnSide').classList.toggle('active',mode==='side');
+    document.getElementById('btnOverlay').classList.toggle('active',mode==='overlay');
+    document.getElementById('btnSlider').classList.toggle('active',mode==='slider');
+    document.getElementById('btnPixel').classList.toggle('active',mode==='pixel');
 
-    const pA=document.getElementById('paneA');
-    const pB=document.getElementById('paneB');
-    const oP=document.getElementById('overlayPaneEl');
-    const sP=document.getElementById('sliderPaneEl');
-
-    pA.style.display=mode==='side'?'flex':'none';
-    pB.style.display=mode==='side'?'flex':'none';
-    oP.style.display=mode==='overlay'?'flex':'none';
-    sP.style.display=mode==='slider'?'flex':'none';
+    document.getElementById('paneA').style.display=mode==='side'?'flex':'none';
+    document.getElementById('paneB').style.display=mode==='side'?'flex':'none';
+    document.getElementById('overlayPaneEl').style.display=mode==='overlay'?'flex':'none';
+    document.getElementById('sliderPaneEl').style.display=mode==='slider'?'flex':'none';
+    document.getElementById('pixelPaneEl').style.display=mode==='pixel'?'flex':'none';
 
     renderCurrentPage();
 }
@@ -1146,10 +1233,7 @@ function setView(mode){
 function toggleHighlight(){
     showHighlights=!showHighlights;
     document.getElementById('btnHighlight').classList.toggle('active',showHighlights);
-    if(showHighlights)drawDiffHighlights();
-    else{
-        ['A','B'].forEach(w=>{const o=document.getElementById('overlay'+w);o.getContext('2d').clearRect(0,0,o.width,o.height)});
-    }
+    if(showHighlights)drawDiffHighlights();else clearHighlights();
 }
 
 function zoomIn(){viewScale=Math.min(viewScale+0.25,3);renderCurrentPage()}
@@ -1158,31 +1242,38 @@ function zoomFit(){viewScale=1;renderCurrentPage()}
 async function goPrev(){if(curPage>1){curPage--;await renderCurrentPage()}}
 async function goNext(){if(curPage<maxPages){curPage++;await renderCurrentPage()}}
 
+function jumpDiffPage(dir){
+    if(changedPages.size===0)return;
+    const sorted=[...changedPages].sort((a,b)=>a-b);
+    let target=sorted[0];
+    if(dir>0)target=sorted.find(p=>p>curPage)||sorted[0];
+    else target=sorted.slice().reverse().find(p=>p<curPage)||sorted[sorted.length-1];
+    jumpToPage(target);
+}
+
 document.addEventListener('keydown',e=>{
     if(e.target.tagName==='INPUT')return;
     if(e.key==='ArrowLeft')goPrev();
     if(e.key==='ArrowRight')goNext();
 });
 
-/* ══════════════════════════════════════════════
-   DIFF LIST
-══════════════════════════════════════════════ */
 function buildDiffList(){
     const list=document.getElementById('diffListView');
-    if(diffs.length===0){list.innerHTML='<div class="diff-empty"><i class="fas fa-check-circle" style="color:#16a34a;font-size:24px;display:block;margin-bottom:8px"></i>No differences found! The documents appear identical.</div>';return}
-
+    if(diffs.length===0){
+        list.innerHTML='<div class="diff-empty"><i class="fas fa-check-circle" style="color:#16a34a;font-size:24px;display:block;margin-bottom:8px"></i>No differences found! Documents match cleanly.</div>';
+        return;
+    }
     const iconMap={add:'<i class="fas fa-plus"></i>',rem:'<i class="fas fa-minus"></i>',chg:'<i class="fas fa-exchange-alt"></i>'};
     const labelMap={add:'Added',rem:'Removed',chg:'Changed'};
-
-    list.innerHTML=diffs.map((d,i)=>`
+    list.innerHTML=diffs.slice(0,400).map(d=>`
         <div class="diff-item" onclick="jumpToPage(${d.page})">
-            <div class="diff-badge ${d.type==='add'?'add':d.type==='rem'?'rem':'chg'}">${iconMap[d.type]||'?'}</div>
+            <div class="diff-badge ${d.type==='add'?'add':(d.type==='rem'?'rem':'chg')}">${iconMap[d.type]||'!'}</div>
             <div class="diff-info">
                 <div class="diff-info-title">${labelMap[d.type]||d.type}</div>
                 <div class="diff-info-text">
-                    ${d.type==='add'?`<span style="color:#16a34a">+ ${escH((d.textB||'').slice(0,100))}${(d.textB||'').length>100?'...':''}</span>`:
-                    d.type==='rem'?`<span style="color:#dc2626">- ${escH((d.textA||'').slice(0,100))}${(d.textA||'').length>100?'...':''}</span>`:
-                    `<span style="color:#dc2626">- ${escH((d.textA||'').slice(0,60))}</span><br><span style="color:#16a34a">+ ${escH((d.textB||'').slice(0,60))}</span>`}
+                    ${d.type==='add'?`<span style="color:#16a34a">+ ${escH((d.textB||'').slice(0,120))}${(d.textB||'').length>120?'...':''}</span>`:
+                    d.type==='rem'?`<span style="color:#dc2626">- ${escH((d.textA||'').slice(0,120))}${(d.textA||'').length>120?'...':''}</span>`:
+                    `<span style="color:#dc2626">- ${escH((d.textA||'').slice(0,80))}</span><br><span style="color:#16a34a">+ ${escH((d.textB||'').slice(0,80))}</span>`}
                 </div>
             </div>
             <div class="diff-pg">p.${d.page}</div>
@@ -1192,22 +1283,21 @@ function buildDiffList(){
 
 function buildTextDiff(textsA,textsB,opts){
     const view=document.getElementById('diffTextView');
-    let html='';
-
+    if(compareMode==='visual'){
+        view.innerHTML='<span style="color:var(--text-light)">Visual-only comparison selected. Switch to Pixel Diff above to inspect page graphics.</span>';
+        return;
+    }
+    let out='';
     for(let pg=0;pg<maxPages;pg++){
-        const tA=textsA[pg]||'';
-        const tB=textsB[pg]||'';
-        const ops=mergeDiffOps(diffWords(tA,tB,opts));
-
-        html+=`<div style="color:#94a3b8;font-size:10px;font-weight:700;margin:12px 0 4px;text-transform:uppercase;letter-spacing:.5px">── Page ${pg+1} ──</div>`;
+        const ops=mergeDiffOps(diffWordsIterative(tokenize(textsA[pg]||'',opts),tokenize(textsB[pg]||'',opts)));
+        out+=`<div style="color:#6366f1;font-size:11px;font-weight:700;margin:10px 0 4px">── Page ${pg+1} ──</div>`;
         for(const op of ops){
-            if(op.type==='eql')html+=`<span class="td-same">${escH(op.val)} </span>`;
-            else if(op.type==='add')html+=`<span class="td-add">${escH(op.val)} </span>`;
-            else if(op.type==='rem')html+=`<span class="td-rem">${escH(op.val)} </span>`;
+            if(op.type==='eql')out+=`<span class="td-same">${escH(op.val)} </span>`;
+            else if(op.type==='add')out+=`<span class="td-add">${escH(op.val)} </span>`;
+            else out+=`<span class="td-rem">${escH(op.val)} </span>`;
         }
     }
-
-    view.innerHTML=html||'<span style="color:#94a3b8">No text differences found.</span>';
+    view.innerHTML=out||'<span style="color:var(--text-light)">No text differences found.</span>';
 }
 
 function switchDiffTab(tab,btn){
@@ -1223,36 +1313,46 @@ async function jumpToPage(pg){
     document.getElementById('compareBody').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-/* ══════════════════════════════════════════════
-   RESET
-══════════════════════════════════════════════ */
-function resetTool(){
-    pdfA=null;pdfB=null;bytesA=null;bytesB=null;
-    fileObjA=null;fileObjB=null;pagesA=0;pagesB=0;
-    diffs=[];pageTextsA=[];pageTextsB=[];pageItemsA=[];pageItemsB=[];
-    curPage=1;maxPages=1;viewScale=1;viewMode='side';showHighlights=true;
-
-    document.getElementById('fileA').value='';
-    document.getElementById('fileB').value='';
-    document.getElementById('slotA').className='upload-slot';
-    document.getElementById('slotB').className='upload-slot';
-    document.getElementById('infoA').className='slot-file-info';
-    document.getElementById('infoB').className='slot-file-info';
-    document.getElementById('compareBtn').disabled=true;
-    hideError();
-    showSection('uploadSection');
+function downloadDiffReport(){
+    const lines=[
+        'AI ToolCor PDF Comparison Report',
+        'Original: '+(fileObjA?.name||'A.pdf')+' ('+pagesA+' pages)',
+        'Modified: '+(fileObjB?.name||'B.pdf')+' ('+pagesB+' pages)',
+        'Mode: '+compareMode+' | Changed pages: '+changedPages.size,
+        'Summary -> Added: '+document.getElementById('statAdded').textContent+', Removed: '+document.getElementById('statRemoved').textContent+', Changed: '+document.getElementById('statChanged').textContent+', Match: '+document.getElementById('statSame').textContent+'%',
+        '',
+        '--- DIFFERENCES ---'
+    ];
+    diffs.forEach((d,i)=>{
+        lines.push(`[${i+1}] Page ${d.page} (${d.type.toUpperCase()}): ${d.type==='add'?d.textB:(d.type==='rem'?d.textA:(d.textA+'  ==>  '+d.textB))}`);
+    });
+    const blob=new Blob([lines.join('\n')],{type:'text/plain'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='pdf_diff_report.txt';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
 }
 
-// Resize handler
+function resetTool(){
+    pdfA=null;pdfB=null;bytesA=null;bytesB=null;fileObjA=null;fileObjB=null;pagesA=0;pagesB=0;
+    diffs=[];changedPages=new Set();pageTextsA=[];pageTextsB=[];pageItemsA=[];pageItemsB=[];
+    curPage=1;maxPages=1;viewScale=1;viewMode='side';showHighlights=true;
+    document.getElementById('fileA').value='';document.getElementById('fileB').value='';
+    document.getElementById('slotA').className='upload-slot';document.getElementById('slotB').className='upload-slot';
+    document.getElementById('infoA').className='slot-file-info';document.getElementById('infoB').className='slot-file-info';
+    document.getElementById('compareBtn').disabled=true;
+    hideError();showSection('uploadSection');
+}
+
 let resizeT;
 window.addEventListener('resize',()=>{
     clearTimeout(resizeT);
     resizeT=setTimeout(async()=>{
-        if(pdfA&&pdfB){
+        if(pdfA&&pdfB&&document.getElementById('resultSection').style.display==='block'){
             const pg=await pdfA.getPage(1);
             const vp=pg.getViewport({scale:1});
             const scroll=document.getElementById('compareBody');
-            baseScale=Math.min((scroll.clientWidth/2-60)/vp.width,1.5);
+            baseScale=Math.min(Math.max(240,(scroll.clientWidth/2)-56)/vp.width,1.45);
             await renderCurrentPage();
         }
     },300);

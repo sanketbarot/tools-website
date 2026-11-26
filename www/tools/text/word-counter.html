@@ -192,7 +192,7 @@
 
     
     <style>
-        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+.calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
         .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
         .calc-card h2 i{color:#3b82f6;font-size:17px}
 
@@ -263,36 +263,45 @@
         .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
         .privacy-note i{color:#22c55e;margin-right:4px}
 
-        /* FAQ Override */
-        .wc-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-        .wc-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
-        .wc-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(59,130,246,0.25)}
-        .wc-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
-        .wc-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
-        .wc-faq .faq-item.active .faq-q h4{color:#3b82f6}
-        .wc-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
-        .wc-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:#3b82f6}
-        .wc-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(59,130,246,0.1);color:#3b82f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .wc-faq .faq-item.active .faq-q .faq-num{background:#3b82f6;color:#fff}
-        .wc-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(59,130,246,0.1);margin:0 22px}
-        .wc-faq .faq-item.active .faq-a{display:block}
-        .wc-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-        @media(max-width:768px){
-            .stats-bar{grid-template-columns:repeat(4,1fr);gap:6px}
+        
+        /* Word Counter — Dark Mode & Find/Replace Polish */
+        .wc-find-bar{display:none;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;padding:12px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:12px}
+        .wc-find-bar.open{display:flex}
+        .wc-find-bar input{flex:1;min-width:140px;padding:8px 12px;border:1.5px solid rgba(148,163,184,0.3);border-radius:9px;background:var(--bg-card,#fff);color:var(--text-dark,#0f172a);font-size:13px;outline:none}
+        html[data-theme="dark"] .calc-card,
+        html[data-theme="dark"] .stat-pill,
+        html[data-theme="dark"] .detail-item,
+        html[data-theme="dark"] .social-item { background:#131c2e; border-color:rgba(148,163,184,0.2); }
+        html[data-theme="dark"] .text-area-wrap textarea,
+        html[data-theme="dark"] .kw-item,
+        html[data-theme="dark"] .wc-find-bar input { background:#0b1120; border-color:rgba(148,163,184,0.24); color:#f1f5f9; }
+        html[data-theme="dark"] .rs-pointer { background:#f8fafc; box-shadow:0 0 8px rgba(255,255,255,0.4); }
+        @media(max-width:768px){.stats-bar{grid-template-columns:repeat(4,1fr);gap:6px}
             .stat-pill{padding:10px 6px}
             .stat-pill .sp-val{font-size:20px}
             .detail-grid{grid-template-columns:1fr}
-            .social-grid{grid-template-columns:1fr}
-        }
-        @media(max-width:480px){
-            .calc-card{padding:20px 16px}
+            .social-grid{grid-template-columns:1fr}}
+        @media(max-width:480px){.calc-card{padding:20px 16px}
             .stats-bar{grid-template-columns:repeat(2,1fr)}
             .stat-pill .sp-val{font-size:22px}
-            .wc-faq .faq-q{padding:14px 16px}
+            
             .toolbar{gap:4px}
-            .tool-btn{font-size:10px;padding:6px 10px}
-        }
+            .tool-btn{font-size:10px;padding:6px 10px}}
     </style>
        <!-- ========== AD STYLES ========== -->
 <link rel="stylesheet" href="../../css/ads.css">
@@ -332,7 +341,7 @@
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
         
             <a href="../../blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <a href="../../login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -360,6 +369,7 @@
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
 <!-- TOOL AREA -->
+<main>
 <section class="tool-area">
     <div class="container">
 
@@ -381,14 +391,24 @@
 
             <!-- Toolbar -->
             <div class="toolbar">
-                <button class="tool-btn" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
-                <button class="tool-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
-                <button class="tool-btn" onclick="toUpperCase()"><i class="fas fa-arrow-up"></i> UPPER</button>
-                <button class="tool-btn" onclick="toLowerCase()"><i class="fas fa-arrow-down"></i> lower</button>
-                <button class="tool-btn" onclick="toTitleCase()"><i class="fas fa-font"></i> Title</button>
-                <button class="tool-btn" onclick="toSentenceCase()"><i class="fas fa-paragraph"></i> Sentence</button>
-                <button class="tool-btn" onclick="removeExtraSpaces()"><i class="fas fa-compress-alt"></i> Trim</button>
-                <button class="tool-btn danger" onclick="clearText()"><i class="fas fa-trash"></i> Clear</button>
+                <button class="tool-btn" type="button" onclick="copyText()"><i class="fas fa-copy"></i> Copy</button>
+                <button class="tool-btn" type="button" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
+                <button class="tool-btn" type="button" onclick="document.getElementById('wcFileInput').click()"><i class="fas fa-upload"></i> Open .TXT</button>
+                <input type="file" id="wcFileInput" accept=".txt,.md,.csv,.log,.json,text/*" hidden onchange="loadTxtFile(this)">
+                <button class="tool-btn" type="button" onclick="downloadTxt()"><i class="fas fa-download"></i> Save .TXT</button>
+                <button class="tool-btn" type="button" onclick="toUpperCase()"><i class="fas fa-arrow-up"></i> UPPER</button>
+                <button class="tool-btn" type="button" onclick="toLowerCase()"><i class="fas fa-arrow-down"></i> lower</button>
+                <button class="tool-btn" type="button" onclick="toTitleCase()"><i class="fas fa-font"></i> Title</button>
+                <button class="tool-btn" type="button" onclick="toSentenceCase()"><i class="fas fa-paragraph"></i> Sentence</button>
+                <button class="tool-btn" type="button" onclick="removeExtraSpaces()"><i class="fas fa-compress-alt"></i> Trim</button>
+                <button class="tool-btn" type="button" onclick="toggleFindBar()"><i class="fas fa-search"></i> Find/Replace</button>
+                <button class="tool-btn" type="button" onclick="undoTransform()" id="wcUndoBtn" disabled style="opacity:.5"><i class="fas fa-undo"></i> Undo</button>
+                <button class="tool-btn danger" type="button" onclick="clearText()"><i class="fas fa-trash"></i> Clear</button>
+            </div>
+            <div class="wc-find-bar" id="wcFindBar">
+                <input type="text" id="wcFindTxt" placeholder="Find text...">
+                <input type="text" id="wcReplaceTxt" placeholder="Replace with...">
+                <button class="tool-btn" type="button" onclick="doFindReplace()"><i class="fas fa-exchange-alt"></i> Replace All</button>
             </div>
 
             <div class="privacy-note">
@@ -501,10 +521,53 @@
     </div>
 </section>
 
+</main>
+
 <!-- MIDDLE AD -->
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
 <!-- HOW IT WORKS -->
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related Text &amp; AI Tools</h2>
+            <p>Clean, analyze, summarize, and transform text in seconds.</p>
+        </div>
+        <div class="related-grid">
+            <a href="../../tools/text/case-converter.html" class="related-card" aria-label="Case Converter">
+                <div class="related-icon ri-purple"><i class="fas fa-text-height" aria-hidden="true"></i></div>
+                <h4>Case Converter</h4>
+                <p>UPPER, lower, Title &amp; camelCase</p>
+            </a>
+            <a href="../../tools/text/lorem-generator.html" class="related-card" aria-label="Lorem Generator">
+                <div class="related-icon ri-teal"><i class="fas fa-paragraph" aria-hidden="true"></i></div>
+                <h4>Lorem Generator</h4>
+                <p>Placeholder paragraphs &amp; words</p>
+            </a>
+            <a href="../../ai-summarizer.html" class="related-card" aria-label="AI Summarizer">
+                <div class="related-icon ri-indigo"><i class="fas fa-brain" aria-hidden="true"></i></div>
+                <h4>AI Summarizer</h4>
+                <p>Summarize long PDFs &amp; text</p>
+            </a>
+            <a href="../../translate-pdf.html" class="related-card" aria-label="Translate PDF">
+                <div class="related-icon ri-cyan"><i class="fas fa-language" aria-hidden="true"></i></div>
+                <h4>Translate PDF</h4>
+                <p>Translate PDF documents fast</p>
+            </a>
+            <a href="../../ocr-pdf.html" class="related-card" aria-label="OCR PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-eye" aria-hidden="true"></i></div>
+                <h4>OCR PDF</h4>
+                <p>Extract searchable text with AI</p>
+            </a>
+            <a href="../../tools/developer/base64-encoder.html" class="related-card" aria-label="Base64 Encoder">
+                <div class="related-icon ri-purple"><i class="fas fa-exchange-alt" aria-hidden="true"></i></div>
+                <h4>Base64 Encoder</h4>
+                <p>Encode &amp; decode Base64</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How It Works</h2></div>
@@ -522,26 +585,26 @@
 <section class="faq-section">
     <div class="container">
         <div class="section-header"><h2>Frequently Asked Questions</h2></div>
-        <div class="wc-faq">
-            <div class="faq-item" onclick="wcFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">1</span><h4>How are words counted?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p>Words are counted by splitting text on spaces and line breaks. Consecutive spaces are treated as one separator. Numbers and hyphenated words each count as one word.</p></div>
+        <div class="faq-list">
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">1</span><h4>How are words counted?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p>Words are counted by splitting text on spaces and line breaks. Consecutive spaces are treated as one separator. Numbers and hyphenated words each count as one word.</p></div></div>
             </div>
-            <div class="faq-item" onclick="wcFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">2</span><h4>What is reading time based on?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p>Reading time is calculated at <strong>200 words per minute</strong> (average adult reading speed). Speaking time uses <strong>130 words per minute</strong> (average speaking pace).</p></div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">2</span><h4>What is reading time based on?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p>Reading time is calculated at <strong>200 words per minute</strong> (average adult reading speed). Speaking time uses <strong>130 words per minute</strong> (average speaking pace).</p></div></div>
             </div>
-            <div class="faq-item" onclick="wcFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">3</span><h4>What is the readability score?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p>The Flesch Reading Ease score ranges from 0-100. Higher scores mean easier text. 60-70 is standard, 80-90 is easy, below 30 is very difficult (academic/legal).</p></div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">3</span><h4>What is the readability score?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p>The Flesch Reading Ease score ranges from 0-100. Higher scores mean easier text. 60-70 is standard, 80-90 is easy, below 30 is very difficult (academic/legal).</p></div></div>
             </div>
-            <div class="faq-item" onclick="wcFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">4</span><h4>What is keyword density?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p>Keyword density shows how frequently each word appears in your text as a percentage. It helps with SEO optimization — ideally keep primary keywords between 1-3%.</p></div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">4</span><h4>What is keyword density?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p>Keyword density shows how frequently each word appears in your text as a percentage. It helps with SEO optimization — ideally keep primary keywords between 1-3%.</p></div></div>
             </div>
-            <div class="faq-item" onclick="wcFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">5</span><h4>Is my text stored?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p>No! Everything runs in your browser. Your text is never sent to any server. 100% private and secure.</p></div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">5</span><h4>Is my text stored?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p>No! Everything runs in your browser. Your text is never sent to any server. 100% private and secure.</p></div></div>
             </div>
         </div>
     </div>
@@ -611,16 +674,34 @@
 
 <!-- JS -->
 <script>
-// ==========================================
-// WORD COUNTER - COMPLETE
-// ==========================================
-
 var stopWords = ['the','a','an','and','or','but','in','on','at','to','for','of','with','by','is','am','are','was','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','shall','can','this','that','these','those','it','its','i','me','my','we','our','you','your','he','him','his','she','her','they','them','their','not','no','from','as','if','so','than','then'];
+var wcHistory = [];
+
+function wcToast(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'success');
+}
+function escapeHTML(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pushUndo(val) {
+    wcHistory.push(val);
+    if (wcHistory.length > 20) wcHistory.shift();
+    var btn = document.getElementById('wcUndoBtn');
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+}
+function undoTransform() {
+    if (!wcHistory.length) return;
+    document.getElementById('textInput').value = wcHistory.pop();
+    if (!wcHistory.length) {
+        var btn = document.getElementById('wcUndoBtn');
+        if (btn) { btn.disabled = true; btn.style.opacity = '.5'; }
+    }
+    analyzeText();
+    wcToast('Undid last change', 'info');
+}
 
 function analyzeText() {
     var text = document.getElementById('textInput').value;
-
-    // Basic counts
     var chars = text.length;
     var charsNoSpace = text.replace(/\s/g, '').length;
     var words = text.trim() === '' ? [] : text.trim().split(/\s+/);
@@ -629,132 +710,93 @@ function analyzeText() {
     var sentenceCount = text.trim() === '' ? 0 : sentences.length;
     var paragraphs = text.split(/\n\s*\n/).filter(function(p) { return p.trim().length > 0; });
     var paraCount = text.trim() === '' ? 0 : paragraphs.length;
-    var lines = text.split(/\n/).length;
-    if (text.trim() === '') lines = 0;
+    var lines = text.trim() === '' ? 0 : text.split(/\n/).length;
 
-    // Live stats bar
     document.getElementById('liveWords').textContent = wordCount.toLocaleString();
     document.getElementById('liveChars').textContent = chars.toLocaleString();
     document.getElementById('liveSentences').textContent = sentenceCount;
     document.getElementById('liveParagraphs').textContent = paraCount;
 
-    // Detailed stats
     document.getElementById('dWords').textContent = wordCount.toLocaleString();
     document.getElementById('dCharsSpace').textContent = chars.toLocaleString();
     document.getElementById('dCharsNoSpace').textContent = charsNoSpace.toLocaleString();
     document.getElementById('dSentences').textContent = sentenceCount;
     document.getElementById('dParagraphs').textContent = paraCount;
     document.getElementById('dLines').textContent = lines;
+    document.getElementById('dPages').textContent = wordCount > 0 ? (wordCount / 250).toFixed(1) : 0;
 
-    // Pages (250 words per page)
-    var pages = wordCount > 0 ? (wordCount / 250).toFixed(1) : 0;
-    document.getElementById('dPages').textContent = pages;
+    var readSec = Math.round((wordCount / 200) * 60);
+    document.getElementById('dReadTime').textContent = wordCount === 0 ? '0 min' : (readSec < 60 ? readSec + ' sec' : Math.ceil(readSec / 60) + ' min');
+    var speakSec = Math.round((wordCount / 130) * 60);
+    document.getElementById('dSpeakTime').textContent = wordCount === 0 ? '0 min' : (speakSec < 60 ? speakSec + ' sec' : Math.ceil(speakSec / 60) + ' min');
 
-    // Reading time (200 wpm)
-    var readMin = Math.ceil(wordCount / 200);
-    document.getElementById('dReadTime').textContent = readMin > 0 ? (readMin < 1 ? '< 1 min' : readMin + ' min') : '0 min';
-
-    // Speaking time (130 wpm)
-    var speakMin = Math.ceil(wordCount / 130);
-    document.getElementById('dSpeakTime').textContent = speakMin > 0 ? (speakMin < 1 ? '< 1 min' : speakMin + ' min') : '0 min';
-
-    // Average word length
     if (wordCount > 0) {
         var totalWordLen = 0;
-        for (var i = 0; i < words.length; i++) totalWordLen += words[i].replace(/[^a-zA-Z0-9]/g, '').length;
+        for (var i = 0; i < words.length; i++) totalWordLen += words[i].replace(/[^\p{L}\p{N}]/gu, '').length;
         document.getElementById('dAvgWord').textContent = (totalWordLen / wordCount).toFixed(1) + ' chars';
     } else {
         document.getElementById('dAvgWord').textContent = '0';
     }
-
-    // Average sentence length
     document.getElementById('dAvgSentence').textContent = sentenceCount > 0 ? Math.round(wordCount / sentenceCount) + ' words' : '0';
 
-    // Unique words
     var uniqueSet = {};
-    for (var i = 0; i < words.length; i++) {
-        var w = words[i].toLowerCase().replace(/[^a-zA-Z0-9'-]/g, '');
+    for (var j = 0; j < words.length; j++) {
+        var w = words[j].toLowerCase().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '');
         if (w) uniqueSet[w] = true;
     }
-    var uniqueCount = Object.keys(uniqueSet).length;
-    document.getElementById('dUniqueWords').textContent = uniqueCount.toLocaleString();
+    document.getElementById('dUniqueWords').textContent = Object.keys(uniqueSet).length.toLocaleString();
 
-    // Keyword density
     buildKeywords(words, wordCount);
-
-    // Readability
-    calcReadability(words, sentences, wordCount, sentenceCount);
-
-    // Social limits
+    calcReadability(words, wordCount, sentenceCount);
     updateSocial(chars, wordCount);
 }
 
-// ===== KEYWORD DENSITY =====
 function buildKeywords(words, total) {
     var container = document.getElementById('keywordList');
     if (total === 0) {
         container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-light);font-size:13px;"><i class="fas fa-keyboard" style="font-size:24px;margin-bottom:8px;display:block;opacity:.3"></i>Start typing to see keyword density</div>';
         return;
     }
-
     var freq = {};
     for (var i = 0; i < words.length; i++) {
-        var w = words[i].toLowerCase().replace(/[^a-zA-Z0-9'-]/g, '');
-        if (w.length < 2) continue;
-        if (stopWords.indexOf(w) >= 0) continue;
+        var w = words[i].toLowerCase().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '');
+        if (w.length < 2 || stopWords.indexOf(w) >= 0) continue;
         freq[w] = (freq[w] || 0) + 1;
     }
-
     var sorted = Object.keys(freq).sort(function(a, b) { return freq[b] - freq[a]; });
     var top = sorted.slice(0, 15);
     var maxCount = top.length > 0 ? freq[top[0]] : 1;
-
     var html = '';
     for (var i = 0; i < top.length; i++) {
-        var word = top[i];
-        var count = freq[word];
+        var word = top[i], count = freq[word];
         var pct = ((count / total) * 100).toFixed(1);
         var barWidth = Math.round((count / maxCount) * 100);
-        html += '<div class="kw-item">' +
-            '<div class="kw-rank">' + (i + 1) + '</div>' +
-            '<span class="kw-word">' + word + '</span>' +
-            '<span class="kw-count">' + count + 'x</span>' +
-            '<div class="kw-bar-wrap"><div class="kw-bar" style="width:' + barWidth + '%"></div></div>' +
-            '<span class="kw-pct">' + pct + '%</span>' +
-            '</div>';
+        html += '<div class="kw-item"><div class="kw-rank">' + (i + 1) + '</div><span class="kw-word">' + escapeHTML(word) + '</span><span class="kw-count">' + count + 'x</span><div class="kw-bar-wrap"><div class="kw-bar" style="width:' + barWidth + '%"></div></div><span class="kw-pct">' + pct + '%</span></div>';
     }
     container.innerHTML = html || '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;">No significant keywords found</div>';
 }
 
-// ===== READABILITY (Flesch) =====
-function calcReadability(words, sentences, wordCount, sentenceCount) {
+function calcReadability(words, wordCount, sentenceCount) {
     if (wordCount < 10 || sentenceCount < 1) {
         document.getElementById('rsScore').textContent = '—';
         document.getElementById('rsScore').style.color = '#94a3b8';
         document.getElementById('rsLevel').textContent = 'Need at least 10 words';
+        document.getElementById('rsLevel').style.color = '';
         document.getElementById('rsGrade').textContent = '—';
         document.getElementById('rsPointer').style.left = '50%';
         return;
     }
-
-    // Count syllables
     var totalSyllables = 0;
-    for (var i = 0; i < words.length; i++) {
-        totalSyllables += countSyllables(words[i]);
-    }
-
-    var score = 206.835 - (1.015 * (wordCount / sentenceCount)) - (84.6 * (totalSyllables / wordCount));
-    score = Math.max(0, Math.min(100, Math.round(score)));
-
+    for (var i = 0; i < words.length; i++) totalSyllables += countSyllables(words[i]);
+    var score = Math.max(0, Math.min(100, Math.round(206.835 - 1.015 * (wordCount / sentenceCount) - 84.6 * (totalSyllables / wordCount))));
     var level, color, grade;
-    if (score >= 90) { level = 'Very Easy'; color = '#3b82f6'; grade = '5th Grade'; }
-    else if (score >= 80) { level = 'Easy'; color = '#22c55e'; grade = '6th Grade'; }
+    if (score >= 90)      { level = 'Very Easy';   color = '#3b82f6'; grade = '5th Grade'; }
+    else if (score >= 80) { level = 'Easy';        color = '#22c55e'; grade = '6th Grade'; }
     else if (score >= 70) { level = 'Fairly Easy'; color = '#22c55e'; grade = '7th Grade'; }
-    else if (score >= 60) { level = 'Standard'; color = '#eab308'; grade = '8th-9th Grade'; }
+    else if (score >= 60) { level = 'Standard';    color = '#eab308'; grade = '8th-9th Grade'; }
     else if (score >= 50) { level = 'Fairly Hard'; color = '#f97316'; grade = '10th-12th Grade'; }
-    else if (score >= 30) { level = 'Hard'; color = '#ef4444'; grade = 'College Level'; }
-    else { level = 'Very Hard'; color = '#991b1b'; grade = 'Professional'; }
-
+    else if (score >= 30) { level = 'Hard';        color = '#ef4444'; grade = 'College Level'; }
+    else                  { level = 'Very Hard';   color = '#dc2626'; grade = 'Professional'; }
     document.getElementById('rsScore').textContent = score;
     document.getElementById('rsScore').style.color = color;
     document.getElementById('rsLevel').textContent = level;
@@ -766,137 +808,104 @@ function calcReadability(words, sentences, wordCount, sentenceCount) {
 function countSyllables(word) {
     word = word.toLowerCase().replace(/[^a-z]/g, '');
     if (word.length <= 3) return 1;
-    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-    word = word.replace(/^y/, '');
-    var matches = word.match(/[aeiouy]{1,2}/g);
-    return matches ? matches.length : 1;
+    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+    var m = word.match(/[aeiouy]{1,2}/g);
+    return m ? m.length : 1;
 }
 
-// ===== SOCIAL MEDIA =====
-function updateSocial(chars, words) {
+function updateSocial(chars) {
     var limits = [
-        { name: 'Twitter/X', icon: 'fab fa-twitter', color: '#1DA1F2', limit: 280, type: 'char' },
-        { name: 'Facebook', icon: 'fab fa-facebook', color: '#1877F2', limit: 63206, type: 'char' },
-        { name: 'Instagram', icon: 'fab fa-instagram', color: '#E4405F', limit: 2200, type: 'char' },
-        { name: 'LinkedIn', icon: 'fab fa-linkedin', color: '#0A66C2', limit: 3000, type: 'char' },
-        { name: 'YouTube Title', icon: 'fab fa-youtube', color: '#FF0000', limit: 100, type: 'char' },
-        { name: 'Pinterest', icon: 'fab fa-pinterest', color: '#BD081C', limit: 500, type: 'char' },
-        { name: 'TikTok', icon: 'fab fa-tiktok', color: '#010101', limit: 150, type: 'char' },
-        { name: 'Meta Title', icon: 'fas fa-search', color: '#4285F4', limit: 60, type: 'char' }
+        { name: 'Twitter/X', icon: 'fab fa-twitter', color: '#1DA1F2', limit: 280 },
+        { name: 'Facebook', icon: 'fab fa-facebook', color: '#1877F2', limit: 63206 },
+        { name: 'Instagram', icon: 'fab fa-instagram', color: '#E4405F', limit: 2200 },
+        { name: 'LinkedIn', icon: 'fab fa-linkedin', color: '#0A66C2', limit: 3000 },
+        { name: 'YouTube Title', icon: 'fab fa-youtube', color: '#FF0000', limit: 100 },
+        { name: 'Pinterest', icon: 'fab fa-pinterest', color: '#BD081C', limit: 500 },
+        { name: 'TikTok', icon: 'fab fa-tiktok', color: '#334155', limit: 150 },
+        { name: 'SEO Meta Title', icon: 'fas fa-search', color: '#4285F4', limit: 60 }
     ];
-
     var grid = document.getElementById('socialGrid');
     var html = '';
     for (var i = 0; i < limits.length; i++) {
         var s = limits[i];
-        var current = s.type === 'char' ? chars : words;
-        var pct = s.limit > 0 ? Math.round((current / s.limit) * 100) : 0;
-        var statusClass, statusText;
-        if (current === 0) { statusClass = 'si-ok'; statusText = '—'; }
-        else if (current <= s.limit) { statusClass = 'si-ok'; statusText = '✓ ' + current + '/' + s.limit; }
-        else { statusClass = 'si-over'; statusText = '✗ Over by ' + (current - s.limit); }
-
-        html += '<div class="social-item">' +
-            '<div class="si-icon" style="background:' + s.color + '"><i class="' + s.icon + '"></i></div>' +
-            '<div><span class="si-name">' + s.name + '</span><span class="si-limit">Max ' + s.limit.toLocaleString() + ' chars</span></div>' +
-            '<span class="si-status ' + statusClass + '">' + statusText + '</span></div>';
+        var sc = chars === 0 ? 'si-ok' : chars <= s.limit ? 'si-ok' : 'si-over';
+        var st = chars === 0 ? '—' : chars <= s.limit ? '✓ ' + chars + '/' + s.limit : '✗ Over by ' + (chars - s.limit);
+        html += '<div class="social-item"><div class="si-icon" style="background:' + s.color + '"><i class="' + s.icon + '"></i></div><div><span class="si-name">' + s.name + '</span><span class="si-limit">Max ' + s.limit.toLocaleString() + ' chars</span></div><span class="si-status ' + sc + '">' + st + '</span></div>';
     }
     grid.innerHTML = html;
 }
 
-// ===== TEXT TOOLS =====
+function loadTxtFile(input) {
+    var f = input.files && input.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function(e) {
+        pushUndo(document.getElementById('textInput').value);
+        document.getElementById('textInput').value = e.target.result || '';
+        analyzeText();
+        wcToast('Loaded ' + f.name);
+    };
+    r.readAsText(f);
+    input.value = '';
+}
+function downloadTxt() {
+    var text = document.getElementById('textInput').value;
+    if (!text) { wcToast('Nothing to save!', 'error'); return; }
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'word-counter-text.txt';
+    document.body.appendChild(a); a.click();
+    setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 300);
+}
 function copyText() {
     var text = document.getElementById('textInput').value;
-    if (!text) return;
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(function() { alert('Text copied!'); });
-    } else { prompt('Copy:', text); }
+    if (!text) { wcToast('Enter text first', 'error'); return; }
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(function() { wcToast('Text copied!'); });
 }
-
 function pasteText() {
     if (navigator.clipboard && navigator.clipboard.readText) {
         navigator.clipboard.readText().then(function(text) {
+            pushUndo(document.getElementById('textInput').value);
             document.getElementById('textInput').value += text;
             analyzeText();
-        });
+        }).catch(function() { wcToast('Use Ctrl+V to paste directly into box', 'info'); });
     }
 }
-
+function toggleFindBar() { document.getElementById('wcFindBar').classList.toggle('open'); }
+function doFindReplace() {
+    var find = document.getElementById('wcFindTxt').value;
+    if (!find) return;
+    var rep = document.getElementById('wcReplaceTxt').value;
+    var el = document.getElementById('textInput');
+    pushUndo(el.value);
+    var count = el.value.split(find).length - 1;
+    el.value = el.value.split(find).join(rep);
+    analyzeText();
+    wcToast('Replaced ' + count + ' occurrence(s)');
+}
 function clearText() {
-    document.getElementById('textInput').value = '';
-    analyzeText();
-}
-
-function toUpperCase() {
     var el = document.getElementById('textInput');
-    el.value = el.value.toUpperCase();
+    if (el.value) pushUndo(el.value);
+    el.value = '';
     analyzeText();
 }
+function toUpperCase() { var el = document.getElementById('textInput'); pushUndo(el.value); el.value = el.value.toUpperCase(); analyzeText(); }
+function toLowerCase() { var el = document.getElementById('textInput'); pushUndo(el.value); el.value = el.value.toLowerCase(); analyzeText(); }
+function toTitleCase() { var el = document.getElementById('textInput'); pushUndo(el.value); el.value = el.value.toLowerCase().replace(/\b\w/g, function(c) { return c.toUpperCase(); }); analyzeText(); }
+function toSentenceCase() { var el = document.getElementById('textInput'); pushUndo(el.value); el.value = el.value.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, function(c) { return c.toUpperCase(); }); analyzeText(); }
+function removeExtraSpaces() { var el = document.getElementById('textInput'); pushUndo(el.value); el.value = el.value.replace(/  +/g, ' ').replace(/\n\s*\n\s*\n/g, '\n\n').trim(); analyzeText(); }
 
-function toLowerCase() {
-    var el = document.getElementById('textInput');
-    el.value = el.value.toLowerCase();
-    analyzeText();
-}
-
-function toTitleCase() {
-    var el = document.getElementById('textInput');
-    el.value = el.value.toLowerCase().replace(/\b\w/g, function(c) { return c.toUpperCase(); });
-    analyzeText();
-}
-
-function toSentenceCase() {
-    var el = document.getElementById('textInput');
-    el.value = el.value.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, function(c) { return c.toUpperCase(); });
-    analyzeText();
-}
-
-function removeExtraSpaces() {
-    var el = document.getElementById('textInput');
-    el.value = el.value.replace(/  +/g, ' ').replace(/\n\s*\n\s*\n/g, '\n\n').trim();
-    analyzeText();
-}
-
-// ===== SHARE =====
 function getStatsText() {
-    var w = document.getElementById('liveWords').textContent;
-    var c = document.getElementById('liveChars').textContent;
-    var s = document.getElementById('liveSentences').textContent;
-    return 'My text: ' + w + ' words, ' + c + ' characters, ' + s + ' sentences 📝';
+    return 'My text: ' + document.getElementById('liveWords').textContent + ' words, ' + document.getElementById('liveChars').textContent + ' characters, ' + document.getElementById('liveSentences').textContent + ' sentences';
 }
-
 function copyStats() {
-    var text = getStatsText();
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(function() { alert('Stats copied!'); });
-    } else { prompt('Copy:', text); }
+    if (navigator.clipboard) navigator.clipboard.writeText(getStatsText()).then(function() { wcToast('Stats copied!'); });
 }
+function shareStatsWA() { window.open('https://wa.me/?text=' + encodeURIComponent(getStatsText() + ' | AI ToolCor Word Counter'), '_blank'); }
+function shareStatsTW() { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(getStatsText() + ' #WordCounter #AIToolCor'), '_blank'); }
 
-function shareStatsWA() {
-    window.open('https://wa.me/?text=' + encodeURIComponent(getStatsText() + ' | PDFTools Word Counter'), '_blank');
-}
-
-function shareStatsTW() {
-    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(getStatsText() + ' #WordCounter #PDFTools'), '_blank');
-}
-
-// ===== FAQ =====
-function wcFaqToggle(el) {
-    var isActive = el.classList.contains('active');
-    var items = document.querySelectorAll('.wc-faq .faq-item');
-    for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
-    if (!isActive) el.classList.add('active');
-}
-
-// ===== MOBILE MENU =====
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function() {
-        document.getElementById('navLinks').classList.toggle('open');
-    };
-}
-
-// Init social
-updateSocial(0, 0);
+updateSocial(0);
 </script>
 
 <script src="../../js/tool-page.js"></script>

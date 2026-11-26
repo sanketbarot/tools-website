@@ -202,44 +202,49 @@
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <style>
         *{box-sizing:border-box}
-        .file-info-card{display:flex;align-items:center;gap:14px;padding:15px 18px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:16px}
-        .file-info-icon{width:50px;height:50px;background:linear-gradient(135deg,#8b5cf6,var(--primary));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
-        .file-info-details{flex:1;min-width:0}
-        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--text-dark,#1e293b)}
-        .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:flex;align-items:center;gap:4px}
-        .size-badge{background:rgba(139,92,246,.1);color:var(--primary);padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
-        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
-        .info-banner{background:rgba(79,70,229,.07);border:1px solid rgba(79,70,229,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        #editorSection,#processingSection,#resultSection{padding:8px 0}
+        .icon-purple{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
 
-        /* ── Crop Workspace ── */
-        .crop-workspace{background:#0f172a;border-radius:16px;overflow:hidden;margin-bottom:16px}
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;margin-bottom:14px}
+        .file-info-icon{width:48px;height:48px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        .file-info-details{flex:1;min-width:0}
+        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 4px;color:var(--text-dark,#1e293b)}
+        .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:inline-flex;align-items:center;gap:4px}
+        .size-badge{background:rgba(139,92,246,.12);color:var(--primary);padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
+        [data-theme="dark"] .size-badge{color:#c4b5fd;background:rgba(139,92,246,.22)}
+
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.28);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        [data-theme="dark"] .error-box{color:#fca5a5}
+        .info-banner{background:rgba(79,70,229,.08);border:1px solid rgba(79,70,229,.22);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        [data-theme="dark"] .info-banner{color:#c7d2fe;background:rgba(79,70,229,.14)}
+        .success-toast{position:fixed;top:20px;right:20px;background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.22);animation:slideIn .3s ease;transition:opacity .3s,transform .3s}
+        @keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+        /* Workspace */
+        .crop-workspace{background:#0f172a;border-radius:16px;overflow:hidden;margin-bottom:16px;border:1px solid rgba(255,255,255,.08)}
         .crop-toolbar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
         .tb-group{display:flex;align-items:center;gap:4px}
-        .tb-sep{width:1px;height:24px;background:rgba(255,255,255,.12);margin:0 4px}
-        .tb-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
-        .tb-btn:hover{background:rgba(255,255,255,.16);color:#fff}
-        .tb-btn.active{background:#8b5cf6;color:#fff}
-        .tb-btn.primary{background:#8b5cf6;color:#fff}
-        .tb-btn.primary:hover{background:var(--primary)}
-        .tb-btn:disabled{opacity:.3;pointer-events:none}
+        .tb-sep{width:1px;height:22px;background:rgba(255,255,255,.12);margin:0 4px}
+        .tb-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.85);background:rgba(255,255,255,.09)}
+        .tb-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+        .tb-btn.active,.tb-btn.primary{background:#8b5cf6;color:#fff}
+        .tb-btn:disabled{opacity:.35;pointer-events:none}
         .tb-btn i{font-size:11px}
-        .tb-text{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;min-width:70px;text-align:center;user-select:none}
+        .tb-text{color:rgba(255,255,255,.78);font-size:12px;font-weight:600;min-width:60px;text-align:center;user-select:none}
         .tb-spacer{flex:1}
 
-        /* Canvas area */
-        .crop-canvas-scroll{overflow:auto;padding:20px;display:flex;justify-content:center;align-items:flex-start;min-height:300px;max-height:70vh;background:#0f172a}
-        .crop-canvas-con{position:relative;display:inline-block;flex-shrink:0;line-height:0}
+        .crop-canvas-scroll{overflow:auto;padding:20px;display:flex;justify-content:center;align-items:flex-start;min-height:320px;max-height:70vh;background:#0f172a}
+        .crop-canvas-con{position:relative;display:inline-block;flex-shrink:0;line-height:0;touch-action:none;user-select:none}
         .crop-canvas-con canvas{display:block;border-radius:4px;box-shadow:0 4px 30px rgba(0,0,0,.5)}
 
         /* Crop overlay */
-        .crop-overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none}
-        .crop-mask-top,.crop-mask-bottom,.crop-mask-left,.crop-mask-right{position:absolute;background:rgba(0,0,0,.55);pointer-events:none;transition:none}
-        .crop-box{position:absolute;border:2px dashed #8b5cf6;cursor:move;z-index:5;pointer-events:auto}
-        .crop-box::after{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,.3)}
+        .crop-overlay{position:absolute;inset:0;z-index:3;pointer-events:none}
+        .crop-mask-top,.crop-mask-bottom,.crop-mask-left,.crop-mask-right{position:absolute;background:rgba(0,0,0,.58);pointer-events:none}
+        .crop-box{position:absolute;border:2px dashed #a78bfa;cursor:move;z-index:5;pointer-events:auto;touch-action:none}
+        .crop-box::after{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,.35)}
 
-        /* Corner handles */
-        .crop-handle{position:absolute;width:14px;height:14px;background:#8b5cf6;border:2px solid #fff;border-radius:3px;z-index:6;pointer-events:auto}
+        .crop-handle{position:absolute;width:14px;height:14px;background:#8b5cf6;border:2px solid #fff;border-radius:4px;z-index:6;pointer-events:auto;touch-action:none}
         .crop-handle.tl{top:-7px;left:-7px;cursor:nw-resize}
         .crop-handle.tr{top:-7px;right:-7px;cursor:ne-resize}
         .crop-handle.bl{bottom:-7px;left:-7px;cursor:sw-resize}
@@ -248,79 +253,66 @@
         .crop-handle.bm{bottom:-7px;left:50%;transform:translateX(-50%);cursor:s-resize}
         .crop-handle.ml{top:50%;left:-7px;transform:translateY(-50%);cursor:w-resize}
         .crop-handle.mr{top:50%;right:-7px;transform:translateY(-50%);cursor:e-resize}
+        .crop-dims{position:absolute;top:6px;left:50%;transform:translateX(-50%);background:rgba(79,70,229,.92);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;white-space:nowrap;pointer-events:none;z-index:7}
 
-        /* Crop dimensions display */
-        .crop-dims{position:absolute;top:4px;left:50%;transform:translateX(-50%);background:rgba(139,92,246,.9);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:7}
+        /* Options panel */
+        .options-panel{background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;padding:16px;margin-bottom:16px}
+        .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+        .panel-head h4{margin:0;font-size:14px;font-weight:700;color:var(--text-dark,#1e293b);display:flex;align-items:center;gap:8px}
+        .unit-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .unit-row label{font-size:11px;font-weight:700;color:var(--text-light,#64748b);text-transform:uppercase}
+        .form-select{padding:6px 10px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:8px;font-size:12px;font-weight:600;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);outline:none}
+        .form-select:focus{border-color:#8b5cf6}
 
-        /* Manual inputs */
-        .crop-inputs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+        .crop-inputs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
         .crop-input-item{display:flex;flex-direction:column;gap:4px}
-        .crop-input-item label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light)}
-        .crop-input-item input{padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;text-align:center;outline:none;transition:border-color .2s;width:100%}
-        .crop-input-item input:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.1)}
+        .crop-input-item label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light,#64748b)}
+        .crop-input-item input{padding:8px 10px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:9px;font-size:13px;font-weight:600;text-align:center;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);outline:none;transition:border-color .2s;width:100%}
+        .crop-input-item input:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.14)}
 
-        /* Presets */
-        .preset-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-        .preset-pill{padding:6px 12px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6);color:var(--text-dark)}
-        .preset-pill:hover{border-color:#8b5cf6;background:rgba(139,92,246,.05)}
+        .sec-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light,#64748b);display:block;margin:14px 0 6px}
+        .preset-pills{display:flex;gap:6px;flex-wrap:wrap}
+        .preset-pill{padding:6px 12px;border-radius:8px;border:1.5px solid var(--border-subtle,#e2e8f0);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b)}
+        .preset-pill:hover{border-color:#8b5cf6;color:var(--primary)}
         .preset-pill.active{background:#8b5cf6;color:#fff;border-color:#8b5cf6}
 
-        /* Apply scope */
-        .scope-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-        .scope-opt{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1.5px solid #e2e8f0;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:var(--text-dark);background:rgba(255,255,255,.6)}
+        .scope-row{display:flex;gap:8px;flex-wrap:wrap}
+        .scope-opt{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:10px;border:1.5px solid var(--border-subtle,#e2e8f0);cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:var(--text-dark,#1e293b);background:var(--surface-muted,#f8fafc)}
         .scope-opt:hover{border-color:#8b5cf6}
-        .scope-opt.active{border-color:#8b5cf6;background:rgba(139,92,246,.08)}
+        .scope-opt.active{border-color:#8b5cf6;background:rgba(139,92,246,.12);color:var(--primary)}
+        [data-theme="dark"] .scope-opt.active{color:#c4b5fd}
         .scope-opt input{display:none}
-        .scope-range{display:flex;align-items:center;gap:6px;margin-top:8px}
-        .scope-range input{width:60px;padding:6px 8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px;text-align:center;outline:none}
+        .scope-range{display:flex;align-items:center;gap:8px;margin-top:10px}
+        .scope-range input{width:70px;padding:6px 8px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:7px;font-size:12px;text-align:center;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);outline:none}
         .scope-range input:focus{border-color:#8b5cf6}
-        .scope-range span{font-size:12px;color:var(--text-light);font-weight:600}
+        .scope-range span{font-size:12px;color:var(--text-light,#64748b);font-weight:600}
 
-        /* Result */
-        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
-        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:12px;padding:13px 16px;min-width:100px}
+        /* Result & Modal */
+        .result-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:var(--surface-muted,#f8fafc);border:1px solid var(--border-subtle,#e2e8f0);border-radius:12px;padding:13px 16px;min-width:105px}
         .result-stat strong{display:block;font-size:20px;color:var(--primary,#6366f1);line-height:1;margin-bottom:4px}
-        .result-stat small{color:var(--text-light);font-size:11px;font-weight:600;text-transform:uppercase}
-        .progress-detail{font-size:12px;color:var(--text-light);margin-top:8px;text-align:center}
-        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,var(--accent),var(--accent-dark))}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
+        .result-stat small{color:var(--text-light,#64748b);font-size:11px;font-weight:600;text-transform:uppercase}
+        .result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+        .progress-detail{font-size:12px;color:var(--text-light,#64748b);margin-top:8px;text-align:center}
 
-        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
-        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
-        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(139,92,246,.2)}
-        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
-        .faq-question h4{font-size:15px;font-weight:600;color:var(--text-dark);margin:0;flex:1}
-        .faq-item.open .faq-question h4{color:#8b5cf6}
-        .faq-question i{font-size:13px;color:var(--text-light);transition:transform .35s,color .3s;flex-shrink:0}
-        .faq-item.open .faq-question i{transform:rotate(180deg);color:#8b5cf6}
-        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
-        .faq-item.open .faq-answer{max-height:400px;opacity:1}
-        .faq-answer-inner{padding:0 22px 20px}
-        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(139,92,246,.1);padding-top:16px;margin:0 22px;padding-left:0;padding-right:0}
-        .faq-answer-inner p{font-size:14px;line-height:1.7;color:var(--text-light);margin:0}
-        .faq-answer-inner p strong{color:var(--text-dark)}
-        .faq-num{width:28px;height:28px;background:rgba(139,92,246,.1);color:#8b5cf6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .faq-item.open .faq-num{background:#8b5cf6;color:#fff}
+        .cp-modal{position:fixed;inset:0;background:rgba(15,23,42,.74);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px}
+        .cp-modal.open{display:flex}
+        .cp-modal-box{width:100%;max-width:900px;height:86vh;background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+        .cp-modal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border-subtle,#e2e8f0)}
+        .cp-modal-head h4{margin:0;font-size:15px;font-weight:700;color:var(--text-dark,#1e293b)}
+        .cp-modal-body{flex:1;background:#1e293b}
+        .cp-modal-body iframe{width:100%;height:100%;border:0}
 
         @media(max-width:768px){
             .crop-toolbar{gap:4px;padding:8px 10px}
             .tb-btn{padding:6px 8px;font-size:11px}
             .crop-inputs{grid-template-columns:1fr 1fr}
-            .result-stats{gap:10px}.result-stat{min-width:80px}
+            .result-stats{gap:10px}
+            .result-stat{min-width:84px;padding:10px 12px}
         }
-        @media(max-width:480px){
-            .file-info-card{flex-wrap:wrap}
-            .crop-inputs{grid-template-columns:1fr 1fr}
-            .faq-question{padding:14px}
-            .faq-item{border-radius:10px;margin-bottom:8px}
-        }
+        @media(max-width:480px){.file-info-card{flex-wrap:wrap}}
     </style>
 
-    <!-- ========== AD STYLES ========== -->
-<link rel="stylesheet" href="css/ads.css">
-    
-    
-    
     <!-- ========== GOOGLE ANALYTICS ========== -->
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -374,25 +366,26 @@
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
+<main>
 <section class="tool-area">
 <div class="container">
 <div class="tool-wrapper glass">
 
-    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+    <div class="error-box" id="errorBox" role="alert"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
 
     <!-- UPLOAD -->
     <div id="uploadSection" data-section="">
-        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Upload PDF file to crop" onclick="document.getElementById('fileInput').click()" onkeydown="if(event.key==='Enter')document.getElementById('fileInput').click()">
             <div class="upload-zone-content">
                 <div class="upload-icon"><i class="fas fa-crop-alt"></i></div>
                 <h2>Upload PDF to Crop</h2>
                 <p>Drop your PDF here or click to browse</p>
-                <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF File</button>
+                <button class="upload-btn" type="button" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF File</button>
                 <input type="file" id="fileInput" accept=".pdf,application/pdf" hidden="">
                 <div class="upload-hints">
                     <span><i class="fas fa-lock"></i> 100% Private</span>
-                    <span><i class="fas fa-laptop"></i> Browser Only</span>
-                    <span><i class="fas fa-crop-alt"></i> Visual Crop</span>
+                    <span><i class="fas fa-magic"></i> Auto-Trim Margins</span>
+                    <span><i class="fas fa-crop-alt"></i> Lossless Vector Crop</span>
                 </div>
                 <p style="margin-top:12px;font-size:12px;color:var(--text-light)"><i class="fas fa-shield-alt"></i> Files never leave your device!</p>
             </div>
@@ -409,36 +402,37 @@
                 <div class="file-meta">
                     <span class="size-badge" id="fileSize">0 KB</span>
                     <span><i class="fas fa-copy"></i> <span id="pageCount">0</span> pages</span>
-                    <span><i class="fas fa-rulers-combined"></i> <span id="pageDims">0×0</span> pts</span>
+                    <span><i class="fas fa-ruler-combined"></i> <span id="pageDims">0×0</span> pts</span>
                 </div>
             </div>
-            <div class="files-actions"><button class="btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i></button></div>
+            <div class="files-actions"><button class="btn-danger-sm" type="button" onclick="resetTool()" aria-label="Remove file"><i class="fas fa-times"></i></button></div>
         </div>
 
         <div class="info-banner">
             <i class="fas fa-mouse-pointer" style="flex-shrink:0;margin-top:2px"></i>
-            <span><strong>Drag the crop handles</strong> or edges to select the area you want to keep. Use the preset buttons or type exact values. The grayed-out area will be removed.</span>
+            <span>Drag the crop box handles, click <strong>Auto Trim</strong> to remove white margins automatically, or enter exact trim margins in points, mm, or inches. Safe on rotated PDFs too!</span>
         </div>
 
         <!-- Crop workspace -->
         <div class="crop-workspace">
             <div class="crop-toolbar">
                 <div class="tb-group">
-                    <button class="tb-btn" onclick="resetCrop()" title="Reset to full page"><i class="fas fa-undo"></i> Reset</button>
-                    <button class="tb-btn" onclick="autoTrim()" title="Auto-detect content bounds"><i class="fas fa-magic"></i> Auto Trim</button>
+                    <button class="tb-btn" type="button" onclick="resetCrop()" title="Reset to full page"><i class="fas fa-undo"></i> Reset</button>
+                    <button class="tb-btn" type="button" onclick="autoTrim()" title="Auto-detect white margins"><i class="fas fa-magic"></i> Auto Trim</button>
+                    <button class="tb-btn" type="button" onclick="centerCropBox()" title="Center crop box on page"><i class="fas fa-crosshairs"></i> Center</button>
                 </div>
                 <div class="tb-sep"></div>
                 <div class="tb-group">
-                    <button class="tb-btn" onclick="zoomOut()" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+                    <button class="tb-btn" type="button" onclick="zoomOut()" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
                     <span class="tb-text" id="zoomText">100%</span>
-                    <button class="tb-btn" onclick="zoomIn()" title="Zoom In"><i class="fas fa-search-plus"></i></button>
-                    <button class="tb-btn" onclick="zoomFit()" title="Fit to view"><i class="fas fa-expand"></i></button>
+                    <button class="tb-btn" type="button" onclick="zoomIn()" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+                    <button class="tb-btn" type="button" onclick="zoomFit()" title="Fit to view"><i class="fas fa-expand"></i></button>
                 </div>
                 <div class="tb-spacer"></div>
                 <div class="tb-group">
-                    <button class="tb-btn" onclick="goPrev()" id="prevBtn" disabled=""><i class="fas fa-chevron-left"></i></button>
+                    <button class="tb-btn" type="button" onclick="goPrev()" id="prevBtn" disabled=""><i class="fas fa-chevron-left"></i></button>
                     <span class="tb-text" id="pageText">1 / 1</span>
-                    <button class="tb-btn" onclick="goNext()" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                    <button class="tb-btn" type="button" onclick="goNext()" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
             <div class="crop-canvas-scroll" id="canvasScroll">
@@ -450,7 +444,7 @@
                         <div class="crop-mask-left" id="maskLeft"></div>
                         <div class="crop-mask-right" id="maskRight"></div>
                         <div class="crop-box" id="cropBox">
-                            <div class="crop-dims" id="cropDims">0 × 0</div>
+                            <div class="crop-dims" id="cropDims">0 × 0 pts</div>
                             <div class="crop-handle tl" data-dir="tl"></div>
                             <div class="crop-handle tr" data-dir="tr"></div>
                             <div class="crop-handle bl" data-dir="bl"></div>
@@ -466,45 +460,65 @@
         </div>
 
         <!-- Crop options -->
-        <div class="options-panel glass-light" style="margin-bottom:16px">
-            <h4><i class="fas fa-sliders-h"></i> Crop Settings</h4>
+        <div class="options-panel">
+            <div class="panel-head">
+                <h4><i class="fas fa-sliders-h"></i> Crop Margins &amp; Settings</h4>
+                <div class="unit-row">
+                    <label for="unitSelect">Unit:</label>
+                    <select id="unitSelect" class="form-select" onchange="onUnitChange()">
+                        <option value="pt">Points (pt)</option>
+                        <option value="mm">Millimeters (mm)</option>
+                        <option value="in">Inches (in)</option>
+                    </select>
+                    <label for="ratioSelect">Ratio:</label>
+                    <select id="ratioSelect" class="form-select" onchange="applyAspectRatio()">
+                        <option value="free">Freeform</option>
+                        <option value="page">Page Ratio</option>
+                        <option value="0.7071">A4 Portrait</option>
+                        <option value="0.7727">US Letter</option>
+                        <option value="1">1:1 Square</option>
+                        <option value="1.7778">16:9 Slide</option>
+                    </select>
+                </div>
+            </div>
 
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:6px">Margins to trim (points)</label>
             <div class="crop-inputs">
                 <div class="crop-input-item">
-                    <label>Top</label>
-                    <input type="number" id="cropTop" value="0" min="0" oninput="inputsChanged()">
+                    <label>Top (<span class="unit-lbl">pt</span>)</label>
+                    <input type="number" id="cropTop" value="0" min="0" step="1" oninput="inputsChanged()">
                 </div>
                 <div class="crop-input-item">
-                    <label>Right</label>
-                    <input type="number" id="cropRight" value="0" min="0" oninput="inputsChanged()">
+                    <label>Right (<span class="unit-lbl">pt</span>)</label>
+                    <input type="number" id="cropRight" value="0" min="0" step="1" oninput="inputsChanged()">
                 </div>
                 <div class="crop-input-item">
-                    <label>Bottom</label>
-                    <input type="number" id="cropBottom" value="0" min="0" oninput="inputsChanged()">
+                    <label>Bottom (<span class="unit-lbl">pt</span>)</label>
+                    <input type="number" id="cropBottom" value="0" min="0" step="1" oninput="inputsChanged()">
                 </div>
                 <div class="crop-input-item">
-                    <label>Left</label>
-                    <input type="number" id="cropLeft" value="0" min="0" oninput="inputsChanged()">
+                    <label>Left (<span class="unit-lbl">pt</span>)</label>
+                    <input type="number" id="cropLeft" value="0" min="0" step="1" oninput="inputsChanged()">
                 </div>
             </div>
 
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin:14px 0 6px">Presets</label>
+            <span class="sec-label">Quick Presets</span>
             <div class="preset-pills">
-                <div class="preset-pill" onclick="applyPreset('none')">No Crop</div>
-                <div class="preset-pill" onclick="applyPreset('small')">Trim Margins (10pt)</div>
-                <div class="preset-pill" onclick="applyPreset('medium')">Medium Crop (36pt)</div>
-                <div class="preset-pill" onclick="applyPreset('large')">Large Crop (72pt)</div>
-                <div class="preset-pill" onclick="applyPreset('half-left')">Left Half</div>
-                <div class="preset-pill" onclick="applyPreset('half-right')">Right Half</div>
-                <div class="preset-pill" onclick="applyPreset('half-top')">Top Half</div>
-                <div class="preset-pill" onclick="applyPreset('half-bottom')">Bottom Half</div>
+                <button type="button" class="preset-pill" onclick="applyPreset('none',this)">Full Page</button>
+                <button type="button" class="preset-pill" onclick="applyPreset('small',this)">Small Trim (10pt)</button>
+                <button type="button" class="preset-pill" onclick="applyPreset('medium',this)">0.5 in (36pt)</button>
+                <button type="button" class="preset-pill" onclick="applyPreset('large',this)">1 in (72pt)</button>
+                <button type="button" class="preset-pill" onclick="applyPreset('half-left',this)">Left Half</button>
+                <button type="button" class="preset-pill" onclick="applyPreset('half-right',this)">Right Half</button>
+                <button type="button" class="preset-pill" onclick="applyPreset('half-top',this)">Top Half</button>
+                <button type="button" class="preset-pill" onclick="applyPreset('half-bottom',this)">Bottom Half</button>
             </div>
 
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin:14px 0 6px">Apply to</label>
+            <span class="sec-label">Apply Crop To</span>
             <div class="scope-row">
                 <label class="scope-opt active" onclick="setScope(this)"><input type="radio" name="scope" value="all" checked=""> <i class="fas fa-clone"></i> All Pages</label>
-                <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="current"> <i class="fas fa-file"></i> Current Page Only</label>
+                <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="current"> <i class="fas fa-file"></i> Current Page</label>
+                <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="odd"> <i class="fas fa-step-forward"></i> Odd Pages</label>
+                <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="even"> <i class="fas fa-step-backward"></i> Even Pages</label>
                 <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="range"> <i class="fas fa-ellipsis-h"></i> Page Range</label>
             </div>
             <div class="scope-range" id="rangeRow" style="display:none">
@@ -515,15 +529,15 @@
             </div>
         </div>
 
-        <button class="action-btn" id="cropBtn" onclick="doCrop()"><i class="fas fa-crop-alt"></i> Crop PDF</button>
+        <button class="action-btn" id="cropBtn" type="button" onclick="doCrop()"><i class="fas fa-crop-alt"></i> Crop PDF &amp; Save</button>
     </div>
 
     <!-- PROCESSING -->
     <div id="processingSection" data-section="" style="display:none">
-        <div class="processing-area">
+        <div class="processing-area" role="status" aria-live="polite">
             <div class="spinner"></div>
             <h3 id="processTitle">Cropping PDF...</h3>
-            <p id="processSubtitle">Applying crop</p>
+            <p id="processSubtitle">Applying precise page boundaries</p>
             <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
             <span class="progress-text" id="progressText">0%</span>
             <div class="progress-detail" id="progressDetail"></div>
@@ -535,20 +549,22 @@
         <div class="result-area">
             <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
             <h2>PDF Cropped Successfully! ✂️</h2>
-            <p>Your PDF pages have been cropped</p>
+            <p>Your PDF pages have been cleanly cropped with full vector &amp; text clarity</p>
             <div class="result-stats">
-                <div class="result-stat"><strong id="rPages">0</strong><small>Pages</small></div>
-                <div class="result-stat"><strong id="rDims">0×0</strong><small>New Size</small></div>
+                <div class="result-stat"><strong id="rPages">0</strong><small>Cropped Pages</small></div>
+                <div class="result-stat"><strong id="rDims">0×0</strong><small>Output Size</small></div>
                 <div class="result-stat"><strong id="rSize">0 KB</strong><small>File Size</small></div>
             </div>
             <div class="result-info glass-light">
                 <div class="info-item"><i class="fas fa-file-pdf" style="color:#dc2626"></i><span id="rFileName">document_cropped.pdf</span></div>
-                <div class="info-item"><i class="fas fa-check-circle" style="color:#16a34a"></i><span>Crop applied successfully</span></div>
+                <div class="info-item"><i class="fas fa-check-circle" style="color:#16a34a"></i><span>Rotation-aware lossless CropBox applied</span></div>
             </div>
-            <button class="download-btn" onclick="doDownload()"><i class="fas fa-download"></i> Download Cropped PDF</button>
+            <button class="download-btn" type="button" onclick="doDownload()"><i class="fas fa-download"></i> Download Cropped PDF</button>
             <div class="result-actions">
-                <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Crop Another</button>
-                <button class="btn-outline" onclick="goBackEdit()"><i class="fas fa-edit"></i> Adjust Crop</button>
+                <button class="btn-outline" type="button" onclick="resetTool()"><i class="fas fa-redo"></i> Crop Another</button>
+                <button class="btn-outline" type="button" onclick="previewResultPdf()"><i class="fas fa-eye"></i> Preview PDF</button>
+                <button class="btn-outline" type="button" onclick="goBackEdit()"><i class="fas fa-edit"></i> Adjust Crop</button>
+                <a class="btn-outline" href="compress-pdf.html" style="text-decoration:none"><i class="fas fa-compress-alt"></i> Compress PDF</a>
             </div>
         </div>
     </div>
@@ -556,11 +572,66 @@
 </div>
 </div>
 </section>
+</main>
+
+<!-- Preview Modal -->
+<div class="cp-modal" id="cpModal" role="dialog" aria-modal="true" aria-labelledby="cpModalTitle">
+    <div class="cp-modal-box">
+        <div class="cp-modal-head">
+            <h4 id="cpModalTitle">Cropped PDF Preview</h4>
+            <button type="button" class="btn-danger-sm" onclick="closeCpModal()"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="cp-modal-body">
+            <iframe id="cpPreviewFrame" title="Cropped PDF Preview"></iframe>
+        </div>
+    </div>
+</div>
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
 
 
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related PDF Tools</h2>
+            <p>Everything you need to work with PDFs — all free, all browser-based.</p>
+        </div>
+        <div class="related-grid">
+            <a href="merge-pdf.html" class="related-card" aria-label="Merge PDF">
+                <div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div>
+                <h4>Merge PDF</h4>
+                <p>Combine multiple PDFs into one</p>
+            </a>
+            <a href="split-pdf.html" class="related-card" aria-label="Split PDF">
+                <div class="related-icon ri-blue"><i class="fas fa-cut" aria-hidden="true"></i></div>
+                <h4>Split PDF</h4>
+                <p>Extract or separate PDF pages</p>
+            </a>
+            <a href="compress-pdf.html" class="related-card" aria-label="Compress PDF">
+                <div class="related-icon ri-green"><i class="fas fa-compress-alt" aria-hidden="true"></i></div>
+                <h4>Compress PDF</h4>
+                <p>Reduce PDF size with target KB</p>
+            </a>
+            <a href="organize-pdf.html" class="related-card" aria-label="Organize PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-layer-group" aria-hidden="true"></i></div>
+                <h4>Organize PDF</h4>
+                <p>Reorder, rotate &amp; delete pages</p>
+            </a>
+            <a href="pdf-to-jpg.html" class="related-card" aria-label="PDF to JPG">
+                <div class="related-icon ri-orange"><i class="fas fa-file-image" aria-hidden="true"></i></div>
+                <h4>PDF to JPG</h4>
+                <p>Convert PDF pages to images</p>
+            </a>
+            <a href="jpg-to-pdf.html" class="related-card" aria-label="JPG to PDF">
+                <div class="related-icon ri-red"><i class="fas fa-images" aria-hidden="true"></i></div>
+                <h4>JPG to PDF</h4>
+                <p>Turn images into crisp PDFs</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How to Crop PDF</h2><p>Simple 3-step process</p></div>
@@ -576,10 +647,10 @@
     <div class="container">
         <div class="section-header"><h2>Frequently Asked Questions</h2></div>
         <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>Does cropping reduce file size?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes, cropping uses the PDF CropBox which tells viewers to only show the cropped area. The file size may decrease slightly. For maximum size reduction, combine with our <strong>Compress PDF</strong> tool.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Is cropping permanent?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>The crop is applied by setting the PDF <strong>CropBox</strong> and <strong>MediaBox</strong>. It's the standard method used by Adobe Acrobat. The cropped area will not be visible in any viewer.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Can I crop different pages differently?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Currently you can apply the same crop to <strong>all pages</strong>, the <strong>current page only</strong>, or a <strong>page range</strong>. Navigate between pages to preview how the crop looks on each page.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>Is my PDF uploaded to any server?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! <strong>Everything runs in your browser</strong>. Your PDF never leaves your device.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>Does cropping reduce file size?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes, cropping uses the PDF CropBox which tells viewers to only show the cropped area. The file size may decrease slightly. For maximum size reduction, combine with our <strong>Compress PDF</strong> tool.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Is cropping permanent?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>The crop is applied by setting the PDF <strong>CropBox</strong> and <strong>MediaBox</strong>. It's the standard method used by Adobe Acrobat. The cropped area will not be visible in any viewer.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Can I crop different pages differently?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Currently you can apply the same crop to <strong>all pages</strong>, the <strong>current page only</strong>, or a <strong>page range</strong>. Navigate between pages to preview how the crop looks on each page.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>Is my PDF uploaded to any server?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! <strong>Everything runs in your browser</strong>. Your PDF never leaves your device.</p></div></div></div>
         </div>
     </div>
 </section>
@@ -638,8 +709,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>© <span id="currentYear"></span> AI ToolCor. All rights reserved. Made with <i class="fas fa-heart" style="color:#f97316;" aria-hidden="true"></i> for productivity. 
-                   Made with <i class="fas fa-heart" aria-hidden="true" style="color:#e05"></i> for productivity.
+                <p>© <span id="currentYear"></span> AI ToolCor. All rights reserved. Made with <i class="fas fa-heart" style="color:#ec4899;" aria-hidden="true"></i> for productivity.
                 </p>
                 <div class="footer-bottom-links">
                     <a href="privacy.html">Privacy</a>
@@ -654,57 +724,70 @@
 <button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
 
 <script src="js/tool-page.js"></script>
-<script src="js/adsense.js"></script>
 
 <script>
-/* ═══════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════ */
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/* ═══════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════ */
 let rawBytes=null,selectedFile=null,pdfDoc=null;
 let totalPages=0,curPage=1;
 let baseScale=1,viewScale=1,renderScale=1;
-let pageW=0,pageH=0; // PDF points of current page
-let resultBlob=null;
+let pageW=0,pageH=0;
+let resultBlob=null,previewUrl=null;
 
-// Crop box in PDF coordinate space (points, origin bottom-left)
-// Stored as margins: top/right/bottom/left (how much to remove)
 let cropTop=0,cropRight=0,cropBottom=0,cropLeft=0;
+let curUnit='pt';
+let dragType=null,dragStartX=0,dragStartY=0,dragInitCrop={t:0,r:0,b:0,l:0};
 
-// Drag state
-let dragType=null; // 'move','tl','tr','bl','br','tm','bm','ml','mr'
-let dragStartX=0,dragStartY=0;
-let dragInitCrop={t:0,r:0,b:0,l:0};
-
+const UNIT_FACTORS={pt:1,mm:72/25.4,in:72};
 const canvas=document.getElementById('pdfCanvas');
 const ctx=canvas.getContext('2d');
 const canCon=document.getElementById('canvasCon');
 const canScroll=document.getElementById('canvasScroll');
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('fileInput');
 
-/* ═══════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════ */
-function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
-if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
-function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
-function setProgress(p,t,s,d){const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');if(f)f.style.width=p+'%';if(pt)pt.textContent=Math.round(p)+'%';if(t)document.getElementById('processTitle').textContent=t;if(s)document.getElementById('processSubtitle').textContent=s;if(d!==undefined)document.getElementById('progressDetail').textContent=d}
+(function(){
+    const yr=document.getElementById('currentYear');
+    if(yr)yr.textContent=new Date().getFullYear();
+})();
+
+function showSection(id){
+    document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');
+    const el=document.getElementById(id);
+    if(el)el.style.display='block';
+    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'smooth'}));
+}
+function setProgress(p,t,s,d){
+    const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');
+    if(f)f.style.width=p+'%';
+    if(pt)pt.textContent=Math.round(p)+'%';
+    if(t)document.getElementById('processTitle').textContent=t;
+    if(s)document.getElementById('processSubtitle').textContent=s;
+    if(d!==undefined)document.getElementById('progressDetail').textContent=d;
+}
 function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
-function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',6000)}
 function hideError(){document.getElementById('errorBox').style.display='none'}
 function tick(){return new Promise(r=>setTimeout(r,20))}
-function setScope(el){document.querySelectorAll('.scope-opt').forEach(s=>s.classList.remove('active'));el.classList.add('active');el.querySelector('input').checked=true;document.getElementById('rangeRow').style.display=el.querySelector('input').value==='range'?'flex':'none'}
+function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function toast(msg){
+    const t=document.createElement('div');
+    t.className='success-toast';
+    t.innerHTML='<i class="fas fa-check-circle" aria-hidden="true"></i>'+escH(msg);
+    document.body.appendChild(t);
+    setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(100px)';setTimeout(()=>t.remove(),300);},2300);
+}
 
-/* ═══════════════════════════════════════════
-   FILE HANDLING
-═══════════════════════════════════════════ */
-const dropZone=document.getElementById('dropZone');const fileInput=document.getElementById('fileInput');
-dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
-dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+function setScope(el){
+    document.querySelectorAll('.scope-opt').forEach(s=>s.classList.remove('active'));
+    el.classList.add('active');
+    el.querySelector('input').checked=true;
+    document.getElementById('rangeRow').style.display=el.querySelector('input').value==='range'?'flex':'none';
+}
+
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover','drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover','drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragover','drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
 fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
 
 async function handleFile(file){
@@ -728,25 +811,21 @@ async function handleFile(file){
         document.getElementById('pageDims').textContent=Math.round(pageW)+'×'+Math.round(pageH);
 
         cropTop=0;cropRight=0;cropBottom=0;cropLeft=0;
-
         showSection('editorSection');
         await calcFitScale();
         await renderCurrent();
     }catch(e){showError('Failed to load PDF: '+e.message)}
 }
 
-/* ═══════════════════════════════════════════
-   SCALE & RENDER
-═══════════════════════════════════════════ */
 async function calcFitScale(){
     const pg=await pdfDoc.getPage(curPage);
     const vp=pg.getViewport({scale:1});
     pageW=vp.width;pageH=vp.height;
-    const containerW=canScroll.clientWidth-40;
+    const containerW=Math.max(280,canScroll.clientWidth-44);
     baseScale=Math.min(containerW/vp.width,2);
     if(baseScale<0.3)baseScale=0.3;
     viewScale=1;renderScale=baseScale*viewScale;
-    document.getElementById('zoomText').textContent=Math.round(viewScale*100)+'%';
+    document.getElementById('zoomText').textContent='100%';
 }
 
 async function renderCurrent(){
@@ -756,13 +835,17 @@ async function renderCurrent(){
     const vpOrig=pg.getViewport({scale:1});
     pageW=vpOrig.width;pageH=vpOrig.height;
 
-    canvas.width=vp.width;canvas.height=vp.height;
-    canCon.style.width=vp.width+'px';canCon.style.height=vp.height+'px';
+    canvas.width=Math.round(vp.width);
+    canvas.height=Math.round(vp.height);
+    canCon.style.width=vp.width+'px';
+    canCon.style.height=vp.height+'px';
 
-    ctx.fillStyle='#fff';ctx.fillRect(0,0,vp.width,vp.height);
+    ctx.fillStyle='#ffffff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
     await pg.render({canvasContext:ctx,viewport:vp}).promise;
 
     updatePageUI();
+    clampCrop();
     updateCropOverlay();
     syncInputs();
 }
@@ -773,124 +856,139 @@ function updatePageUI(){
     document.getElementById('nextBtn').disabled=curPage>=totalPages;
 }
 
-/* ═══════════════════════════════════════════
-   CROP OVERLAY
-   Converts PDF-space crop margins to canvas pixels
-═══════════════════════════════════════════ */
 function updateCropOverlay(){
     const cW=canvas.width,cH=canvas.height;
-
-    // Convert PDF margins to canvas pixels
     const cxL=cropLeft*renderScale;
     const cxR=cropRight*renderScale;
     const cyT=cropTop*renderScale;
     const cyB=cropBottom*renderScale;
 
-    // Crop box position/size in canvas space
-    const bx=cxL, by=cyT;
-    const bw=cW-cxL-cxR, bh=cH-cyT-cyB;
+    const bx=cxL,by=cyT;
+    const bw=Math.max(10,cW-cxL-cxR),bh=Math.max(10,cH-cyT-cyB);
 
     const box=document.getElementById('cropBox');
     box.style.left=bx+'px';box.style.top=by+'px';
-    box.style.width=Math.max(bw,10)+'px';box.style.height=Math.max(bh,10)+'px';
+    box.style.width=bw+'px';box.style.height=bh+'px';
 
-    // Masks
     document.getElementById('maskTop').style.cssText=`top:0;left:0;width:${cW}px;height:${by}px`;
     document.getElementById('maskBot').style.cssText=`bottom:0;left:0;width:${cW}px;height:${cyB}px`;
     document.getElementById('maskLeft').style.cssText=`top:${by}px;left:0;width:${bx}px;height:${bh}px`;
     document.getElementById('maskRight').style.cssText=`top:${by}px;right:0;width:${cxR}px;height:${bh}px`;
 
-    // Dimensions display
-    const newW=Math.round(pageW-cropLeft-cropRight);
-    const newH=Math.round(pageH-cropTop-cropBottom);
-    document.getElementById('cropDims').textContent=`${newW} × ${newH} pts`;
+    const newW=pageW-cropLeft-cropRight;
+    const newH=pageH-cropTop-cropBottom;
+    const f=UNIT_FACTORS[curUnit]||1;
+    const dec=curUnit==='pt'?0:(curUnit==='mm'?1:2);
+    document.getElementById('cropDims').textContent=`${(newW/f).toFixed(dec)} × ${(newH/f).toFixed(dec)} ${curUnit}`;
+}
+
+function onUnitChange(){
+    curUnit=document.getElementById('unitSelect').value;
+    const step=curUnit==='pt'?'1':(curUnit==='mm'?'0.5':'0.05');
+    document.querySelectorAll('.unit-lbl').forEach(el=>el.textContent=curUnit);
+    ['cropTop','cropRight','cropBottom','cropLeft'].forEach(id=>document.getElementById(id).step=step);
+    syncInputs();
+    updateCropOverlay();
 }
 
 function syncInputs(){
-    document.getElementById('cropTop').value=Math.round(cropTop);
-    document.getElementById('cropRight').value=Math.round(cropRight);
-    document.getElementById('cropBottom').value=Math.round(cropBottom);
-    document.getElementById('cropLeft').value=Math.round(cropLeft);
+    const f=UNIT_FACTORS[curUnit]||1;
+    const dec=curUnit==='pt'?0:(curUnit==='mm'?1:2);
+    document.getElementById('cropTop').value=(cropTop/f).toFixed(dec);
+    document.getElementById('cropRight').value=(cropRight/f).toFixed(dec);
+    document.getElementById('cropBottom').value=(cropBottom/f).toFixed(dec);
+    document.getElementById('cropLeft').value=(cropLeft/f).toFixed(dec);
 }
 
 function inputsChanged(){
-    cropTop=Math.max(0,parseFloat(document.getElementById('cropTop').value)||0);
-    cropRight=Math.max(0,parseFloat(document.getElementById('cropRight').value)||0);
-    cropBottom=Math.max(0,parseFloat(document.getElementById('cropBottom').value)||0);
-    cropLeft=Math.max(0,parseFloat(document.getElementById('cropLeft').value)||0);
+    const f=UNIT_FACTORS[curUnit]||1;
+    cropTop=Math.max(0,(parseFloat(document.getElementById('cropTop').value)||0)*f);
+    cropRight=Math.max(0,(parseFloat(document.getElementById('cropRight').value)||0)*f);
+    cropBottom=Math.max(0,(parseFloat(document.getElementById('cropBottom').value)||0)*f);
+    cropLeft=Math.max(0,(parseFloat(document.getElementById('cropLeft').value)||0)*f);
     clampCrop();
     updateCropOverlay();
 }
 
 function clampCrop(){
     const minSize=20;
-    if(cropLeft+cropRight>pageW-minSize){cropRight=Math.max(0,pageW-cropLeft-minSize)}
-    if(cropTop+cropBottom>pageH-minSize){cropBottom=Math.max(0,pageH-cropTop-minSize)}
     cropTop=Math.max(0,cropTop);cropRight=Math.max(0,cropRight);
     cropBottom=Math.max(0,cropBottom);cropLeft=Math.max(0,cropLeft);
+    if(cropLeft+cropRight>pageW-minSize){cropRight=Math.max(0,pageW-cropLeft-minSize);}
+    if(cropTop+cropBottom>pageH-minSize){cropBottom=Math.max(0,pageH-cropTop-minSize);}
 }
 
-/* ═══════════════════════════════════════════
-   DRAG INTERACTION
-═══════════════════════════════════════════ */
-const cropBox=document.getElementById('cropBox');
+function applyAspectRatio(){
+    const val=document.getElementById('ratioSelect').value;
+    if(val==='free'||!pageW||!pageH)return;
+    const ratio=val==='page'?(pageW/pageH):parseFloat(val);
+    if(!ratio)return;
+    let keepW=pageW-cropLeft-cropRight;
+    let keepH=pageH-cropTop-cropBottom;
+    if(keepW/keepH>ratio){
+        keepW=Math.max(20,keepH*ratio);
+        const trimX=pageW-keepW;
+        cropLeft=trimX/2;cropRight=trimX/2;
+    }else{
+        keepH=Math.max(20,keepW/ratio);
+        const trimY=pageH-keepH;
+        cropTop=trimY/2;cropBottom=trimY/2;
+    }
+    clampCrop();updateCropOverlay();syncInputs();
+}
 
-// Mouse
-canCon.addEventListener('mousedown',onDragStart);
-document.addEventListener('mousemove',onDragMove);
-document.addEventListener('mouseup',onDragEnd);
+function centerCropBox(){
+    const tx=cropLeft+cropRight,ty=cropTop+cropBottom;
+    cropLeft=tx/2;cropRight=tx/2;
+    cropTop=ty/2;cropBottom=ty/2;
+    updateCropOverlay();syncInputs();
+}
 
-// Touch
-canCon.addEventListener('touchstart',e=>{if(e.target.closest('.crop-handle')||e.target.closest('.crop-box')){e.preventDefault();onDragStart(e.touches[0],e.target)}},{passive:false});
-document.addEventListener('touchmove',e=>{if(dragType){e.preventDefault();onDragMove(e.touches[0])}},{passive:false});
-document.addEventListener('touchend',e=>{if(dragType)onDragEnd()},{passive:false});
+/* Unified Pointer Dragging */
+canCon.addEventListener('pointerdown',e=>{
+    const handle=e.target.closest('.crop-handle');
+    const box=e.target.closest('.crop-box');
+    if(handle)dragType=handle.dataset.dir;
+    else if(box)dragType='move';
+    else return;
 
-function onDragStart(e,target){
-    const t=target||e.target;
-    const handle=t.closest('.crop-handle');
-    const box=t.closest('.crop-box');
-
-    if(handle){
-        dragType=handle.dataset.dir;
-    }else if(box){
-        dragType='move';
-    }else return;
-
+    e.preventDefault();
     dragStartX=e.clientX;dragStartY=e.clientY;
     dragInitCrop={t:cropTop,r:cropRight,b:cropBottom,l:cropLeft};
-}
+    if(canCon.setPointerCapture){
+        try{canCon.setPointerCapture(e.pointerId);}catch(_){}
+    }
+});
 
-function onDragMove(e){
+canCon.addEventListener('pointermove',e=>{
     if(!dragType)return;
     const dx=(e.clientX-dragStartX)/renderScale;
     const dy=(e.clientY-dragStartY)/renderScale;
+    const minSize=20;
 
     if(dragType==='move'){
-        cropLeft=Math.max(0,dragInitCrop.l+dx);
-        cropRight=Math.max(0,dragInitCrop.r-dx);
-        cropTop=Math.max(0,dragInitCrop.t+dy);
-        cropBottom=Math.max(0,dragInitCrop.b-dy);
+        const keepW=pageW-dragInitCrop.l-dragInitCrop.r;
+        const keepH=pageH-dragInitCrop.t-dragInitCrop.b;
+        const nL=Math.max(0,Math.min(pageW-keepW,dragInitCrop.l+dx));
+        const nT=Math.max(0,Math.min(pageH-keepH,dragInitCrop.t+dy));
+        cropLeft=nL;cropRight=pageW-keepW-nL;
+        cropTop=nT;cropBottom=pageH-keepH-nT;
     }else{
-        if(dragType.includes('t'))cropTop=Math.max(0,dragInitCrop.t+dy);
-        if(dragType.includes('b'))cropBottom=Math.max(0,dragInitCrop.b-dy);
-        if(dragType.includes('l'))cropLeft=Math.max(0,dragInitCrop.l+dx);
-        if(dragType.includes('r'))cropRight=Math.max(0,dragInitCrop.r-dx);
-        if(dragType==='tm')cropTop=Math.max(0,dragInitCrop.t+dy);
-        if(dragType==='bm')cropBottom=Math.max(0,dragInitCrop.b-dy);
-        if(dragType==='ml')cropLeft=Math.max(0,dragInitCrop.l+dx);
-        if(dragType==='mr')cropRight=Math.max(0,dragInitCrop.r-dx);
+        let nT=dragInitCrop.t,nR=dragInitCrop.r,nB=dragInitCrop.b,nL=dragInitCrop.l;
+        if(dragType.includes('t'))nT=Math.max(0,Math.min(pageH-nB-minSize,dragInitCrop.t+dy));
+        if(dragType.includes('b'))nB=Math.max(0,Math.min(pageH-nT-minSize,dragInitCrop.b-dy));
+        if(dragType.includes('l'))nL=Math.max(0,Math.min(pageW-nR-minSize,dragInitCrop.l+dx));
+        if(dragType.includes('r'))nR=Math.max(0,Math.min(pageW-nL-minSize,dragInitCrop.r-dx));
+        cropTop=nT;cropRight=nR;cropBottom=nB;cropLeft=nL;
     }
 
-    clampCrop();
     updateCropOverlay();
     syncInputs();
-}
+});
 
-function onDragEnd(){dragType=null}
+canCon.addEventListener('pointerup',()=>{dragType=null;});
+canCon.addEventListener('pointercancel',()=>{dragType=null;});
 
-/* ═══════════════════════════════════════════
-   CONTROLS
-═══════════════════════════════════════════ */
 function zoomIn(){viewScale=Math.min(viewScale+0.25,3);document.getElementById('zoomText').textContent=Math.round(viewScale*100)+'%';renderCurrent()}
 function zoomOut(){viewScale=Math.max(viewScale-0.25,0.25);document.getElementById('zoomText').textContent=Math.round(viewScale*100)+'%';renderCurrent()}
 function zoomFit(){viewScale=1;document.getElementById('zoomText').textContent='100%';renderCurrent()}
@@ -899,14 +997,14 @@ async function goNext(){if(curPage<totalPages){curPage++;await renderCurrent()}}
 
 function resetCrop(){
     cropTop=0;cropRight=0;cropBottom=0;cropLeft=0;
-    updateCropOverlay();syncInputs();
+    document.getElementById('ratioSelect').value='free';
     document.querySelectorAll('.preset-pill').forEach(p=>p.classList.remove('active'));
+    updateCropOverlay();syncInputs();
 }
 
-function applyPreset(name){
+function applyPreset(name,btn){
     document.querySelectorAll('.preset-pill').forEach(p=>p.classList.remove('active'));
-    event.target.classList.add('active');
-
+    if(btn)btn.classList.add('active');
     switch(name){
         case'none':cropTop=0;cropRight=0;cropBottom=0;cropLeft=0;break;
         case'small':cropTop=10;cropRight=10;cropBottom=10;cropLeft=10;break;
@@ -921,64 +1019,63 @@ function applyPreset(name){
 }
 
 async function autoTrim(){
-    // Render page and detect white margins
+    if(!pdfDoc)return;
     const pg=await pdfDoc.getPage(curPage);
     const vp=pg.getViewport({scale:1});
     const offCan=document.createElement('canvas');
-    offCan.width=vp.width;offCan.height=vp.height;
+    offCan.width=Math.round(vp.width);offCan.height=Math.round(vp.height);
     const offCtx=offCan.getContext('2d');
-    offCtx.fillStyle='#fff';offCtx.fillRect(0,0,vp.width,vp.height);
+    offCtx.fillStyle='#ffffff';offCtx.fillRect(0,0,offCan.width,offCan.height);
     await pg.render({canvasContext:offCtx,viewport:vp}).promise;
 
-    const imgData=offCtx.getImageData(0,0,vp.width,vp.height);
-    const d=imgData.data;
-    const w=vp.width,h=vp.height;
-    const threshold=250; // near-white threshold
-
+    const w=offCan.width,h=offCan.height;
+    const d=offCtx.getImageData(0,0,w,h).data;
+    const th=246;
     let top=0,bottom=h-1,left=0,right=w-1;
 
-    // Find top
-    outer1:for(let y=0;y<h;y++){for(let x=0;x<w;x++){const i=(y*w+x)*4;if(d[i]<threshold||d[i+1]<threshold||d[i+2]<threshold){top=y;break outer1}}}
-    // Find bottom
-    outer2:for(let y=h-1;y>=0;y--){for(let x=0;x<w;x++){const i=(y*w+x)*4;if(d[i]<threshold||d[i+1]<threshold||d[i+2]<threshold){bottom=y;break outer2}}}
-    // Find left
-    outer3:for(let x=0;x<w;x++){for(let y=0;y<h;y++){const i=(y*w+x)*4;if(d[i]<threshold||d[i+1]<threshold||d[i+2]<threshold){left=x;break outer3}}}
-    // Find right
-    outer4:for(let x=w-1;x>=0;x--){for(let y=0;y<h;y++){const i=(y*w+x)*4;if(d[i]<threshold||d[i+1]<threshold||d[i+2]<threshold){right=x;break outer4}}}
+    outer1:for(let y=0;y<h;y++){for(let x=0;x<w;x++){const i=(y*w+x)*4;if(d[i]<th||d[i+1]<th||d[i+2]<th){top=y;break outer1;}}}
+    outer2:for(let y=h-1;y>=top;y--){for(let x=0;x<w;x++){const i=(y*w+x)*4;if(d[i]<th||d[i+1]<th||d[i+2]<th){bottom=y;break outer2;}}}
+    outer3:for(let x=0;x<w;x++){for(let y=top;y<=bottom;y++){const i=(y*w+x)*4;if(d[i]<th||d[i+1]<th||d[i+2]<th){left=x;break outer3;}}}
+    outer4:for(let x=w-1;x>=left;x--){for(let y=top;y<=bottom;y++){const i=(y*w+x)*4;if(d[i]<th||d[i+1]<th||d[i+2]<th){right=x;break outer4;}}}
 
-    // Add small padding
-    const pad=5;
+    const pad=6;
     cropTop=Math.max(0,top-pad);
     cropLeft=Math.max(0,left-pad);
     cropBottom=Math.max(0,h-1-bottom-pad);
     cropRight=Math.max(0,w-1-right-pad);
 
     clampCrop();updateCropOverlay();syncInputs();
+    toast('Auto-trimmed white margins');
 }
 
-// Keyboard
 document.addEventListener('keydown',e=>{
-    if(e.target.tagName==='INPUT')return;
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
     if(e.key==='ArrowLeft')goPrev();
     if(e.key==='ArrowRight')goNext();
+    if(e.key==='Escape')closeCpModal();
 });
 
-// Resize
-let resizeT;window.addEventListener('resize',()=>{clearTimeout(resizeT);resizeT=setTimeout(async()=>{if(pdfDoc){await calcFitScale();await renderCurrent()}},300)});
+let resizeT;
+window.addEventListener('resize',()=>{clearTimeout(resizeT);resizeT=setTimeout(async()=>{if(pdfDoc){await calcFitScale();await renderCurrent()}},300)});
 
-/* ═══════════════════════════════════════════
-   CROP PDF using pdf-lib
-   Sets CropBox and MediaBox on each page
-═══════════════════════════════════════════ */
+/* Map visual screen crop margins to unrotated PDF box coordinates */
+function mapVisualMarginsToPdf(rotAngle,vL,vR,vT,vB){
+    const r=((Math.round(rotAngle)%360)+360)%360;
+    if(r===90)return{uLeft:vT,uTop:vR,uRight:vB,uBottom:vL};
+    if(r===180)return{uLeft:vR,uTop:vB,uRight:vL,uBottom:vT};
+    if(r===270)return{uLeft:vB,uTop:vL,uRight:vT,uBottom:vR};
+    return{uLeft:vL,uTop:vT,uRight:vR,uBottom:vB};
+}
+
 async function doCrop(){
     if(cropTop===0&&cropRight===0&&cropBottom===0&&cropLeft===0){
-        showError('Please set a crop area first.');return;
+        showError('Drag handles or enter margins to crop first.');return;
     }
 
     const btn=document.getElementById('cropBtn');
     btn.disabled=true;hideError();
     showSection('processingSection');
-    setProgress(5,'Loading PDF...','Preparing','');
+    setProgress(5,'Loading PDF...','Preparing crop boxes','');
     await tick();
 
     try{
@@ -986,55 +1083,63 @@ async function doCrop(){
         const pages=pdfLibDoc.getPages();
         const scope=document.querySelector('input[name="scope"]:checked')?.value||'all';
 
-        let from=0,to=pages.length-1;
-        if(scope==='current'){from=curPage-1;to=curPage-1}
-        else if(scope==='range'){
-            from=Math.max(0,parseInt(document.getElementById('rangeFrom').value)-1);
-            to=Math.min(pages.length-1,parseInt(document.getElementById('rangeTo').value)-1);
+        const rFrom=Math.max(1,parseInt(document.getElementById('rangeFrom').value,10)||1);
+        const rTo=Math.min(pages.length,parseInt(document.getElementById('rangeTo').value,10)||pages.length);
+        const targets=[];
+        for(let i=0;i<pages.length;i++){
+            const pgNum=i+1;
+            if(scope==='all')targets.push(i);
+            else if(scope==='current'&&pgNum===curPage)targets.push(i);
+            else if(scope==='odd'&&pgNum%2===1)targets.push(i);
+            else if(scope==='even'&&pgNum%2===0)targets.push(i);
+            else if(scope==='range'&&pgNum>=Math.min(rFrom,rTo)&&pgNum<=Math.max(rFrom,rTo))targets.push(i);
         }
 
-        for(let i=from;i<=to;i++){
-            const pct=5+((i-from)/(to-from+1))*85;
-            setProgress(pct,'Cropping...','Page '+(i+1),`Processing page ${i+1} of ${to-from+1}`);
-            await tick();
+        if(targets.length===0){
+            showSection('editorSection');btn.disabled=false;
+            showError('No matching pages found for the selected scope.');return;
+        }
 
-            const pg=pages[i];
-            const{width,height}=pg.getSize();
-
-            // New box coordinates (PDF origin = bottom-left)
-            const newX=cropLeft;
-            const newY=cropBottom;
-            const newW=width-cropLeft-cropRight;
-            const newH=height-cropTop-cropBottom;
-
-            if(newW<10||newH<10){
-                console.warn('Crop area too small for page',i+1);
-                continue;
+        let croppedCount=0;
+        for(let k=0;k<targets.length;k++){
+            const i=targets[k];
+            if(k%5===0){
+                setProgress(8+((k/targets.length)*84),'Cropping Pages...',`Page ${i+1}`,`Applying crop ${k+1} of ${targets.length}`);
+                await tick();
             }
 
-            // Set CropBox (what viewers show)
+            const pg=pages[i];
+            const rotAngle=pg.getRotation().angle||0;
+            const baseBox=pg.getCropBox()||pg.getMediaBox();
+            const{uLeft,uTop,uRight,uBottom}=mapVisualMarginsToPdf(rotAngle,cropLeft,cropRight,cropTop,cropBottom);
+
+            const newX=baseBox.x+uLeft;
+            const newY=baseBox.y+uBottom;
+            const newW=baseBox.width-uLeft-uRight;
+            const newH=baseBox.height-uTop-uBottom;
+
+            if(newW<10||newH<10)continue;
+
             pg.setCropBox(newX,newY,newW,newH);
-            // Set MediaBox (actual page boundary)
             pg.setMediaBox(newX,newY,newW,newH);
-            // Also set TrimBox and BleedBox for print
             pg.setTrimBox(newX,newY,newW,newH);
             pg.setBleedBox(newX,newY,newW,newH);
+            croppedCount++;
         }
 
-        setProgress(95,'Saving...','Building PDF','');
+        setProgress(95,'Saving PDF...','Finalizing document','');
         await tick();
 
         const outBytes=await pdfLibDoc.save();
         resultBlob=new Blob([outBytes],{type:'application/pdf'});
 
         setProgress(100,'Done!','Crop complete!','');
-        await new Promise(r=>setTimeout(r,500));
+        await new Promise(r=>setTimeout(r,350));
 
         const newW=Math.round(pageW-cropLeft-cropRight);
         const newH=Math.round(pageH-cropTop-cropBottom);
-
-        document.getElementById('rPages').textContent=to-from+1;
-        document.getElementById('rDims').textContent=newW+'×'+newH;
+        document.getElementById('rPages').textContent=croppedCount;
+        document.getElementById('rDims').textContent=newW+'×'+newH+' pt';
         document.getElementById('rSize').textContent=szF(resultBlob.size);
         document.getElementById('rFileName').textContent=selectedFile.name.replace(/\.pdf$/i,'')+'_cropped.pdf';
 
@@ -1047,23 +1152,31 @@ async function doCrop(){
     }
 }
 
-/* ═══════════════════════════════════════════
-   DOWNLOAD
-═══════════════════════════════════════════ */
 function doDownload(){
     if(!resultBlob){showError('No file.');return}
     const name=selectedFile?selectedFile.name.replace(/\.pdf$/i,'')+'_cropped.pdf':'cropped.pdf';
     const url=URL.createObjectURL(resultBlob);
-    const a=document.createElement('a');
-    a.href=url;a.download=name;
+    const a=document.createElement('a');a.href=url;a.download=name;
     document.body.appendChild(a);a.click();
     setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
 }
 
-/* ═══════════════════════════════════════════
-   NAV
-═══════════════════════════════════════════ */
+function previewResultPdf(){
+    if(!resultBlob)return;
+    if(previewUrl)URL.revokeObjectURL(previewUrl);
+    previewUrl=URL.createObjectURL(resultBlob);
+    document.getElementById('cpPreviewFrame').src=previewUrl;
+    document.getElementById('cpModal').classList.add('open');
+}
+
+function closeCpModal(){
+    document.getElementById('cpModal').classList.remove('open');
+    document.getElementById('cpPreviewFrame').src='about:blank';
+    if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
+}
+
 function goBackEdit(){
+    closeCpModal();
     resultBlob=null;
     document.getElementById('cropBtn').disabled=false;
     showSection('editorSection');
@@ -1071,11 +1184,13 @@ function goBackEdit(){
 }
 
 function resetTool(){
+    closeCpModal();
     rawBytes=null;selectedFile=null;pdfDoc=null;
     totalPages=0;curPage=1;viewScale=1;resultBlob=null;
     cropTop=0;cropRight=0;cropBottom=0;cropLeft=0;
     fileInput.value='';
     document.getElementById('cropBtn').disabled=false;
+    document.getElementById('ratioSelect').value='free';
     document.querySelectorAll('.preset-pill').forEach(p=>p.classList.remove('active'));
     hideError();setProgress(0,'','','');
     showSection('uploadSection');

@@ -192,7 +192,7 @@
     
      
     <style>
-        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+.calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
         .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
         .calc-card h2 i{color:var(--accent);font-size:17px}
 
@@ -248,21 +248,36 @@
         .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
         .privacy-note i{color:#22c55e;margin-right:4px}
 
-        .cp-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-        .cp-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
-        .cp-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(16,185,129,0.25)}
-        .cp-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
-        .cp-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
-        .cp-faq .faq-item.active .faq-q h4{color:var(--accent)}
-        .cp-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
-        .cp-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:var(--accent)}
-        .cp-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(16,185,129,0.1);color:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .cp-faq .faq-item.active .faq-q .faq-num{background:var(--accent);color:#fff}
-        .cp-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(16,185,129,0.1);margin:0 22px}
-        .cp-faq .faq-item.active .faq-a{display:block}
-        .cp-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-        @media(max-width:480px){.calc-card{padding:20px 16px}.picker-row{flex-direction:column;align-items:center}.color-values{grid-template-columns:1fr}.color-hero .ch-hex{font-size:28px}.cp-faq .faq-q{padding:14px 16px}}
+        
+        /* Color Picker — Eyedropper, Contrast & Dark Mode */
+        .cp-eye-wrap { margin-top:14px; padding:14px; border:2px dashed rgba(16,185,129,0.3); border-radius:14px; text-align:center; background:rgba(16,185,129,0.03); }
+        .cp-eye-canvas { max-width:100%; max-height:280px; border-radius:10px; cursor:crosshair; display:none; margin:10px auto 0; }
+        .cp-wcag-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+        .cp-wcag-card { padding:14px; border-radius:12px; display:flex; align-items:center; justify-content:space-between; gap:10px; border:1px solid rgba(148,163,184,0.2); }
+        .cp-wcag-badge { padding:3px 9px; border-radius:99px; font-size:11px; font-weight:800; }
+        .cp-pass { background:#16a34a; color:#fff; }
+        .cp-fail { background:#ef4444; color:#fff; }
+        html[data-theme="dark"] .calc-card { background:#131c2e; border-color:rgba(148,163,184,0.2); }
+        html[data-theme="dark"] .cv-item,
+        html[data-theme="dark"] .hex-input-row input,
+        html[data-theme="dark"] .cp-eye-wrap,
+        html[data-theme="dark"] .action-btn { background:#0b1120; border-color:rgba(148,163,184,0.24); color:#f1f5f9; }
+        @media(max-width:600px){ .cp-wcag-grid { grid-template-columns:1fr; } }
+        @media(max-width:480px){.calc-card{padding:20px 16px}.picker-row{flex-direction:column;align-items:center}.color-values{grid-template-columns:1fr}.color-hero .ch-hex{font-size:28px}}
     </style>
        <!-- ========== AD STYLES ========== -->
 <link rel="stylesheet" href="../../css/ads.css">
@@ -301,7 +316,7 @@
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
         
             <a href="../../blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <a href="../../login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -309,6 +324,7 @@
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
+<main>
 <section class="tool-area">
 <div class="container">
 
@@ -329,6 +345,34 @@
             <input type="text" id="hexInput" value="#F97316" maxlength="7" onkeydown="if(event.key==='Enter')applyHex()">
             <button onclick="applyHex()"><i class="fas fa-check"></i> Apply</button>
             <button onclick="randomColor()" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-random"></i> Random</button>
+        </div>
+    </div>
+
+    <!-- Image Eyedropper -->
+    <div class="calc-card">
+        <h2><i class="fas fa-eye-dropper"></i> Pick Color From Image</h2>
+        <div class="cp-eye-wrap">
+            <button type="button" class="action-btn" onclick="document.getElementById('cpImgInput').click()">
+                <i class="fas fa-image"></i> Upload Image to Pick Pixel Color
+            </button>
+            <input type="file" id="cpImgInput" accept="image/*" hidden onchange="loadEyeImage(this)">
+            <p style="font-size:12px;color:var(--text-light);margin:8px 0 0;" id="cpEyeHint">Click anywhere on uploaded image to grab exact pixel HEX/RGB</p>
+            <canvas id="cpEyeCanvas" class="cp-eye-canvas"></canvas>
+        </div>
+    </div>
+
+    <!-- WCAG Contrast Checker -->
+    <div class="calc-card">
+        <h2><i class="fas fa-universal-access"></i> WCAG Text Contrast Ratio</h2>
+        <div class="cp-wcag-grid">
+            <div class="cp-wcag-card" id="wcagWhiteCard">
+                <div><strong style="display:block;font-size:15px;" id="wcagWhiteSample">Sample on White #FFF</strong><small id="wcagWhiteRatio">Contrast: —</small></div>
+                <span class="cp-wcag-badge" id="wcagWhiteBadge">—</span>
+            </div>
+            <div class="cp-wcag-card" id="wcagBlackCard">
+                <div><strong style="display:block;font-size:15px;" id="wcagBlackSample">Sample on Dark #0F172A</strong><small id="wcagBlackRatio">Contrast: —</small></div>
+                <span class="cp-wcag-badge" id="wcagBlackBadge">—</span>
+            </div>
         </div>
     </div>
 
@@ -375,16 +419,59 @@
 </div>
 </section>
 
+</main>
+
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related Image &amp; Icon Tools</h2>
+            <p>Convert, compress, resize, and generate icons right in your browser.</p>
+        </div>
+        <div class="related-grid">
+            <a href="../../jpg-to-png.html" class="related-card" aria-label="JPG to PNG">
+                <div class="related-icon ri-green"><i class="fas fa-image" aria-hidden="true"></i></div>
+                <h4>JPG to PNG</h4>
+                <p>Lossless PNG &amp; BG removal</p>
+            </a>
+            <a href="../../jpg-to-ico.html" class="related-card" aria-label="JPG to ICO">
+                <div class="related-icon ri-orange"><i class="fas fa-icons" aria-hidden="true"></i></div>
+                <h4>JPG to ICO</h4>
+                <p>Create multi-size .ico favicons</p>
+            </a>
+            <a href="../../pdf-to-ico.html" class="related-card" aria-label="PDF to ICO">
+                <div class="related-icon ri-orange"><i class="fas fa-icons" aria-hidden="true"></i></div>
+                <h4>PDF to ICO</h4>
+                <p>Make favicons from PDF pages</p>
+            </a>
+            <a href="../../crop-jpg.html" class="related-card" aria-label="Crop JPG">
+                <div class="related-icon ri-cyan"><i class="fas fa-crop" aria-hidden="true"></i></div>
+                <h4>Crop JPG</h4>
+                <p>Crop, resize &amp; frame images</p>
+            </a>
+            <a href="../../jpg-to-pdf.html" class="related-card" aria-label="JPG to PDF">
+                <div class="related-icon ri-red"><i class="fas fa-images" aria-hidden="true"></i></div>
+                <h4>JPG to PDF</h4>
+                <p>Turn images into crisp PDFs</p>
+            </a>
+            <a href="../../pdf-to-jpg.html" class="related-card" aria-label="PDF to JPG">
+                <div class="related-icon ri-orange"><i class="fas fa-file-image" aria-hidden="true"></i></div>
+                <h4>PDF to JPG</h4>
+                <p>Convert PDF pages to images</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section"><div class="container"><div class="section-header"><h2>How It Works</h2></div><div class="steps-row"><div class="step-box glass"><div class="step-num">1</div><i class="fas fa-palette"></i><h4>Pick Color</h4><p>Use the picker or enter a HEX code.</p></div><div class="step-box glass"><div class="step-num">2</div><i class="fas fa-exchange-alt"></i><h4>Convert</h4><p>Get HEX, RGB, HSL values instantly.</p></div><div class="step-box glass"><div class="step-num">3</div><i class="fas fa-copy"></i><h4>Copy &amp; Use</h4><p>Click any value to copy it.</p></div></div></div></section>
 
 
 
-<section class="faq-section"><div class="container"><div class="section-header"><h2>FAQ</h2></div><div class="cp-faq">
-    <div class="faq-item" onclick="cpFaqToggle(this)"><div class="faq-q"><span class="faq-num">1</span><h4>What color formats are supported?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>HEX (#FF5733), RGB (rgb(255,87,51)), HSL (hsl(14,100%,60%)), and CSS named colors are supported.</p></div></div>
-    <div class="faq-item" onclick="cpFaqToggle(this)"><div class="faq-q"><span class="faq-num">2</span><h4>What are shades and tints?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p><strong>Shades</strong> are darker versions (mixed with black). <strong>Tints</strong> are lighter versions (mixed with white). Both are useful for creating design systems.</p></div></div>
-    <div class="faq-item" onclick="cpFaqToggle(this)"><div class="faq-q"><span class="faq-num">3</span><h4>How do I copy a color?</h4><i class="fas fa-chevron-down faq-arrow"></i></div><div class="faq-a"><p>Click on any color value (HEX, RGB, HSL) to copy it to clipboard. Click on palette swatches to set them as active color.</p></div></div>
+<section class="faq-section"><div class="container"><div class="section-header"><h2>Frequently Asked Questions</h2></div><div class="faq-list">
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>What color formats are supported?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>HEX (#FF5733), RGB (rgb(255,87,51)), HSL (hsl(14,100%,60%)), and CSS named colors are supported.</p></div></div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>What are shades and tints?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p><strong>Shades</strong> are darker versions (mixed with black). <strong>Tints</strong> are lighter versions (mixed with white). Both are useful for creating design systems.</p></div></div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>How do I copy a color?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Click on any color value (HEX, RGB, HSL) to copy it to clipboard. Click on palette swatches to set them as active color.</p></div></div></div>
 </div></div></section>
 
  <footer class="footer" role="contentinfo">
@@ -449,203 +536,212 @@
     </footer>
 
 <script>
-var currentColor={r:249,g:115,b:22};
-var savedColors=[];
-var colorHistory=[];
+var currentColor = { r: 249, g: 115, b: 22 };
+var savedColors = [];
+var colorHistory = [];
+try {
+    savedColors = JSON.parse(localStorage.getItem('aitoolcor_saved_colors') || '[]');
+    colorHistory = JSON.parse(localStorage.getItem('aitoolcor_color_history') || '[]');
+} catch (_) {}
 
-function hexToRgb(hex){
-    hex=hex.replace('#','');
-    if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-    return{r:parseInt(hex.substring(0,2),16),g:parseInt(hex.substring(2,4),16),b:parseInt(hex.substring(4,6),16)};
+function cpToast(m, t) { if (typeof showToast === 'function') showToast(m, t || 'success'); }
+
+function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    return { r: parseInt(hex.substring(0, 2), 16), g: parseInt(hex.substring(2, 4), 16), b: parseInt(hex.substring(4, 6), 16) };
 }
-
-function rgbToHex(r,g,b){
-    return '#'+[r,g,b].map(function(x){var h=x.toString(16);return h.length===1?'0'+h:h;}).join('').toUpperCase();
+function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map(function(x) { var s = Math.max(0, Math.min(255, Math.round(x))).toString(16); return s.length === 1 ? '0' + s : s; }).join('').toUpperCase();
 }
-
-function rgbToHsl(r,g,b){
-    r/=255;g/=255;b/=255;
-    var max=Math.max(r,g,b),min=Math.min(r,g,b);
-    var h,s,l=(max+min)/2;
-    if(max===min){h=s=0;}else{
-        var d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);
-        switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}
+function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; } else {
+        var d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) { case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break; case g: h = ((b - r) / d + 2) / 6; break; case b: h = ((r - g) / d + 4) / 6; break; }
     }
-    return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
-
-function hslToRgb(h,s,l){
-    h/=360;s/=100;l/=100;
-    var r,g,b;
-    if(s===0){r=g=b=l;}else{
-        function hue2rgb(p,q,t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}
-        var q=l<0.5?l*(1+s):l+s-l*s;var p=2*l-q;
-        r=hue2rgb(p,q,h+1/3);g=hue2rgb(p,q,h);b=hue2rgb(p,q,h-1/3);
+function hslToRgb(h, s, l) {
+    h /= 360; s /= 100; l /= 100;
+    var r, g, b;
+    if (s === 0) { r = g = b = l; } else {
+        function hue2rgb(p, q, t) { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1/6) return p + (q - p) * 6 * t; if (t < 1/2) return q; if (t < 2/3) return p + (q - p) * (2/3 - t) * 6; return p; }
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1/3);
     }
-    return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)};
+    return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+}
+function relLuminance(r, g, b) {
+    return [r, g, b].map(function(v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); })
+        .reduce(function(acc, val, i) { return acc + val * [0.2126, 0.7152, 0.0722][i]; }, 0);
+}
+function contrastRatio(rgb1, rgb2) {
+    var l1 = relLuminance(rgb1.r, rgb1.g, rgb1.b), l2 = relLuminance(rgb2.r, rgb2.g, rgb2.b);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
 }
 
-function setColor(r,g,b){
-    currentColor={r:r,g:g,b:b};
-    var hex=rgbToHex(r,g,b);
-    var hsl=rgbToHsl(r,g,b);
+function setColor(r, g, b) {
+    currentColor = { r: r, g: g, b: b };
+    var hex = rgbToHex(r, g, b), hsl = rgbToHsl(r, g, b);
+    document.getElementById('colorHero').style.background = hex;
+    document.getElementById('heroHex').textContent = hex;
+    document.getElementById('heroHex').onclick = function() { quickCopy(hex); };
+    document.getElementById('colorPicker').value = hex;
+    document.getElementById('hexInput').value = hex;
 
-    document.getElementById('colorHero').style.background=hex;
-    document.getElementById('heroHex').textContent=hex;
-    document.getElementById('heroHex').onclick=function(){quickCopy(hex);};
-    document.getElementById('colorPicker').value=hex;
-    document.getElementById('hexInput').value=hex;
+    var lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    document.getElementById('heroHex').style.color = lum > 0.55 ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.95)';
 
-    // Determine text color
-    var lum=(0.299*r+0.587*g+0.114*b)/255;
-    var txtColor=lum>0.5?'rgba(0,0,0,0.8)':'rgba(255,255,255,0.9)';
-    document.getElementById('heroHex').style.color=txtColor;
-
-    // Color values
-    var vals=[
-        {label:'HEX',val:hex},
-        {label:'RGB',val:'rgb('+r+', '+g+', '+b+')'},
-        {label:'HSL',val:'hsl('+hsl.h+', '+hsl.s+'%, '+hsl.l+'%)'},
-        {label:'CSS',val:'rgba('+r+', '+g+', '+b+', 1)'}
+    var vals = [
+        { label: 'HEX', val: hex },
+        { label: 'RGB', val: 'rgb(' + r + ', ' + g + ', ' + b + ')' },
+        { label: 'HSL', val: 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + hsl.l + '%)' },
+        { label: 'CSS', val: '--brand: ' + hex + ';' }
     ];
-    var vHtml='';
-    for(var i=0;i<vals.length;i++){
-        vHtml+='<div class="cv-item" onclick="quickCopy(\''+vals[i].val+'\')"><span class="cv-label">'+vals[i].label+'</span><span class="cv-val">'+vals[i].val+'</span><span class="cv-copy"><i class="fas fa-copy"></i></span></div>';
-    }
-    document.getElementById('colorValues').innerHTML=vHtml;
+    var cvContainer = document.getElementById('colorValues');
+    cvContainer.innerHTML = '';
+    vals.forEach(function(item) {
+        var row = document.createElement('div');
+        row.className = 'cv-item';
+        row.onclick = function() { quickCopy(item.val); };
+        row.innerHTML = '<span class="cv-label">' + item.label + '</span><span class="cv-val"></span><span class="cv-copy"><i class="fas fa-copy"></i></span>';
+        row.querySelector('.cv-val').textContent = item.val;
+        cvContainer.appendChild(row);
+    });
 
-    // Palettes
-    buildShades(r,g,b);
-    buildTints(r,g,b);
-    buildComplementary(hsl);
-    buildAnalogous(hsl);
-    buildTriadic(hsl);
+    // Update WCAG Contrast Cards
+    var ratioW = contrastRatio(currentColor, { r: 255, g: 255, b: 255 });
+    var ratioD = contrastRatio(currentColor, { r: 15, g: 23, b: 42 });
+    document.getElementById('wcagWhiteCard').style.background = '#ffffff';
+    document.getElementById('wcagWhiteSample').style.color = hex;
+    document.getElementById('wcagWhiteRatio').style.color = '#475569';
+    document.getElementById('wcagWhiteRatio').textContent = 'Contrast: ' + ratioW.toFixed(2) + ':1';
+    var wb = document.getElementById('wcagWhiteBadge');
+    wb.textContent = ratioW >= 7 ? 'AAA Pass' : ratioW >= 4.5 ? 'AA Pass' : 'Fail (<4.5)';
+    wb.className = 'cp-wcag-badge ' + (ratioW >= 4.5 ? 'cp-pass' : 'cp-fail');
 
-    // History
+    document.getElementById('wcagBlackCard').style.background = '#0f172a';
+    document.getElementById('wcagBlackSample').style.color = hex;
+    document.getElementById('wcagBlackRatio').style.color = '#cbd5e1';
+    document.getElementById('wcagBlackRatio').textContent = 'Contrast: ' + ratioD.toFixed(2) + ':1';
+    var db = document.getElementById('wcagBlackBadge');
+    db.textContent = ratioD >= 7 ? 'AAA Pass' : ratioD >= 4.5 ? 'AA Pass' : 'Fail (<4.5)';
+    db.className = 'cp-wcag-badge ' + (ratioD >= 4.5 ? 'cp-pass' : 'cp-fail');
+
+    buildShades(r, g, b); buildTints(r, g, b);
+    buildComplementary(hsl); buildAnalogous(hsl); buildTriadic(hsl);
     addHistory(hex);
 }
 
-function buildShades(r,g,b){
-    var html='';
-    for(var i=9;i>=1;i--){
-        var f=i/10;
-        var sr=Math.round(r*f),sg=Math.round(g*f),sb=Math.round(b*f);
-        var hex=rgbToHex(sr,sg,sb);
-        html+='<div class="palette-swatch" style="background:'+hex+'" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
-    }
-    document.getElementById('shadesRow').innerHTML=html;
+function buildPaletteRow(id, hexList) {
+    var el = document.getElementById(id);
+    el.innerHTML = '';
+    hexList.forEach(function(hex) {
+        var sw = document.createElement('div');
+        sw.className = 'palette-swatch'; sw.style.background = hex; sw.style.flex = '1';
+        sw.onclick = function() { onPickerChange(hex); };
+        var lbl = document.createElement('span'); lbl.className = 'ps-label'; lbl.textContent = hex;
+        sw.appendChild(lbl); el.appendChild(sw);
+    });
+}
+function buildShades(r, g, b) {
+    var arr = []; for (var i = 9; i >= 1; i--) { var f = i / 10; arr.push(rgbToHex(r * f, g * f, b * f)); }
+    buildPaletteRow('shadesRow', arr);
+}
+function buildTints(r, g, b) {
+    var arr = []; for (var i = 1; i <= 9; i++) { var f = i / 10; arr.push(rgbToHex(r + (255 - r) * f, g + (255 - g) * f, b + (255 - b) * f)); }
+    buildPaletteRow('tintsRow', arr);
+}
+function buildComplementary(hsl) {
+    buildPaletteRow('compRow', [0, 180].map(function(a) { var c = hslToRgb((hsl.h + a) % 360, hsl.s, hsl.l); return rgbToHex(c.r, c.g, c.b); }));
+}
+function buildAnalogous(hsl) {
+    buildPaletteRow('analogRow', [-30, -15, 0, 15, 30].map(function(a) { var c = hslToRgb((hsl.h + a + 360) % 360, hsl.s, hsl.l); return rgbToHex(c.r, c.g, c.b); }));
+}
+function buildTriadic(hsl) {
+    buildPaletteRow('triadRow', [0, 120, 240].map(function(a) { var c = hslToRgb((hsl.h + a) % 360, hsl.s, hsl.l); return rgbToHex(c.r, c.g, c.b); }));
 }
 
-function buildTints(r,g,b){
-    var html='';
-    for(var i=1;i<=9;i++){
-        var f=i/10;
-        var tr=Math.round(r+(255-r)*f),tg=Math.round(g+(255-g)*f),tb=Math.round(b+(255-b)*f);
-        var hex=rgbToHex(tr,tg,tb);
-        html+='<div class="palette-swatch" style="background:'+hex+'" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
-    }
-    document.getElementById('tintsRow').innerHTML=html;
+function loadEyeImage(input) {
+    var f = input.files && input.files[0]; if (!f) return;
+    var url = URL.createObjectURL(f);
+    var img = new Image();
+    img.onload = function() {
+        URL.revokeObjectURL(url);
+        var canvas = document.getElementById('cpEyeCanvas');
+        var s = Math.min(640 / img.width, 280 / img.height, 1);
+        canvas.width = Math.max(1, Math.round(img.width * s));
+        canvas.height = Math.max(1, Math.round(img.height * s));
+        canvas.getContext('2d', { willReadFrequently: true }).drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'block';
+        document.getElementById('cpEyeHint').textContent = 'Click any pixel on the image below to pick its color!';
+    };
+    img.src = url;
+    input.value = '';
 }
+document.getElementById('cpEyeCanvas').addEventListener('click', function(e) {
+    var c = this, r = c.getBoundingClientRect();
+    var x = Math.min(c.width - 1, Math.max(0, Math.floor((e.clientX - r.left) * (c.width / r.width))));
+    var y = Math.min(c.height - 1, Math.max(0, Math.floor((e.clientY - r.top) * (c.height / r.height))));
+    var px = c.getContext('2d', { willReadFrequently: true }).getImageData(x, y, 1, 1).data;
+    setColor(px[0], px[1], px[2]);
+    cpToast('Picked ' + rgbToHex(px[0], px[1], px[2]));
+});
 
-function buildComplementary(hsl){
-    var html='';
-    var angles=[0,180];
-    for(var i=0;i<angles.length;i++){
-        var h=(hsl.h+angles[i])%360;
-        var rgb=hslToRgb(h,hsl.s,hsl.l);
-        var hex=rgbToHex(rgb.r,rgb.g,rgb.b);
-        html+='<div class="palette-swatch" style="background:'+hex+';flex:1" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
-    }
-    document.getElementById('compRow').innerHTML=html;
-}
-
-function buildAnalogous(hsl){
-    var html='';
-    var angles=[-30,-15,0,15,30];
-    for(var i=0;i<angles.length;i++){
-        var h=(hsl.h+angles[i]+360)%360;
-        var rgb=hslToRgb(h,hsl.s,hsl.l);
-        var hex=rgbToHex(rgb.r,rgb.g,rgb.b);
-        html+='<div class="palette-swatch" style="background:'+hex+'" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
-    }
-    document.getElementById('analogRow').innerHTML=html;
-}
-
-function buildTriadic(hsl){
-    var html='';
-    var angles=[0,120,240];
-    for(var i=0;i<angles.length;i++){
-        var h=(hsl.h+angles[i])%360;
-        var rgb=hslToRgb(h,hsl.s,hsl.l);
-        var hex=rgbToHex(rgb.r,rgb.g,rgb.b);
-        html+='<div class="palette-swatch" style="background:'+hex+';flex:1" onclick="onPickerChange(\''+hex+'\')"><span class="ps-label">'+hex+'</span></div>';
-    }
-    document.getElementById('triadRow').innerHTML=html;
-}
-
-function onPickerChange(hex){
-    var rgb=hexToRgb(hex);
-    setColor(rgb.r,rgb.g,rgb.b);
-}
-
-function applyHex(){
-    var hex=document.getElementById('hexInput').value.trim();
-    if(!/^#?[0-9a-fA-F]{3,6}$/.test(hex)){alert('Invalid HEX color');return;}
-    if(hex[0]!=='#')hex='#'+hex;
+function onPickerChange(hex) { var rgb = hexToRgb(hex); setColor(rgb.r, rgb.g, rgb.b); }
+function applyHex() {
+    var hex = document.getElementById('hexInput').value.trim();
+    if (!/^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) { cpToast('Enter a 3 or 6 digit HEX code', 'error'); return; }
+    if (hex[0] !== '#') hex = '#' + hex;
     onPickerChange(hex);
 }
-
-function randomColor(){
-    var r=Math.floor(Math.random()*256);
-    var g=Math.floor(Math.random()*256);
-    var b=Math.floor(Math.random()*256);
-    setColor(r,g,b);
+function randomColor() { setColor(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256)); }
+function quickCopy(text) {
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(function() { cpToast('Copied: ' + text); });
 }
-
-function quickCopy(text){
-    if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){alert('Copied: '+text);});}
-    else{prompt('Copy:',text);}
-}
-
-function saveColor(){
-    var hex=rgbToHex(currentColor.r,currentColor.g,currentColor.b);
-    if(savedColors.indexOf(hex)<0){savedColors.push(hex);renderSaved();}
-}
-
-function clearSaved(){savedColors=[];renderSaved();}
-
-function renderSaved(){
-    var c=document.getElementById('savedColors');
-    if(savedColors.length===0){c.innerHTML='<span style="color:var(--text-light);font-size:12px;">No saved colors yet</span>';return;}
-    var html='';
-    for(var i=0;i<savedColors.length;i++){
-        html+='<div class="saved-dot" style="background:'+savedColors[i]+'" onclick="onPickerChange(\''+savedColors[i]+'\')" title="'+savedColors[i]+'"></div>';
+function saveColor() {
+    var hex = rgbToHex(currentColor.r, currentColor.g, currentColor.b);
+    if (savedColors.indexOf(hex) < 0) {
+        savedColors.push(hex);
+        try { localStorage.setItem('aitoolcor_saved_colors', JSON.stringify(savedColors)); } catch (_) {}
+        renderSaved();
+        cpToast('Saved ' + hex);
     }
-    c.innerHTML=html;
 }
-
-function addHistory(hex){
-    var idx=colorHistory.indexOf(hex);
-    if(idx>=0)colorHistory.splice(idx,1);
-    colorHistory.unshift(hex);
-    if(colorHistory.length>20)colorHistory.pop();
+function clearSaved() {
+    savedColors = [];
+    try { localStorage.setItem('aitoolcor_saved_colors', '[]'); } catch (_) {}
+    renderSaved();
+}
+function renderSaved() {
+    var c = document.getElementById('savedColors'); c.innerHTML = '';
+    if (!savedColors.length) { c.innerHTML = '<span style="color:var(--text-light);font-size:12px;">No saved colors yet</span>'; return; }
+    savedColors.forEach(function(hex) {
+        var d = document.createElement('div'); d.className = 'saved-dot'; d.style.background = hex; d.title = hex;
+        d.onclick = function() { onPickerChange(hex); };
+        c.appendChild(d);
+    });
+}
+function addHistory(hex) {
+    var idx = colorHistory.indexOf(hex); if (idx >= 0) colorHistory.splice(idx, 1);
+    colorHistory.unshift(hex); if (colorHistory.length > 20) colorHistory.pop();
+    try { localStorage.setItem('aitoolcor_color_history', JSON.stringify(colorHistory)); } catch (_) {}
     renderHistory();
 }
-
-function renderHistory(){
-    var c=document.getElementById('historyRow');
-    var html='';
-    for(var i=0;i<colorHistory.length;i++){
-        html+='<div class="hist-dot" style="background:'+colorHistory[i]+'" onclick="onPickerChange(\''+colorHistory[i]+'\')" title="'+colorHistory[i]+'"></div>';
-    }
-    c.innerHTML=html;
+function renderHistory() {
+    var c = document.getElementById('historyRow'); c.innerHTML = '';
+    colorHistory.forEach(function(hex) {
+        var d = document.createElement('div'); d.className = 'hist-dot'; d.style.background = hex; d.title = hex;
+        d.onclick = function() { onPickerChange(hex); };
+        c.appendChild(d);
+    });
 }
 
-// Init
-setColor(249,115,22);
-
-function cpFaqToggle(el){var a=el.classList.contains('active');var items=document.querySelectorAll('.cp-faq .faq-item');for(var i=0;i<items.length;i++)items[i].classList.remove('active');if(!a)el.classList.add('active');}
-if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open');};}
+renderSaved();
+setColor(249, 115, 22);
 </script>
 <script src="../../js/tool-page.js"></script>
 <script src="../../js/adsense.js"></script>

@@ -135,116 +135,136 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
     <style>
         *{box-sizing:border-box}
-        .file-info-card{display:flex;align-items:center;gap:14px;padding:15px 18px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:16px}
-        .file-info-icon{width:50px;height:50px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}
+        #editorSection,#processingSection,#resultSection{padding:8px 0}
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;margin-bottom:16px}
+        .file-info-icon{width:48px;height:48px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
         .file-info-details{flex:1;min-width:0}
-        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--text-dark,#1e293b)}
+        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 4px;color:var(--text-dark,#1e293b)}
         .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:flex;align-items:center;gap:4px}
-        .size-badge{background:rgba(239,68,68,.1);color:#dc2626;padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
-        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
-        .success-toast{position:fixed;top:20px;right:20px;background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.2);animation:slideIn .3s ease;transition:opacity .3s,transform .3s}
+        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:inline-flex;align-items:center;gap:4px}
+        .size-badge{background:rgba(239,68,68,.12);color:#dc2626;padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
+        [data-theme="dark"] .size-badge{color:#fca5a5;background:rgba(239,68,68,.18)}
+
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.28);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        [data-theme="dark"] .error-box{color:#fca5a5}
+        .success-toast{position:fixed;top:20px;right:20px;background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.22);animation:slideIn .3s ease;transition:opacity .3s,transform .3s}
         @keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
-        .warn-banner{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:10px 14px;font-size:12px;color:#92400e;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
-        .info-banner{background:rgba(79,70,229,.07);border:1px solid rgba(79,70,229,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+
+        .warn-banner{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.28);border-radius:10px;padding:10px 14px;font-size:12px;color:#92400e;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        [data-theme="dark"] .warn-banner{color:#fcd34d;background:rgba(245,158,11,.12)}
+
+        .options-panel{background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;padding:16px;margin-bottom:14px}
+        .options-panel h4{margin:0 0 10px;font-size:14px;font-weight:700;color:var(--text-dark,#1e293b);display:flex;align-items:center;gap:8px}
+        .options-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+
+        /* Search & PII */
+        .search-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+        .search-row input[type="text"]{flex:1;min-width:160px;padding:9px 12px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:10px;font-size:13px;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);outline:none;transition:border-color .2s}
+        .search-row input[type="text"]:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(79,70,229,.14)}
+        .search-flags{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap}
+        .flag-chk{font-size:12px;color:var(--text-light,#64748b);cursor:pointer;display:inline-flex;align-items:center;gap:5px;user-select:none}
+        .pii-bar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border-subtle,#e2e8f0);align-items:center}
+        .pii-bar-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-light,#64748b);margin-right:2px}
+        .pii-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:8px;border:1px solid var(--border-subtle,#e2e8f0);background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+        .pii-btn:hover{border-color:#6366f1;color:#4f46e5;background:rgba(79,70,229,.08)}
+        [data-theme="dark"] .pii-btn:hover{color:#a5b4fc}
+
+        /* Style controls */
+        .style-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+        .color-bar{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+        .color-bar label,.ctrl-label{font-size:12px;font-weight:600;color:var(--text-light,#64748b)}
+        .c-swatch{width:24px;height:24px;border-radius:6px;cursor:pointer;border:2px solid var(--border-subtle,#cbd5e1);transition:all .15s;flex-shrink:0}
+        .c-swatch:hover{transform:scale(1.12)}
+        .c-swatch.active{border-color:#6366f1;box-shadow:0 0 0 2px rgba(79,70,229,.35);transform:scale(1.12)}
+        .color-picker-wrap{width:26px;height:26px;border-radius:6px;overflow:hidden;border:1.5px solid var(--border-subtle,#cbd5e1);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+        .color-picker-wrap input{width:34px;height:34px;border:none;padding:0;cursor:pointer;background:transparent}
+        .form-select,.form-input{padding:8px 10px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:9px;font-size:12px;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);outline:none}
+        .form-select:focus,.form-input:focus{border-color:#6366f1}
+
+        /* Security options strip */
+        .sec-opts{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border-subtle,#e2e8f0)}
+        .sec-opt-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
         /* Workspace */
-        .workspace{background:#0f172a;border-radius:16px;overflow:hidden;margin-bottom:16px}
+        .workspace{background:#0f172a;border-radius:16px;overflow:hidden;margin-bottom:16px;border:1px solid rgba(255,255,255,.08)}
         .ws-toolbar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
         .ws-toolbar-group{display:flex;align-items:center;gap:4px}
-        .ws-toolbar-sep{width:1px;height:24px;background:rgba(255,255,255,.12);margin:0 4px}
-        .ws-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
-        .ws-btn:hover{background:rgba(255,255,255,.16);color:#fff}
+        .ws-toolbar-sep{width:1px;height:22px;background:rgba(255,255,255,.12);margin:0 4px}
+        .ws-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.85);background:rgba(255,255,255,.09)}
+        .ws-btn:hover{background:rgba(255,255,255,.18);color:#fff}
         .ws-btn.active{background:#f59e0b;color:#000}
         .ws-btn.danger{background:rgba(239,68,68,.2);color:#f87171}
         .ws-btn.danger:hover{background:rgba(239,68,68,.35)}
         .ws-btn.primary{background:#6366f1;color:#fff}
         .ws-btn.primary:hover{background:#4f46e5}
-        .ws-btn:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+        .ws-btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
         .ws-btn i{font-size:12px}
-        .page-nav-text{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;min-width:70px;text-align:center;user-select:none}
+        .page-nav-text{color:rgba(255,255,255,.78);font-size:12px;font-weight:600;min-width:60px;text-align:center;user-select:none}
         .ws-toolbar .spacer{flex:1}
 
         /* Canvas */
-        .canvas-scroll{overflow:auto;padding:20px;display:flex;justify-content:center;align-items:flex-start;min-height:300px;max-height:75vh;background:#0f172a}
-        .canvas-container{position:relative;display:inline-block;flex-shrink:0;line-height:0}
+        .canvas-scroll{overflow:auto;padding:20px;display:flex;justify-content:center;align-items:flex-start;min-height:320px;max-height:74vh;background:#0f172a}
+        .canvas-container{position:relative;display:inline-block;flex-shrink:0;line-height:0;touch-action:none;user-select:none}
         .canvas-container canvas{display:block;border-radius:4px;box-shadow:0 4px 30px rgba(0,0,0,.5)}
 
-        /* Redaction boxes */
-        .r-box{position:absolute;cursor:pointer;box-sizing:border-box;z-index:4}
-        .r-box-inner{width:100%;height:100%;border:2px solid rgba(255,255,255,.5);border-radius:2px;position:relative}
-        .r-box-del{position:absolute;top:-8px;right:-8px;width:18px;height:18px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;cursor:pointer;z-index:10;border:2px solid #0f172a}
-        .r-box:hover .r-box-del{display:flex}
-
-        /* Draw temp rect */
-        .draw-temp{position:absolute;pointer-events:none;z-index:6;border:2px dashed rgba(255,255,255,.6);border-radius:2px}
-
-        /* Search */
-        .search-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-        .search-row input{flex:1;min-width:160px;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;background:rgba(255,255,255,.85);outline:none;transition:border-color .2s}
-        .search-row input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(79,70,229,.1)}
-
-        /* Color swatches */
-        .color-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-        .color-bar label{font-size:12px;font-weight:600;color:var(--text-light,#64748b);margin-right:4px}
-        .c-swatch{width:24px;height:24px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
-        .c-swatch:hover{transform:scale(1.15)}
-        .c-swatch.active{border-color:#6366f1;box-shadow:0 0 0 2px rgba(79,70,229,.3);transform:scale(1.15)}
+        /* Interactive redaction boxes */
+        .r-box{position:absolute;cursor:move;box-sizing:border-box;z-index:4;user-select:none}
+        .r-box-inner{width:100%;height:100%;border:1.5px solid rgba(255,255,255,.55);border-radius:2px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;font-family:Arial,sans-serif;font-weight:700;text-align:center;padding:2px;line-height:1.1}
+        .r-box.selected .r-box-inner{outline:2px solid #f59e0b;outline-offset:1px;border-color:#fff}
+        .r-box-actions{position:absolute;top:-24px;right:0;display:none;gap:4px;z-index:12}
+        .r-box:hover .r-box-actions,.r-box.selected .r-box-actions{display:flex}
+        .r-act-btn{width:20px;height:20px;border-radius:5px;border:1px solid #0f172a;background:#1e293b;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+        .r-act-btn.del{background:#ef4444}
+        .r-act-btn.all:hover{background:#6366f1}
+        .r-resize{position:absolute;right:-5px;bottom:-5px;width:12px;height:12px;background:#f59e0b;border:2px solid #0f172a;border-radius:3px;cursor:nwse-resize;display:none;z-index:11}
+        .r-box:hover .r-resize,.r-box.selected .r-resize{display:block}
+        .draw-temp{position:absolute;pointer-events:none;z-index:6;border:2px dashed #f59e0b;border-radius:2px}
 
         /* Redaction list */
-        .red-list{display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto;margin-top:10px}
-        .red-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:rgba(0,0,0,.04);border-radius:8px;font-size:12px;gap:6px;transition:background .15s;cursor:pointer}
-        .red-item:hover{background:rgba(0,0,0,.08)}
-        .red-item .ri-left{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+        .red-list{display:flex;flex-direction:column;gap:5px;max-height:190px;overflow-y:auto;margin-top:8px}
+        .red-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface-muted,#f8fafc);border:1px solid var(--border-subtle,#e2e8f0);border-radius:8px;font-size:12px;gap:8px;transition:all .15s;cursor:pointer}
+        .red-item:hover,.red-item.selected{border-color:#6366f1;background:rgba(79,70,229,.07)}
+        .red-item .ri-left{display:flex;align-items:center;gap:7px;flex:1;min-width:0}
+        .red-dot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(148,163,184,.6);flex-shrink:0}
         .red-badge{padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;flex-shrink:0}
         .red-badge.area{background:rgba(239,68,68,.12);color:#dc2626}
         .red-badge.text{background:rgba(79,70,229,.12);color:#4f46e5}
-        .red-item .ri-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-dark,#1e293b)}
-        .red-item .ri-pg{color:var(--text-light,#94a3b8);flex-shrink:0}
-        .red-item .ri-del{background:none;border:none;color:#ef4444;cursor:pointer;font-size:13px;padding:2px 4px;border-radius:4px;transition:background .15s;flex-shrink:0}
-        .red-item .ri-del:hover{background:rgba(239,68,68,.1)}
-        .red-empty{text-align:center;color:var(--text-light);font-size:13px;padding:20px;font-style:italic}
+        .red-badge.pii{background:rgba(245,158,11,.15);color:#b45309}
+        [data-theme="dark"] .red-badge.area{color:#fca5a5}
+        [data-theme="dark"] .red-badge.text{color:#a5b4fc}
+        [data-theme="dark"] .red-badge.pii{color:#fcd34d}
+        .red-item .ri-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-dark,#1e293b);font-weight:500}
+        .red-item .ri-pg{color:var(--text-light,#64748b);flex-shrink:0;font-weight:600}
+        .red-item .ri-del{background:none;border:none;color:#ef4444;cursor:pointer;font-size:13px;padding:3px 6px;border-radius:5px;transition:background .15s;flex-shrink:0}
+        .red-item .ri-del:hover{background:rgba(239,68,68,.12)}
+        .red-empty{text-align:center;color:var(--text-light,#64748b);font-size:13px;padding:18px;font-style:italic}
 
-        /* Result */
-        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
-        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:12px;padding:13px 16px;min-width:100px}
+        /* Result & Preview Modal */
+        .result-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:var(--surface-muted,#f8fafc);border:1px solid var(--border-subtle,#e2e8f0);border-radius:12px;padding:13px 16px;min-width:105px}
         .result-stat strong{display:block;font-size:20px;color:var(--primary,#6366f1);line-height:1;margin-bottom:4px}
         .result-stat small{color:var(--text-light,#64748b);font-size:11px;font-weight:600;text-transform:uppercase}
+        .result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
         .progress-detail{font-size:12px;color:var(--text-light,#64748b);margin-top:8px;text-align:center}
 
-        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}
-
-        .faq-section{padding:50px 0}
-        .faq-list{max-width:750px;margin:0 auto}
-        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-        .faq-item:hover{background:rgba(255,255,255,.8);box-shadow:0 4px 18px rgba(0,0,0,.07);transform:translateY(-1px)}
-        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(79,70,229,.2)}
-        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
-        .faq-question h4{font-size:15px;font-weight:600;color:var(--text-dark,#1e293b);margin:0;line-height:1.4;flex:1}
-        .faq-item.open .faq-question h4{color:var(--primary,#6366f1)}
-        .faq-question i{font-size:13px;color:var(--text-light,#94a3b8);transition:transform .35s,color .3s;flex-shrink:0}
-        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary,#6366f1)}
-        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
-        .faq-item.open .faq-answer{max-height:400px;opacity:1}
-        .faq-answer-inner{padding:0 22px 20px}
-        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(79,70,229,.1);padding-top:16px;margin:0 22px;padding-left:0;padding-right:0}
-        .faq-answer-inner p{font-size:14px;line-height:1.7;color:var(--text-light,#64748b);margin:0}
-        .faq-answer-inner p strong{color:var(--text-dark,#1e293b)}
-        .faq-num{width:28px;height:28px;background:rgba(79,70,229,.1);color:var(--primary,#6366f1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .faq-item.open .faq-num{background:var(--primary,#6366f1);color:#fff}
+        .rd-modal{position:fixed;inset:0;background:rgba(15,23,42,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px}
+        .rd-modal.open{display:flex}
+        .rd-modal-box{width:100%;max-width:900px;height:86vh;background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+        .rd-modal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border-subtle,#e2e8f0)}
+        .rd-modal-head h4{margin:0;font-size:15px;font-weight:700;color:var(--text-dark,#1e293b)}
+        .rd-modal-body{flex:1;background:#1e293b}
+        .rd-modal-body iframe{width:100%;height:100%;border:0}
 
         @media(max-width:768px){
+            .options-grid{grid-template-columns:1fr}
             .ws-toolbar{gap:4px;padding:8px 10px}
             .ws-btn{padding:6px 8px;font-size:11px}
             .canvas-scroll{padding:10px;max-height:60vh}
             .result-stats{gap:10px}
-            .result-stat{min-width:80px;padding:11px 12px}
+            .result-stat{min-width:84px;padding:10px 12px}
         }
-        @media(max-width:480px){
-            .file-info-card{flex-wrap:wrap}
-            .faq-question{padding:14px}
-            .faq-item{border-radius:10px;margin-bottom:8px}
-        }
+        @media(max-width:480px){.file-info-card{flex-wrap:wrap}}
     </style>
     
     
@@ -363,6 +383,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                 <div class="file-meta">
                     <span class="size-badge" id="fileSize">0 KB</span>
                     <span><i class="fas fa-copy" aria-hidden="true"></i> <span id="pageCount">0</span> pages</span>
+                    <span><i class="fas fa-shield-alt" aria-hidden="true"></i> 100% Client-Side</span>
                 </div>
             </div>
             <div class="files-actions">
@@ -374,45 +395,76 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
         <div class="warn-banner" role="alert">
             <i class="fas fa-exclamation-triangle" style="flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
-            <span><strong>Permanent Redaction:</strong> Redacted content is permanently destroyed. Pages are flattened to images — original text cannot be recovered.</span>
+            <span><strong>True Permanent Redaction:</strong> Redacted pages are flattened to raster images and optional document metadata is stripped so underlying text &amp; links cannot be recovered.</span>
         </div>
 
-        <!-- Search & Redact -->
-        <div class="options-panel glass-light" style="margin-bottom:14px">
-            <h4 style="margin-bottom:10px">
-                <i class="fas fa-search" aria-hidden="true"></i> Search &amp; Redact Text
-            </h4>
-            <div class="search-row">
-                <input type="text" id="searchInput" placeholder="e.g. 'John Doe', '555-1234', 'SSN'..." aria-label="Search text to redact" onkeydown="if(event.key==='Enter')searchRedact()">
-                <button class="ws-btn primary" type="button" onclick="searchRedact()" style="padding:10px 16px">
-                    <i class="fas fa-search" aria-hidden="true"></i> Find All
-                </button>
+        <div class="options-grid">
+            <!-- Search & Auto-Detect PII -->
+            <div class="options-panel" style="margin-bottom:0">
+                <h4><i class="fas fa-search" aria-hidden="true"></i> Search &amp; Auto-Detect PII</h4>
+                <div class="search-row">
+                    <input type="text" id="searchInput" placeholder="Search text or regex pattern..." aria-label="Search text to redact" onkeydown="if(event.key==='Enter')searchRedact()">
+                    <button class="ws-btn primary" type="button" onclick="searchRedact()" style="padding:9px 14px">
+                        <i class="fas fa-search" aria-hidden="true"></i> Find All
+                    </button>
+                </div>
+                <div class="search-flags">
+                    <label class="flag-chk"><input type="checkbox" id="caseCheck"> Case sensitive</label>
+                    <label class="flag-chk"><input type="checkbox" id="regexCheck"> Regex</label>
+                    <span id="searchResult" style="font-size:12px;font-weight:600" aria-live="polite"></span>
+                </div>
+                <div class="pii-bar">
+                    <span class="pii-bar-label">1-Click Find:</span>
+                    <button type="button" class="pii-btn" onclick="findPii('email')"><i class="fas fa-envelope"></i> Emails</button>
+                    <button type="button" class="pii-btn" onclick="findPii('phone')"><i class="fas fa-phone"></i> Phones</button>
+                    <button type="button" class="pii-btn" onclick="findPii('ssn')"><i class="fas fa-id-card"></i> ID / SSN</button>
+                    <button type="button" class="pii-btn" onclick="findPii('card')"><i class="fas fa-credit-card"></i> Cards</button>
+                    <button type="button" class="pii-btn" onclick="findPii('url')"><i class="fas fa-link"></i> URLs</button>
+                </div>
             </div>
-            <div style="display:flex;align-items:center;gap:14px;margin-top:8px;flex-wrap:wrap">
-                <label style="font-size:12px;color:var(--text-light);cursor:pointer;display:flex;align-items:center;gap:4px">
-                    <input type="checkbox" id="caseCheck"> Case sensitive
-                </label>
-                <span id="searchResult" style="font-size:12px;font-weight:600" aria-live="polite"></span>
-            </div>
-        </div>
 
-        <!-- Color & Draw Tools -->
-        <div class="options-panel glass-light" style="margin-bottom:14px">
-            <h4 style="margin-bottom:10px">
-                <i class="fas fa-draw-polygon" aria-hidden="true"></i> Draw Redaction Areas
-            </h4>
-            <div class="info-banner" style="margin-bottom:12px" role="note">
-                <i class="fas fa-mouse-pointer" style="flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
-                <span>Enable <strong>Draw Mode</strong> → click and drag on the PDF preview to mark areas for redaction. Each box can be removed individually.</span>
-            </div>
-            <div class="color-bar" style="margin-bottom:12px" role="radiogroup" aria-label="Redaction color">
-                <label>Color:</label>
-                <div class="c-swatch active" style="background:#000" data-color="#000000" onclick="pickColor(this)" role="radio" aria-checked="true" aria-label="Black" tabindex="0"></div>
-                <div class="c-swatch" style="background:#1e3a5f" data-color="#1e3a5f" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Dark Blue" tabindex="0"></div>
-                <div class="c-swatch" style="background:#991b1b" data-color="#991b1b" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Dark Red" tabindex="0"></div>
-                <div class="c-swatch" style="background:#92400e" data-color="#92400e" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Brown" tabindex="0"></div>
-                <div class="c-swatch" style="background:#3730a3" data-color="#3730a3" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Indigo" tabindex="0"></div>
-                <div class="c-swatch" style="background:#374151" data-color="#374151" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Dark Gray" tabindex="0"></div>
+            <!-- Style & Output Security -->
+            <div class="options-panel" style="margin-bottom:0">
+                <h4><i class="fas fa-sliders-h" aria-hidden="true"></i> Redaction Style &amp; Security</h4>
+                <div class="style-row">
+                    <div class="color-bar" role="radiogroup" aria-label="Redaction color">
+                        <label>Fill:</label>
+                        <div class="c-swatch active" style="background:#000000" data-color="#000000" onclick="pickColor(this)" role="radio" aria-checked="true" aria-label="Black" tabindex="0"></div>
+                        <div class="c-swatch" style="background:#ffffff" data-color="#ffffff" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Whiteout" tabindex="0"></div>
+                        <div class="c-swatch" style="background:#1e3a5f" data-color="#1e3a5f" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Navy" tabindex="0"></div>
+                        <div class="c-swatch" style="background:#991b1b" data-color="#991b1b" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Crimson" tabindex="0"></div>
+                        <div class="c-swatch" style="background:#334155" data-color="#334155" onclick="pickColor(this)" role="radio" aria-checked="false" aria-label="Slate" tabindex="0"></div>
+                        <label class="color-picker-wrap" title="Custom fill color">
+                            <input type="color" id="customColorPicker" value="#000000" onchange="pickCustomColor(this.value)" aria-label="Custom redaction color">
+                        </label>
+                    </div>
+                </div>
+                <div class="style-row">
+                    <span class="ctrl-label">Label:</span>
+                    <select id="overlayPreset" class="form-select" onchange="onOverlayPresetChange()">
+                        <option value="">Solid Box (No Text)</option>
+                        <option value="REDACTED">REDACTED</option>
+                        <option value="CONFIDENTIAL">CONFIDENTIAL</option>
+                        <option value="[PII REMOVED]">[PII REMOVED]</option>
+                        <option value="custom">Custom Label...</option>
+                    </select>
+                    <input type="text" id="customLabelInput" class="form-input" placeholder="Custom text" style="display:none;width:130px" maxlength="24">
+                </div>
+                <div class="sec-opts">
+                    <div class="sec-opt-group">
+                        <span class="ctrl-label">Flatten:</span>
+                        <select id="flattenMode" class="form-select">
+                            <option value="all">All Pages (Max Security)</option>
+                            <option value="redacted">Redacted Pages Only</option>
+                        </select>
+                        <select id="outputDpi" class="form-select" title="Render sharpness">
+                            <option value="2.0">2x Sharp</option>
+                            <option value="2.5" selected>2.5x Ultra</option>
+                            <option value="3.0">3x Print</option>
+                        </select>
+                    </div>
+                    <label class="flag-chk"><input type="checkbox" id="stripMetaCheck" checked> Scrub PDF Metadata</label>
+                </div>
             </div>
         </div>
 
@@ -420,11 +472,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <div class="workspace" aria-label="PDF redaction workspace">
             <div class="ws-toolbar">
                 <div class="ws-toolbar-group">
-                    <button class="ws-btn" id="drawBtn" type="button" onclick="toggleDraw()" aria-label="Toggle draw mode">
-                        <i class="fas fa-pencil-alt" aria-hidden="true"></i> Draw
+                    <button class="ws-btn active" id="drawBtn" type="button" onclick="toggleDraw()" aria-label="Toggle draw mode">
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i> Draw On
                     </button>
                     <button class="ws-btn" id="undoBtn" type="button" onclick="undo()" disabled="" title="Undo (Ctrl+Z)" aria-label="Undo last redaction">
                         <i class="fas fa-undo" aria-hidden="true"></i>
+                    </button>
+                    <button class="ws-btn" id="dupAllBtn" type="button" onclick="duplicateSelectedToAll()" disabled="" title="Repeat selected box on all pages" aria-label="Duplicate selected box to all pages">
+                        <i class="fas fa-clone" aria-hidden="true"></i> All Pages
                     </button>
                 </div>
                 <div class="ws-toolbar-sep"></div>
@@ -461,25 +516,25 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                 </div>
             </div>
             <div class="canvas-scroll" id="canvasScroll">
-                <div class="canvas-container" id="canvasCon">
-                    <canvas id="pdfCanvas" aria-label="PDF page - draw to redact areas"></canvas>
+                <div class="canvas-container" id="canvasCon" style="cursor:crosshair">
+                    <canvas id="pdfCanvas" aria-label="PDF page - draw or adjust redaction areas"></canvas>
                 </div>
             </div>
         </div>
 
         <!-- Redaction List -->
-        <div class="options-panel glass-light" style="margin-bottom:14px">
-            <h4 style="margin-bottom:8px">
-                <i class="fas fa-list" aria-hidden="true"></i> Redactions
-                <span id="redCount" aria-live="polite" style="background:rgba(239,68,68,.12);color:#dc2626;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700;margin-left:6px">0</span>
+        <div class="options-panel">
+            <h4 style="margin-bottom:6px">
+                <i class="fas fa-list" aria-hidden="true"></i> Marked Redactions
+                <span id="redCount" aria-live="polite" style="background:rgba(239,68,68,.12);color:#dc2626;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700;margin-left:4px">0</span>
             </h4>
             <div class="red-list" id="redList" role="list" aria-label="Redaction list">
-                <div class="red-empty">No redactions yet. Draw on the PDF or use Search &amp; Redact.</div>
+                <div class="red-empty">No redactions yet. Drag directly on the PDF or use Search / Auto-Detect PII above.</div>
             </div>
         </div>
 
         <button class="action-btn" id="applyBtn" type="button" onclick="applyRedactions()">
-            <i class="fas fa-eraser" aria-hidden="true"></i> Apply Redactions &amp; Download
+            <i class="fas fa-shield-alt" aria-hidden="true"></i> Apply Permanent Redactions
         </button>
     </div>
 
@@ -488,7 +543,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <div class="processing-area" role="status" aria-live="polite">
             <div class="spinner" aria-hidden="true"></div>
             <h3 id="processTitle">Applying Redactions...</h3>
-            <p id="processSubtitle">Burning into PDF</p>
+            <p id="processSubtitle">Sanitizing document</p>
             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
@@ -503,21 +558,22 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             <div class="result-icon success" aria-hidden="true">
                 <i class="fas fa-check-circle"></i>
             </div>
-            <h2>PDF Redacted Successfully! ⬛</h2>
-            <p>Sensitive content has been permanently removed</p>
+            <h2>PDF Redacted Securely! ⬛</h2>
+            <p>Marked data has been permanently flattened and scrubbed from your document</p>
             <div class="result-stats">
                 <div class="result-stat"><strong id="rPages">0</strong><small>Pages</small></div>
                 <div class="result-stat"><strong id="rRedactions">0</strong><small>Redactions</small></div>
+                <div class="result-stat"><strong id="rFlattened">0</strong><small>Flattened</small></div>
                 <div class="result-stat"><strong id="rSize">0 KB</strong><small>File Size</small></div>
             </div>
             <div class="result-info glass-light">
                 <div class="info-item">
-                    <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                    <i class="fas fa-file-pdf" style="color:#ef4444" aria-hidden="true"></i>
                     <span id="rFileName">document_redacted.pdf</span>
                 </div>
                 <div class="info-item">
-                    <i class="fas fa-check-circle" style="color:#16a34a" aria-hidden="true"></i>
-                    <span>Redactions permanently applied</span>
+                    <i class="fas fa-shield-alt" style="color:#16a34a" aria-hidden="true"></i>
+                    <span id="rSecurityBadge">Permanent raster burn &amp; metadata scrubbed</span>
                 </div>
             </div>
             <button class="download-btn" type="button" onclick="doDownload()">
@@ -527,9 +583,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                 <button class="btn-outline" type="button" onclick="resetTool()">
                     <i class="fas fa-redo" aria-hidden="true"></i> Redact Another
                 </button>
+                <button class="btn-outline" type="button" onclick="previewResultPdf()">
+                    <i class="fas fa-eye" aria-hidden="true"></i> Preview PDF
+                </button>
                 <button class="btn-outline" type="button" onclick="goBackEdit()">
                     <i class="fas fa-edit" aria-hidden="true"></i> Edit More
                 </button>
+                <a class="btn-outline" href="protect-pdf.html" style="text-decoration:none">
+                    <i class="fas fa-lock" aria-hidden="true"></i> Protect PDF
+                </a>
             </div>
         </div>
     </div>
@@ -539,9 +601,63 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 </section>
 </main>
 
+<!-- Preview Modal -->
+<div class="rd-modal" id="pdfPreviewModal" role="dialog" aria-modal="true" aria-labelledby="pdfPreviewTitle">
+    <div class="rd-modal-box">
+        <div class="rd-modal-head">
+            <h4 id="pdfPreviewTitle">Redacted PDF Preview</h4>
+            <button type="button" class="btn-danger-sm" onclick="closePdfModal()"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="rd-modal-body">
+            <iframe id="pdfPreviewFrame" title="Redacted PDF Preview"></iframe>
+        </div>
+    </div>
+</div>
+
 <!-- ═══════════════════════════════════════
      HOW TO
 ═══════════════════════════════════════ -->
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related PDF Security &amp; Edit Tools</h2>
+            <p>Everything you need to edit, secure, repair, and finalize PDFs.</p>
+        </div>
+        <div class="related-grid">
+            <a href="merge-pdf.html" class="related-card" aria-label="Merge PDF">
+                <div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div>
+                <h4>Merge PDF</h4>
+                <p>Combine multiple PDFs into one</p>
+            </a>
+            <a href="compress-pdf.html" class="related-card" aria-label="Compress PDF">
+                <div class="related-icon ri-green"><i class="fas fa-compress-alt" aria-hidden="true"></i></div>
+                <h4>Compress PDF</h4>
+                <p>Reduce PDF size with target KB</p>
+            </a>
+            <a href="protect-pdf.html" class="related-card" aria-label="Protect PDF">
+                <div class="related-icon ri-red"><i class="fas fa-lock" aria-hidden="true"></i></div>
+                <h4>Protect PDF</h4>
+                <p>Lock PDF with password security</p>
+            </a>
+            <a href="unlock-pdf.html" class="related-card" aria-label="Unlock PDF">
+                <div class="related-icon ri-green"><i class="fas fa-unlock-alt" aria-hidden="true"></i></div>
+                <h4>Unlock PDF</h4>
+                <p>Remove PDF password restrictions</p>
+            </a>
+            <a href="sign-pdf.html" class="related-card" aria-label="Sign PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-signature" aria-hidden="true"></i></div>
+                <h4>Sign PDF</h4>
+                <p>Draw or type PDF signatures</p>
+            </a>
+            <a href="edit-pdf.html" class="related-card" aria-label="Edit PDF">
+                <div class="related-icon ri-blue"><i class="fas fa-edit" aria-hidden="true"></i></div>
+                <h4>Edit PDF</h4>
+                <p>Add text &amp; annotations to PDF</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section" aria-labelledby="howto-heading">
     <div class="container">
         <div class="section-header">
@@ -709,80 +825,41 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 <script src="js/tool-page.js"></script>
 
 <script>
-/* ════════════════════════════════════════
-   FOOTER YEAR
-════════════════════════════════════════ */
-(function() {
-    const year = new Date().getFullYear();
-    // બધા possible IDs try કરે
-    const ids = ['currentYear', 'footerYear', 'year', 'footer-year'];
-    ids.forEach(function(id) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = year;
-    });
-})();
-/* ════════════════════════════════════════
-   PDF.js WORKER
-════════════════════════════════════════ */
 pdfjsLib.GlobalWorkerOptions.workerSrc =
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/* ════════════════════════════════════════
-   STATE
-════════════════════════════════════════ */
 let rawBytes = null, selectedFile = null, pdfDoc = null;
 let totalPages = 0, curPage = 1;
-let viewScale = 1.0;
-let baseScale = 1.0;
-let renderScale = 1.0;
+let viewScale = 1.0, baseScale = 1.0, renderScale = 1.0;
 let redactColor = '#000000';
-let drawActive = false;
-let resultBlob = null;
+let drawActive = true;
+let selectedId = null;
+let resultBlob = null, previewUrl = null;
+let pageViewports = {};
 
 let redactions = [];
-let undoStack  = [];
-let idCounter  = 0;
+let undoStack = [];
+let idCounter = 0;
 
-let isDraw = false, dStartX = 0, dStartY = 0, dTempEl = null;
+let dragState = null, dTempEl = null;
 
 const canvas    = document.getElementById('pdfCanvas');
 const ctx       = canvas.getContext('2d');
 const canCon    = document.getElementById('canvasCon');
 const canScroll = document.getElementById('canvasScroll');
+const dropZone  = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
 
-/* ════════════════════════════════════════
-   MOBILE MENU
-════════════════════════════════════════ */
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function () {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        const isOpen = nav.classList.toggle('open');
-        ham.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    };
-}
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        if (nav) nav.classList.remove('open');
-        if (ham) ham.setAttribute('aria-expanded', 'false');
-    }
-});
-
-/* ════════════════════════════════════════
-   HELPERS
-════════════════════════════════════════ */
-function toggleFaq(el) {
-    const o = el.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!o) el.classList.add('open');
-}
+(function(){
+    const yr = document.getElementById('currentYear');
+    if (yr) yr.textContent = new Date().getFullYear();
+})();
 
 function showSection(id) {
     document.querySelectorAll('[data-section]').forEach(s => s.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block';
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
 function setProgress(p, t, s, d) {
@@ -809,15 +886,14 @@ function showError(m) {
     document.getElementById('errorBox').style.display = 'flex';
     setTimeout(() => document.getElementById('errorBox').style.display = 'none', 6000);
 }
-
 function hideError() { document.getElementById('errorBox').style.display = 'none'; }
-function tick() { return new Promise(r => setTimeout(r, 25)); }
+function tick() { return new Promise(r => setTimeout(r, 20)); }
 function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 function toast(msg) {
     const t = document.createElement('div');
     t.className = 'success-toast';
-    t.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i>' + msg;
+    t.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i>' + escH(msg);
     document.body.appendChild(t);
     setTimeout(() => {
         t.style.opacity = '0';
@@ -826,17 +902,31 @@ function toast(msg) {
     }, 2500);
 }
 
-/* ════════════════════════════════════════
-   FILE HANDLING
-════════════════════════════════════════ */
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
+function contrastTextColor(hex) {
+    const c = (hex || '#000000').replace('#', '');
+    if (c.length !== 6) return '#ffffff';
+    const r = parseInt(c.slice(0, 2), 16), g = parseInt(c.slice(2, 4), 16), b = parseInt(c.slice(4, 6), 16);
+    const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+    return luma > 165 ? '#111827' : '#ffffff';
+}
 
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+function getCurrentOverlayText() {
+    const val = document.getElementById('overlayPreset').value;
+    if (val === 'custom') return document.getElementById('customLabelInput').value.trim();
+    return val;
+}
+
+function onOverlayPresetChange() {
+    const val = document.getElementById('overlayPreset').value;
+    document.getElementById('customLabelInput').style.display = val === 'custom' ? 'inline-block' : 'none';
+}
+
+/* File Upload */
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover', 'drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover', 'drag-over'));
 dropZone.addEventListener('drop', e => {
     e.preventDefault();
-    dropZone.classList.remove('drag-over');
+    dropZone.classList.remove('dragover', 'drag-over');
     if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
 });
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
@@ -856,45 +946,47 @@ async function handleFile(file) {
         pdfDoc = await pdfjsLib.getDocument({ data: rawBytes.slice(0) }).promise;
         totalPages = pdfDoc.numPages;
         curPage = 1;
-        redactions = []; undoStack = []; idCounter = 0;
+        redactions = []; undoStack = []; idCounter = 0; selectedId = null; pageViewports = {};
         document.getElementById('pageCount').textContent = totalPages;
         showSection('editorSection');
         await calcFitScale();
         await renderCurrent();
+        updateRedList();
     } catch (e) {
         showError('Failed to load PDF: ' + e.message);
     }
 }
 
-/* ════════════════════════════════════════
-   FIT SCALE
-════════════════════════════════════════ */
+async function getPageVP1(pg) {
+    if (!pageViewports[pg]) {
+        const page = await pdfDoc.getPage(pg);
+        pageViewports[pg] = page.getViewport({ scale: 1.0 });
+    }
+    return pageViewports[pg];
+}
+
 async function calcFitScale() {
-    const page = await pdfDoc.getPage(1);
-    const vp = page.getViewport({ scale: 1.0 });
-    const containerW = canScroll.clientWidth - 40;
+    const vp = await getPageVP1(curPage);
+    const containerW = Math.max(280, canScroll.clientWidth - 44);
     baseScale = Math.min(containerW / vp.width, 2.0);
-    if (baseScale < 0.5) baseScale = 0.5;
+    if (baseScale < 0.45) baseScale = 0.45;
     viewScale = 1.0;
     renderScale = baseScale * viewScale;
     updateZoomText();
 }
 
-/* ════════════════════════════════════════
-   RENDER CURRENT PAGE
-════════════════════════════════════════ */
 async function renderCurrent() {
     renderScale = baseScale * viewScale;
     const page = await pdfDoc.getPage(curPage);
     const vp = page.getViewport({ scale: renderScale });
 
-    canvas.width = vp.width;
-    canvas.height = vp.height;
+    canvas.width = Math.round(vp.width);
+    canvas.height = Math.round(vp.height);
     canCon.style.width = vp.width + 'px';
     canCon.style.height = vp.height + 'px';
 
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, vp.width, vp.height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
     updatePageUI();
@@ -911,59 +1003,100 @@ function updateZoomText() {
     document.getElementById('zoomText').textContent = Math.round(viewScale * 100) + '%';
 }
 
-/* ════════════════════════════════════════
-   RENDER REDACTION BOXES
-════════════════════════════════════════ */
 function renderBoxes() {
     canCon.querySelectorAll('.r-box').forEach(e => e.remove());
-
     const pageReds = redactions.filter(r => r.pageNum === curPage);
+
     pageReds.forEach(r => {
-        const cx = r.pdfX * renderScale;
-        const cy = (r.pageH - r.pdfY - r.pdfH) * renderScale;
-        const cw = r.pdfW * renderScale;
-        const ch = r.pdfH * renderScale;
+        const cx = r.vx * renderScale;
+        const cy = r.vy * renderScale;
+        const cw = r.vw * renderScale;
+        const ch = r.vh * renderScale;
 
         const box = document.createElement('div');
-        box.className = 'r-box';
+        box.className = 'r-box' + (r.id === selectedId ? ' selected' : '');
         box.style.left = cx + 'px';
         box.style.top = cy + 'px';
         box.style.width = cw + 'px';
         box.style.height = ch + 'px';
-        box.setAttribute('role', 'img');
-        box.setAttribute('aria-label', 'Redaction area');
+        box.dataset.id = r.id;
 
         const inner = document.createElement('div');
         inner.className = 'r-box-inner';
-        inner.style.background = r.color || '#000';
+        inner.style.background = r.color || '#000000';
+        inner.style.borderColor = r.color === '#ffffff' ? '#64748b' : 'rgba(255,255,255,.55)';
+        if (r.overlayText) {
+            inner.style.color = contrastTextColor(r.color);
+            const fs = Math.max(7, Math.min(13, Math.floor(ch * 0.48), Math.floor((cw / Math.max(4, r.overlayText.length)) * 1.45)));
+            inner.style.fontSize = fs + 'px';
+            inner.textContent = r.overlayText;
+        }
 
-        const del = document.createElement('div');
-        del.className = 'r-box-del';
-        del.textContent = '×';
-        del.setAttribute('role', 'button');
-        del.setAttribute('aria-label', 'Remove redaction');
-        del.onclick = e => { e.stopPropagation(); removeRedaction(r.id); };
+        const actions = document.createElement('div');
+        actions.className = 'r-box-actions';
 
-        inner.appendChild(del);
+        if (totalPages > 1) {
+            const dupBtn = document.createElement('button');
+            dupBtn.type = 'button';
+            dupBtn.className = 'r-act-btn all';
+            dupBtn.title = 'Duplicate to all pages';
+            dupBtn.innerHTML = '<i class="fas fa-clone"></i>';
+            dupBtn.addEventListener('pointerdown', e => e.stopPropagation());
+            dupBtn.onclick = e => { e.stopPropagation(); duplicateToAllPages(r.id); };
+            actions.appendChild(dupBtn);
+        }
+
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'r-act-btn del';
+        delBtn.title = 'Remove redaction';
+        delBtn.innerHTML = '&times;';
+        delBtn.addEventListener('pointerdown', e => e.stopPropagation());
+        delBtn.onclick = e => { e.stopPropagation(); removeRedaction(r.id); };
+        actions.appendChild(delBtn);
+
+        const resizeH = document.createElement('div');
+        resizeH.className = 'r-resize';
+        resizeH.title = 'Drag to resize';
+        resizeH.addEventListener('pointerdown', e => startBoxDrag(e, r, 'resize'));
+
+        box.addEventListener('pointerdown', e => startBoxDrag(e, r, 'move'));
+
+        box.appendChild(actions);
         box.appendChild(inner);
+        box.appendChild(resizeH);
         canCon.appendChild(box);
     });
 }
 
-/* ════════════════════════════════════════
-   REDACTION MANAGEMENT
-════════════════════════════════════════ */
-function addRedaction(r) {
+function addRedaction(r, silent) {
     r.id = ++idCounter;
     redactions.push(r);
     undoStack.push(r.id);
     document.getElementById('undoBtn').disabled = false;
+    if (!silent) {
+        selectedId = r.id;
+        syncDupBtn();
+        renderBoxes();
+        updateRedList();
+    }
+}
+
+function syncDupBtn() {
+    const btn = document.getElementById('dupAllBtn');
+    if (btn) btn.disabled = !selectedId || totalPages <= 1;
+}
+
+function selectRedaction(id) {
+    selectedId = id;
+    syncDupBtn();
     renderBoxes();
     updateRedList();
 }
 
 function removeRedaction(id) {
     redactions = redactions.filter(r => r.id !== id);
+    if (selectedId === id) { selectedId = null; syncDupBtn(); }
     renderBoxes();
     updateRedList();
 }
@@ -972,6 +1105,7 @@ function undo() {
     if (undoStack.length === 0) return;
     const id = undoStack.pop();
     redactions = redactions.filter(r => r.id !== id);
+    if (selectedId === id) { selectedId = null; syncDupBtn(); }
     if (undoStack.length === 0) document.getElementById('undoBtn').disabled = true;
     renderBoxes();
     updateRedList();
@@ -980,16 +1114,49 @@ function undo() {
 function clearPage() {
     const before = redactions.length;
     redactions = redactions.filter(r => r.pageNum !== curPage);
-    if (redactions.length < before) { renderBoxes(); updateRedList(); toast('Page redactions cleared'); }
+    selectedId = null; syncDupBtn();
+    if (redactions.length < before) { renderBoxes(); updateRedList(); toast('Current page redactions cleared'); }
 }
 
 function clearAll() {
     if (redactions.length === 0) return;
     if (!confirm('Remove ALL redactions from ALL pages?')) return;
-    redactions = []; undoStack = [];
+    redactions = []; undoStack = []; selectedId = null;
     document.getElementById('undoBtn').disabled = true;
+    syncDupBtn();
     renderBoxes(); updateRedList();
     toast('All redactions cleared');
+}
+
+function duplicateSelectedToAll() {
+    if (selectedId) duplicateToAllPages(selectedId);
+}
+
+async function duplicateToAllPages(id) {
+    const src = redactions.find(r => r.id === id);
+    if (!src || totalPages <= 1) return;
+    let added = 0;
+    for (let pg = 1; pg <= totalPages; pg++) {
+        if (pg === src.pageNum) continue;
+        const vp = await getPageVP1(pg);
+        addRedaction({
+            pageNum: pg,
+            vx: Math.min(src.vx, Math.max(0, vp.width - src.vw)),
+            vy: Math.min(src.vy, Math.max(0, vp.height - src.vh)),
+            vw: src.vw,
+            vh: src.vh,
+            type: 'area',
+            label: src.label + ' (all pages)',
+            color: src.color,
+            overlayText: src.overlayText
+        }, true);
+        added++;
+    }
+    if (added > 0) {
+        renderBoxes();
+        updateRedList();
+        toast('Copied redaction to ' + added + ' other page(s)');
+    }
 }
 
 function updateRedList() {
@@ -998,44 +1165,44 @@ function updateRedList() {
     cnt.textContent = redactions.length;
 
     if (redactions.length === 0) {
-        list.innerHTML = '<div class="red-empty">No redactions yet. Draw on the PDF or use Search &amp; Redact.</div>';
+        list.innerHTML = '<div class="red-empty">No redactions yet. Drag directly on the PDF or use Search / Auto-Detect PII above.</div>';
         return;
     }
 
     list.innerHTML = redactions.map(r => `
-        <div class="red-item" role="listitem" onclick="goToRedaction(${r.pageNum})">
+        <div class="red-item ${r.id === selectedId ? 'selected' : ''}" role="listitem" onclick="goToRedaction(${r.pageNum}, ${r.id})">
             <div class="ri-left">
-                <span class="red-badge ${r.type}">${r.type === 'area' ? '⬛ Area' : '🔍 Text'}</span>
+                <span class="red-dot" style="background:${escH(r.color)}"></span>
+                <span class="red-badge ${r.type}">${r.type === 'area' ? 'Area' : (r.type === 'pii' ? 'PII' : 'Text')}</span>
                 <span class="ri-text">${escH(r.label)}</span>
             </div>
             <span class="ri-pg">p.${r.pageNum}</span>
-            <button class="ri-del" type="button" onclick="event.stopPropagation();removeRedaction(${r.id})"
-                    title="Remove" aria-label="Remove redaction">
+            <button class="ri-del" type="button" onclick="event.stopPropagation();removeRedaction(${r.id})" title="Remove" aria-label="Remove redaction">
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>
         </div>
     `).join('');
 }
 
-async function goToRedaction(pg) {
+async function goToRedaction(pg, id) {
+    selectedId = id || null;
+    syncDupBtn();
     if (pg !== curPage) { curPage = pg; await renderCurrent(); }
+    else renderBoxes();
+    updateRedList();
 }
 
-/* ════════════════════════════════════════
-   DRAW MODE
-════════════════════════════════════════ */
 function toggleDraw() {
     drawActive = !drawActive;
     const btn = document.getElementById('drawBtn');
     if (drawActive) {
         btn.className = 'ws-btn active';
-        btn.innerHTML = '<i class="fas fa-pencil-alt" aria-hidden="true"></i> Drawing...';
+        btn.innerHTML = '<i class="fas fa-pencil-alt" aria-hidden="true"></i> Draw On';
         canCon.style.cursor = 'crosshair';
     } else {
         btn.className = 'ws-btn';
-        btn.innerHTML = '<i class="fas fa-pencil-alt" aria-hidden="true"></i> Draw';
+        btn.innerHTML = '<i class="fas fa-mouse-pointer" aria-hidden="true"></i> Select';
         canCon.style.cursor = 'default';
-        if (dTempEl) { dTempEl.remove(); dTempEl = null; }
     }
 }
 
@@ -1047,31 +1214,54 @@ function pickColor(el) {
     el.classList.add('active');
     el.setAttribute('aria-checked', 'true');
     redactColor = el.dataset.color;
+    document.getElementById('customColorPicker').value = redactColor;
 }
 
-/* ════════════════════════════════════════
-   DRAWING EVENTS
-════════════════════════════════════════ */
+function pickCustomColor(hex) {
+    document.querySelectorAll('.c-swatch').forEach(s => {
+        s.classList.remove('active');
+        s.setAttribute('aria-checked', 'false');
+    });
+    redactColor = hex || '#000000';
+}
+
+/* Unified Pointer Drag: Create / Move / Resize */
 function getCanvasPos(e) {
     const rect = canCon.getBoundingClientRect();
-    const cTouch = e.touches ? e.touches[0] || e.changedTouches[0] : e;
-    return { x: cTouch.clientX - rect.left, y: cTouch.clientY - rect.top };
+    return {
+        x: Math.max(0, Math.min(rect.width, e.clientX - rect.left)),
+        y: Math.max(0, Math.min(rect.height, e.clientY - rect.top))
+    };
 }
 
-canCon.addEventListener('mousedown', startDraw);
-canCon.addEventListener('mousemove', moveDraw);
-canCon.addEventListener('mouseup', endDraw);
-canCon.addEventListener('mouseleave', endDraw);
-
-canCon.addEventListener('touchstart', e => { if (drawActive) { e.preventDefault(); startDraw(e); } }, { passive: false });
-canCon.addEventListener('touchmove', e => { if (drawActive) { e.preventDefault(); moveDraw(e); } }, { passive: false });
-canCon.addEventListener('touchend', e => { if (drawActive) { e.preventDefault(); endDraw(e); } }, { passive: false });
-
-function startDraw(e) {
-    if (!drawActive) return;
-    isDraw = true;
+function startBoxDrag(e, r, mode) {
+    e.stopPropagation();
+    e.preventDefault();
+    selectedId = r.id;
+    syncDupBtn();
     const p = getCanvasPos(e);
-    dStartX = p.x; dStartY = p.y;
+    dragState = {
+        mode,
+        red: r,
+        startX: p.x,
+        startY: p.y,
+        origVx: r.vx,
+        origVy: r.vy,
+        origVw: r.vw,
+        origVh: r.vh
+    };
+    if (canCon.setPointerCapture) {
+        try { canCon.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+    renderBoxes();
+    updateRedList();
+}
+
+canCon.addEventListener('pointerdown', e => {
+    if (!drawActive || e.target !== canvas) return;
+    e.preventDefault();
+    const p = getCanvasPos(e);
+    dragState = { mode: 'draw', startX: p.x, startY: p.y };
 
     dTempEl = document.createElement('div');
     dTempEl.className = 'draw-temp';
@@ -1080,196 +1270,323 @@ function startDraw(e) {
     dTempEl.style.width = '0px';
     dTempEl.style.height = '0px';
     dTempEl.style.background = redactColor;
-    dTempEl.style.opacity = '0.7';
+    dTempEl.style.opacity = '0.72';
     canCon.appendChild(dTempEl);
-}
+    if (canCon.setPointerCapture) {
+        try { canCon.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+});
 
-function moveDraw(e) {
-    if (!isDraw || !dTempEl) return;
+canCon.addEventListener('pointermove', e => {
+    if (!dragState) return;
     const p = getCanvasPos(e);
-    const x = Math.min(p.x, dStartX);
-    const y = Math.min(p.y, dStartY);
-    const w = Math.abs(p.x - dStartX);
-    const h = Math.abs(p.y - dStartY);
-    dTempEl.style.left = x + 'px';
-    dTempEl.style.top = y + 'px';
-    dTempEl.style.width = w + 'px';
-    dTempEl.style.height = h + 'px';
+    if (dragState.mode === 'draw' && dTempEl) {
+        const x = Math.min(p.x, dragState.startX);
+        const y = Math.min(p.y, dragState.startY);
+        const w = Math.abs(p.x - dragState.startX);
+        const h = Math.abs(p.y - dragState.startY);
+        dTempEl.style.left = x + 'px';
+        dTempEl.style.top = y + 'px';
+        dTempEl.style.width = w + 'px';
+        dTempEl.style.height = h + 'px';
+    } else if (dragState.mode === 'move') {
+        const dx = (p.x - dragState.startX) / renderScale;
+        const dy = (p.y - dragState.startY) / renderScale;
+        const maxW = canvas.width / renderScale;
+        const maxH = canvas.height / renderScale;
+        dragState.red.vx = Math.max(0, Math.min(maxW - dragState.red.vw, dragState.origVx + dx));
+        dragState.red.vy = Math.max(0, Math.min(maxH - dragState.red.vh, dragState.origVy + dy));
+        const boxEl = canCon.querySelector('.r-box[data-id="' + dragState.red.id + '"]');
+        if (boxEl) {
+            boxEl.style.left = (dragState.red.vx * renderScale) + 'px';
+            boxEl.style.top = (dragState.red.vy * renderScale) + 'px';
+        }
+    } else if (dragState.mode === 'resize') {
+        const dx = (p.x - dragState.startX) / renderScale;
+        const dy = (p.y - dragState.startY) / renderScale;
+        const maxW = canvas.width / renderScale - dragState.origVx;
+        const maxH = canvas.height / renderScale - dragState.origVy;
+        dragState.red.vw = Math.max(8, Math.min(maxW, dragState.origVw + dx));
+        dragState.red.vh = Math.max(8, Math.min(maxH, dragState.origVh + dy));
+        const boxEl = canCon.querySelector('.r-box[data-id="' + dragState.red.id + '"]');
+        if (boxEl) {
+            boxEl.style.width = (dragState.red.vw * renderScale) + 'px';
+            boxEl.style.height = (dragState.red.vh * renderScale) + 'px';
+        }
+    }
+});
+
+canCon.addEventListener('pointerup', e => finishPointerDrag(e));
+canCon.addEventListener('pointercancel', e => finishPointerDrag(e));
+
+function finishPointerDrag(e) {
+    if (!dragState) return;
+    const state = dragState;
+    dragState = null;
+
+    if (state.mode === 'draw') {
+        const p = getCanvasPos(e);
+        const cx = Math.min(p.x, state.startX);
+        const cy = Math.min(p.y, state.startY);
+        const cw = Math.abs(p.x - state.startX);
+        const ch = Math.abs(p.y - state.startY);
+        if (dTempEl) { dTempEl.remove(); dTempEl = null; }
+        if (cw < 5 || ch < 5) return;
+
+        const vx = cx / renderScale;
+        const vy = cy / renderScale;
+        const vw = cw / renderScale;
+        const vh = ch / renderScale;
+
+        addRedaction({
+            pageNum: curPage,
+            vx, vy, vw, vh,
+            type: 'area',
+            label: `Area (${Math.round(vw)}×${Math.round(vh)} pts)`,
+            color: redactColor,
+            overlayText: getCurrentOverlayText()
+        });
+    } else {
+        renderBoxes();
+        updateRedList();
+    }
 }
 
-async function endDraw(e) {
-    if (!isDraw) return;
-    isDraw = false;
-    if (!dTempEl) return;
-
-    const p = getCanvasPos(e);
-    const cx = Math.min(p.x, dStartX);
-    const cy = Math.min(p.y, dStartY);
-    const cw = Math.abs(p.x - dStartX);
-    const ch = Math.abs(p.y - dStartY);
-
-    dTempEl.remove();
-    dTempEl = null;
-
-    if (cw < 5 || ch < 5) return;
-
-    const page = await pdfDoc.getPage(curPage);
-    const vp1 = page.getViewport({ scale: 1.0 });
-    const pageH = vp1.height;
-
-    const pdfX = cx / renderScale;
-    const pdfW = cw / renderScale;
-    const pdfH = ch / renderScale;
-    const pdfY = pageH - (cy / renderScale) - pdfH;
-
-    addRedaction({
-        pageNum: curPage,
-        pdfX, pdfY, pdfW, pdfH,
-        pageH,
-        type: 'area',
-        label: `Area (${Math.round(pdfW)}×${Math.round(pdfH)} pts)`,
-        color: redactColor,
-    });
-}
-
-/* ════════════════════════════════════════
-   ZOOM
-════════════════════════════════════════ */
+/* Zoom & Navigation */
 function zoomIn() { viewScale = Math.min(viewScale + 0.25, 3.0); updateZoomText(); renderCurrent(); }
 function zoomOut() { viewScale = Math.max(viewScale - 0.25, 0.25); updateZoomText(); renderCurrent(); }
 function zoomFit() { viewScale = 1.0; updateZoomText(); renderCurrent(); }
+function goPrev() { if (curPage > 1) { curPage--; selectedId = null; syncDupBtn(); renderCurrent(); } }
+function goNext() { if (curPage < totalPages) { curPage++; selectedId = null; syncDupBtn(); renderCurrent(); } }
 
-/* ════════════════════════════════════════
-   PAGE NAVIGATION
-════════════════════════════════════════ */
-function goPrev() { if (curPage > 1) { curPage--; renderCurrent(); } }
-function goNext() { if (curPage < totalPages) { curPage++; renderCurrent(); } }
-
-/* Keyboard shortcuts */
 document.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+    if (e.ctrlKey && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
+    if ((e.key === 'Delete' || e.key === 'Backspace') && selectedId) { e.preventDefault(); removeRedaction(selectedId); }
     if (e.key === 'ArrowLeft') goPrev();
     if (e.key === 'ArrowRight') goNext();
+    if (e.key === 'Escape') closePdfModal();
 });
 
-/* ════════════════════════════════════════
-   SEARCH & REDACT
-════════════════════════════════════════ */
-async function searchRedact() {
-    const term = document.getElementById('searchInput').value.trim();
-    const caseSens = document.getElementById('caseCheck').checked;
+/* Cross-Item Viewport-Aware Search & Auto-Detect PII */
+const PII_PRESETS = {
+    email: { label: 'Email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+    phone: { label: 'Phone', regex: /(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{3,5}\)?[-.\s]?)\d{3,4}[-.\s]?\d{4}/g },
+    ssn:   { label: 'ID/SSN', regex: /(?:\b\d{3}-\d{2}-\d{4}\b|\b\d{4}\s\d{4}\s\d{4}\b)/g },
+    card:  { label: 'Card', regex: /\b(?:\d{4}[-\s]?){3}\d{3,4}\b/g },
+    url:   { label: 'URL', regex: /https?:\/\/[^\s<>"]+|www\.[^\s<>"]+/gi }
+};
+
+async function runPatternSearch(re, badgeType, labelPrefix) {
     const resultEl = document.getElementById('searchResult');
-
-    if (!term) { showError('Enter text to search for.'); return; }
-
-    resultEl.textContent = 'Searching...';
+    resultEl.textContent = 'Scanning PDF...';
     resultEl.style.color = '#6366f1';
     await tick();
 
     let found = 0;
+    const ovText = getCurrentOverlayText();
 
     for (let pg = 1; pg <= totalPages; pg++) {
         const page = await pdfDoc.getPage(pg);
         const vp = page.getViewport({ scale: 1.0 });
         const content = await page.getTextContent({ normalizeWhitespace: true });
 
+        /* Group items by visual line and track character offsets across items */
+        const chunks = [];
+        let fullStr = '';
+        let prevY = null;
         for (const item of content.items) {
-            const str = item.str || '';
-            if (!str.trim()) continue;
+            const s = item.str || '';
+            if (!s) continue;
+            const tx = pdfjsLib.Util.transform(vp.transform, item.transform);
+            const baselineY = tx[5];
+            if (prevY !== null && Math.abs(baselineY - prevY) > Math.max(4, Math.hypot(tx[2], tx[3]) * 0.45)) {
+                fullStr += '\n';
+            }
+            const start = fullStr.length;
+            fullStr += s;
+            const end = fullStr.length;
+            chunks.push({ str: s, start, end, tx, width: item.width, height: item.height });
+            prevY = baselineY;
+            if (item.hasEOL) fullStr += '\n';
+        }
 
-            const haystack = caseSens ? str : str.toLowerCase();
-            const needle = caseSens ? term : term.toLowerCase();
+        re.lastIndex = 0;
+        let match;
+        while ((match = re.exec(fullStr)) !== null) {
+            if (match[0].length === 0) { re.lastIndex++; continue; }
+            const mStart = match.index;
+            const mEnd = mStart + match[0].length;
+            const boxes = [];
 
-            let idx = 0;
-            while ((idx = haystack.indexOf(needle, idx)) !== -1) {
-                const tx = item.transform;
-                const pdfFontH = Math.abs(tx[3]);
-                const charW = item.width / (str.length || 1);
+            for (const ch of chunks) {
+                if (ch.end <= mStart || ch.start >= mEnd) continue;
+                const localStart = Math.max(0, mStart - ch.start);
+                const localEnd = Math.min(ch.str.length, mEnd - ch.start);
+                if (localEnd <= localStart) continue;
 
-                const matchPdfX = tx[4] + charW * idx;
-                const matchPdfY = tx[5] - pdfFontH * 0.15;
-                const matchPdfW = charW * needle.length;
-                const matchPdfH = pdfFontH * 1.3;
+                const bLen = Math.hypot(ch.tx[0], ch.tx[1]) || 1;
+                const ux = ch.tx[0] / bLen, uy = ch.tx[1] / bLen;
+                const hLen = Math.hypot(ch.tx[2], ch.tx[3]) || 1;
+                const ax = ch.tx[2] / hLen, ay = ch.tx[3] / hLen;
+                const fontH = Math.max(8, ch.height || hLen || 12);
+                const charW = (ch.width || 0) / (ch.str.length || 1);
 
-                const pad = 1;
+                const d0 = charW * localStart;
+                const d1 = Math.max(d0 + 6, charW * localEnd);
+                const bx0 = ch.tx[4] + ux * d0, by0 = ch.tx[5] + uy * d0;
+                const bx1 = ch.tx[4] + ux * d1, by1 = ch.tx[5] + uy * d1;
+                const ascX = ax * fontH * 1.05, ascY = ay * fontH * 1.05;
+                const descX = ax * (-fontH * 0.2), descY = ay * (-fontH * 0.2);
+
+                const xs = [bx0 + descX, bx1 + descX, bx0 + ascX, bx1 + ascX];
+                const ys = [by0 + descY, by1 + descY, by0 + ascY, by1 + ascY];
+                const xMin = Math.min(...xs), xMax = Math.max(...xs);
+                const yMin = Math.min(...ys), yMax = Math.max(...ys);
+                boxes.push({ vx: xMin - 1.5, vy: yMin - 1, vw: (xMax - xMin) + 3, vh: (yMax - yMin) + 2 });
+            }
+
+            /* Merge horizontally adjacent fragments on same line into clean box(es) */
+            const merged = [];
+            for (const b of boxes) {
+                const last = merged[merged.length - 1];
+                if (last && Math.abs(last.vy - b.vy) < 8 && b.vx <= last.vx + last.vw + 12) {
+                    const right = Math.max(last.vx + last.vw, b.vx + b.vw);
+                    const bottom = Math.max(last.vy + last.vh, b.vy + b.vh);
+                    last.vx = Math.min(last.vx, b.vx);
+                    last.vy = Math.min(last.vy, b.vy);
+                    last.vw = right - last.vx;
+                    last.vh = bottom - last.vy;
+                } else {
+                    merged.push(b);
+                }
+            }
+
+            const snippet = match[0].replace(/\s+/g, ' ').trim();
+            const niceLabel = (labelPrefix ? labelPrefix + ': ' : '') + (snippet.length > 22 ? snippet.slice(0, 22) + '…' : snippet);
+            for (const mb of merged) {
                 addRedaction({
                     pageNum: pg,
-                    pdfX: matchPdfX - pad,
-                    pdfY: matchPdfY - pad,
-                    pdfW: matchPdfW + pad * 2,
-                    pdfH: matchPdfH + pad * 2,
-                    pageH: vp.height,
-                    type: 'text',
-                    label: `"${term.length > 25 ? term.slice(0, 25) + '…' : term}"`,
+                    vx: mb.vx, vy: mb.vy, vw: mb.vw, vh: mb.vh,
+                    type: badgeType,
+                    label: niceLabel,
                     color: redactColor,
-                });
-                found++;
-                idx += needle.length;
+                    overlayText: ovText
+                }, true);
             }
+            if (merged.length > 0) found++;
         }
     }
 
     if (found === 0) {
-        resultEl.textContent = `"${term}" not found.`;
+        resultEl.textContent = 'No matches found.';
         resultEl.style.color = '#dc2626';
     } else {
-        resultEl.textContent = `✓ Found ${found} match${found > 1 ? 'es' : ''}`;
+        resultEl.textContent = `Found ${found} match${found > 1 ? 'es' : ''}`;
         resultEl.style.color = '#16a34a';
-        toast(`${found} redaction${found > 1 ? 's' : ''} added`);
-
-        const first = redactions.filter(r => r.type === 'text').sort((a, b) => a.pageNum - b.pageNum)[0];
+        updateRedList();
+        const first = redactions.slice().sort((a, b) => a.pageNum - b.pageNum)[0];
         if (first && first.pageNum !== curPage) { curPage = first.pageNum; await renderCurrent(); }
         else renderBoxes();
+        toast(`${found} match${found > 1 ? 'es' : ''} marked for redaction`);
     }
-
-    document.getElementById('searchInput').value = '';
-    setTimeout(() => { resultEl.textContent = ''; }, 4000);
+    setTimeout(() => { resultEl.textContent = ''; }, 4500);
 }
 
-/* ════════════════════════════════════════
-   APPLY REDACTIONS
-════════════════════════════════════════ */
+async function searchRedact() {
+    const term = document.getElementById('searchInput').value.trim();
+    const caseSens = document.getElementById('caseCheck').checked;
+    const isRegex = document.getElementById('regexCheck').checked;
+    if (!term) { showError('Enter text or pattern to search.'); return; }
+
+    let re;
+    try {
+        const flags = caseSens ? 'g' : 'gi';
+        const pat = isRegex ? term : term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        re = new RegExp(pat, flags);
+    } catch (e) {
+        showError('Invalid regex pattern: ' + e.message);
+        return;
+    }
+    await runPatternSearch(re, 'text', '');
+    document.getElementById('searchInput').value = '';
+}
+
+async function findPii(kind) {
+    const preset = PII_PRESETS[kind];
+    if (!preset) return;
+    const flags = preset.regex.flags.includes('g') ? preset.regex.flags : preset.regex.flags + 'g';
+    await runPatternSearch(new RegExp(preset.regex.source, flags), 'pii', preset.label);
+}
+
+/* Apply Redactions */
 async function applyRedactions() {
-    if (redactions.length === 0) { showError('Add at least one redaction first.'); return; }
+    if (redactions.length === 0) { showError('Mark at least one redaction area or match first.'); return; }
 
     document.getElementById('applyBtn').disabled = true;
     hideError();
     showSection('processingSection');
-    setProgress(3, 'Preparing...', 'Loading pages', '');
+    setProgress(4, 'Preparing PDF...', 'Inspecting pages & options', '');
     await tick();
 
     try {
-        const OUTPUT_SCALE = 2.5;
+        const OUTPUT_SCALE = parseFloat(document.getElementById('outputDpi').value || '2.5');
+        const flattenMode = document.getElementById('flattenMode').value;
+        const scrubMeta = document.getElementById('stripMetaCheck').checked;
+
         const offCanvas = document.createElement('canvas');
         const offCtx = offCanvas.getContext('2d');
 
+        const srcDoc = flattenMode === 'redacted' ? await PDFLib.PDFDocument.load(rawBytes, { ignoreEncryption: true }) : null;
         const newDoc = await PDFLib.PDFDocument.create();
+        let flattenedCount = 0;
 
         for (let pg = 1; pg <= totalPages; pg++) {
-            const pct = 3 + ((pg - 1) / totalPages) * 90;
-            setProgress(pct, 'Applying redactions...', `Page ${pg} of ${totalPages}`, `Rendering page ${pg}`);
+            const pct = 5 + ((pg - 1) / totalPages) * 88;
+            const pageReds = redactions.filter(r => r.pageNum === pg);
+            const mustFlatten = flattenMode === 'all' || pageReds.length > 0;
+
+            setProgress(pct, 'Sanitizing Document...', `Page ${pg} of ${totalPages}`, mustFlatten ? 'Rasterizing & burning redactions' : 'Copying clean unredacted page');
             await tick();
 
+            if (!mustFlatten && srcDoc) {
+                const [copied] = await newDoc.copyPages(srcDoc, [pg - 1]);
+                newDoc.addPage(copied);
+                continue;
+            }
+
+            flattenedCount++;
             const page = await pdfDoc.getPage(pg);
             const vp = page.getViewport({ scale: OUTPUT_SCALE });
 
-            offCanvas.width = vp.width;
-            offCanvas.height = vp.height;
+            offCanvas.width = Math.round(vp.width);
+            offCanvas.height = Math.round(vp.height);
 
-            offCtx.fillStyle = '#fff';
+            offCtx.fillStyle = '#ffffff';
             offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
             await page.render({ canvasContext: offCtx, viewport: vp }).promise;
 
-            const pageReds = redactions.filter(r => r.pageNum === pg);
             for (const r of pageReds) {
-                const cx = r.pdfX * OUTPUT_SCALE;
-                const cy = (r.pageH - r.pdfY - r.pdfH) * OUTPUT_SCALE;
-                const cw = r.pdfW * OUTPUT_SCALE;
-                const ch = r.pdfH * OUTPUT_SCALE;
+                const cx = r.vx * OUTPUT_SCALE;
+                const cy = r.vy * OUTPUT_SCALE;
+                const cw = r.vw * OUTPUT_SCALE;
+                const ch = r.vh * OUTPUT_SCALE;
 
-                offCtx.fillStyle = r.color || '#000';
+                offCtx.fillStyle = r.color || '#000000';
                 offCtx.fillRect(cx, cy, cw, ch);
+                if ((r.color || '').toLowerCase() === '#ffffff') {
+                    offCtx.strokeStyle = '#94a3b8';
+                    offCtx.lineWidth = Math.max(1, OUTPUT_SCALE * 0.6);
+                    offCtx.strokeRect(cx, cy, cw, ch);
+                }
+                if (r.overlayText) {
+                    const fs = Math.max(9, Math.min(ch * 0.52, (cw / Math.max(4, r.overlayText.length)) * 1.45));
+                    offCtx.fillStyle = contrastTextColor(r.color);
+                    offCtx.font = `700 ${Math.round(fs)}px Arial, sans-serif`;
+                    offCtx.textAlign = 'center';
+                    offCtx.textBaseline = 'middle';
+                    offCtx.fillText(r.overlayText, cx + cw / 2, cy + ch / 2, Math.max(10, cw - 6));
+                }
             }
 
             const dataUrl = offCanvas.toDataURL('image/jpeg', 0.92);
@@ -1282,23 +1599,34 @@ async function applyRedactions() {
             newPage.drawImage(jpg, { x: 0, y: 0, width: origVP.width, height: origVP.height });
         }
 
-        setProgress(96, 'Saving PDF...', 'Building output', '');
+        if (scrubMeta) {
+            newDoc.setTitle('');
+            newDoc.setAuthor('');
+            newDoc.setSubject('');
+            newDoc.setKeywords([]);
+            newDoc.setCreator('');
+            newDoc.setProducer('');
+        }
+
+        setProgress(96, 'Finalizing PDF...', 'Writing sanitized bytes', '');
         await tick();
 
         const outBytes = await newDoc.save();
         resultBlob = new Blob([outBytes], { type: 'application/pdf' });
 
-        setProgress(100, 'Done!', 'Redaction complete!', '');
-        await new Promise(r => setTimeout(r, 500));
+        setProgress(100, 'Complete!', 'Document sanitized!', '');
+        await new Promise(r => setTimeout(r, 350));
 
         document.getElementById('rPages').textContent = totalPages;
         document.getElementById('rRedactions').textContent = redactions.length;
+        document.getElementById('rFlattened').textContent = flattenedCount + '/' + totalPages;
         document.getElementById('rSize').textContent = szF(resultBlob.size);
-        document.getElementById('rFileName').textContent =
-            selectedFile.name.replace(/\.pdf$/i, '') + '_redacted.pdf';
+        document.getElementById('rFileName').textContent = selectedFile.name.replace(/\.pdf$/i, '') + '_redacted.pdf';
+        document.getElementById('rSecurityBadge').textContent =
+            (flattenMode === 'all' ? 'All pages flattened' : flattenedCount + ' redacted page(s) flattened') +
+            (scrubMeta ? ' • Metadata scrubbed' : '');
 
         showSection('resultSection');
-
     } catch (e) {
         console.error(e);
         showSection('editorSection');
@@ -1307,14 +1635,9 @@ async function applyRedactions() {
     }
 }
 
-/* ════════════════════════════════════════
-   DOWNLOAD
-════════════════════════════════════════ */
 function doDownload() {
-    if (!resultBlob) { showError('No file.'); return; }
-    const name = selectedFile
-        ? selectedFile.name.replace(/\.pdf$/i, '') + '_redacted.pdf'
-        : 'redacted.pdf';
+    if (!resultBlob) { showError('No file ready.'); return; }
+    const name = selectedFile ? selectedFile.name.replace(/\.pdf$/i, '') + '_redacted.pdf' : 'redacted.pdf';
     const url = URL.createObjectURL(resultBlob);
     const a = document.createElement('a');
     a.href = url; a.download = name;
@@ -1322,10 +1645,22 @@ function doDownload() {
     setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
 }
 
-/* ════════════════════════════════════════
-   NAVIGATION
-════════════════════════════════════════ */
+function previewResultPdf() {
+    if (!resultBlob) return;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(resultBlob);
+    document.getElementById('pdfPreviewFrame').src = previewUrl;
+    document.getElementById('pdfPreviewModal').classList.add('open');
+}
+
+function closePdfModal() {
+    document.getElementById('pdfPreviewModal').classList.remove('open');
+    document.getElementById('pdfPreviewFrame').src = 'about:blank';
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+}
+
 function goBackEdit() {
+    closePdfModal();
     resultBlob = null;
     document.getElementById('applyBtn').disabled = false;
     showSection('editorSection');
@@ -1333,17 +1668,19 @@ function goBackEdit() {
 }
 
 function resetTool() {
-    rawBytes = null; selectedFile = null; pdfDoc = null;
+    closePdfModal();
+    rawBytes = null; selectedFile = null; pdfDoc = null; pageViewports = {};
     totalPages = 0; curPage = 1; viewScale = 1.0;
-    redactions = []; undoStack = []; idCounter = 0;
-    resultBlob = null; drawActive = false; isDraw = false;
+    redactions = []; undoStack = []; idCounter = 0; selectedId = null;
+    resultBlob = null; dragState = null; drawActive = true;
     fileInput.value = '';
 
     const drawBtn = document.getElementById('drawBtn');
-    drawBtn.className = 'ws-btn';
-    drawBtn.innerHTML = '<i class="fas fa-pencil-alt" aria-hidden="true"></i> Draw';
+    drawBtn.className = 'ws-btn active';
+    drawBtn.innerHTML = '<i class="fas fa-pencil-alt" aria-hidden="true"></i> Draw On';
     document.getElementById('undoBtn').disabled = true;
-    canCon.style.cursor = 'default';
+    syncDupBtn();
+    canCon.style.cursor = 'crosshair';
     canCon.querySelectorAll('.r-box,.draw-temp').forEach(e => e.remove());
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     document.getElementById('searchInput').value = '';
@@ -1354,7 +1691,6 @@ function resetTool() {
     showSection('uploadSection');
 }
 
-/* Window resize */
 let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);

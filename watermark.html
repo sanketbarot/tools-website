@@ -260,116 +260,100 @@
 
 
     <style>
-        *{box-sizing:border-box}
-        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
-        .info-banner{background:rgba(79,70,229,.07);border:1px solid rgba(79,70,229,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
-        .file-info-card{display:flex;align-items:center;gap:14px;padding:15px 18px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:16px}
-        .file-info-icon{width:50px;height:50px;background:linear-gradient(135deg,#14b8a6,#0d9488);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.28);border-radius:10px;padding:12px 16px;color:#ef4444;font-size:13.5px;margin:14px 16px 0;display:none;align-items:center;gap:8px;font-weight:600}
+        .upload-zone.dragover,.upload-zone.drag-over{border-color:var(--primary)!important;background:var(--primary-soft)!important}
+        #editorSection{padding:24px}
+
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface-muted);border:1px solid var(--border-subtle);border-radius:14px;margin-bottom:16px}
+        .file-info-icon{width:46px;height:46px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0}
         .file-info-details{flex:1;min-width:0}
-        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--text-dark,#1e293b)}
-        .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:flex;align-items:center;gap:4px}
-        .size-badge{background:rgba(20,184,166,.1);color:#0d9488;padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
+        .file-info-details h4{font-family:var(--font-head);font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;color:var(--text-dark)}
+        .file-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+        .file-meta span{font-size:12px;color:var(--text-light);display:inline-flex;align-items:center;gap:4px;font-weight:600}
+        .size-badge{background:var(--accent-soft);color:var(--accent-dark);padding:2px 10px;border-radius:20px;font-weight:700;font-size:11.5px!important}
 
         /* Tabs */
-        .wm-tabs{display:flex;gap:0;border-bottom:2px solid #e2e8f0;margin-bottom:16px}
-        .wm-tab{padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:none;color:var(--text-light);border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px}
+        .wm-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border-subtle);margin-bottom:14px}
+        .wm-tab{padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:none;color:var(--text-light);border-bottom:2.5px solid transparent;transition:all .18s;display:inline-flex;align-items:center;gap:6px}
         .wm-tab:hover{color:var(--primary)}.wm-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
         .wm-panel{display:none}.wm-panel.active{display:block}
 
+        /* Presets */
+        .preset-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+        .preset-chip{padding:5px 11px;border-radius:20px;border:1px solid var(--border-subtle);background:var(--bg-card);color:var(--text-dark);font-size:11.5px;font-weight:700;cursor:pointer;transition:all .15s}
+        .preset-chip:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+
         /* Options */
-        .opt-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end}
-        .opt-item{flex:1;min-width:120px}
-        .opt-item label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:6px}
-        .opt-item select,.opt-item input[type=text],.opt-item input[type=number]{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:13px;font-weight:600;outline:none;transition:border-color .2s;background:#fff}
-        .opt-item input[type=color]{width:40px;height:36px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;padding:2px;background:#fff}
-        .opt-item select:focus,.opt-item input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
-        .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-        .slider-row label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);min-width:70px}
-        .slider-row input[type=range]{flex:1;accent-color:var(--primary)}
-        .slider-row .sv{font-size:12px;font-weight:700;color:var(--primary);min-width:40px;text-align:right}
+        .opt-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:11px;margin-bottom:14px;align-items:end}
+        .opt-item label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-medium);margin-bottom:5px}
+        .opt-item select,.opt-item input[type=text],.opt-item input[type=number]{width:100%;padding:9px 12px;border:1px solid var(--border-subtle);border-radius:10px;font-size:13px;font-weight:600;outline:none;transition:border-color .2s;background:var(--bg-card);color:var(--text-dark);font-family:inherit}
+        .opt-item input[type=color]{width:42px;height:38px;border:1px solid var(--border-subtle);border-radius:9px;cursor:pointer;padding:2px;background:var(--bg-card)}
+        .opt-item select:focus,.opt-item input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+
+        .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+        .slider-row label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-medium);min-width:74px}
+        .slider-row input[type=range]{flex:1;accent-color:var(--primary);cursor:pointer}
+        .slider-row .sv{font-size:12.5px;font-weight:800;color:var(--primary);min-width:44px;text-align:right}
 
         /* Position grid */
-        .pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:160px;margin-bottom:14px}
-        .pos-cell{aspect-ratio:1.4;border:2px solid #e2e8f0;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--text-light);transition:all .15s;background:rgba(255,255,255,.6)}
-        .pos-cell:hover{border-color:var(--primary)}.pos-cell.active{border-color:var(--primary);background:rgba(79,70,229,.12);color:var(--primary)}
+        .pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:168px;margin-bottom:12px}
+        .pos-cell{aspect-ratio:1.35;border:1.5px solid var(--border-subtle);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-light);transition:all .15s;background:var(--bg-card)}
+        .pos-cell:hover{border-color:var(--primary);color:var(--primary)}
+        .pos-cell.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
         .pos-cell input{display:none}
 
-        /* Scope */
-        .scope-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-        .sp-pill{padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6);color:var(--text-dark);user-select:none;display:flex;align-items:center;gap:4px}
-        .sp-pill:hover{border-color:var(--primary)}.sp-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        /* Pills */
+        .scope-pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+        .sp-pill{padding:7px 13px;border-radius:9px;border:1px solid var(--border-subtle);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--bg-card);color:var(--text-dark);user-select:none;display:inline-flex;align-items:center;gap:5px}
+        .sp-pill:hover{border-color:var(--primary)}
+        .sp-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
         .sp-pill input{display:none}
-        .range-row{display:flex;gap:6px;align-items:center;margin-top:6px;display:none}
+        .range-row{display:none;gap:7px;align-items:center;margin-top:6px;margin-bottom:10px}
         .range-row.show{display:flex}
-        .range-row input{width:60px;padding:6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px;text-align:center}
+        .range-row input{width:64px;padding:6px 8px;border:1px solid var(--border-subtle);border-radius:8px;background:var(--bg-card);color:var(--text-dark);font-size:12.5px;font-weight:700;text-align:center}
         .range-row span{font-size:12px;color:var(--text-light);font-weight:600}
 
         /* Image upload */
-        .img-upload-zone{background:rgba(79,70,229,.04);border:2px dashed #c7d2fe;border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:14px}
-        .img-upload-zone:hover{border-color:var(--primary);background:rgba(79,70,229,.08)}
-        .img-preview{text-align:center;margin-bottom:14px}
-        .img-preview img{max-width:200px;max-height:100px;border:1px solid #e2e8f0;border-radius:8px;padding:8px;background:#fff}
+        .img-upload-zone{background:var(--bg-card);border:2px dashed var(--border-strong);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px}
+        .img-upload-zone:hover{border-color:var(--primary);background:var(--primary-soft)}
+        .img-preview{text-align:center;margin-bottom:12px}
+        .img-preview img{max-width:220px;max-height:110px;border:1px solid var(--border-subtle);border-radius:10px;padding:8px;background:#ffffff}
 
         /* Workspace */
-        .workspace{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:16px}
-        .ws-toolbar{display:flex;align-items:center;gap:5px;padding:8px 12px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
-        .tb-btn{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
-        .tb-btn:hover{background:rgba(255,255,255,.16);color:#fff}
-        .tb-btn:disabled{opacity:.3;pointer-events:none}
-        .tb-text{color:rgba(255,255,255,.5);font-size:11px;font-weight:600}
+        .workspace{background:#0f172a;border:1px solid var(--border-subtle);border-radius:14px;overflow:hidden;margin-bottom:16px}
+        .ws-toolbar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
+        .tb-btn{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-size:11.5px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.88);background:rgba(255,255,255,.09)}
+        .tb-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+        .tb-btn:disabled{opacity:.35;pointer-events:none}
+        .tb-text{color:rgba(255,255,255,.68);font-size:11.5px;font-weight:600}
         .tb-spacer{flex:1}
-        .tb-sep{width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 3px}
-        .ws-scroll{overflow:auto;padding:16px;display:flex;justify-content:center;align-items:flex-start;max-height:520px;min-height:240px}
+        .tb-sep{width:1px;height:18px;background:rgba(255,255,255,.14);margin:0 2px}
+        .ws-scroll{overflow:auto;padding:18px;display:flex;justify-content:center;align-items:flex-start;max-height:540px;min-height:260px}
         .ws-con{position:relative;display:inline-block;line-height:0}
-        .ws-con canvas{display:block;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.5)}
+        .ws-con canvas{display:block;border-radius:4px;box-shadow:0 6px 26px rgba(0,0,0,.5)}
 
-        /* Watermark overlay */
+        /* Watermark preview overlay */
         .wm-overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:hidden;border-radius:4px}
-        .wm-text-el{position:absolute;white-space:nowrap;pointer-events:none;user-select:none;text-align:center}
+        .wm-text-el{position:absolute;white-space:nowrap;pointer-events:none;user-select:none;text-align:center;transform-origin:center center}
 
-        /* Result */
-        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
-        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:12px;padding:13px 16px;min-width:100px}
-        .result-stat strong{display:block;font-size:20px;color:var(--primary);line-height:1;margin-bottom:4px}
+        .result-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:var(--surface-muted);border:1px solid var(--border-subtle);border-radius:12px;padding:12px 18px;min-width:105px}
+        .result-stat strong{display:block;font-family:var(--font-head);font-size:20px;color:var(--primary);line-height:1.1;margin-bottom:4px}
         .result-stat small{color:var(--text-light);font-size:11px;font-weight:600;text-transform:uppercase}
 
-        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}
-        .icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}
-        .icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}
-        .icon-orange{background:linear-gradient(135deg,var(--accent),var(--accent-dark))}
-        .icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}
-        .icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
-
-        .faq-section{padding:50px 0}
-        .faq-list{max-width:750px;margin:0 auto}
-        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
-        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(79,70,229,.2)}
-        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;gap:12px}
-        .faq-question h4{font-size:14px;font-weight:600;color:var(--text-dark,#1e293b);margin:0;flex:1}
-        .faq-item.open .faq-question h4{color:var(--primary)}
-        .faq-question i{font-size:12px;color:var(--text-light);transition:transform .3s;flex-shrink:0}
-        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary)}
-        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
-        .faq-item.open .faq-answer{max-height:400px;opacity:1}
-        .faq-answer-inner{padding:0 20px 18px}
-        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(79,70,229,.1);padding-top:14px;margin:0 20px;padding-left:0;padding-right:0}
-        .faq-answer-inner p{font-size:13px;line-height:1.7;color:var(--text-light);margin:0}
-        .faq-answer-inner p strong{color:var(--text-dark)}
-        .faq-num{width:26px;height:26px;background:rgba(79,70,229,.1);color:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-        .faq-item.open .faq-num{background:var(--primary);color:#fff}
+        /* Preview Modal */
+        .wm-modal{position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px}
+        .wm-modal.open{display:flex}
+        .wm-modal-box{width:100%;max-width:900px;height:86vh;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+        .wm-modal-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border-subtle)}
+        .wm-modal-head h4{font-family:var(--font-head);font-size:14.5px;font-weight:700;color:var(--text-dark)}
+        .wm-modal-body{flex:1;background:var(--surface-muted)}
+        .wm-modal-body iframe{width:100%;height:100%;border:none}
 
         @media(max-width:768px){
-            .opt-row{flex-direction:column}
-            .opt-item{min-width:100%}
+            #editorSection{padding:16px}
             .result-stats{gap:10px}
-            .result-stat{min-width:80px}
-        }
-        @media(max-width:480px){
-            .file-info-card{flex-wrap:wrap}
-            .faq-question{padding:14px}
-            .faq-item{border-radius:10px;margin-bottom:8px}
+            .result-stat{min-width:85px}
         }
     </style>
     
@@ -412,7 +396,7 @@
         <a href="index.html#tools"><i class="fas fa-th" aria-hidden="true"></i> All Tools</a>
         
             <a href="blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="login.html" class="nav-btn"><i class="fas fa-user" aria-hidden="true"></i> Login</a>
+            <a href="login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -481,9 +465,7 @@
     <div id="editorSection" data-section="" style="display:none">
 
         <div class="file-info-card">
-            <div class="file-info-icon" aria-hidden="true">
-                <i class="fas fa-file-pdf"></i>
-            </div>
+            <div class="file-info-icon" aria-hidden="true"><i class="fas fa-file-pdf"></i></div>
             <div class="file-info-details">
                 <h4 id="fileName">document.pdf</h4>
                 <div class="file-meta">
@@ -493,35 +475,35 @@
             </div>
             <div class="files-actions">
                 <button class="btn-danger-sm" type="button" onclick="resetTool()" aria-label="Remove file and start over">
-                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i> Remove
                 </button>
             </div>
         </div>
 
         <!-- Watermark Options -->
         <div class="options-panel glass-light" style="margin-bottom:16px">
-            <h4 style="margin-bottom:12px">
-                <i class="fas fa-tint" aria-hidden="true"></i> Watermark Settings
-            </h4>
+            <h4 style="margin-bottom:12px"><i class="fas fa-tint" aria-hidden="true"></i> Pro Watermark Studio</h4>
 
             <div class="wm-tabs" role="tablist" aria-label="Watermark type">
-                <button class="wm-tab active" type="button" role="tab" aria-selected="true" aria-controls="wmText" onclick="switchWmTab('text',this)">
-                    <i class="fas fa-font" aria-hidden="true"></i> Text Watermark
-                </button>
-                <button class="wm-tab" type="button" role="tab" aria-selected="false" aria-controls="wmImage" onclick="switchWmTab('image',this)">
-                    <i class="fas fa-image" aria-hidden="true"></i> Image Watermark
-                </button>
+                <button class="wm-tab active" type="button" role="tab" aria-selected="true" aria-controls="wmText" onclick="switchWmTab('text',this)"><i class="fas fa-font"></i> Text Watermark</button>
+                <button class="wm-tab" type="button" role="tab" aria-selected="false" aria-controls="wmImage" onclick="switchWmTab('image',this)"><i class="fas fa-image"></i> Image / Logo Watermark</button>
             </div>
 
             <!-- TEXT -->
             <div class="wm-panel active" id="wmText" role="tabpanel">
-                <div class="opt-row">
-                    <div class="opt-item" style="flex:2">
-                        <label for="wmTextInput">Watermark Text</label>
-                        <input type="text" id="wmTextInput" value="CONFIDENTIAL" placeholder="Enter watermark text..." oninput="updatePreview()">
-                    </div>
+                <div class="preset-row" aria-label="Quick presets">
+                    <button type="button" class="preset-chip" onclick="applyPreset('CONFIDENTIAL')">CONFIDENTIAL</button>
+                    <button type="button" class="preset-chip" onclick="applyPreset('DRAFT')">DRAFT</button>
+                    <button type="button" class="preset-chip" onclick="applyPreset('DO NOT COPY')">DO NOT COPY</button>
+                    <button type="button" class="preset-chip" onclick="applyPreset('SAMPLE ONLY')">SAMPLE ONLY</button>
+                    <button type="button" class="preset-chip" onclick="applyPreset('CONFIDENTIAL · {date}')">+ Date Stamp</button>
+                    <button type="button" class="preset-chip" onclick="applyPreset('COPY · Page {page}')">+ Page Var</button>
                 </div>
                 <div class="opt-row">
+                    <div class="opt-item" style="grid-column:span 2">
+                        <label for="wmTextInput">Watermark Text (supports {page} &amp; {date})</label>
+                        <input type="text" id="wmTextInput" value="CONFIDENTIAL" placeholder="Enter watermark text..." oninput="updatePreview()">
+                    </div>
                     <div class="opt-item">
                         <label for="wmFont">Font</label>
                         <select id="wmFont" onchange="updatePreview()">
@@ -532,20 +514,20 @@
                     </div>
                     <div class="opt-item">
                         <label for="wmFontSize">Size (pt)</label>
-                        <input type="number" id="wmFontSize" value="48" min="8" max="200" onchange="updatePreview()">
+                        <input type="number" id="wmFontSize" value="54" min="8" max="200" oninput="updatePreview()">
                     </div>
                     <div class="opt-item">
                         <label for="wmColor">Color</label>
-                        <div style="display:flex;gap:6px;align-items:center">
-                            <input type="color" id="wmColor" value="#999999" onchange="updatePreview()" aria-label="Watermark color picker">
-                            <span id="wmColorHex" style="font-size:10px;color:var(--text-light);font-weight:600">#999999</span>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <input type="color" id="wmColor" value="#4f46e5" oninput="document.getElementById('wmColorHex').textContent=this.value.toUpperCase();updatePreview()">
+                            <span id="wmColorHex" style="font-size:11.5px;color:var(--text-light);font-weight:700">#4F46E5</span>
                         </div>
                     </div>
                     <div class="opt-item">
-                        <label for="wmBold">Bold</label>
+                        <label for="wmBold">Weight</label>
                         <select id="wmBold" onchange="updatePreview()">
+                            <option value="yes" selected="">Bold</option>
                             <option value="no">Normal</option>
-                            <option value="yes">Bold</option>
                         </select>
                     </div>
                 </div>
@@ -553,107 +535,82 @@
 
             <!-- IMAGE -->
             <div class="wm-panel" id="wmImage" role="tabpanel">
-                <div class="img-upload-zone" role="button" tabindex="0" aria-label="Upload watermark image" onclick="document.getElementById('wmImgInput').click()" onkeydown="if(event.key==='Enter')document.getElementById('wmImgInput').click()">
-                    <i class="fas fa-cloud-upload-alt" style="font-size:24px;color:#a5b4fc;margin-bottom:6px;display:block" aria-hidden="true"></i>
-                    <p style="font-size:13px;font-weight:600;color:var(--text-dark);margin:0 0 4px">Upload Watermark Image</p>
-                    <p style="font-size:11px;color:var(--text-light);margin:0">PNG with transparency works best. JPG also supported.</p>
-                    <input type="file" id="wmImgInput" accept="image/*" hidden="" aria-label="Select watermark image file">
+                <div class="img-upload-zone" role="button" tabindex="0" onclick="document.getElementById('wmImgInput').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size:26px;color:var(--primary);margin-bottom:6px;display:block"></i>
+                    <p style="font-size:13.5px;font-weight:700;color:var(--text-dark);margin:0 0 4px">Upload Logo or Stamp Image</p>
+                    <p style="font-size:11.5px;color:var(--text-light);margin:0">PNG, JPG, WebP supported — enable White BG removal for clean logos</p>
+                    <input type="file" id="wmImgInput" accept="image/*" hidden="">
                 </div>
+                <label style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--text-dark);margin-bottom:10px;cursor:pointer;">
+                    <input type="checkbox" id="optCleanWmBg" onchange="reprocessWmImage()" style="accent-color:var(--primary);width:16px;height:16px;">
+                    <span>Remove white background from logo (Transparent PNG)</span>
+                </label>
                 <div class="img-preview" id="wmImgPreview" style="display:none">
                     <img id="wmImgEl" alt="Watermark image preview">
                 </div>
                 <div class="opt-row">
                     <div class="opt-item">
-                        <label for="wmImgScale">Image Width (%)</label>
-                        <input type="number" id="wmImgScale" value="30" min="5" max="100" onchange="updatePreview()">
+                        <label for="wmImgScale">Logo Width (% of page)</label>
+                        <input type="number" id="wmImgScale" value="32" min="5" max="100" oninput="updatePreview()">
                     </div>
                 </div>
             </div>
 
-            <!-- Common Options -->
-            <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,0,0,.06)">
+            <!-- Common Controls -->
+            <div style="margin-top:12px;padding-top:14px;border-top:1px solid var(--border-subtle)">
                 <div class="slider-row">
                     <label for="wmOpacity">Opacity</label>
-                    <input type="range" id="wmOpacity" min="5" max="100" value="30" oninput="document.getElementById('opVal').textContent=this.value+'%';updatePreview()" aria-label="Watermark opacity">
-                    <span class="sv" id="opVal">30%</span>
+                    <input type="range" id="wmOpacity" min="5" max="100" value="28" oninput="document.getElementById('opVal').textContent=this.value+'%';updatePreview()">
+                    <span class="sv" id="opVal">28%</span>
                 </div>
                 <div class="slider-row">
                     <label for="wmRotation">Rotation</label>
-                    <input type="range" id="wmRotation" min="-180" max="180" value="-45" oninput="document.getElementById('rotVal').textContent=this.value+'°';updatePreview()" aria-label="Watermark rotation">
-                    <span class="sv" id="rotVal">-45°</span>
+                    <input type="range" id="wmRotation" min="-180" max="180" value="-35" oninput="document.getElementById('rotVal').textContent=this.value+'°';updatePreview()">
+                    <span class="sv" id="rotVal">-35°</span>
                 </div>
 
-                <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+                <div style="display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start">
                     <div>
-                        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px">Position</label>
+                        <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-medium);display:block;margin-bottom:8px">Anchor Position</label>
                         <div class="pos-grid" id="posGrid" role="radiogroup" aria-label="Watermark position">
-                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="tl" aria-label="Top left">↖</label>
-                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="tc" aria-label="Top center">↑</label>
-                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="tr" aria-label="Top right">↗</label>
-                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="cl" aria-label="Center left">←</label>
-                            <label class="pos-cell active" onclick="setPos(this)"><input type="radio" name="pos" value="cc" checked="" aria-label="Center">✦</label>
-                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="cr" aria-label="Center right">→</label>
-                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="bl" aria-label="Bottom left">↙</label>
-                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="bc" aria-label="Bottom center">↓</label>
-                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="br" aria-label="Bottom right">↘</label>
+                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="tl">↖</label>
+                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="tc">↑</label>
+                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="tr">↗</label>
+                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="cl">←</label>
+                            <label class="pos-cell active" onclick="setPos(this)"><input type="radio" name="pos" value="cc" checked="">✦</label>
+                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="cr">→</label>
+                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="bl">↙</label>
+                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="bc">↓</label>
+                            <label class="pos-cell" onclick="setPos(this)"><input type="radio" name="pos" value="br">↘</label>
                         </div>
                     </div>
-                    <div style="flex:1;min-width:140px">
-                        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px">Layer</label>
-                        <div class="scope-pills" style="margin-bottom:14px" role="radiogroup" aria-label="Watermark layer">
-                            <label class="sp-pill active" onclick="setPill(this,'layer')">
-                                <input type="radio" name="layer" value="over" checked="">
-                                <i class="fas fa-arrow-up" aria-hidden="true"></i> Over Content
-                            </label>
-                            <label class="sp-pill" onclick="setPill(this,'layer')">
-                                <input type="radio" name="layer" value="under">
-                                <i class="fas fa-arrow-down" aria-hidden="true"></i> Behind Content
-                            </label>
+
+                    <div style="flex:1;min-width:210px">
+                        <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-medium);display:block;margin-bottom:8px">Layer &amp; Pattern</label>
+                        <div class="scope-pills" role="radiogroup" aria-label="Watermark layer">
+                            <label class="sp-pill active" onclick="setPill(this,'layer')"><input type="radio" name="layer" value="over" checked=""><i class="fas fa-arrow-up"></i> Over Text</label>
+                            <label class="sp-pill" onclick="setPill(this,'layer')"><input type="radio" name="layer" value="under"><i class="fas fa-arrow-down"></i> Behind Text</label>
                         </div>
-                        <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px">Apply To</label>
+                        <div class="scope-pills" role="radiogroup" aria-label="Watermark pattern">
+                            <label class="sp-pill active" onclick="setPill(this,'pattern')"><input type="radio" name="pattern" value="single" checked=""><i class="fas fa-crosshairs"></i> Single</label>
+                            <label class="sp-pill" onclick="setPill(this,'pattern')"><input type="radio" name="pattern" value="tile"><i class="fas fa-th"></i> Tiled / Repeat</label>
+                        </div>
+
+                        <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-medium);display:block;margin:10px 0 8px">Apply To Pages</label>
                         <div class="scope-pills" role="radiogroup" aria-label="Pages to watermark">
-                            <label class="sp-pill active" onclick="setScope(this)">
-                                <input type="radio" name="scope" value="all" checked="">
-                                <i class="fas fa-clone" aria-hidden="true"></i> All Pages
-                            </label>
-                            <label class="sp-pill" onclick="setScope(this)">
-                                <input type="radio" name="scope" value="odd">
-                                <i class="fas fa-grip-lines" aria-hidden="true"></i> Odd
-                            </label>
-                            <label class="sp-pill" onclick="setScope(this)">
-                                <input type="radio" name="scope" value="even">
-                                <i class="fas fa-grip-lines-vertical" aria-hidden="true"></i> Even
-                            </label>
-                            <label class="sp-pill" onclick="setScope(this)">
-                                <input type="radio" name="scope" value="first">
-                                <i class="fas fa-file" aria-hidden="true"></i> First
-                            </label>
-                            <label class="sp-pill" onclick="setScope(this)">
-                                <input type="radio" name="scope" value="range">
-                                <i class="fas fa-ellipsis-h" aria-hidden="true"></i> Range
-                            </label>
+                            <label class="sp-pill active" onclick="setScope(this)"><input type="radio" name="scope" value="all" checked="">All</label>
+                            <label class="sp-pill" onclick="setScope(this)"><input type="radio" name="scope" value="odd">Odd</label>
+                            <label class="sp-pill" onclick="setScope(this)"><input type="radio" name="scope" value="even">Even</label>
+                            <label class="sp-pill" onclick="setScope(this)"><input type="radio" name="scope" value="first">First</label>
+                            <label class="sp-pill" onclick="setScope(this)"><input type="radio" name="scope" value="last">Last</label>
+                            <label class="sp-pill" onclick="setScope(this)"><input type="radio" name="scope" value="range">Range</label>
                         </div>
                         <div class="range-row" id="rangeRow">
                             <span>From</span>
-                            <input type="number" id="rangeFrom" value="1" min="1" aria-label="From page">
+                            <input type="number" id="rangeFrom" value="1" min="1">
                             <span>to</span>
-                            <input type="number" id="rangeTo" value="1" min="1" aria-label="To page">
+                            <input type="number" id="rangeTo" value="1" min="1">
                         </div>
-                    </div>
-                </div>
-
-                <!-- Repeat/Tile pattern -->
-                <div style="margin-top:14px">
-                    <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px">Pattern</label>
-                    <div class="scope-pills" role="radiogroup" aria-label="Watermark pattern">
-                        <label class="sp-pill active" onclick="setPill(this,'pattern')">
-                            <input type="radio" name="pattern" value="single" checked="">
-                            <i class="fas fa-crosshairs" aria-hidden="true"></i> Single
-                        </label>
-                        <label class="sp-pill" onclick="setPill(this,'pattern')">
-                            <input type="radio" name="pattern" value="tile">
-                            <i class="fas fa-th" aria-hidden="true"></i> Tiled / Repeat
-                        </label>
                     </div>
                 </div>
             </div>
@@ -662,17 +619,15 @@
         <!-- Live Preview -->
         <div class="workspace" aria-label="PDF watermark preview">
             <div class="ws-toolbar">
-                <span class="tb-text">
-                    <i class="fas fa-eye" aria-hidden="true"></i> LIVE PREVIEW
-                </span>
+                <span class="tb-text"><i class="fas fa-eye"></i> LIVE PREVIEW</span>
                 <div class="tb-spacer"></div>
-                <button class="tb-btn" type="button" onclick="goPrev()" id="prevBtn" disabled="" aria-label="Previous page">
-                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
-                </button>
+                <button class="tb-btn" type="button" onclick="changeZoom(-0.2)" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+                <span class="tb-text" id="zoomLabel">100%</span>
+                <button class="tb-btn" type="button" onclick="changeZoom(0.2)" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+                <div class="tb-sep"></div>
+                <button class="tb-btn" type="button" onclick="goPrev()" id="prevBtn" disabled=""><i class="fas fa-chevron-left"></i></button>
                 <span class="tb-text" id="pageText" aria-live="polite">1/1</span>
-                <button class="tb-btn" type="button" onclick="goNext()" id="nextBtn" aria-label="Next page">
-                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                </button>
+                <button class="tb-btn" type="button" onclick="goNext()" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
             </div>
             <div class="ws-scroll" id="wsScroll">
                 <div class="ws-con" id="wsCon">
@@ -683,7 +638,7 @@
         </div>
 
         <button class="action-btn" id="applyBtn" type="button" onclick="doApply()">
-            <i class="fas fa-tint" aria-hidden="true"></i> Apply Watermark &amp; Download
+            <i class="fas fa-tint" aria-hidden="true"></i> Apply Watermark &amp; Create PDF
         </button>
     </div>
 
@@ -692,7 +647,7 @@
         <div class="processing-area" role="status" aria-live="polite">
             <div class="spinner" aria-hidden="true"></div>
             <h3 id="processTitle">Applying Watermark...</h3>
-            <p id="processSubtitle">Processing</p>
+            <p id="processSubtitle">Processing pages</p>
             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
@@ -703,36 +658,26 @@
     <!-- ── RESULT ── -->
     <div id="resultSection" data-section="" style="display:none">
         <div class="result-area">
-            <div class="result-icon success" aria-hidden="true">
-                <i class="fas fa-check-circle"></i>
-            </div>
+            <div class="result-icon success" aria-hidden="true"><i class="fas fa-check-circle"></i></div>
             <h2>Watermark Added! 💧</h2>
-            <p>Your PDF now has a watermark on every selected page</p>
+            <p>Your PDF now has clean, center-aligned watermarks on every selected page</p>
             <div class="result-stats">
                 <div class="result-stat"><strong id="rPages">0</strong><small>Pages</small></div>
                 <div class="result-stat"><strong id="rWM">0</strong><small>Watermarked</small></div>
                 <div class="result-stat"><strong id="rSize">0 KB</strong><small>File Size</small></div>
             </div>
             <div class="result-info glass-light">
-                <div class="info-item">
-                    <i class="fas fa-file-pdf" style="color:#dc2626" aria-hidden="true"></i>
-                    <span id="rFileName">document_watermarked.pdf</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-check-circle" style="color:#16a34a" aria-hidden="true"></i>
-                    <span>Watermark applied successfully</span>
-                </div>
+                <div class="info-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i><span id="rFileName">document_watermarked.pdf</span></div>
+                <div class="info-item"><i class="fas fa-check-circle" style="color:var(--accent)"></i><span id="rLayerBadge">Layer: Over Content</span></div>
             </div>
             <button class="download-btn" type="button" onclick="doDownload()">
                 <i class="fas fa-download" aria-hidden="true"></i> Download Watermarked PDF
             </button>
             <div class="result-actions">
-                <button class="btn-outline" type="button" onclick="resetTool()">
-                    <i class="fas fa-redo" aria-hidden="true"></i> Watermark Another
-                </button>
-                <button class="btn-outline" type="button" onclick="goBackEdit()">
-                    <i class="fas fa-edit" aria-hidden="true"></i> Adjust Watermark
-                </button>
+                <button class="btn-outline" type="button" onclick="resetTool()"><i class="fas fa-redo"></i> Watermark Another</button>
+                <button class="btn-outline" type="button" onclick="previewResultPdf()"><i class="fas fa-eye"></i> Preview PDF</button>
+                <button class="btn-outline" type="button" onclick="goBackEdit()"><i class="fas fa-edit"></i> Adjust Watermark</button>
+                <a class="btn-outline" href="protect-pdf.html" style="text-decoration:none;"><i class="fas fa-lock"></i> Protect PDF</a>
             </div>
         </div>
     </div>
@@ -742,9 +687,63 @@
 </section>
 </main>
 
+<!-- Preview Modal -->
+<div class="wm-modal" id="pdfPreviewModal" role="dialog" aria-modal="true" aria-labelledby="pdfPreviewTitle">
+    <div class="wm-modal-box">
+        <div class="wm-modal-head">
+            <h4 id="pdfPreviewTitle">Watermarked PDF Preview</h4>
+            <button type="button" class="btn-danger-sm" onclick="closePdfModal()"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="wm-modal-body">
+            <iframe id="pdfPreviewFrame" title="Watermarked PDF Preview"></iframe>
+        </div>
+    </div>
+</div>
+
 <!-- ═══════════════════════════════════════
      HOW TO
 ═══════════════════════════════════════ -->
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related PDF Tools</h2>
+            <p>Everything you need to work with PDFs — all free, all browser-based.</p>
+        </div>
+        <div class="related-grid">
+            <a href="merge-pdf.html" class="related-card" aria-label="Merge PDF">
+                <div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div>
+                <h4>Merge PDF</h4>
+                <p>Combine multiple PDFs into one</p>
+            </a>
+            <a href="split-pdf.html" class="related-card" aria-label="Split PDF">
+                <div class="related-icon ri-blue"><i class="fas fa-cut" aria-hidden="true"></i></div>
+                <h4>Split PDF</h4>
+                <p>Extract or separate PDF pages</p>
+            </a>
+            <a href="compress-pdf.html" class="related-card" aria-label="Compress PDF">
+                <div class="related-icon ri-green"><i class="fas fa-compress-alt" aria-hidden="true"></i></div>
+                <h4>Compress PDF</h4>
+                <p>Reduce PDF size with target KB</p>
+            </a>
+            <a href="organize-pdf.html" class="related-card" aria-label="Organize PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-layer-group" aria-hidden="true"></i></div>
+                <h4>Organize PDF</h4>
+                <p>Reorder, rotate &amp; delete pages</p>
+            </a>
+            <a href="pdf-to-jpg.html" class="related-card" aria-label="PDF to JPG">
+                <div class="related-icon ri-orange"><i class="fas fa-file-image" aria-hidden="true"></i></div>
+                <h4>PDF to JPG</h4>
+                <p>Convert PDF pages to images</p>
+            </a>
+            <a href="jpg-to-pdf.html" class="related-card" aria-label="JPG to PDF">
+                <div class="related-icon ri-red"><i class="fas fa-images" aria-hidden="true"></i></div>
+                <h4>JPG to PDF</h4>
+                <p>Turn images into crisp PDFs</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section" aria-labelledby="howto-heading">
     <div class="container">
         <div class="section-header">
@@ -899,497 +898,470 @@
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="js/tool-page.js"></script>
 
+
+
 <script>
-/* ════════════════════════════════════════
-   FOOTER YEAR
-════════════════════════════════════════ */
 (function() {
     const year = new Date().getFullYear();
-    // બધા possible IDs try કરે
-    const ids = ['currentYear', 'footerYear', 'year', 'footer-year'];
-    ids.forEach(function(id) {
+    ['currentYear', 'footerYear', 'year', 'footer-year'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = year;
     });
 })();
-/* ════════════════════════════════════════
-   PDF.js WORKER
-════════════════════════════════════════ */
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/* ════════════════════════════════════════
-   STATE
-════════════════════════════════════════ */
-let rawBytes=null,selectedFile=null,pdfDoc=null;
-let totalPages=0,curPage=1,renderScale=1;
-let wmType='text';
-let wmImgDataUrl=null;
-let resultBlob=null;
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/* ════════════════════════════════════════
-   MOBILE MENU
-════════════════════════════════════════ */
-if(typeof toggleMobileMenu==='undefined'){
-    window.toggleMobileMenu=function(){
-        const nav=document.getElementById('navLinks');
-        const ham=document.getElementById('hamburger');
-        const isOpen=nav.classList.toggle('open');
-        ham.setAttribute('aria-expanded',isOpen?'true':'false');
-    };
-}
+let rawBytes = null, selectedFile = null, pdfDoc = null;
+let totalPages = 0, curPage = 1, zoomFactor = 1.0, renderScale = 1;
+let wmType = 'text';
+let wmRawImgUrl = null, wmImgDataUrl = null;
+let resultBlob = null, previewUrl = null;
 
-/* Close on Escape */
-document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){
-        const nav=document.getElementById('navLinks');
-        const ham=document.getElementById('hamburger');
-        if(nav)nav.classList.remove('open');
-        if(ham)ham.setAttribute('aria-expanded','false');
+function showSection(id) {
+    document.querySelectorAll('[data-section]').forEach(s => { s.style.display = 'none'; });
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block';
+    if (id === 'processingSection' || id === 'resultSection' || id === 'uploadSection' || window.scrollY > 200) {
+        requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
-});
-
-/* ════════════════════════════════════════
-   HELPERS
-════════════════════════════════════════ */
-function toggleFaq(el){
-    const o=el.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
-    if(!o)el.classList.add('open');
 }
 
-function showSection(id){
-    document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');
-    document.getElementById(id).style.display='block';
+function setProgress(p, t, s) {
+    const f = document.getElementById('progressFill'), pt = document.getElementById('progressText'), bar = document.querySelector('.progress-bar');
+    if (f) f.style.width = p + '%';
+    if (pt) pt.textContent = Math.round(p) + '%';
+    if (bar) bar.setAttribute('aria-valuenow', Math.round(p));
+    if (t) document.getElementById('processTitle').textContent = t;
+    if (s) document.getElementById('processSubtitle').textContent = s;
 }
 
-function setProgress(p,t,s){
-    const f=document.getElementById('progressFill');
-    const pt=document.getElementById('progressText');
-    const bar=document.querySelector('.progress-bar');
-    if(f)f.style.width=p+'%';
-    if(pt)pt.textContent=Math.round(p)+'%';
-    if(bar)bar.setAttribute('aria-valuenow',Math.round(p));
-    if(t)document.getElementById('processTitle').textContent=t;
-    if(s)document.getElementById('processSubtitle').textContent=s;
-}
+function szF(b) { if (!b) return '0 B'; const k = 1024, u = ['B','KB','MB','GB']; const i = Math.floor(Math.log(b)/Math.log(k)); return (b/Math.pow(k,i)).toFixed(1)+' '+u[i]; }
+function showError(m) { document.getElementById('errorText').textContent = m; document.getElementById('errorBox').style.display = 'flex'; setTimeout(() => hideError(), 7000); }
+function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+function tick() { return new Promise(r => setTimeout(r, 15)); }
 
-function szF(b){
-    if(!b)return'0 B';
-    const k=1024,u=['B','KB','MB','GB'];
-    const i=Math.floor(Math.log(b)/Math.log(k));
-    return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];
-}
-
-function showError(m){
-    document.getElementById('errorText').textContent=m;
-    document.getElementById('errorBox').style.display='flex';
-    setTimeout(()=>document.getElementById('errorBox').style.display='none',7000);
-}
-
-function hideError(){document.getElementById('errorBox').style.display='none';}
-function tick(){return new Promise(r=>setTimeout(r,20));}
-
-function setPos(el){
-    document.querySelectorAll('.pos-cell').forEach(c=>c.classList.remove('active'));
-    el.classList.add('active');
-    el.querySelector('input').checked=true;
+function applyPreset(txt) {
+    document.getElementById('wmTextInput').value = txt;
     updatePreview();
 }
 
-function setPill(el,grp){
-    el.closest('.scope-pills').querySelectorAll('.sp-pill').forEach(p=>{
-        if(p.querySelector('input[name="'+grp+'"]'))p.classList.remove('active');
+function formatWmText(raw, pageNum) {
+    const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    return (raw || '').replace(/\{page\}/gi, String(pageNum)).replace(/\{date\}/gi, dateStr);
+}
+
+function setPos(el) {
+    document.querySelectorAll('.pos-cell').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    el.querySelector('input').checked = true;
+    updatePreview();
+}
+
+function setPill(el, grp) {
+    el.closest('.scope-pills').querySelectorAll('.sp-pill').forEach(p => {
+        if (p.querySelector('input[name="' + grp + '"]')) p.classList.remove('active');
     });
     el.classList.add('active');
-    el.querySelector('input').checked=true;
+    el.querySelector('input').checked = true;
     updatePreview();
 }
 
-function setScope(el){
-    document.querySelectorAll('.scope-pills').forEach(wrap=>{
-        wrap.querySelectorAll('.sp-pill').forEach(p=>{
-            if(p.querySelector('input[name="scope"]'))p.classList.remove('active');
-        });
-    });
+function setScope(el) {
+    el.closest('.scope-pills').querySelectorAll('.sp-pill').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
-    el.querySelector('input').checked=true;
-    document.getElementById('rangeRow').className='range-row'+(el.querySelector('input').value==='range'?' show':'');
+    el.querySelector('input').checked = true;
+    document.getElementById('rangeRow').className = 'range-row' + (el.querySelector('input').value === 'range' ? ' show' : '');
     updatePreview();
 }
-
-document.getElementById('wmColor').addEventListener('input',function(){
-    document.getElementById('wmColorHex').textContent=this.value.toUpperCase();
-});
 
 /* ════════════════════════════════════════
-   FILE UPLOAD
+   FILE UPLOAD & IMAGE PROCESSING
 ════════════════════════════════════════ */
-const dropZone=document.getElementById('dropZone');
-const fileInput=document.getElementById('fileInput');
-
-dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over');});
-dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop',e=>{
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);
+const dropZone = document.getElementById('dropZone'), fileInput = document.getElementById('fileInput');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
 });
-fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0]);});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
 
-async function handleFile(file){
+async function handleFile(file) {
     hideError();
-    if(!file.name.toLowerCase().endsWith('.pdf')){showError('Select a PDF file.');return;}
-    selectedFile=file;
-    rawBytes=new Uint8Array(await file.arrayBuffer());
-    document.getElementById('fileName').textContent=file.name;
-    document.getElementById('fileSize').textContent=szF(file.size);
-    try{
-        pdfDoc=await pdfjsLib.getDocument({data:rawBytes.slice(0)}).promise;
-        totalPages=pdfDoc.numPages;curPage=1;
-        document.getElementById('pageCount').textContent=totalPages;
-        document.getElementById('rangeTo').value=totalPages;
-        document.getElementById('rangeTo').max=totalPages;
+    if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+        showError('Select a valid PDF file.'); return;
+    }
+    selectedFile = file;
+    rawBytes = new Uint8Array(await file.arrayBuffer());
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileSize').textContent = szF(file.size);
+    try {
+        pdfDoc = await pdfjsLib.getDocument({ data: rawBytes.slice(0) }).promise;
+        totalPages = pdfDoc.numPages; curPage = 1; zoomFactor = 1.0;
+        document.getElementById('pageCount').textContent = totalPages;
+        document.getElementById('rangeTo').value = totalPages;
+        document.getElementById('rangeTo').max = totalPages;
+        document.getElementById('zoomLabel').textContent = '100%';
         showSection('editorSection');
         await renderPage();
-    }catch(e){showError('Failed to load PDF: '+e.message);}
+    } catch (e) { showError('Failed to load PDF: ' + e.message); }
 }
 
-/* ════════════════════════════════════════
-   TABS
-════════════════════════════════════════ */
-function switchWmTab(tab,btn){
-    document.querySelectorAll('.wm-tab').forEach(t=>{
-        t.classList.remove('active');
-        t.setAttribute('aria-selected','false');
-    });
-    document.querySelectorAll('.wm-panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected','true');
-    document.getElementById('wm'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
-    wmType=tab;updatePreview();
+function switchWmTab(tab, btn) {
+    document.querySelectorAll('.wm-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+    document.querySelectorAll('.wm-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+    document.getElementById('wm' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    wmType = tab; updatePreview();
 }
 
-/* Image upload */
-document.getElementById('wmImgInput').addEventListener('change',function(){
-    const file=this.files[0];if(!file)return;
-    const fr=new FileReader();
-    fr.onload=()=>{
-        wmImgDataUrl=fr.result;
-        document.getElementById('wmImgEl').src=fr.result;
-        document.getElementById('wmImgPreview').style.display='block';
-        updatePreview();
-    };
+document.getElementById('wmImgInput').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    const fr = new FileReader();
+    fr.onload = () => { wmRawImgUrl = fr.result; reprocessWmImage(); };
     fr.readAsDataURL(file);
 });
 
-/* ════════════════════════════════════════
-   RENDER PAGE
-════════════════════════════════════════ */
-async function renderPage(){
-    const pg=await pdfDoc.getPage(curPage);
-    const vp1=pg.getViewport({scale:1});
-    const scroll=document.getElementById('wsScroll');
-    renderScale=Math.min((scroll.clientWidth-40)/vp1.width,1.3);
-    const vp=pg.getViewport({scale:renderScale});
-    const c=document.getElementById('pdfCanvas'),ctx=c.getContext('2d');
-    c.width=vp.width;c.height=vp.height;
-    document.getElementById('wsCon').style.width=vp.width+'px';
-    document.getElementById('wsCon').style.height=vp.height+'px';
-    ctx.fillStyle='#fff';ctx.fillRect(0,0,vp.width,vp.height);
-    await pg.render({canvasContext:ctx,viewport:vp}).promise;
-    document.getElementById('pageText').textContent=curPage+'/'+totalPages;
-    document.getElementById('prevBtn').disabled=curPage<=1;
-    document.getElementById('nextBtn').disabled=curPage>=totalPages;
+async function reprocessWmImage() {
+    if (!wmRawImgUrl) return;
+    const cleanBg = document.getElementById('optCleanWmBg').checked;
+    if (!cleanBg) {
+        wmImgDataUrl = wmRawImgUrl;
+        document.getElementById('wmImgEl').src = wmImgDataUrl;
+        document.getElementById('wmImgPreview').style.display = 'block';
+        updatePreview();
+        return;
+    }
+    const im = new Image();
+    await new Promise(res => { im.onload = res; im.src = wmRawImgUrl; });
+    const w = Math.min(800, im.naturalWidth), h = Math.round(im.naturalHeight * (w / im.naturalWidth));
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(im, 0, 0, w, h);
+    const id = ctx.getImageData(0, 0, w, h); const d = id.data;
+    for (let i = 0; i < d.length; i += 4) {
+        const minC = Math.min(d[i], d[i + 1], d[i + 2]);
+        if (minC > 228) d[i + 3] = 0;
+        else if (minC > 195) d[i + 3] = Math.round(d[i + 3] * ((228 - minC) / 33));
+    }
+    ctx.putImageData(id, 0, 0);
+    wmImgDataUrl = c.toDataURL('image/png');
+    document.getElementById('wmImgEl').src = wmImgDataUrl;
+    document.getElementById('wmImgPreview').style.display = 'block';
     updatePreview();
 }
 
-function goPrev(){if(curPage>1){curPage--;renderPage();}}
-function goNext(){if(curPage<totalPages){curPage++;renderPage();}}
-
 /* ════════════════════════════════════════
-   LIVE PREVIEW
+   RENDER PAGE & LIVE PREVIEW
 ════════════════════════════════════════ */
-function updatePreview(){
-    const overlay=document.getElementById('wmOverlay');
-    overlay.innerHTML='';
-    const cW=document.getElementById('pdfCanvas').width;
-    const cH=document.getElementById('pdfCanvas').height;
-    const opacity=(parseInt(document.getElementById('wmOpacity').value)||30)/100;
-    const rotation=parseInt(document.getElementById('wmRotation').value)||0;
-    const pos=document.querySelector('input[name="pos"]:checked')?.value||'cc';
-    const pattern=document.querySelector('input[name="pattern"]:checked')?.value||'single';
-
-    if(pattern==='tile'){
-        renderTiledPreview(overlay,cW,cH,opacity,rotation);
-    }else{
-        renderSinglePreview(overlay,cW,cH,opacity,rotation,pos);
-    }
+async function renderPage() {
+    const pg = await pdfDoc.getPage(curPage);
+    const vp1 = pg.getViewport({ scale: 1 });
+    const scroll = document.getElementById('wsScroll');
+    const fitScale = Math.min((Math.max(280, scroll.clientWidth - 40)) / vp1.width, 1.3);
+    renderScale = fitScale * zoomFactor;
+    const vp = pg.getViewport({ scale: renderScale });
+    const c = document.getElementById('pdfCanvas'), ctx = c.getContext('2d');
+    c.width = vp.width; c.height = vp.height;
+    document.getElementById('wsCon').style.width = vp.width + 'px';
+    document.getElementById('wsCon').style.height = vp.height + 'px';
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, vp.width, vp.height);
+    await pg.render({ canvasContext: ctx, viewport: vp }).promise;
+    document.getElementById('pageText').textContent = curPage + '/' + totalPages;
+    document.getElementById('prevBtn').disabled = curPage <= 1;
+    document.getElementById('nextBtn').disabled = curPage >= totalPages;
+    updatePreview();
 }
-
-function renderSinglePreview(overlay,cW,cH,opacity,rotation,pos){
-    const el=createWmElement(opacity,rotation);
-    if(!el)return;
-    const posMap={
-        tl:{left:'5%',top:'5%',transform:`rotate(${rotation}deg)`},
-        tc:{left:'50%',top:'5%',transform:`translateX(-50%) rotate(${rotation}deg)`},
-        tr:{right:'5%',top:'5%',transform:`rotate(${rotation}deg)`},
-        cl:{left:'5%',top:'50%',transform:`translateY(-50%) rotate(${rotation}deg)`},
-        cc:{left:'50%',top:'50%',transform:`translate(-50%,-50%) rotate(${rotation}deg)`},
-        cr:{right:'5%',top:'50%',transform:`translateY(-50%) rotate(${rotation}deg)`},
-        bl:{left:'5%',bottom:'5%',transform:`rotate(${rotation}deg)`},
-        bc:{left:'50%',bottom:'5%',transform:`translateX(-50%) rotate(${rotation}deg)`},
-        br:{right:'5%',bottom:'5%',transform:`rotate(${rotation}deg)`},
-    };
-    const style=posMap[pos]||posMap.cc;
-    Object.assign(el.style,style);
-    overlay.appendChild(el);
+function changeZoom(delta) {
+    zoomFactor = Math.max(0.6, Math.min(2.0, +(zoomFactor + delta).toFixed(1)));
+    document.getElementById('zoomLabel').textContent = Math.round(zoomFactor * 100) + '%';
+    if (pdfDoc) renderPage();
 }
+function goPrev() { if (curPage > 1) { curPage--; renderPage(); } }
+function goNext() { if (curPage < totalPages) { curPage++; renderPage(); } }
 
-function renderTiledPreview(overlay,cW,cH,opacity,rotation){
-    const gap=wmType==='text'?180:200;
-    const cols=Math.ceil(cW/gap)+1;
-    const rows=Math.ceil(cH/gap)+1;
-    for(let r=0;r<rows;r++){
-        for(let c=0;c<cols;c++){
-            const el=createWmElement(opacity,rotation);
-            if(!el)continue;
-            el.style.left=(c*gap)+'px';
-            el.style.top=(r*gap)+'px';
-            el.style.transform=`rotate(${rotation}deg)`;
-            overlay.appendChild(el);
+function updatePreview() {
+    const overlay = document.getElementById('wmOverlay');
+    overlay.innerHTML = '';
+    const cW = document.getElementById('pdfCanvas').width;
+    const cH = document.getElementById('pdfCanvas').height;
+    if (!cW || !cH) return;
+
+    const opacity = (parseInt(document.getElementById('wmOpacity').value, 10) || 28) / 100;
+    const rotDeg = parseInt(document.getElementById('wmRotation').value, 10) || 0;
+    const pos = document.querySelector('input[name="pos"]:checked')?.value || 'cc';
+    const pattern = document.querySelector('input[name="pattern"]:checked')?.value || 'single';
+
+    if (!shouldWM(curPage - 1)) return;
+
+    if (pattern === 'tile') {
+        const cols = 3, rows = 4;
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const el = createWmElement(opacity);
+                if (!el) continue;
+                el.style.left = (((c + 0.5) / cols) * 100) + '%';
+                el.style.top = (((r + 0.5) / rows) * 100) + '%';
+                el.style.transform = 'translate(-50%,-50%) rotate(' + rotDeg + 'deg)';
+                overlay.appendChild(el);
+            }
         }
+    } else {
+        const el = createWmElement(opacity);
+        if (!el) return;
+        const leftPct = pos.endsWith('l') ? '12%' : pos.endsWith('r') ? '88%' : '50%';
+        const topPct  = pos.startsWith('t') ? '12%' : pos.startsWith('b') ? '88%' : '50%';
+        el.style.left = leftPct;
+        el.style.top = topPct;
+        el.style.transform = 'translate(-50%,-50%) rotate(' + rotDeg + 'deg)';
+        overlay.appendChild(el);
     }
 }
 
-function createWmElement(opacity,rotation){
-    if(wmType==='text'){
-        const text=document.getElementById('wmTextInput').value||'WATERMARK';
-        const fontSize=parseInt(document.getElementById('wmFontSize').value)||48;
-        const color=document.getElementById('wmColor').value;
-        const font=document.getElementById('wmFont').value;
-        const bold=document.getElementById('wmBold').value==='yes';
-        const fontMap={Helvetica:'Helvetica,Arial,sans-serif','Times-Roman':'Times New Roman,serif',Courier:'Courier New,monospace'};
-        const el=document.createElement('div');
-        el.className='wm-text-el';
-        el.textContent=text;
-        el.style.fontSize=(fontSize*renderScale*0.75)+'px';
-        el.style.fontFamily=fontMap[font]||'Helvetica';
-        el.style.fontWeight=bold?'700':'400';
-        el.style.color=color;
-        el.style.opacity=opacity;
+function createWmElement(opacity) {
+    if (wmType === 'text') {
+        const rawText = document.getElementById('wmTextInput').value || 'WATERMARK';
+        const text = formatWmText(rawText, curPage);
+        const fontSize = parseInt(document.getElementById('wmFontSize').value, 10) || 48;
+        const color = document.getElementById('wmColor').value;
+        const font = document.getElementById('wmFont').value;
+        const bold = document.getElementById('wmBold').value === 'yes';
+        const fontMap = { Helvetica: 'Helvetica,Arial,sans-serif', 'Times-Roman': '"Times New Roman",serif', Courier: '"Courier New",monospace' };
+        const el = document.createElement('div');
+        el.className = 'wm-text-el';
+        el.textContent = text;
+        el.style.fontSize = (fontSize * renderScale) + 'px';
+        el.style.lineHeight = '1';
+        el.style.fontFamily = fontMap[font] || 'Helvetica';
+        el.style.fontWeight = bold ? '700' : '400';
+        el.style.color = color;
+        el.style.opacity = opacity;
         return el;
-    }else{
-        if(!wmImgDataUrl)return null;
-        const scale=parseInt(document.getElementById('wmImgScale').value)||30;
-        const el=document.createElement('img');
-        el.src=wmImgDataUrl;
-        el.alt='Watermark';
-        el.style.width=scale+'%';
-        el.style.opacity=opacity;
-        el.style.position='absolute';
-        el.style.pointerEvents='none';
+    } else {
+        if (!wmImgDataUrl) return null;
+        const scale = parseInt(document.getElementById('wmImgScale').value, 10) || 32;
+        const el = document.createElement('img');
+        el.src = wmImgDataUrl;
+        el.alt = 'Watermark';
+        el.style.width = scale + '%';
+        el.style.opacity = opacity;
+        el.style.position = 'absolute';
+        el.style.pointerEvents = 'none';
         return el;
     }
 }
 
-/* ════════════════════════════════════════
-   SHOULD WATERMARK PAGE
-════════════════════════════════════════ */
-function shouldWM(pageIdx){
-    const scope=document.querySelector('input[name="scope"]:checked')?.value||'all';
-    const pg=pageIdx+1;
-    switch(scope){
-        case'all':return true;
-        case'odd':return pg%2===1;
-        case'even':return pg%2===0;
-        case'first':return pg===1;
-        case'range':{
-            const f=parseInt(document.getElementById('rangeFrom').value)||1;
-            const t=parseInt(document.getElementById('rangeTo').value)||totalPages;
-            return pg>=f&&pg<=t;
+function shouldWM(pageIdx) {
+    const scope = document.querySelector('input[name="scope"]:checked')?.value || 'all';
+    const pg = pageIdx + 1;
+    switch (scope) {
+        case 'all': return true;
+        case 'odd': return pg % 2 === 1;
+        case 'even': return pg % 2 === 0;
+        case 'first': return pg === 1;
+        case 'last': return pg === totalPages;
+        case 'range': {
+            const f = parseInt(document.getElementById('rangeFrom').value, 10) || 1;
+            const t = parseInt(document.getElementById('rangeTo').value, 10) || totalPages;
+            return pg >= Math.min(f, t) && pg <= Math.max(f, t);
         }
     }
     return true;
 }
 
 /* ════════════════════════════════════════
-   APPLY WATERMARK
+   CENTER-PIVOT PDF-LIB WATERMARK RENDERING
 ════════════════════════════════════════ */
-async function doApply(){
-    if(wmType==='text'){
-        const text=(document.getElementById('wmTextInput').value||'').trim();
-        if(!text){showError('Enter watermark text.');return;}
-    }else{
-        if(!wmImgDataUrl){showError('Upload a watermark image first.');return;}
+function drawCenteredText(pg, text, cx, cy, fontSize, font, color, opacity, cssDeg) {
+    const pdfDeg = -cssDeg; // CSS clockwise -> PDF CCW
+    const theta = (pdfDeg * Math.PI) / 180;
+    const tw = font.widthOfTextAtSize(text, fontSize);
+    const th = fontSize * 0.72;
+    const dx = (tw / 2) * Math.cos(theta) - (th / 2) * Math.sin(theta);
+    const dy = (tw / 2) * Math.sin(theta) + (th / 2) * Math.cos(theta);
+    pg.drawText(text, {
+        x: cx - dx, y: cy - dy,
+        size: fontSize, font, color, opacity,
+        rotate: PDFLib.degrees(pdfDeg)
+    });
+}
+
+function drawCenteredImage(pg, img, cx, cy, iw, ih, opacity, cssDeg) {
+    const pdfDeg = -cssDeg;
+    const theta = (pdfDeg * Math.PI) / 180;
+    const dx = (iw / 2) * Math.cos(theta) - (ih / 2) * Math.sin(theta);
+    const dy = (iw / 2) * Math.sin(theta) + (ih / 2) * Math.cos(theta);
+    pg.drawImage(img, {
+        x: cx - dx, y: cy - dy,
+        width: iw, height: ih, opacity,
+        rotate: PDFLib.degrees(pdfDeg)
+    });
+}
+
+function stampPageWatermark(pg, w, h, pageNum, font, embImg, cfg) {
+    const drawOne = (cx, cy) => {
+        if (font) {
+            const txt = formatWmText(cfg.rawText, pageNum);
+            drawCenteredText(pg, txt, cx, cy, cfg.fontSize, font, cfg.color, cfg.opacity, cfg.rotDeg);
+        } else if (embImg) {
+            const iw = w * cfg.imgScale * (cfg.pattern === 'tile' ? 0.55 : 1);
+            const ih = iw * (embImg.height / embImg.width);
+            drawCenteredImage(pg, embImg, cx, cy, iw, ih, cfg.opacity, cfg.rotDeg);
+        }
+    };
+
+    if (cfg.pattern === 'tile') {
+        const cols = 3, rows = 4;
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                drawOne(w * ((c + 0.5) / cols), h * (1 - (r + 0.5) / rows));
+            }
+        }
+    } else {
+        const px = cfg.pos.endsWith('l') ? w * 0.14 : cfg.pos.endsWith('r') ? w * 0.86 : w * 0.5;
+        const py = cfg.pos.startsWith('t') ? h * 0.88 : cfg.pos.startsWith('b') ? h * 0.12 : h * 0.5;
+        drawOne(px, py);
+    }
+}
+
+async function doApply() {
+    if (wmType === 'text' && !(document.getElementById('wmTextInput').value || '').trim()) {
+        showError('Enter watermark text.'); return;
+    }
+    if (wmType === 'image' && !wmImgDataUrl) {
+        showError('Upload a watermark image first.'); return;
     }
 
-    document.getElementById('applyBtn').disabled=true;
-    hideError();showSection('processingSection');
-    setProgress(10,'Loading PDF...','');
+    document.getElementById('applyBtn').disabled = true;
+    hideError(); showSection('processingSection');
+    setProgress(10, 'Loading PDF...', 'Preparing document');
     await tick();
 
-    try{
-        const pdfLibDoc=await PDFLib.PDFDocument.load(rawBytes,{ignoreEncryption:true});
-        const pages=pdfLibDoc.getPages();
-        const opacity=(parseInt(document.getElementById('wmOpacity').value)||30)/100;
-        const rotation=(parseInt(document.getElementById('wmRotation').value)||0)*Math.PI/180;
-        const pos=document.querySelector('input[name="pos"]:checked')?.value||'cc';
-        const pattern=document.querySelector('input[name="pattern"]:checked')?.value||'single';
+    try {
+        const srcDoc = await PDFLib.PDFDocument.load(rawBytes.slice(0), { ignoreEncryption: true });
+        const layer = document.querySelector('input[name="layer"]:checked')?.value || 'over';
+        const outDoc = (layer === 'under') ? await PDFLib.PDFDocument.create() : srcDoc;
 
-        let font=null,embeddedImg=null;
-        if(wmType==='text'){
-            const fontName=document.getElementById('wmFont').value;
-            const fontMap={Helvetica:PDFLib.StandardFonts.Helvetica,'Times-Roman':PDFLib.StandardFonts.TimesRoman,Courier:PDFLib.StandardFonts.Courier};
-            const boldMap={Helvetica:PDFLib.StandardFonts.HelveticaBold,'Times-Roman':PDFLib.StandardFonts.TimesRomanBold,Courier:PDFLib.StandardFonts.CourierBold};
-            const isBold=document.getElementById('wmBold').value==='yes';
-            font=await pdfLibDoc.embedFont(isBold?boldMap[fontName]:fontMap[fontName]);
-        }else{
-            const resp=await fetch(wmImgDataUrl);
-            const buf=await resp.arrayBuffer();
-            const bytes=new Uint8Array(buf);
-            try{embeddedImg=await pdfLibDoc.embedPng(bytes);}catch(e){embeddedImg=await pdfLibDoc.embedJpg(bytes);}
+        const hex = document.getElementById('wmColor').value;
+        const cfg = {
+            rawText: document.getElementById('wmTextInput').value,
+            fontSize: parseInt(document.getElementById('wmFontSize').value, 10) || 48,
+            color: PDFLib.rgb(parseInt(hex.slice(1,3),16)/255, parseInt(hex.slice(3,5),16)/255, parseInt(hex.slice(5,7),16)/255),
+            imgScale: (parseInt(document.getElementById('wmImgScale').value, 10) || 32) / 100,
+            opacity: (parseInt(document.getElementById('wmOpacity').value, 10) || 28) / 100,
+            rotDeg: parseInt(document.getElementById('wmRotation').value, 10) || 0,
+            pos: document.querySelector('input[name="pos"]:checked')?.value || 'cc',
+            pattern: document.querySelector('input[name="pattern"]:checked')?.value || 'single'
+        };
+
+        let font = null, embImg = null;
+        if (wmType === 'text') {
+            const fname = document.getElementById('wmFont').value;
+            const bold = document.getElementById('wmBold').value === 'yes';
+            const fMap = { Helvetica: PDFLib.StandardFonts.Helvetica, 'Times-Roman': PDFLib.StandardFonts.TimesRoman, Courier: PDFLib.StandardFonts.Courier };
+            const bMap = { Helvetica: PDFLib.StandardFonts.HelveticaBold, 'Times-Roman': PDFLib.StandardFonts.TimesRomanBold, Courier: PDFLib.StandardFonts.CourierBold };
+            font = await outDoc.embedFont(bold ? bMap[fname] : fMap[fname]);
+        } else {
+            const resp = await fetch(wmImgDataUrl);
+            const bytes = new Uint8Array(await resp.arrayBuffer());
+            try { embImg = await outDoc.embedPng(bytes); } catch (e) { embImg = await outDoc.embedJpg(bytes); }
         }
 
-        let wmCount=0;
+        const srcPages = srcDoc.getPages();
+        let wmCount = 0;
 
-        for(let i=0;i<pages.length;i++){
-            const pct=10+((i/pages.length)*80);
-            if(i%3===0){setProgress(pct,'Applying...','Page '+(i+1));await tick();}
-            if(!shouldWM(i))continue;
-            const pg=pages[i];
-            const{width,height}=pg.getSize();
-            wmCount++;
-            if(pattern==='tile'){
-                drawTiledWM(pg,width,height,font,embeddedImg,opacity,rotation);
-            }else{
-                drawSingleWM(pg,width,height,font,embeddedImg,opacity,rotation,pos);
+        if (layer === 'under') {
+            const embeddedSrc = await outDoc.embedPages(srcPages);
+            for (let i = 0; i < srcPages.length; i++) {
+                if (i % 3 === 0) { setProgress(15 + (i / srcPages.length) * 75, 'Layering Behind Text...', 'Page ' + (i + 1) + ' of ' + srcPages.length); await tick(); }
+                const { width, height } = srcPages[i].getSize();
+                const outPg = outDoc.addPage([width, height]);
+                if (shouldWM(i)) {
+                    wmCount++;
+                    stampPageWatermark(outPg, width, height, i + 1, font, embImg, cfg);
+                }
+                outPg.drawPage(embeddedSrc[i], { x: 0, y: 0, width, height });
+            }
+        } else {
+            for (let i = 0; i < srcPages.length; i++) {
+                if (i % 3 === 0) { setProgress(15 + (i / srcPages.length) * 75, 'Applying Watermark...', 'Page ' + (i + 1) + ' of ' + srcPages.length); await tick(); }
+                if (!shouldWM(i)) continue;
+                const { width, height } = srcPages[i].getSize();
+                wmCount++;
+                stampPageWatermark(srcPages[i], width, height, i + 1, font, embImg, cfg);
             }
         }
 
-        setProgress(95,'Saving...','');
+        setProgress(95, 'Saving PDF...', 'Finalizing document');
         await tick();
+        const outBytes = await outDoc.save();
+        resultBlob = new Blob([outBytes], { type: 'application/pdf' });
 
-        const outBytes=await pdfLibDoc.save();
-        resultBlob=new Blob([outBytes],{type:'application/pdf'});
+        setProgress(100, 'Done!', 'Ready to download');
+        await new Promise(r => setTimeout(r, 320));
 
-        setProgress(100,'Done!','');
-        await new Promise(r=>setTimeout(r,500));
-
-        document.getElementById('rPages').textContent=totalPages;
-        document.getElementById('rWM').textContent=wmCount;
-        document.getElementById('rSize').textContent=szF(resultBlob.size);
-        document.getElementById('rFileName').textContent=selectedFile.name.replace(/\.pdf$/i,'')+'_watermarked.pdf';
+        document.getElementById('rPages').textContent = totalPages;
+        document.getElementById('rWM').textContent = wmCount;
+        document.getElementById('rSize').textContent = szF(resultBlob.size);
+        document.getElementById('rLayerBadge').textContent = 'Layer: ' + (layer === 'under' ? 'Behind Content' : 'Over Content');
+        document.getElementById('rFileName').textContent = selectedFile.name.replace(/\.pdf$/i, '') + '_watermarked.pdf';
         showSection('resultSection');
-
-    }catch(e){
-        console.error(e);showSection('editorSection');
-        document.getElementById('applyBtn').disabled=false;
-        showError('Failed: '+e.message);
+    } catch (e) {
+        console.error(e); showSection('editorSection');
+        document.getElementById('applyBtn').disabled = false;
+        showError('Failed: ' + e.message);
     }
 }
 
-function drawSingleWM(pg,w,h,font,img,opacity,rotation,pos){
-    if(font){
-        const text=document.getElementById('wmTextInput').value;
-        const fontSize=parseInt(document.getElementById('wmFontSize').value)||48;
-        const color=document.getElementById('wmColor').value;
-        const cr=parseInt(color.substr(1,2),16)/255;
-        const cg=parseInt(color.substr(3,2),16)/255;
-        const cb=parseInt(color.substr(5,2),16)/255;
-        const tw=font.widthOfTextAtSize(text,fontSize);
-        let x,y;const m=40;
-        if(pos.endsWith('l'))x=m;
-        else if(pos.endsWith('r'))x=w-tw-m;
-        else x=(w-tw)/2;
-        if(pos.startsWith('t'))y=h-m-fontSize;
-        else if(pos.startsWith('b'))y=m;
-        else y=(h-fontSize)/2;
-        pg.drawText(text,{x,y,size:fontSize,font,color:PDFLib.rgb(cr,cg,cb),opacity,rotate:PDFLib.degrees(rotation*180/Math.PI)});
-    }else if(img){
-        const scale=(parseInt(document.getElementById('wmImgScale').value)||30)/100;
-        const iw=w*scale;const ih=iw*(img.height/img.width);
-        let x,y;const m=40;
-        if(pos.endsWith('l'))x=m;
-        else if(pos.endsWith('r'))x=w-iw-m;
-        else x=(w-iw)/2;
-        if(pos.startsWith('t'))y=h-ih-m;
-        else if(pos.startsWith('b'))y=m;
-        else y=(h-ih)/2;
-        pg.drawImage(img,{x,y,width:iw,height:ih,opacity,rotate:PDFLib.degrees(rotation*180/Math.PI)});
-    }
+function previewResultPdf() {
+    if (!resultBlob) return;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(resultBlob);
+    document.getElementById('pdfPreviewFrame').src = previewUrl;
+    document.getElementById('pdfPreviewModal').classList.add('open');
 }
-
-function drawTiledWM(pg,w,h,font,img,opacity,rotation){
-    if(font){
-        const text=document.getElementById('wmTextInput').value;
-        const fontSize=parseInt(document.getElementById('wmFontSize').value)||48;
-        const color=document.getElementById('wmColor').value;
-        const cr=parseInt(color.substr(1,2),16)/255;
-        const cg=parseInt(color.substr(3,2),16)/255;
-        const cb=parseInt(color.substr(5,2),16)/255;
-        const tw=font.widthOfTextAtSize(text,fontSize);
-        const gapX=tw+80;const gapY=fontSize+120;
-        const cols=Math.ceil(w/gapX)+1;const rows=Math.ceil(h/gapY)+1;
-        for(let r=0;r<rows;r++){
-            for(let c=0;c<cols;c++){
-                pg.drawText(text,{x:c*gapX+20,y:h-r*gapY-40,size:fontSize,font,color:PDFLib.rgb(cr,cg,cb),opacity,rotate:PDFLib.degrees(rotation*180/Math.PI)});
-            }
-        }
-    }else if(img){
-        const scale=(parseInt(document.getElementById('wmImgScale').value)||30)/100;
-        const iw=w*scale*0.5;const ih=iw*(img.height/img.width);
-        const gapX=iw+60;const gapY=ih+80;
-        const cols=Math.ceil(w/gapX)+1;const rows=Math.ceil(h/gapY)+1;
-        for(let r=0;r<rows;r++){
-            for(let c=0;c<cols;c++){
-                pg.drawImage(img,{x:c*gapX+20,y:h-r*gapY-ih-20,width:iw,height:ih,opacity,rotate:PDFLib.degrees(rotation*180/Math.PI)});
-            }
-        }
-    }
+function closePdfModal() {
+    document.getElementById('pdfPreviewModal').classList.remove('open');
+    document.getElementById('pdfPreviewFrame').src = 'about:blank';
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
 }
-
-/* ════════════════════════════════════════
-   DOWNLOAD
-════════════════════════════════════════ */
-function doDownload(){
-    if(!resultBlob)return;
-    const name=selectedFile?selectedFile.name.replace(/\.pdf$/i,'')+'_watermarked.pdf':'watermarked.pdf';
-    const url=URL.createObjectURL(resultBlob);
-    const a=document.createElement('a');a.href=url;a.download=name;
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},500);
-}
-
-/* ════════════════════════════════════════
-   NAVIGATION
-════════════════════════════════════════ */
-function goBackEdit(){
-    resultBlob=null;
-    document.getElementById('applyBtn').disabled=false;
-    showSection('editorSection');renderPage();
-}
-
-function resetTool(){
-    rawBytes=null;selectedFile=null;pdfDoc=null;totalPages=0;curPage=1;
-    wmImgDataUrl=null;resultBlob=null;wmType='text';
-    fileInput.value='';
-    document.getElementById('wmImgPreview').style.display='none';
-    hideError();showSection('uploadSection');
-}
-
-document.addEventListener('keydown',e=>{
-    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA')return;
-    if(e.key==='ArrowLeft')goPrev();
-    if(e.key==='ArrowRight')goNext();
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePdfModal();
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowLeft') goPrev();
+    if (e.key === 'ArrowRight') goNext();
 });
+document.addEventListener('click', e => { if (e.target.id === 'pdfPreviewModal') closePdfModal(); });
+
+function doDownload() {
+    if (!resultBlob) return;
+    const name = selectedFile ? selectedFile.name.replace(/\.pdf$/i, '') + '_watermarked.pdf' : 'watermarked.pdf';
+    const url = URL.createObjectURL(resultBlob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.style.display = 'none';
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 5000);
+}
+
+function goBackEdit() {
+    resultBlob = null;
+    document.getElementById('applyBtn').disabled = false;
+    showSection('editorSection'); renderPage();
+}
+
+function resetTool() {
+    closePdfModal();
+    rawBytes = null; selectedFile = null; pdfDoc = null; totalPages = 0; curPage = 1;
+    wmRawImgUrl = null; wmImgDataUrl = null; resultBlob = null; wmType = 'text';
+    fileInput.value = '';
+    document.getElementById('wmImgPreview').style.display = 'none';
+    const btn = document.getElementById('applyBtn'); if (btn) btn.disabled = false;
+    hideError(); showSection('uploadSection');
+}
 
 let rT;
-window.addEventListener('resize',()=>{
-    clearTimeout(rT);
-    rT=setTimeout(()=>{if(pdfDoc)renderPage();},300);
-});
+window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { if (pdfDoc) renderPage(); }, 300); });
 </script>
+
 <script src="js/adsense.js"></script>
 <script src="js/site-tracker.js"></script>
 

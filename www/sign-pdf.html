@@ -274,126 +274,113 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&amp;family=Dancing+Script:wght@600&amp;family=Great+Vibes&amp;family=Homemade+Apple&amp;display=swap" rel="stylesheet">
 
     <style>
-        *{box-sizing:border-box}
-        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
-        .info-banner{background:rgba(79,70,229,.07);border:1px solid rgba(79,70,229,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
-        .file-info-card{display:flex;align-items:center;gap:14px;padding:15px 18px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:16px}
-        .file-info-icon{width:50px;height:50px;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.28);border-radius:10px;padding:12px 16px;color:#ef4444;font-size:13.5px;margin:14px 16px 0;display:none;align-items:center;gap:8px;font-weight:600}
+        .upload-zone.dragover,.upload-zone.drag-over{border-color:var(--primary)!important;background:var(--primary-soft)!important}
+        #editorSection{padding:24px}
+
+        .info-banner{background:var(--primary-soft);border:1px solid var(--border-strong);border-radius:12px;padding:11px 14px;font-size:12.5px;color:var(--text-dark);display:flex;align-items:flex-start;gap:9px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        .info-banner i{color:var(--primary)}
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface-muted);border:1px solid var(--border-subtle);border-radius:14px;margin-bottom:16px}
+        .file-info-icon{width:46px;height:46px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0}
         .file-info-details{flex:1;min-width:0}
-        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--text-dark,#1e293b)}
-        .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:flex;align-items:center;gap:4px}
-        .size-badge{background:rgba(79,70,229,.1);color:#6366f1;padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
+        .file-info-details h4{font-family:var(--font-head);font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;color:var(--text-dark)}
+        .file-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+        .file-meta span{font-size:12px;color:var(--text-light);display:inline-flex;align-items:center;gap:4px;font-weight:600}
+        .size-badge{background:var(--primary-soft);color:var(--primary);padding:2px 10px;border-radius:20px;font-weight:700;font-size:11.5px!important}
 
         /* Signature Creator Tabs */
-        .sig-tabs{display:flex;gap:0;border-bottom:2px solid #e2e8f0;margin-bottom:16px}
-        .sig-tab{padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:none;color:var(--text-light);border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px}
+        .sig-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border-subtle);margin-bottom:14px;overflow-x:auto}
+        .sig-tab{padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:none;color:var(--text-light);border-bottom:2.5px solid transparent;transition:all .18s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
         .sig-tab:hover{color:var(--primary)}
         .sig-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
         .sig-panel{display:none}.sig-panel.active{display:block}
 
-        /* Draw pad */
-        .draw-pad-wrap{background:#fff;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-bottom:12px;position:relative}
-        .draw-pad-wrap canvas{display:block;width:100%;cursor:crosshair;touch-action:none}
-        .draw-controls{display:flex;gap:6px;align-items:center;padding:8px 12px;background:#f8fafc;border-top:1px solid #e2e8f0;flex-wrap:wrap}
-        .dc-btn{padding:6px 12px;border-radius:7px;border:1.5px solid #e2e8f0;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--text-dark);transition:all .15s;display:flex;align-items:center;gap:4px}
-        .dc-btn:hover{border-color:var(--primary);background:rgba(79,70,229,.05)}
-        .dc-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-        .color-dot{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s}
-        .color-dot:hover{transform:scale(1.2)}.color-dot.active{border-color:var(--primary);transform:scale(1.2)}
-        .pen-size{width:50px;accent-color:var(--primary)}
+        /* Draw pad (pad surface stays white paper so ink colors stay accurate, canvas is transparent) */
+        .draw-pad-wrap{background:#ffffff;border:1.5px solid var(--border-subtle);border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative}
+        .draw-pad-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;color:#cbd5e1;font-size:14px;font-weight:600}
+        .draw-pad-wrap canvas{display:block;width:100%;height:175px;cursor:crosshair;touch-action:none;position:relative;z-index:1;background:transparent}
+        .draw-controls{display:flex;gap:8px;align-items:center;padding:9px 12px;background:var(--surface-muted);border-top:1px solid var(--border-subtle);flex-wrap:wrap}
+        .dc-btn{padding:6px 12px;border-radius:8px;border:1px solid var(--border-subtle);font-size:11.5px;font-weight:700;cursor:pointer;background:var(--bg-card);color:var(--text-dark);transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+        .dc-btn:hover{border-color:var(--primary);color:var(--primary)}
+        .dc-btn.primary-fill{width:100%;justify-content:center;padding:10px 16px;background:var(--primary);color:#fff;border-color:var(--primary);font-size:13px}
+        .dc-btn.primary-fill:hover{background:var(--primary-dark);color:#fff}
+        .color-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid var(--bg-card);box-shadow:0 0 0 1px var(--border-subtle);transition:transform .15s}
+        .color-dot:hover{transform:scale(1.15)}
+        .color-dot.active{box-shadow:0 0 0 2.5px var(--primary);transform:scale(1.15)}
+        .pen-size{width:70px;accent-color:var(--primary);cursor:pointer}
 
         /* Text signature */
-        .text-sig-input{width:100%;padding:14px 16px;border:2px solid #e2e8f0;border-radius:10px;font-size:24px;outline:none;transition:border-color .2s;margin-bottom:12px}
+        .text-sig-input{width:100%;padding:12px 15px;border:1.5px solid var(--border-subtle);border-radius:11px;background:var(--bg-card);color:var(--text-dark);font-size:20px;outline:none;transition:border-color .2s;margin-bottom:10px}
         .text-sig-input:focus{border-color:var(--primary)}
-        .font-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-        .font-pill{padding:8px 16px;border-radius:8px;border:1.5px solid #e2e8f0;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6)}
+        .font-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+        .font-pill{padding:7px 14px;border-radius:9px;border:1px solid var(--border-subtle);cursor:pointer;transition:all .15s;background:var(--bg-card);color:var(--text-dark)}
         .font-pill:hover{border-color:var(--primary)}
-        .font-pill.active{border-color:var(--primary);background:rgba(79,70,229,.08)}
+        .font-pill.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
         .font-pill input{display:none}
-        .text-sig-preview{background:#fff;border:2px solid #e2e8f0;border-radius:10px;padding:20px;text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+        .text-sig-preview{background:#ffffff;border:1px solid var(--border-subtle);border-radius:11px;padding:18px;text-align:center;min-height:76px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
 
         /* Upload signature */
-        .sig-upload-zone{background:rgba(79,70,229,.04);border:2px dashed #c7d2fe;border-radius:12px;padding:30px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px}
-        .sig-upload-zone:hover{border-color:var(--primary);background:rgba(79,70,229,.08)}
+        .sig-upload-zone{background:var(--bg-card);border:2px dashed var(--border-strong);border-radius:12px;padding:26px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px}
+        .sig-upload-zone:hover{border-color:var(--primary);background:var(--primary-soft)}
         .sig-upload-preview{text-align:center;margin-bottom:12px}
-        .sig-upload-preview img{max-width:300px;max-height:100px;border:1px solid #e2e8f0;border-radius:8px;padding:8px;background:#fff}
+        .sig-upload-preview img{max-width:280px;max-height:110px;border:1px solid var(--border-subtle);border-radius:10px;padding:8px;background:#ffffff}
+
+        /* Date / Stamp grid */
+        .stamp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+        .stamp-btn{padding:11px 14px;border-radius:11px;border:1px solid var(--border-subtle);background:var(--bg-card);color:var(--text-dark);cursor:pointer;text-align:left;transition:all .15s;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+        .stamp-btn:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
 
         /* Workspace */
-        .workspace{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:16px}
-        .ws-toolbar{display:flex;align-items:center;gap:5px;padding:8px 12px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
-        .tb-btn{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
-        .tb-btn:hover{background:rgba(255,255,255,.16);color:#fff}
-        .tb-btn.active{background:#6366f1;color:#fff}
-        .tb-btn:disabled{opacity:.3;pointer-events:none}
-        .tb-text{color:rgba(255,255,255,.5);font-size:11px;font-weight:600}
+        .workspace{background:#0f172a;border:1px solid var(--border-subtle);border-radius:14px;overflow:hidden;margin-bottom:16px}
+        .ws-toolbar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
+        .tb-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-size:11.5px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.88);background:rgba(255,255,255,.09)}
+        .tb-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+        .tb-btn.accent{background:var(--primary);color:#fff}
+        .tb-btn:disabled{opacity:.35;pointer-events:none}
+        .tb-text{color:rgba(255,255,255,.65);font-size:11.5px;font-weight:600}
         .tb-spacer{flex:1}
-        .tb-sep{width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 3px}
-        .ws-scroll{overflow:auto;padding:16px;display:flex;justify-content:center;align-items:flex-start;max-height:550px;min-height:260px}
+        .tb-sep{width:1px;height:18px;background:rgba(255,255,255,.14);margin:0 2px}
+        .ws-scroll{overflow:auto;padding:18px;display:flex;justify-content:center;align-items:flex-start;max-height:600px;min-height:280px}
         .ws-con{position:relative;display:inline-block;line-height:0}
-        .ws-con canvas{display:block;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.5)}
+        .ws-con canvas{display:block;border-radius:4px;box-shadow:0 6px 26px rgba(0,0,0,.5)}
 
         /* Placed signatures */
         .placed-sig{position:absolute;cursor:move;z-index:4;border:2px dashed transparent;transition:border-color .15s;user-select:none}
-        .placed-sig:hover,.placed-sig.selected{border-color:var(--primary)}
+        .placed-sig:hover,.placed-sig.selected{border-color:var(--primary);background:rgba(79,70,229,0.06)}
         .placed-sig img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
-        .placed-sig .sig-del{position:absolute;top:-10px;right:-10px;width:20px;height:20px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border:2px solid #fff;z-index:5}
+        .placed-sig .sig-del{position:absolute;top:-10px;right:-10px;width:22px;height:22px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:11px;cursor:pointer;border:2px solid #fff;z-index:5}
         .placed-sig:hover .sig-del,.placed-sig.selected .sig-del{display:flex}
-        .placed-sig .sig-resize{position:absolute;bottom:-6px;right:-6px;width:14px;height:14px;background:#fff;border:2px solid var(--primary);border-radius:2px;cursor:se-resize;z-index:5;display:none}
+        .placed-sig .sig-resize{position:absolute;bottom:-6px;right:-6px;width:15px;height:15px;background:#fff;border:2px solid var(--primary);border-radius:3px;cursor:se-resize;z-index:5;display:none}
         .placed-sig:hover .sig-resize,.placed-sig.selected .sig-resize{display:block}
 
         /* Saved signatures */
-        .saved-sigs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-        .saved-sig{background:#fff;border:2px solid #e2e8f0;border-radius:8px;padding:6px;cursor:pointer;transition:all .15s;position:relative;width:120px;height:50px;display:flex;align-items:center;justify-content:center}
+        .saved-sigs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+        .saved-sig{background:#ffffff;border:1.5px solid var(--border-subtle);border-radius:10px;padding:6px;cursor:pointer;transition:all .15s;position:relative;width:120px;height:52px;display:flex;align-items:center;justify-content:center}
         .saved-sig:hover{border-color:var(--primary);transform:translateY(-1px)}
-        .saved-sig.active{border-color:var(--primary);box-shadow:0 0 0 2px rgba(79,70,229,.2)}
+        .saved-sig.active{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
         .saved-sig img{max-width:100%;max-height:100%;object-fit:contain}
-        .saved-sig .ss-del{position:absolute;top:-6px;right:-6px;width:16px;height:16px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:8px;cursor:pointer;border:1px solid #fff}
+        .saved-sig .ss-del{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:#ef4444;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:9px;cursor:pointer;border:1.5px solid #fff}
         .saved-sig:hover .ss-del{display:flex}
 
-        /* Result */
-        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
-        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:12px;padding:13px 16px;min-width:100px}
-        .result-stat strong{display:block;font-size:20px;color:var(--primary);line-height:1;margin-bottom:4px}
+        .result-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:var(--surface-muted);border:1px solid var(--border-subtle);border-radius:12px;padding:12px 18px;min-width:105px}
+        .result-stat strong{display:block;font-family:var(--font-head);font-size:20px;color:var(--primary);line-height:1.1;margin-bottom:4px}
         .result-stat small{color:var(--text-light);font-size:11px;font-weight:600;text-transform:uppercase}
 
-        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}
-        .icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}
-        .icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}
-        .icon-orange{background:linear-gradient(135deg,var(--accent),var(--accent-dark))}
-        .icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}
-        .icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
-
-        .faq-section{padding:50px 0}
-        .faq-list{max-width:750px;margin:0 auto}
-        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
-        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(79,70,229,.2)}
-        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;gap:12px}
-        .faq-question h4{font-size:14px;font-weight:600;color:var(--text-dark,#1e293b);margin:0;flex:1}
-        .faq-item.open .faq-question h4{color:var(--primary)}
-        .faq-question i{font-size:12px;color:var(--text-light);transition:transform .3s;flex-shrink:0}
-        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary)}
-        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
-        .faq-item.open .faq-answer{max-height:400px;opacity:1}
-        .faq-answer-inner{padding:0 20px 18px}
-        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(79,70,229,.1);padding-top:14px;margin:0 20px;padding-left:0;padding-right:0}
-        .faq-answer-inner p{font-size:13px;line-height:1.7;color:var(--text-light);margin:0}
-        .faq-answer-inner p strong{color:var(--text-dark)}
-        .faq-num{width:26px;height:26px;background:rgba(79,70,229,.1);color:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-        .faq-item.open .faq-num{background:var(--primary);color:#fff}
+        /* Preview modal */
+        .sg-modal{position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px}
+        .sg-modal.open{display:flex}
+        .sg-modal-box{width:100%;max-width:900px;height:86vh;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+        .sg-modal-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border-subtle)}
+        .sg-modal-head h4{font-family:var(--font-head);font-size:14.5px;font-weight:700;color:var(--text-dark)}
+        .sg-modal-body{flex:1;background:var(--surface-muted)}
+        .sg-modal-body iframe{width:100%;height:100%;border:none}
 
         @media(max-width:768px){
+            #editorSection{padding:16px}
             .result-stats{gap:10px}
-            .result-stat{min-width:80px}
-            .sig-tabs{overflow-x:auto}
-            .sig-tab{padding:8px 14px;font-size:12px;white-space:nowrap}
-        }
-        @media(max-width:480px){
-            .file-info-card{flex-wrap:wrap}
-            .faq-question{padding:14px}
-            .faq-item{border-radius:10px;margin-bottom:8px}
-            .font-pills{gap:4px}
+            .result-stat{min-width:85px}
+            .placed-sig .sig-del,.placed-sig .sig-resize{display:flex}
         }
     </style>
 
@@ -437,7 +424,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <a href="index.html#tools"><i class="fas fa-th" aria-hidden="true"></i> All Tools</a>
         
             <a href="blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="login.html" class="nav-btn"><i class="fas fa-user" aria-hidden="true"></i> Login</a>
+            <a href="login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -506,9 +493,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <div id="editorSection" data-section="" style="display:none">
 
         <div class="file-info-card">
-            <div class="file-info-icon" aria-hidden="true">
-                <i class="fas fa-file-pdf"></i>
-            </div>
+            <div class="file-info-icon" aria-hidden="true"><i class="fas fa-file-pdf"></i></div>
             <div class="file-info-details">
                 <h4 id="fileName">document.pdf</h4>
                 <div class="file-meta">
@@ -518,148 +503,135 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             </div>
             <div class="files-actions">
                 <button class="btn-danger-sm" type="button" onclick="resetTool()" aria-label="Remove file and start over">
-                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i> Remove
                 </button>
             </div>
         </div>
 
         <!-- Signature Creator -->
         <div class="options-panel glass-light" style="margin-bottom:16px">
-            <h4 style="margin-bottom:12px">
-                <i class="fas fa-pen-nib" aria-hidden="true"></i> Create Your Signature
-            </h4>
+            <h4 style="margin-bottom:12px"><i class="fas fa-pen-nib" aria-hidden="true"></i> Create Signature, Initials or Date Stamp</h4>
 
             <!-- Saved Signatures -->
             <div id="savedSigsWrap" style="display:none;margin-bottom:14px">
-                <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:6px">
-                    <i class="fas fa-history" aria-hidden="true"></i> Saved Signatures (click to use)
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-light);display:block;margin-bottom:6px">
+                    <i class="fas fa-history" aria-hidden="true"></i> Saved Signatures (click to select)
                 </label>
                 <div class="saved-sigs" id="savedSigs" role="list" aria-label="Saved signatures"></div>
             </div>
 
             <div class="sig-tabs" role="tablist" aria-label="Signature creation method">
-                <button class="sig-tab active" type="button" role="tab" aria-selected="true" aria-controls="panelDraw" onclick="switchTab('draw',this)">
-                    <i class="fas fa-pen" aria-hidden="true"></i> Draw
-                </button>
-                <button class="sig-tab" type="button" role="tab" aria-selected="false" aria-controls="panelType" onclick="switchTab('type',this)">
-                    <i class="fas fa-keyboard" aria-hidden="true"></i> Type
-                </button>
-                <button class="sig-tab" type="button" role="tab" aria-selected="false" aria-controls="panelUpload" onclick="switchTab('upload',this)">
-                    <i class="fas fa-upload" aria-hidden="true"></i> Upload
-                </button>
+                <button class="sig-tab active" type="button" role="tab" aria-selected="true" aria-controls="panelDraw" onclick="switchTab('draw',this)"><i class="fas fa-pen"></i> Draw Ink</button>
+                <button class="sig-tab" type="button" role="tab" aria-selected="false" aria-controls="panelType" onclick="switchTab('type',this)"><i class="fas fa-keyboard"></i> Type Signature</button>
+                <button class="sig-tab" type="button" role="tab" aria-selected="false" aria-controls="panelUpload" onclick="switchTab('upload',this)"><i class="fas fa-upload"></i> Upload Image</button>
+                <button class="sig-tab" type="button" role="tab" aria-selected="false" aria-controls="panelStamp" onclick="switchTab('stamp',this)"><i class="fas fa-stamp"></i> Date &amp; Stamps</button>
             </div>
 
             <!-- DRAW -->
             <div class="sig-panel active" id="panelDraw" role="tabpanel">
                 <div class="draw-pad-wrap">
-                    <canvas id="drawCanvas" width="600" height="180" aria-label="Signature drawing area"></canvas>
+                    <div class="draw-pad-hint" id="drawHint">Draw your transparent ink signature here...</div>
+                    <canvas id="drawCanvas" width="640" height="180" aria-label="Signature drawing area"></canvas>
                     <div class="draw-controls">
-                        <button class="dc-btn" type="button" onclick="clearDraw()">
-                            <i class="fas fa-eraser" aria-hidden="true"></i> Clear
-                        </button>
-                        <button class="dc-btn" type="button" onclick="undoDraw()">
-                            <i class="fas fa-undo" aria-hidden="true"></i> Undo
-                        </button>
-                        <div class="tb-sep" style="background:#e2e8f0"></div>
-                        <div class="color-dot active" style="background:#000" onclick="setDrawColor('#000000',this)" role="radio" aria-checked="true" aria-label="Black color" tabindex="0"></div>
-                        <div class="color-dot" style="background:#1e40af" onclick="setDrawColor('#1e40af',this)" role="radio" aria-checked="false" aria-label="Blue color" tabindex="0"></div>
-                        <div class="color-dot" style="background:#dc2626" onclick="setDrawColor('#dc2626',this)" role="radio" aria-checked="false" aria-label="Red color" tabindex="0"></div>
-                        <div class="color-dot" style="background:#15803d" onclick="setDrawColor('#15803d',this)" role="radio" aria-checked="false" aria-label="Green color" tabindex="0"></div>
-                        <div class="tb-sep" style="background:#e2e8f0"></div>
-                        <label style="font-size:10px;font-weight:600;color:var(--text-light)" for="penSize">Size</label>
-                        <input type="range" class="pen-size" id="penSize" min="1" max="6" value="2" aria-label="Pen size">
+                        <button class="dc-btn" type="button" onclick="clearDraw()"><i class="fas fa-eraser"></i> Clear</button>
+                        <button class="dc-btn" type="button" onclick="undoDraw()"><i class="fas fa-undo"></i> Undo</button>
+                        <div class="color-dot active" style="background:#0f172a" onclick="setDrawColor('#0f172a',this)" role="radio" aria-checked="true" aria-label="Black ink"></div>
+                        <div class="color-dot" style="background:#1d4ed8" onclick="setDrawColor('#1d4ed8',this)" role="radio" aria-checked="false" aria-label="Blue ink"></div>
+                        <div class="color-dot" style="background:#dc2626" onclick="setDrawColor('#dc2626',this)" role="radio" aria-checked="false" aria-label="Red ink"></div>
+                        <div class="color-dot" style="background:#15803d" onclick="setDrawColor('#15803d',this)" role="radio" aria-checked="false" aria-label="Green ink"></div>
+                        <label style="font-size:11px;font-weight:700;color:var(--text-medium);margin-left:auto" for="penSize">Pen</label>
+                        <input type="range" class="pen-size" id="penSize" min="1" max="8" value="3">
                     </div>
                 </div>
-                <button class="dc-btn" type="button" style="width:100%;justify-content:center;padding:10px;background:var(--primary);color:#fff;border-color:var(--primary)" onclick="useDrawnSig()">
-                    <i class="fas fa-check" aria-hidden="true"></i> Use This Signature
+                <button class="dc-btn primary-fill" type="button" onclick="useDrawnSig()">
+                    <i class="fas fa-check"></i> Use Transparent Ink Signature
                 </button>
             </div>
 
             <!-- TYPE -->
             <div class="sig-panel" id="panelType" role="tabpanel">
-                <input type="text" class="text-sig-input" id="typeSigInput" placeholder="Type your name..." oninput="updateTypeSig()" aria-label="Type your signature name">
-                <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:6px">
-                    Font Style
-                </label>
+                <input type="text" class="text-sig-input" id="typeSigInput" placeholder="Type full name or initials..." oninput="updateTypeSig()">
                 <div class="font-pills" role="radiogroup" aria-label="Signature font style">
-                    <label class="font-pill active" onclick="setFont(this)">
-                        <input type="radio" name="font" value="'Dancing Script',cursive" checked="">
-                        <span style="font-family:'Dancing Script',cursive;font-size:18px">Signature</span>
-                    </label>
-                    <label class="font-pill" onclick="setFont(this)">
-                        <input type="radio" name="font" value="'Great Vibes',cursive">
-                        <span style="font-family:'Great Vibes',cursive;font-size:18px">Elegant</span>
-                    </label>
-                    <label class="font-pill" onclick="setFont(this)">
-                        <input type="radio" name="font" value="'Caveat',cursive">
-                        <span style="font-family:'Caveat',cursive;font-size:18px">Casual</span>
-                    </label>
-                    <label class="font-pill" onclick="setFont(this)">
-                        <input type="radio" name="font" value="'Homemade Apple',cursive">
-                        <span style="font-family:'Homemade Apple',cursive;font-size:16px">Handwritten</span>
-                    </label>
-                    <label class="font-pill" onclick="setFont(this)">
-                        <input type="radio" name="font" value="serif">
-                        <span style="font-family:serif;font-size:18px;font-style:italic">Classic</span>
-                    </label>
+                    <label class="font-pill active" onclick="setFont(this)"><input type="radio" name="font" value="'Dancing Script',cursive" checked=""><span style="font-family:'Dancing Script',cursive;font-size:19px">Dancing Script</span></label>
+                    <label class="font-pill" onclick="setFont(this)"><input type="radio" name="font" value="'Great Vibes',cursive"><span style="font-family:'Great Vibes',cursive;font-size:20px">Great Vibes</span></label>
+                    <label class="font-pill" onclick="setFont(this)"><input type="radio" name="font" value="'Caveat',cursive"><span style="font-family:'Caveat',cursive;font-size:19px">Caveat</span></label>
+                    <label class="font-pill" onclick="setFont(this)"><input type="radio" name="font" value="'Homemade Apple',cursive"><span style="font-family:'Homemade Apple',cursive;font-size:15px">Handwritten</span></label>
+                    <label class="font-pill" onclick="setFont(this)"><input type="radio" name="font" value="Georgia,serif"><span style="font-family:Georgia,serif;font-size:17px;font-style:italic">Classic Serif</span></label>
                 </div>
-                <div style="display:flex;gap:6px;align-items:center;margin-bottom:12px">
-                    <label style="font-size:10px;font-weight:700;color:var(--text-light)">Color:</label>
-                    <div class="color-dot active" style="background:#000" onclick="setTypeColor('#000000',this)" role="radio" aria-checked="true" aria-label="Black" tabindex="0"></div>
-                    <div class="color-dot" style="background:#1e40af" onclick="setTypeColor('#1e40af',this)" role="radio" aria-checked="false" aria-label="Blue" tabindex="0"></div>
-                    <div class="color-dot" style="background:#dc2626" onclick="setTypeColor('#dc2626',this)" role="radio" aria-checked="false" aria-label="Red" tabindex="0"></div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+                    <span style="font-size:11px;font-weight:700;color:var(--text-medium)">Ink Color:</span>
+                    <div class="color-dot active" style="background:#0f172a" onclick="setTypeColor('#0f172a',this)"></div>
+                    <div class="color-dot" style="background:#1d4ed8" onclick="setTypeColor('#1d4ed8',this)"></div>
+                    <div class="color-dot" style="background:#dc2626" onclick="setTypeColor('#dc2626',this)"></div>
                 </div>
                 <div class="text-sig-preview" id="typeSigPreview" aria-live="polite">
-                    <span style="color:#94a3b8;font-size:14px">Type your name above</span>
+                    <span style="color:#94a3b8;font-size:13.5px">Type your name above to preview</span>
                 </div>
-                <button class="dc-btn" type="button" style="width:100%;justify-content:center;padding:10px;background:var(--primary);color:#fff;border-color:var(--primary)" onclick="useTypedSig()">
-                    <i class="fas fa-check" aria-hidden="true"></i> Use This Signature
+                <button class="dc-btn primary-fill" type="button" onclick="useTypedSig()">
+                    <i class="fas fa-check"></i> Use Typed Signature
                 </button>
             </div>
 
             <!-- UPLOAD -->
             <div class="sig-panel" id="panelUpload" role="tabpanel">
-                <div class="sig-upload-zone" role="button" tabindex="0" aria-label="Upload signature image" onclick="document.getElementById('sigFileInput').click()" onkeydown="if(event.key==='Enter')document.getElementById('sigFileInput').click()">
-                    <i class="fas fa-cloud-upload-alt" style="font-size:28px;color:#a5b4fc;margin-bottom:8px;display:block" aria-hidden="true"></i>
-                    <p style="font-size:13px;font-weight:600;color:var(--text-dark);margin:0 0 4px">Upload Signature Image</p>
-                    <p style="font-size:11px;color:var(--text-light);margin:0">PNG with transparent background works best</p>
-                    <input type="file" id="sigFileInput" accept="image/*" hidden="" aria-label="Select signature image file">
+                <div class="sig-upload-zone" role="button" tabindex="0" onclick="document.getElementById('sigFileInput').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size:28px;color:var(--primary);margin-bottom:8px;display:block"></i>
+                    <p style="font-size:13.5px;font-weight:700;color:var(--text-dark);margin:0 0 4px">Upload Signature Photo or Stamp PNG</p>
+                    <p style="font-size:11.5px;color:var(--text-light);margin:0">Turn paper photos transparent automatically with White BG Removal</p>
+                    <input type="file" id="sigFileInput" accept="image/*" hidden="">
                 </div>
+                <label style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--text-dark);margin-bottom:10px;cursor:pointer;">
+                    <input type="checkbox" id="optCleanUploadBg" checked="" onchange="reprocessUploadedSig()" style="accent-color:var(--primary);width:16px;height:16px;">
+                    <span>Auto-remove white paper background (Transparent Ink)</span>
+                </label>
                 <div class="sig-upload-preview" id="sigUploadPreview" style="display:none">
                     <img id="sigUploadImg" alt="Uploaded signature preview">
                 </div>
-                <button class="dc-btn" id="useUploadBtn" type="button" style="width:100%;justify-content:center;padding:10px;background:var(--primary);color:#fff;border-color:var(--primary);display:none" onclick="useUploadedSig()">
-                    <i class="fas fa-check" aria-hidden="true"></i> Use This Signature
+                <button class="dc-btn primary-fill" id="useUploadBtn" type="button" style="display:none" onclick="useUploadedSig()">
+                    <i class="fas fa-check"></i> Use Uploaded Signature
                 </button>
+            </div>
+
+            <!-- DATE & STAMPS -->
+            <div class="sig-panel" id="panelStamp" role="tabpanel">
+                <div class="stamp-grid">
+                    <button type="button" class="stamp-btn" onclick="createStamp('date')"><i class="fas fa-calendar-check"></i> Today's Date Stamp</button>
+                    <button type="button" class="stamp-btn" onclick="createStamp('approved')"><i class="fas fa-check-double"></i> APPROVED Stamp</button>
+                    <button type="button" class="stamp-btn" onclick="createStamp('confidential')"><i class="fas fa-shield-alt"></i> CONFIDENTIAL Stamp</button>
+                    <button type="button" class="stamp-btn" onclick="createStamp('custom')"><i class="fas fa-tag"></i> Custom Text / Initials</button>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <input type="text" id="customStampText" class="text-sig-input" style="flex:1;min-width:180px;font-size:14px;padding:9px 12px;margin-bottom:0;" placeholder="Custom stamp text (e.g. Initials YP or Verified)" value="">
+                    <select id="stampColor" style="padding:9px 12px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-card);color:var(--text-dark);font-size:13px;font-weight:600;">
+                        <option value="#1d4ed8">Blue Ink</option>
+                        <option value="#15803d">Green Stamp</option>
+                        <option value="#dc2626">Red Stamp</option>
+                        <option value="#0f172a">Black Ink</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <!-- PDF Workspace -->
         <div class="info-banner" role="note">
             <i class="fas fa-mouse-pointer" style="flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
-            <span>Click the PDF where you want to place your signature. <strong>Drag to move</strong>, use corner handle to <strong>resize</strong>. Add multiple signatures on different pages.</span>
+            <span>Click anywhere on the PDF page below to stamp your active signature/date. <strong>Drag to move</strong>, drag bottom-right corner to <strong>resize proportionally</strong>, or apply to all pages at once.</span>
         </div>
 
         <div class="workspace" aria-label="PDF signing workspace">
             <div class="ws-toolbar">
-                <span class="tb-text" id="sigStatus" aria-live="polite">
-                    <i class="fas fa-pen-nib" aria-hidden="true"></i> No signature selected
-                </span>
+                <span class="tb-text" id="sigStatus" aria-live="polite"><i class="fas fa-pen-nib"></i> Select or create a signature above</span>
                 <div class="tb-sep"></div>
-                <button class="tb-btn" type="button" onclick="clearAllSigs()">
-                    <i class="fas fa-trash" aria-hidden="true"></i> Clear All
-                </button>
-                <button class="tb-btn" type="button" onclick="undoSig()">
-                    <i class="fas fa-undo" aria-hidden="true"></i> Undo
-                </button>
+                <button class="tb-btn" type="button" onclick="applySelectedToAllPages()" title="Copy selected signature to every page"><i class="fas fa-clone"></i> Apply All Pages</button>
+                <button class="tb-btn" type="button" onclick="undoSig()"><i class="fas fa-undo"></i> Undo</button>
+                <button class="tb-btn" type="button" onclick="clearAllSigs()"><i class="fas fa-trash"></i> Clear</button>
                 <div class="tb-spacer"></div>
-                <button class="tb-btn" type="button" onclick="goPrev()" id="prevBtn" disabled="" aria-label="Previous page">
-                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
-                </button>
-                <span class="tb-text" id="pageText" aria-live="polite">1/1</span>
-                <button class="tb-btn" type="button" onclick="goNext()" id="nextBtn" aria-label="Next page">
-                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                </button>
+                <button class="tb-btn" type="button" onclick="changeZoom(-0.2)" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+                <span class="tb-text" id="zoomLabel">100%</span>
+                <button class="tb-btn" type="button" onclick="changeZoom(0.2)" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+                <div class="tb-sep"></div>
+                <button class="tb-btn" type="button" onclick="goPrev()" id="prevBtn" disabled=""><i class="fas fa-chevron-left"></i></button>
+                <span class="tb-text" id="pageText">1/1</span>
+                <button class="tb-btn" type="button" onclick="goNext()" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
             </div>
             <div class="ws-scroll" id="wsScroll">
                 <div class="ws-con" id="wsCon" aria-label="PDF page - click to place signature">
@@ -669,7 +641,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         </div>
 
         <button class="action-btn" id="signBtn" type="button" onclick="doSign()">
-            <i class="fas fa-signature" aria-hidden="true"></i> Apply Signature &amp; Download
+            <i class="fas fa-signature" aria-hidden="true"></i> Apply Signatures &amp; Create PDF (<span id="placedTotalBadge">0</span>)
         </button>
     </div>
 
@@ -678,7 +650,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <div class="processing-area" role="status" aria-live="polite">
             <div class="spinner" aria-hidden="true"></div>
             <h3 id="processTitle">Signing PDF...</h3>
-            <p id="processSubtitle">Embedding signatures</p>
+            <p id="processSubtitle">Embedding transparent signatures</p>
             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
@@ -689,36 +661,26 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <!-- ── RESULT ── -->
     <div id="resultSection" data-section="" style="display:none">
         <div class="result-area">
-            <div class="result-icon success" aria-hidden="true">
-                <i class="fas fa-check-circle"></i>
-            </div>
+            <div class="result-icon success" aria-hidden="true"><i class="fas fa-check-circle"></i></div>
             <h2>PDF Signed Successfully! ✍️</h2>
-            <p>Your signature has been embedded in the PDF</p>
+            <p>Your transparent signatures and stamps are permanently embedded</p>
             <div class="result-stats">
                 <div class="result-stat"><strong id="rPages">0</strong><small>Pages</small></div>
-                <div class="result-stat"><strong id="rSigs">0</strong><small>Signatures</small></div>
+                <div class="result-stat"><strong id="rSigs">0</strong><small>Placed Items</small></div>
                 <div class="result-stat"><strong id="rSize">0 KB</strong><small>File Size</small></div>
             </div>
             <div class="result-info glass-light">
-                <div class="info-item">
-                    <i class="fas fa-file-pdf" style="color:#dc2626" aria-hidden="true"></i>
-                    <span id="rFileName">document_signed.pdf</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-check-circle" style="color:#16a34a" aria-hidden="true"></i>
-                    <span>Signatures permanently embedded</span>
-                </div>
+                <div class="info-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i><span id="rFileName">document_signed.pdf</span></div>
+                <div class="info-item"><i class="fas fa-check-circle" style="color:var(--accent)"></i><span>Transparent vector overlay embedded</span></div>
             </div>
             <button class="download-btn" type="button" onclick="doDownload()">
                 <i class="fas fa-download" aria-hidden="true"></i> Download Signed PDF
             </button>
             <div class="result-actions">
-                <button class="btn-outline" type="button" onclick="resetTool()">
-                    <i class="fas fa-redo" aria-hidden="true"></i> Sign Another
-                </button>
-                <button class="btn-outline" type="button" onclick="goBackEdit()">
-                    <i class="fas fa-edit" aria-hidden="true"></i> Edit Signatures
-                </button>
+                <button class="btn-outline" type="button" onclick="resetTool()"><i class="fas fa-redo"></i> Sign Another</button>
+                <button class="btn-outline" type="button" onclick="previewSignedPdf()"><i class="fas fa-eye"></i> Preview PDF</button>
+                <button class="btn-outline" type="button" onclick="goBackEdit()"><i class="fas fa-edit"></i> Edit Signatures</button>
+                <a class="btn-outline" href="protect-pdf.html" style="text-decoration:none;"><i class="fas fa-lock"></i> Protect PDF</a>
             </div>
         </div>
     </div>
@@ -727,6 +689,19 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 </div>
 </section>
 </main>
+
+<!-- Preview Modal -->
+<div class="sg-modal" id="pdfPreviewModal" role="dialog" aria-modal="true" aria-labelledby="pdfPreviewTitle">
+    <div class="sg-modal-box">
+        <div class="sg-modal-head">
+            <h4 id="pdfPreviewTitle">Signed PDF Preview</h4>
+            <button type="button" class="btn-danger-sm" onclick="closePdfModal()"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="sg-modal-body">
+            <iframe id="pdfPreviewFrame" title="Signed PDF Preview"></iframe>
+        </div>
+    </div>
+</div>
 
 <!-- ═══════════════════════════════════════
      RELATED TOOLS
@@ -737,32 +712,17 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             <h2 id="related-heading">Related PDF Tools</h2>
             <p>Everything you need to work with PDFs — all free, all browser-based.</p>
         </div>
-        <div class="related-grid" id="relatedGrid"></div>
+        <div class="related-grid">
+            <a href="merge-pdf.html" class="related-card" aria-label="Merge PDF"><div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div><h4>Merge PDF</h4><p>Combine multiple PDFs into one</p></a>
+            <a href="split-pdf.html" class="related-card" aria-label="Split PDF"><div class="related-icon ri-blue"><i class="fas fa-cut" aria-hidden="true"></i></div><h4>Split PDF</h4><p>Extract or separate PDF pages</p></a>
+            <a href="compress-pdf.html" class="related-card" aria-label="Compress PDF"><div class="related-icon ri-green"><i class="fas fa-compress-alt" aria-hidden="true"></i></div><h4>Compress PDF</h4><p>Reduce PDF size accurately</p></a>
+            <a href="protect-pdf.html" class="related-card" aria-label="Protect PDF"><div class="related-icon ri-red"><i class="fas fa-lock" aria-hidden="true"></i></div><h4>Protect PDF</h4><p>Add password security</p></a>
+            <a href="pdf-to-pdfa.html" class="related-card" aria-label="PDF to PDF/A"><div class="related-icon ri-indigo"><i class="fas fa-archive" aria-hidden="true"></i></div><h4>PDF to PDF/A</h4><p>Convert to ISO archival PDF/A</p></a>
+            <a href="scan-to-pdf.html" class="related-card" aria-label="Scan to PDF"><div class="related-icon ri-pink"><i class="fas fa-camera" aria-hidden="true"></i></div><h4>Scan to PDF</h4><p>Scan &amp; enhance document photos</p></a>
+        </div>
     </div>
 </section>
-<script>
-(function renderRelated(){
-    const tools=[
-        {href:'merge-pdf.html',    icon:'fa-object-group',  color:'icon-teal',   label:'Merge PDF',     desc:'Combine multiple PDFs'},
-        {href:'split-pdf.html',    icon:'fa-cut',           color:'icon-blue',   label:'Split PDF',     desc:'Divide into pages'},
-        {href:'compress-pdf.html', icon:'fa-compress-alt',  color:'icon-green',  label:'Compress PDF',  desc:'Reduce file size'},
-        {href:'rotate-pdf.html',   icon:'fa-redo',          color:'icon-indigo', label:'Rotate PDF',    desc:'Fix orientation'},
-        {href:'jpg-to-pdf.html',   icon:'fa-image',         color:'icon-orange', label:'JPG to PDF',    desc:'Convert images'},
-        {href:'pdf-to-jpg.html',   icon:'fa-file-image',    color:'icon-pink',   label:'PDF to JPG',    desc:'Extract pages'},
-        {href:'unlock-pdf.html',   icon:'fa-unlock-alt',    color:'icon-red',    label:'Unlock PDF',    desc:'Remove password'},
-    ];
-    const g=document.getElementById('relatedGrid');
-    if(!g)return;
-    const f=document.createDocumentFragment();
-    tools.forEach(({href,icon,color,label,desc})=>{
-        const a=document.createElement('a');
-        a.href=href; a.className='related-card glass'; a.setAttribute('aria-label',label);
-        a.innerHTML=`<div class="related-icon ${color}"><i class="fas ${icon}" aria-hidden="true"></i></div><h4>${label}</h4><p>${desc}</p>`;
-        f.appendChild(a);
-    });
-    g.appendChild(f);
-})();
-</script>
+
 
 <!-- ═══════════════════════════════════════
      HOW TO
@@ -936,582 +896,651 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="js/tool-page.js"></script>
 
+
+
 <script>
-/* ════════════════════════════════════════
-   FOOTER YEAR
-════════════════════════════════════════ */
-// ✅ આ safe છે
 const yearEl = document.getElementById('currentYear');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
-/* ════════════════════════════════════════
-   PDF.js WORKER
-════════════════════════════════════════ */
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 /* ════════════════════════════════════════
    STATE
 ════════════════════════════════════════ */
-let rawBytes=null,selectedFile=null,pdfDoc=null;
-let totalPages=0,curPage=1,renderScale=1;
-let activeSigDataUrl=null;
-let savedSignatures=[];
-let placedSigs=[];
-let resultBlob=null;
+let rawBytes = null, selectedFile = null, pdfDoc = null;
+let totalPages = 0, curPage = 1, zoomFactor = 1.0, renderScale = 1;
+let activeSigDataUrl = null, activeSigAspect = 3.0;
+let uploadedRawDataUrl = null;
+let savedSignatures = [];
+let placedSigs = [];
+let selectedSigId = null;
+let resultBlob = null, previewUrl = null;
 
 // Draw state
-let drawCtx,isDrawing=false,drawColor='#000000',drawPaths=[],currentPath=[];
+let drawCtx = null, drawListenersBound = false, isDrawing = false, drawColor = '#0f172a', drawPaths = [], currentPath = [];
+// Drag/Resize state
+let dragSig = null, dragOff = { x: 0, y: 0 }, resizeSig = null, resizeStart = { w: 0, h: 0, mx: 0, my: 0, aspect: 3 };
 
-// Drag state
-let dragSig=null,dragOff={x:0,y:0},resizeSig=null,resizeStart={w:0,h:0,mx:0,my:0};
-
-/* ════════════════════════════════════════
-   MOBILE MENU
-════════════════════════════════════════ */
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function () {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        const isOpen = nav.classList.toggle('open');
-        ham.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    };
-}
-
-/* Close on Escape */
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        if (nav) nav.classList.remove('open');
-        if (ham) ham.setAttribute('aria-expanded', 'false');
+function showSection(id) {
+    document.querySelectorAll('[data-section]').forEach(s => { s.style.display = 'none'; });
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block';
+    if (id === 'processingSection' || id === 'resultSection' || id === 'uploadSection' || window.scrollY > 200) {
+        requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
-});
-
-/* ════════════════════════════════════════
-   HELPERS
-════════════════════════════════════════ */
-function toggleFaq(el){
-    const o=el.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
-    if(!o)el.classList.add('open');
 }
 
-function showSection(id){
-    document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');
-    document.getElementById(id).style.display='block';
+function setProgress(p, t, s) {
+    const f = document.getElementById('progressFill'), pt = document.getElementById('progressText'), bar = document.querySelector('.progress-bar');
+    if (f) f.style.width = p + '%';
+    if (pt) pt.textContent = Math.round(p) + '%';
+    if (bar) bar.setAttribute('aria-valuenow', Math.round(p));
+    if (t) document.getElementById('processTitle').textContent = t;
+    if (s) document.getElementById('processSubtitle').textContent = s;
 }
 
-function setProgress(p,t,s){
-    const f=document.getElementById('progressFill');
-    const pt=document.getElementById('progressText');
-    const bar=document.querySelector('.progress-bar');
-    if(f)f.style.width=p+'%';
-    if(pt)pt.textContent=Math.round(p)+'%';
-    if(bar)bar.setAttribute('aria-valuenow',Math.round(p));
-    if(t)document.getElementById('processTitle').textContent=t;
-    if(s)document.getElementById('processSubtitle').textContent=s;
+function szF(b) { if (!b) return '0 B'; const k = 1024, u = ['B','KB','MB','GB']; const i = Math.floor(Math.log(b)/Math.log(k)); return (b/Math.pow(k,i)).toFixed(1)+' '+u[i]; }
+function showError(m) { document.getElementById('errorText').textContent = m; document.getElementById('errorBox').style.display = 'flex'; setTimeout(() => hideError(), 7000); }
+function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+function tick() { return new Promise(r => setTimeout(r, 15)); }
+function notify(m, t) { if (typeof window.showToast === 'function') window.showToast(m, t || 'success'); }
+
+function getDataUrlAspect(dataUrl) {
+    return new Promise(res => {
+        const im = new Image();
+        im.onload = () => res(im.naturalWidth && im.naturalHeight ? im.naturalWidth / im.naturalHeight : 3);
+        im.onerror = () => res(3);
+        im.src = dataUrl;
+    });
 }
-
-function szF(b){
-    if(!b)return'0 B';
-    const k=1024,u=['B','KB','MB','GB'];
-    const i=Math.floor(Math.log(b)/Math.log(k));
-    return(b/Math.pow(k,i)).toFixed(1)+' '+u[i];
-}
-
-function showError(m){
-    document.getElementById('errorText').textContent=m;
-    document.getElementById('errorBox').style.display='flex';
-    setTimeout(()=>document.getElementById('errorBox').style.display='none',7000);
-}
-
-function hideError(){document.getElementById('errorBox').style.display='none';}
-
-function tick(){return new Promise(r=>setTimeout(r,20));}
 
 /* ════════════════════════════════════════
    FILE UPLOAD
 ════════════════════════════════════════ */
-const dropZone=document.getElementById('dropZone');
-const fileInput=document.getElementById('fileInput');
-
-dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
-dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop',e=>{
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);
+const dropZone = document.getElementById('dropZone'), fileInput = document.getElementById('fileInput');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
 });
-fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
 
-async function handleFile(file){
+async function handleFile(file) {
     hideError();
-    if(!file.name.toLowerCase().endsWith('.pdf')){showError('Select a PDF file.');return;}
-    selectedFile=file;
-    rawBytes=new Uint8Array(await file.arrayBuffer());
-    document.getElementById('fileName').textContent=file.name;
-    document.getElementById('fileSize').textContent=szF(file.size);
-    try{
-        pdfDoc=await pdfjsLib.getDocument({data:rawBytes.slice(0)}).promise;
-        totalPages=pdfDoc.numPages;curPage=1;placedSigs=[];
-        document.getElementById('pageCount').textContent=totalPages;
+    if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+        showError('Select a valid PDF file.'); return;
+    }
+    selectedFile = file;
+    rawBytes = new Uint8Array(await file.arrayBuffer());
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileSize').textContent = szF(file.size);
+    try {
+        pdfDoc = await pdfjsLib.getDocument({ data: rawBytes.slice(0) }).promise;
+        totalPages = pdfDoc.numPages; curPage = 1; zoomFactor = 1.0; placedSigs = []; selectedSigId = null;
+        document.getElementById('pageCount').textContent = totalPages;
+        document.getElementById('zoomLabel').textContent = '100%';
+        updatePlacedCount();
         showSection('editorSection');
         loadSavedSigs();
         initDrawPad();
         await renderPage();
-    }catch(e){showError('Failed to load PDF: '+e.message);}
+    } catch (e) { showError('Failed to load PDF: ' + e.message); }
 }
 
 /* ════════════════════════════════════════
-   SIGNATURE TABS
+   SIGNATURE TABS & TRANSPARENT DRAW PAD
 ════════════════════════════════════════ */
-function switchTab(tab,btn){
-    document.querySelectorAll('.sig-tab').forEach(t=>{
-        t.classList.remove('active');
-        t.setAttribute('aria-selected','false');
-    });
-    document.querySelectorAll('.sig-panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected','true');
-    document.getElementById('panel'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+function switchTab(tab, btn) {
+    document.querySelectorAll('.sig-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+    document.querySelectorAll('.sig-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+    document.getElementById('panel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
 }
 
-/* ════════════════════════════════════════
-   DRAW PAD
-════════════════════════════════════════ */
-function initDrawPad(){
-    const c=document.getElementById('drawCanvas');
-    drawCtx=c.getContext('2d');
-    c.width=600;c.height=180;
-    drawCtx.fillStyle='#fff';drawCtx.fillRect(0,0,600,180);
-    drawCtx.lineCap='round';drawCtx.lineJoin='round';
-    drawPaths=[];currentPath=[];
-    c.addEventListener('pointerdown',drawStart);
-    c.addEventListener('pointermove',drawMove);
-    c.addEventListener('pointerup',drawEnd);
-    c.addEventListener('pointerleave',drawEnd);
-}
-
-function getDrawPos(e){
-    const r=document.getElementById('drawCanvas').getBoundingClientRect();
-    const scaleX=600/r.width;
-    return{x:(e.clientX-r.left)*scaleX,y:(e.clientY-r.top)*(180/r.height)};
-}
-
-function drawStart(e){
-    e.preventDefault();isDrawing=true;
-    const p=getDrawPos(e);currentPath=[p];
-    drawCtx.beginPath();drawCtx.moveTo(p.x,p.y);
-    drawCtx.strokeStyle=drawColor;
-    drawCtx.lineWidth=parseInt(document.getElementById('penSize').value)||2;
-}
-
-function drawMove(e){
-    if(!isDrawing)return;e.preventDefault();
-    const p=getDrawPos(e);currentPath.push(p);
-    drawCtx.lineTo(p.x,p.y);drawCtx.stroke();
-}
-
-function drawEnd(){
-    if(!isDrawing)return;isDrawing=false;
-    if(currentPath.length>1)drawPaths.push({points:[...currentPath],color:drawColor,size:parseInt(document.getElementById('penSize').value)||2});
-    currentPath=[];
-}
-
-function clearDraw(){
-    drawCtx.fillStyle='#fff';drawCtx.fillRect(0,0,600,180);
-    drawPaths=[];
-}
-
-function undoDraw(){
-    drawPaths.pop();
-    drawCtx.fillStyle='#fff';drawCtx.fillRect(0,0,600,180);
-    drawPaths.forEach(p=>{
-        drawCtx.beginPath();drawCtx.strokeStyle=p.color;drawCtx.lineWidth=p.size;
-        p.points.forEach((pt,i)=>{if(i===0)drawCtx.moveTo(pt.x,pt.y);else{drawCtx.lineTo(pt.x,pt.y);drawCtx.stroke()}});
-    });
-}
-
-function setDrawColor(c,el){
-    drawColor=c;
-    document.querySelectorAll('#panelDraw .color-dot').forEach(d=>{
-        d.classList.remove('active');
-        d.setAttribute('aria-checked','false');
-    });
-    el.classList.add('active');
-    el.setAttribute('aria-checked','true');
-}
-
-function useDrawnSig(){
-    if(drawPaths.length===0){showError('Please draw your signature first.');return;}
-    const c=document.getElementById('drawCanvas');
-    const imgData=drawCtx.getImageData(0,0,600,180);
-    const d=imgData.data;let t=180,b=0,l=600,r=0;
-    for(let y=0;y<180;y++)for(let x=0;x<600;x++){
-        const i=(y*600+x)*4;
-        if(d[i]<250||d[i+1]<250||d[i+2]<250){if(y<t)t=y;if(y>b)b=y;if(x<l)l=x;if(x>r)r=x;}
+function initDrawPad() {
+    const c = document.getElementById('drawCanvas');
+    drawCtx = c.getContext('2d', { willReadFrequently: true });
+    c.width = 640; c.height = 180;
+    drawCtx.clearRect(0, 0, 640, 180); // Transparent canvas!
+    drawCtx.lineCap = 'round'; drawCtx.lineJoin = 'round';
+    drawPaths = []; currentPath = [];
+    document.getElementById('drawHint').style.display = 'flex';
+    if (!drawListenersBound) {
+        c.addEventListener('pointerdown', drawStart);
+        c.addEventListener('pointermove', drawMove);
+        c.addEventListener('pointerup', drawEnd);
+        c.addEventListener('pointercancel', drawEnd);
+        c.addEventListener('pointerleave', drawEnd);
+        drawListenersBound = true;
     }
-    const pad=8;t=Math.max(0,t-pad);b=Math.min(179,b+pad);l=Math.max(0,l-pad);r=Math.min(599,r+pad);
-    const tw=r-l+1,th=b-t+1;
-    const tc=document.createElement('canvas');tc.width=tw;tc.height=th;
-    const tctx=tc.getContext('2d');tctx.drawImage(c,l,t,tw,th,0,0,tw,th);
-    activeSigDataUrl=tc.toDataURL('image/png');
-    saveSig(activeSigDataUrl);
-    updateSigStatus();
+}
+
+function getDrawPos(e) {
+    const r = document.getElementById('drawCanvas').getBoundingClientRect();
+    return { x: (e.clientX - r.left) * (640 / r.width), y: (e.clientY - r.top) * (180 / r.height) };
+}
+
+function drawStart(e) {
+    e.preventDefault();
+    isDrawing = true;
+    document.getElementById('drawHint').style.display = 'none';
+    const p = getDrawPos(e); currentPath = [p];
+    drawCtx.beginPath(); drawCtx.moveTo(p.x, p.y);
+    drawCtx.strokeStyle = drawColor;
+    drawCtx.lineWidth = parseInt(document.getElementById('penSize').value, 10) || 3;
+}
+
+function drawMove(e) {
+    if (!isDrawing) return; e.preventDefault();
+    const p = getDrawPos(e); currentPath.push(p);
+    drawCtx.lineTo(p.x, p.y); drawCtx.stroke();
+}
+
+function drawEnd() {
+    if (!isDrawing) return; isDrawing = false;
+    if (currentPath.length > 0) {
+        drawPaths.push({ points: [...currentPath], color: drawColor, size: parseInt(document.getElementById('penSize').value, 10) || 3 });
+    }
+    currentPath = [];
+}
+
+function clearDraw() {
+    drawCtx.clearRect(0, 0, 640, 180);
+    drawPaths = [];
+    document.getElementById('drawHint').style.display = 'flex';
+}
+
+function undoDraw() {
+    drawPaths.pop();
+    drawCtx.clearRect(0, 0, 640, 180);
+    drawPaths.forEach(p => {
+        drawCtx.beginPath(); drawCtx.strokeStyle = p.color; drawCtx.lineWidth = p.size;
+        p.points.forEach((pt, i) => {
+            if (i === 0) drawCtx.moveTo(pt.x, pt.y);
+            else drawCtx.lineTo(pt.x, pt.y);
+        });
+        drawCtx.stroke();
+    });
+    if (drawPaths.length === 0) document.getElementById('drawHint').style.display = 'flex';
+}
+
+function setDrawColor(c, el) {
+    drawColor = c;
+    document.querySelectorAll('#panelDraw .color-dot').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function useDrawnSig() {
+    if (!drawPaths.length) { showError('Please draw your signature first.'); return; }
+    const c = document.getElementById('drawCanvas');
+    const imgData = drawCtx.getImageData(0, 0, 640, 180);
+    const d = imgData.data;
+    let t = 180, b = 0, l = 640, r = 0;
+    for (let y = 0; y < 180; y++) {
+        for (let x = 0; x < 640; x++) {
+            if (d[(y * 640 + x) * 4 + 3] > 10) {
+                if (y < t) t = y; if (y > b) b = y;
+                if (x < l) l = x; if (x > r) r = x;
+            }
+        }
+    }
+    if (b < t || r < l) { showError('Please draw a clearer signature.'); return; }
+    const pad = 8;
+    t = Math.max(0, t - pad); b = Math.min(179, b + pad);
+    l = Math.max(0, l - pad); r = Math.min(639, r + pad);
+    const tw = r - l + 1, th = b - t + 1;
+    const tc = document.createElement('canvas'); tc.width = tw; tc.height = th;
+    tc.getContext('2d').drawImage(c, l, t, tw, th, 0, 0, tw, th);
+    setActiveSignature(tc.toDataURL('image/png'), tw / th, true);
 }
 
 /* ════════════════════════════════════════
    TYPE SIGNATURE
 ════════════════════════════════════════ */
-let typeFont="'Dancing Script',cursive",typeColor='#000000';
-
-function setFont(el){
-    document.querySelectorAll('.font-pill').forEach(p=>p.classList.remove('active'));
+let typeFont = "'Dancing Script',cursive", typeColor = '#0f172a';
+function setFont(el) {
+    document.querySelectorAll('.font-pill').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
-    typeFont=el.querySelector('input').value;
+    typeFont = el.querySelector('input').value;
     updateTypeSig();
 }
-
-function setTypeColor(c,el){
-    typeColor=c;
-    document.querySelectorAll('#panelType .color-dot').forEach(d=>{
-        d.classList.remove('active');
-        d.setAttribute('aria-checked','false');
-    });
+function setTypeColor(c, el) {
+    typeColor = c;
+    document.querySelectorAll('#panelType .color-dot').forEach(d => d.classList.remove('active'));
     el.classList.add('active');
-    el.setAttribute('aria-checked','true');
     updateTypeSig();
 }
-
-function updateTypeSig(){
-    const text=document.getElementById('typeSigInput').value;
-    const pv=document.getElementById('typeSigPreview');
-    if(!text){pv.innerHTML='<span style="color:#94a3b8;font-size:14px">Type your name above</span>';return;}
-    pv.innerHTML=`<span style="font-family:${typeFont};font-size:36px;color:${typeColor}">${text.replace(/</g,'&lt;')}</span>`;
+function updateTypeSig() {
+    const text = document.getElementById('typeSigInput').value;
+    const pv = document.getElementById('typeSigPreview');
+    if (!text) { pv.innerHTML = '<span style="color:#94a3b8;font-size:13.5px">Type your name above to preview</span>'; return; }
+    pv.innerHTML = '<span style="font-family:' + typeFont + ';font-size:36px;color:' + typeColor + '">' + text.replace(/</g, '&lt;') + '</span>';
 }
-
-function useTypedSig(){
-    const text=document.getElementById('typeSigInput').value.trim();
-    if(!text){showError('Please type your name first.');return;}
-    const c=document.createElement('canvas');
-    c.width=500;c.height=100;
-    const ctx=c.getContext('2d');
-    ctx.font=`48px ${typeFont}`;ctx.fillStyle=typeColor;
-    ctx.textBaseline='middle';ctx.textAlign='center';
-    ctx.fillText(text,250,50);
-    const id=ctx.getImageData(0,0,500,100);const d=id.data;
-    let t=100,b=0,l=500,r=0;
-    for(let y=0;y<100;y++)for(let x=0;x<500;x++){const i=(y*500+x)*4;if(d[i+3]>10){if(y<t)t=y;if(y>b)b=y;if(x<l)l=x;if(x>r)r=x;}}
-    const pd=6;t=Math.max(0,t-pd);b=Math.min(99,b+pd);l=Math.max(0,l-pd);r=Math.min(499,r+pd);
-    const tc=document.createElement('canvas');tc.width=r-l+1;tc.height=b-t+1;
-    tc.getContext('2d').drawImage(c,l,t,tc.width,tc.height,0,0,tc.width,tc.height);
-    activeSigDataUrl=tc.toDataURL('image/png');
-    saveSig(activeSigDataUrl);updateSigStatus();
+function useTypedSig() {
+    const text = document.getElementById('typeSigInput').value.trim();
+    if (!text) { showError('Please type your name first.'); return; }
+    const c = document.createElement('canvas'); c.width = 700; c.height = 140;
+    const ctx = c.getContext('2d');
+    ctx.font = '56px ' + typeFont; ctx.fillStyle = typeColor;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(text, 350, 70);
+    const d = ctx.getImageData(0, 0, 700, 140).data;
+    let t = 140, b = 0, l = 700, r = 0;
+    for (let y = 0; y < 140; y++) {
+        for (let x = 0; x < 700; x++) {
+            if (d[(y * 700 + x) * 4 + 3] > 10) {
+                if (y < t) t = y; if (y > b) b = y;
+                if (x < l) l = x; if (x > r) r = x;
+            }
+        }
+    }
+    const pd = 8; t = Math.max(0, t - pd); b = Math.min(139, b + pd); l = Math.max(0, l - pd); r = Math.min(699, r + pd);
+    const tw = Math.max(10, r - l + 1), th = Math.max(10, b - t + 1);
+    const tc = document.createElement('canvas'); tc.width = tw; tc.height = th;
+    tc.getContext('2d').drawImage(c, l, t, tw, th, 0, 0, tw, th);
+    setActiveSignature(tc.toDataURL('image/png'), tw / th, true);
 }
 
 /* ════════════════════════════════════════
-   UPLOAD SIGNATURE
+   UPLOAD SIGNATURE + WHITE PAPER REMOVAL
 ════════════════════════════════════════ */
-document.getElementById('sigFileInput').addEventListener('change',function(){
-    const file=this.files[0];if(!file)return;
-    const fr=new FileReader();
-    fr.onload=()=>{
-        document.getElementById('sigUploadImg').src=fr.result;
-        document.getElementById('sigUploadPreview').style.display='block';
-        document.getElementById('useUploadBtn').style.display='flex';
-        activeSigDataUrl=fr.result;
-    };
+document.getElementById('sigFileInput').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    const fr = new FileReader();
+    fr.onload = () => { uploadedRawDataUrl = fr.result; reprocessUploadedSig(); };
     fr.readAsDataURL(file);
 });
 
-function useUploadedSig(){
-    if(!activeSigDataUrl){showError('Upload a signature image first.');return;}
-    saveSig(activeSigDataUrl);updateSigStatus();
+async function reprocessUploadedSig() {
+    if (!uploadedRawDataUrl) return;
+    const removeBg = document.getElementById('optCleanUploadBg').checked;
+    const im = new Image();
+    await new Promise(res => { im.onload = res; im.src = uploadedRawDataUrl; });
+
+    const maxW = 700;
+    const scale = Math.min(1, maxW / Math.max(im.naturalWidth, im.naturalHeight));
+    const w = Math.max(10, Math.round(im.naturalWidth * scale));
+    const h = Math.max(10, Math.round(im.naturalHeight * scale));
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(im, 0, 0, w, h);
+
+    if (removeBg) {
+        const id = ctx.getImageData(0, 0, w, h);
+        const d = id.data;
+        for (let i = 0; i < d.length; i += 4) {
+            const minC = Math.min(d[i], d[i + 1], d[i + 2]);
+            if (minC > 215) d[i + 3] = 0;
+            else if (minC > 180) d[i + 3] = Math.round(d[i + 3] * ((215 - minC) / 35));
+        }
+        ctx.putImageData(id, 0, 0);
+    }
+
+    const outUrl = c.toDataURL('image/png');
+    document.getElementById('sigUploadImg').src = outUrl;
+    document.getElementById('sigUploadPreview').style.display = 'block';
+    document.getElementById('useUploadBtn').style.display = 'flex';
+    activeSigDataUrl = outUrl;
+    activeSigAspect = w / h;
+}
+
+function useUploadedSig() {
+    if (!activeSigDataUrl) { showError('Upload a signature image first.'); return; }
+    setActiveSignature(activeSigDataUrl, activeSigAspect, true);
+}
+
+/* ════════════════════════════════════════
+   DATE & STAMPS
+════════════════════════════════════════ */
+function createStamp(kind) {
+    const color = document.getElementById('stampColor').value || '#1d4ed8';
+    let label = '';
+    if (kind === 'date') {
+        label = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    } else if (kind === 'approved') {
+        label = '✓ APPROVED · ' + new Date().toLocaleDateString('en-GB');
+    } else if (kind === 'confidential') {
+        label = 'CONFIDENTIAL';
+    } else {
+        label = document.getElementById('customStampText').value.trim() || 'VERIFIED';
+    }
+
+    const c = document.createElement('canvas');
+    const isBox = kind === 'approved' || kind === 'confidential';
+    c.width = 480; c.height = isBox ? 92 : 68;
+    const ctx = c.getContext('2d');
+    ctx.font = 'bold 28px "Plus Jakarta Sans", Arial, sans-serif';
+    const textW = ctx.measureText(label).width;
+    const boxW = Math.min(460, Math.max(150, Math.round(textW + 44)));
+    c.width = boxW;
+
+    if (isBox) {
+        ctx.strokeStyle = color; ctx.lineWidth = 4;
+        ctx.strokeRect(4, 4, boxW - 8, c.height - 8);
+    }
+    ctx.font = 'bold 26px "Plus Jakarta Sans", Arial, sans-serif';
+    ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(label, boxW / 2, c.height / 2);
+
+    setActiveSignature(c.toDataURL('image/png'), boxW / c.height, false);
+}
+
+async function setActiveSignature(dataUrl, aspect, shouldSave) {
+    activeSigDataUrl = dataUrl;
+    activeSigAspect = aspect || await getDataUrlAspect(dataUrl);
+    if (shouldSave) saveSig(dataUrl);
+    updateSigStatus();
+    notify('Ready — click anywhere on the PDF page to place!', 'success');
 }
 
 /* ════════════════════════════════════════
    SAVED SIGNATURES
 ════════════════════════════════════════ */
-function loadSavedSigs(){
-    try{savedSignatures=JSON.parse(localStorage.getItem('pdftools_sigs')||'[]');}
-    catch(e){savedSignatures=[];}
+function loadSavedSigs() {
+    try { savedSignatures = JSON.parse(localStorage.getItem('pdftools_sigs') || '[]'); } catch (e) { savedSignatures = []; }
     renderSavedSigs();
 }
-
-function saveSig(dataUrl){
-    if(!savedSignatures.includes(dataUrl)){
+function saveSig(dataUrl) {
+    if (!savedSignatures.includes(dataUrl)) {
         savedSignatures.unshift(dataUrl);
-        if(savedSignatures.length>5)savedSignatures.pop();
-        try{localStorage.setItem('pdftools_sigs',JSON.stringify(savedSignatures));}catch(e){}
+        if (savedSignatures.length > 5) savedSignatures.pop();
+        try { localStorage.setItem('pdftools_sigs', JSON.stringify(savedSignatures)); } catch (e) {}
     }
     renderSavedSigs();
 }
-
-function renderSavedSigs(){
-    const wrap=document.getElementById('savedSigsWrap');
-    const con=document.getElementById('savedSigs');
-    if(savedSignatures.length===0){wrap.style.display='none';return;}
-    wrap.style.display='block';
-    con.innerHTML=savedSignatures.map((s,i)=>`
-        <div class="saved-sig ${s===activeSigDataUrl?'active':''}"
-             onclick="selectSaved(${i})"
-             role="listitem"
-             tabindex="0"
-             aria-label="Saved signature ${i+1}"
-             onkeydown="if(event.key==='Enter')selectSaved(${i})">
-            <div class="ss-del" onclick="event.stopPropagation();deleteSaved(${i})"
-                 aria-label="Delete saved signature ${i+1}">×</div>
-            <img src="${s}" alt="Saved signature ${i+1}">
-        </div>
-    `).join('');
+function renderSavedSigs() {
+    const wrap = document.getElementById('savedSigsWrap'), con = document.getElementById('savedSigs');
+    if (!savedSignatures.length) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    con.innerHTML = savedSignatures.map((s, i) =>
+        '<div class="saved-sig ' + (s === activeSigDataUrl ? 'active' : '') + '" onclick="selectSaved(' + i + ')" role="listitem" tabindex="0">' +
+            '<div class="ss-del" onclick="event.stopPropagation();deleteSaved(' + i + ')">×</div>' +
+            '<img src="' + s + '" alt="Saved signature ' + (i + 1) + '">' +
+        '</div>'
+    ).join('');
 }
-
-function selectSaved(i){activeSigDataUrl=savedSignatures[i];renderSavedSigs();updateSigStatus();}
-function deleteSaved(i){
-    savedSignatures.splice(i,1);
-    try{localStorage.setItem('pdftools_sigs',JSON.stringify(savedSignatures));}catch(e){}
-    renderSavedSigs();updateSigStatus();
+async function selectSaved(i) {
+    activeSigDataUrl = savedSignatures[i];
+    activeSigAspect = await getDataUrlAspect(activeSigDataUrl);
+    renderSavedSigs(); updateSigStatus();
 }
-
-function updateSigStatus(){
-    document.getElementById('sigStatus').innerHTML=activeSigDataUrl
-        ?'<i class="fas fa-check-circle" style="color:#22c55e" aria-hidden="true"></i> Signature ready — click on PDF to place'
-        :'<i class="fas fa-pen-nib" aria-hidden="true"></i> No signature selected';
+function deleteSaved(i) {
+    savedSignatures.splice(i, 1);
+    try { localStorage.setItem('pdftools_sigs', JSON.stringify(savedSignatures)); } catch (e) {}
+    renderSavedSigs(); updateSigStatus();
+}
+function updateSigStatus() {
+    document.getElementById('sigStatus').innerHTML = activeSigDataUrl
+        ? '<i class="fas fa-check-circle" style="color:#22c55e"></i> Signature ready — click on PDF to place'
+        : '<i class="fas fa-pen-nib"></i> Select or create a signature above';
 }
 
 /* ════════════════════════════════════════
-   RENDER PDF PAGE
+   RENDER PDF PAGE & ZOOM
 ════════════════════════════════════════ */
-async function renderPage(){
-    const pg=await pdfDoc.getPage(curPage);
-    const vp1=pg.getViewport({scale:1});
-    const scroll=document.getElementById('wsScroll');
-    renderScale=Math.min((scroll.clientWidth-40)/vp1.width,1.5);
-    const vp=pg.getViewport({scale:renderScale});
-    const c=document.getElementById('pdfCanvas'),ctx=c.getContext('2d');
-    c.width=vp.width;c.height=vp.height;
-    document.getElementById('wsCon').style.width=vp.width+'px';
-    document.getElementById('wsCon').style.height=vp.height+'px';
-    ctx.fillStyle='#fff';ctx.fillRect(0,0,vp.width,vp.height);
-    await pg.render({canvasContext:ctx,viewport:vp}).promise;
-    document.getElementById('pageText').textContent=curPage+'/'+totalPages;
-    document.getElementById('prevBtn').disabled=curPage<=1;
-    document.getElementById('nextBtn').disabled=curPage>=totalPages;
+async function renderPage() {
+    const pg = await pdfDoc.getPage(curPage);
+    const vp1 = pg.getViewport({ scale: 1 });
+    const scroll = document.getElementById('wsScroll');
+    const fitScale = Math.min((Math.max(300, scroll.clientWidth - 40)) / vp1.width, 1.5);
+    renderScale = fitScale * zoomFactor;
+    const vp = pg.getViewport({ scale: renderScale });
+    const c = document.getElementById('pdfCanvas'), ctx = c.getContext('2d');
+    c.width = vp.width; c.height = vp.height;
+    document.getElementById('wsCon').style.width = vp.width + 'px';
+    document.getElementById('wsCon').style.height = vp.height + 'px';
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, vp.width, vp.height);
+    await pg.render({ canvasContext: ctx, viewport: vp }).promise;
+    document.getElementById('pageText').textContent = curPage + '/' + totalPages;
+    document.getElementById('prevBtn').disabled = curPage <= 1;
+    document.getElementById('nextBtn').disabled = curPage >= totalPages;
     renderPlacedSigs();
 }
-
-function goPrev(){if(curPage>1){curPage--;renderPage();}}
-function goNext(){if(curPage<totalPages){curPage++;renderPage();}}
+function changeZoom(delta) {
+    zoomFactor = Math.max(0.6, Math.min(2.0, +(zoomFactor + delta).toFixed(1)));
+    document.getElementById('zoomLabel').textContent = Math.round(zoomFactor * 100) + '%';
+    if (pdfDoc) renderPage();
+}
+function goPrev() { if (curPage > 1) { curPage--; renderPage(); } }
+function goNext() { if (curPage < totalPages) { curPage++; renderPage(); } }
 
 /* ════════════════════════════════════════
-   PLACE SIGNATURE ON PDF
+   PLACE, DRAG, PROPORTIONAL RESIZE
 ════════════════════════════════════════ */
-const wsCon=document.getElementById('wsCon');
-
-wsCon.addEventListener('click',function(e){
-    if(e.target.closest('.placed-sig'))return;
-    if(!activeSigDataUrl){showError('Create or select a signature first.');return;}
-    const rect=wsCon.getBoundingClientRect();
-    const cx=e.clientX-rect.left;
-    const cy=e.clientY-rect.top;
-    const sw=150,sh=50;
-    const x=Math.max(0,Math.min(cx-sw/2,wsCon.offsetWidth-sw));
-    const y=Math.max(0,Math.min(cy-sh/2,wsCon.offsetHeight-sh));
-    const pdfX=x/renderScale;
-    const pdfY=y/renderScale;
-    const pdfW=sw/renderScale;
-    const pdfH=sh/renderScale;
-    const sig={pageNum:curPage,pdfX,pdfY,pdfW,pdfH,dataUrl:activeSigDataUrl,id:Date.now()};
+const wsCon = document.getElementById('wsCon');
+wsCon.addEventListener('click', function(e) {
+    if (e.target.closest('.placed-sig')) return;
+    if (!activeSigDataUrl) { showError('Create or select a signature first.'); return; }
+    const rect = wsCon.getBoundingClientRect();
+    const cx = e.clientX - rect.left, cy = e.clientY - rect.top;
+    const aspect = activeSigAspect || 3;
+    const sw = Math.min(180, Math.max(90, Math.round(48 * aspect)));
+    const sh = Math.max(24, Math.round(sw / aspect));
+    const x = Math.max(0, Math.min(cx - sw / 2, wsCon.offsetWidth - sw));
+    const y = Math.max(0, Math.min(cy - sh / 2, wsCon.offsetHeight - sh));
+    const sig = {
+        pageNum: curPage,
+        pdfX: x / renderScale, pdfY: y / renderScale,
+        pdfW: sw / renderScale, pdfH: sh / renderScale,
+        dataUrl: activeSigDataUrl, id: Date.now() + Math.random()
+    };
     placedSigs.push(sig);
+    selectedSigId = sig.id;
     renderPlacedSigs();
+    updatePlacedCount();
 });
 
-function renderPlacedSigs(){
-    wsCon.querySelectorAll('.placed-sig').forEach(el=>el.remove());
-    placedSigs.filter(s=>s.pageNum===curPage).forEach(sig=>{
-        const el=document.createElement('div');
-        el.className='placed-sig';
-        el.dataset.id=sig.id;
-        el.style.left=(sig.pdfX*renderScale)+'px';
-        el.style.top=(sig.pdfY*renderScale)+'px';
-        el.style.width=(sig.pdfW*renderScale)+'px';
-        el.style.height=(sig.pdfH*renderScale)+'px';
-        el.setAttribute('role','img');
-        el.setAttribute('aria-label','Placed signature - drag to move');
+function renderPlacedSigs() {
+    wsCon.querySelectorAll('.placed-sig').forEach(el => el.remove());
+    placedSigs.filter(s => s.pageNum === curPage).forEach(sig => {
+        const el = document.createElement('div');
+        el.className = 'placed-sig' + (sig.id === selectedSigId ? ' selected' : '');
+        el.dataset.id = sig.id;
+        el.style.left = (sig.pdfX * renderScale) + 'px';
+        el.style.top = (sig.pdfY * renderScale) + 'px';
+        el.style.width = (sig.pdfW * renderScale) + 'px';
+        el.style.height = (sig.pdfH * renderScale) + 'px';
 
-        const img=document.createElement('img');img.src=sig.dataUrl;img.draggable=false;img.alt='Signature';
-        const del=document.createElement('div');del.className='sig-del';del.textContent='×';
-        del.setAttribute('role','button');del.setAttribute('aria-label','Remove signature');
-        del.onclick=e=>{e.stopPropagation();placedSigs=placedSigs.filter(s=>s.id!==sig.id);renderPlacedSigs();};
-        const rsz=document.createElement('div');rsz.className='sig-resize';
-        rsz.setAttribute('role','button');rsz.setAttribute('aria-label','Resize signature');
-        rsz.addEventListener('mousedown',e=>{e.stopPropagation();startResize(e,sig);});
-        rsz.addEventListener('touchstart',e=>{e.stopPropagation();e.preventDefault();startResize(e.touches[0],sig);},{passive:false});
+        const img = document.createElement('img'); img.src = sig.dataUrl; img.draggable = false; img.alt = 'Signature';
+        const del = document.createElement('div'); del.className = 'sig-del'; del.textContent = '×';
+        del.onclick = e => { e.stopPropagation(); placedSigs = placedSigs.filter(s => s.id !== sig.id); renderPlacedSigs(); updatePlacedCount(); };
+        const rsz = document.createElement('div'); rsz.className = 'sig-resize';
+        rsz.addEventListener('mousedown', e => { e.stopPropagation(); startResize(e, sig); });
+        rsz.addEventListener('touchstart', e => { e.stopPropagation(); e.preventDefault(); startResize(e.touches[0], sig); }, { passive: false });
 
-        el.appendChild(img);el.appendChild(del);el.appendChild(rsz);
-        el.addEventListener('mousedown',e=>{if(!e.target.closest('.sig-del')&&!e.target.closest('.sig-resize'))startDrag(e,sig,el);});
-        el.addEventListener('touchstart',e=>{if(!e.target.closest('.sig-del')&&!e.target.closest('.sig-resize')){e.preventDefault();startDrag(e.touches[0],sig,el);}},{passive:false});
-
+        el.appendChild(img); el.appendChild(del); el.appendChild(rsz);
+        el.addEventListener('mousedown', e => { if (!e.target.closest('.sig-del') && !e.target.closest('.sig-resize')) startDrag(e, sig, el); });
+        el.addEventListener('touchstart', e => { if (!e.target.closest('.sig-del') && !e.target.closest('.sig-resize')) { e.preventDefault(); startDrag(e.touches[0], sig, el); } }, { passive: false });
         wsCon.appendChild(el);
     });
 }
 
-function startDrag(e,sig,el){
-    dragSig=sig;
-    const rect=el.getBoundingClientRect();
-    dragOff={x:e.clientX-rect.left,y:e.clientY-rect.top};
-    document.querySelectorAll('.placed-sig').forEach(s=>s.classList.remove('selected'));
+function startDrag(e, sig, el) {
+    dragSig = sig; selectedSigId = sig.id;
+    const rect = el.getBoundingClientRect();
+    dragOff = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    document.querySelectorAll('.placed-sig').forEach(s => s.classList.remove('selected'));
     el.classList.add('selected');
 }
-
-document.addEventListener('mousemove',onDragMove);
-document.addEventListener('touchmove',e=>{if(dragSig||resizeSig){e.preventDefault();onDragMove(e.touches[0]);}},{passive:false});
-
-function onDragMove(e){
-    if(dragSig){
-        const rect=wsCon.getBoundingClientRect();
-        const cx=e.clientX-rect.left-dragOff.x;
-        const cy=e.clientY-rect.top-dragOff.y;
-        dragSig.pdfX=Math.max(0,Math.min(cx/renderScale,(wsCon.offsetWidth/renderScale)-dragSig.pdfW));
-        dragSig.pdfY=Math.max(0,Math.min(cy/renderScale,(wsCon.offsetHeight/renderScale)-dragSig.pdfH));
-        const el=wsCon.querySelector(`[data-id="${dragSig.id}"]`);
-        if(el){el.style.left=(dragSig.pdfX*renderScale)+'px';el.style.top=(dragSig.pdfY*renderScale)+'px';}
-    }
-    if(resizeSig){
-        const dx=(e.clientX-resizeStart.mx)/renderScale;
-        const dy=(e.clientY-resizeStart.my)/renderScale;
-        const nw=Math.max(30,resizeStart.w+dx);
-        const nh=Math.max(15,resizeStart.h+dy);
-        resizeSig.pdfW=nw;resizeSig.pdfH=nh;
-        const el=wsCon.querySelector(`[data-id="${resizeSig.id}"]`);
-        if(el){el.style.width=(nw*renderScale)+'px';el.style.height=(nh*renderScale)+'px';}
-    }
+function startResize(e, sig) {
+    resizeSig = sig; selectedSigId = sig.id;
+    resizeStart = { w: sig.pdfW, h: sig.pdfH, mx: e.clientX, my: e.clientY, aspect: sig.pdfW / sig.pdfH };
 }
 
-document.addEventListener('mouseup',()=>{dragSig=null;resizeSig=null;});
-document.addEventListener('touchend',()=>{dragSig=null;resizeSig=null;});
+document.addEventListener('mousemove', onDragMove);
+document.addEventListener('touchmove', e => { if (dragSig || resizeSig) { e.preventDefault(); onDragMove(e.touches[0]); } }, { passive: false });
 
-function startResize(e,sig){
-    resizeSig=sig;
-    resizeStart={w:sig.pdfW,h:sig.pdfH,mx:e.clientX,my:e.clientY};
+function onDragMove(e) {
+    if (dragSig) {
+        const rect = wsCon.getBoundingClientRect();
+        const cx = e.clientX - rect.left - dragOff.x;
+        const cy = e.clientY - rect.top - dragOff.y;
+        dragSig.pdfX = Math.max(0, Math.min(cx / renderScale, (wsCon.offsetWidth / renderScale) - dragSig.pdfW));
+        dragSig.pdfY = Math.max(0, Math.min(cy / renderScale, (wsCon.offsetHeight / renderScale) - dragSig.pdfH));
+        const el = wsCon.querySelector('[data-id="' + dragSig.id + '"]');
+        if (el) { el.style.left = (dragSig.pdfX * renderScale) + 'px'; el.style.top = (dragSig.pdfY * renderScale) + 'px'; }
+    }
+    if (resizeSig) {
+        const dx = (e.clientX - resizeStart.mx) / renderScale;
+        const nw = Math.max(30, resizeStart.w + dx);
+        const nh = Math.max(14, nw / resizeStart.aspect);
+        resizeSig.pdfW = nw; resizeSig.pdfH = nh;
+        const el = wsCon.querySelector('[data-id="' + resizeSig.id + '"]');
+        if (el) { el.style.width = (nw * renderScale) + 'px'; el.style.height = (nh * renderScale) + 'px'; }
+    }
+}
+document.addEventListener('mouseup', () => { dragSig = null; resizeSig = null; });
+document.addEventListener('touchend', () => { dragSig = null; resizeSig = null; });
+
+function applySelectedToAllPages() {
+    const src = placedSigs.find(s => s.id === selectedSigId) || placedSigs.filter(s => s.pageNum === curPage).slice(-1)[0];
+    if (!src) { showError('Place a signature on this page first, then click Apply All Pages.'); return; }
+    let added = 0;
+    for (let p = 1; p <= totalPages; p++) {
+        if (p === src.pageNum) continue;
+        placedSigs.push({ ...src, pageNum: p, id: Date.now() + Math.random() + p });
+        added++;
+    }
+    updatePlacedCount();
+    notify('Copied signature across all ' + totalPages + ' pages!', 'success');
 }
 
-function clearAllSigs(){if(confirm('Remove all signatures?')){placedSigs=[];renderPlacedSigs();}}
-function undoSig(){
-    const pageSigs=placedSigs.filter(s=>s.pageNum===curPage);
-    if(pageSigs.length){placedSigs=placedSigs.filter(s=>s.id!==pageSigs[pageSigs.length-1].id);renderPlacedSigs();}
+function updatePlacedCount() {
+    document.getElementById('placedTotalBadge').textContent = placedSigs.length;
+}
+function clearAllSigs() { placedSigs = []; selectedSigId = null; renderPlacedSigs(); updatePlacedCount(); }
+function undoSig() {
+    const pageSigs = placedSigs.filter(s => s.pageNum === curPage);
+    if (pageSigs.length) {
+        placedSigs = placedSigs.filter(s => s.id !== pageSigs[pageSigs.length - 1].id);
+        renderPlacedSigs(); updatePlacedCount();
+    }
 }
 
 /* ════════════════════════════════════════
    APPLY SIGNATURES TO PDF
 ════════════════════════════════════════ */
-async function doSign(){
-    if(placedSigs.length===0){showError('Place at least one signature on the PDF.');return;}
-    document.getElementById('signBtn').disabled=true;
-    hideError();showSection('processingSection');
-    setProgress(10,'Signing PDF...','Loading');
+async function doSign() {
+    if (!placedSigs.length) { showError('Place at least one signature or stamp on the PDF.'); return; }
+    document.getElementById('signBtn').disabled = true;
+    hideError(); showSection('processingSection');
+    setProgress(10, 'Signing PDF...', 'Loading document');
     await tick();
 
-    try{
-        const pdfLibDoc=await PDFLib.PDFDocument.load(rawBytes,{ignoreEncryption:true});
-        const pages=pdfLibDoc.getPages();
+    try {
+        const pdfLibDoc = await PDFLib.PDFDocument.load(rawBytes.slice(0), { ignoreEncryption: true });
+        const pages = pdfLibDoc.getPages();
 
-        const sigsByPage={};
-        placedSigs.forEach(s=>{if(!sigsByPage[s.pageNum])sigsByPage[s.pageNum]=[];sigsByPage[s.pageNum].push(s);});
-
-        const imgCache={};
-        for(const s of placedSigs){
-            if(!imgCache[s.dataUrl]){
-                const resp=await fetch(s.dataUrl);
-                const buf=await resp.arrayBuffer();
-                const bytes=new Uint8Array(buf);
-                try{imgCache[s.dataUrl]=await pdfLibDoc.embedPng(bytes);}
-                catch(e){imgCache[s.dataUrl]=await pdfLibDoc.embedJpg(bytes);}
+        const imgCache = {};
+        for (const s of placedSigs) {
+            if (!imgCache[s.dataUrl]) {
+                const resp = await fetch(s.dataUrl);
+                const bytes = new Uint8Array(await resp.arrayBuffer());
+                try { imgCache[s.dataUrl] = await pdfLibDoc.embedPng(bytes); }
+                catch (e) { imgCache[s.dataUrl] = await pdfLibDoc.embedJpg(bytes); }
             }
         }
 
-        setProgress(40,'Signing PDF...','Placing signatures');
+        setProgress(45, 'Embedding Signatures...', 'Placing ' + placedSigs.length + ' transparent item(s)');
         await tick();
 
-        for(const[pgNumStr,sigs]of Object.entries(sigsByPage)){
-            const pgIdx=parseInt(pgNumStr)-1;
-            if(pgIdx<0||pgIdx>=pages.length)continue;
-            const pg=pages[pgIdx];
-            const{height}=pg.getSize();
-            for(const s of sigs){
-                const embeddedImg=imgCache[s.dataUrl];
-                if(!embeddedImg)continue;
-                const pdfY=height-s.pdfY-s.pdfH;
-                pg.drawImage(embeddedImg,{
-                    x:s.pdfX,y:pdfY,
-                    width:s.pdfW,height:s.pdfH,
-                    opacity:1,
-                });
+        for (const s of placedSigs) {
+            const pgIdx = s.pageNum - 1;
+            if (pgIdx < 0 || pgIdx >= pages.length) continue;
+            const pg = pages[pgIdx];
+            const { width, height } = pg.getSize();
+            const rot = pg.getRotation().angle % 360;
+            const emb = imgCache[s.dataUrl];
+            if (!emb) continue;
+
+            // Convert PDF.js viewport coords back to unrotated PDF page coordinates cleanly
+            let drawX = s.pdfX, drawY = height - s.pdfY - s.pdfH, drawW = s.pdfW, drawH = s.pdfH;
+            if (rot === 90) {
+                drawX = height - (s.pdfY + s.pdfH);
+                drawY = width - (s.pdfX + s.pdfW);
+            } else if (rot === 180) {
+                drawX = width - (s.pdfX + s.pdfW);
+                drawY = s.pdfY;
             }
+            pg.drawImage(emb, { x: drawX, y: drawY, width: drawW, height: drawH, opacity: 1 });
         }
 
-        setProgress(80,'Saving...','Building PDF');
+        setProgress(85, 'Saving Signed PDF...', 'Finalizing document');
         await tick();
+        const outBytes = await pdfLibDoc.save();
+        resultBlob = new Blob([outBytes], { type: 'application/pdf' });
 
-        const outBytes=await pdfLibDoc.save();
-        resultBlob=new Blob([outBytes],{type:'application/pdf'});
+        setProgress(100, 'Done!', 'Ready to download');
+        await new Promise(r => setTimeout(r, 320));
 
-        setProgress(100,'Done!','');
-        await new Promise(r=>setTimeout(r,500));
-
-        document.getElementById('rPages').textContent=totalPages;
-        document.getElementById('rSigs').textContent=placedSigs.length;
-        document.getElementById('rSize').textContent=szF(resultBlob.size);
-        document.getElementById('rFileName').textContent=selectedFile.name.replace(/\.pdf$/i,'')+'_signed.pdf';
+        document.getElementById('rPages').textContent = totalPages;
+        document.getElementById('rSigs').textContent = placedSigs.length;
+        document.getElementById('rSize').textContent = szF(resultBlob.size);
+        document.getElementById('rFileName').textContent = selectedFile.name.replace(/\.pdf$/i, '') + '_signed.pdf';
         showSection('resultSection');
-
-    }catch(e){
-        console.error(e);showSection('editorSection');
-        document.getElementById('signBtn').disabled=false;
-        showError('Signing failed: '+e.message);
+    } catch (e) {
+        console.error(e); showSection('editorSection');
+        document.getElementById('signBtn').disabled = false;
+        showError('Signing failed: ' + e.message);
     }
 }
 
-/* ════════════════════════════════════════
-   DOWNLOAD
-════════════════════════════════════════ */
-function doDownload(){
-    if(!resultBlob)return;
-    const name=selectedFile?selectedFile.name.replace(/\.pdf$/i,'')+'_signed.pdf':'signed.pdf';
-    const url=URL.createObjectURL(resultBlob);
-    const a=document.createElement('a');a.href=url;a.download=name;
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},500);
+function previewSignedPdf() {
+    if (!resultBlob) return;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(resultBlob);
+    document.getElementById('pdfPreviewFrame').src = previewUrl;
+    document.getElementById('pdfPreviewModal').classList.add('open');
 }
-
-/* ════════════════════════════════════════
-   NAVIGATION
-════════════════════════════════════════ */
-function goBackEdit(){
-    resultBlob=null;
-    document.getElementById('signBtn').disabled=false;
-    showSection('editorSection');renderPage();
+function closePdfModal() {
+    document.getElementById('pdfPreviewModal').classList.remove('open');
+    document.getElementById('pdfPreviewFrame').src = 'about:blank';
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
 }
-
-function resetTool(){
-    rawBytes=null;selectedFile=null;pdfDoc=null;totalPages=0;curPage=1;
-    activeSigDataUrl=null;placedSigs=[];resultBlob=null;
-    fileInput.value='';hideError();showSection('uploadSection');
-}
-
-document.addEventListener('keydown',e=>{
-    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
-    if(e.key==='ArrowLeft')goPrev();
-    if(e.key==='ArrowRight')goNext();
-    if(e.ctrlKey&&e.key==='z'){e.preventDefault();undoSig();}
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePdfModal();
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowLeft') goPrev();
+    if (e.key === 'ArrowRight') goNext();
+    if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undoSig(); }
+    if ((e.key === 'Delete' || e.key === 'Backspace') && selectedSigId) {
+        placedSigs = placedSigs.filter(s => s.id !== selectedSigId);
+        selectedSigId = null; renderPlacedSigs(); updatePlacedCount();
+    }
 });
+document.addEventListener('click', e => { if (e.target.id === 'pdfPreviewModal') closePdfModal(); });
+
+function doDownload() {
+    if (!resultBlob) return;
+    const name = selectedFile ? selectedFile.name.replace(/\.pdf$/i, '') + '_signed.pdf' : 'signed.pdf';
+    const url = URL.createObjectURL(resultBlob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.style.display = 'none';
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 5000);
+}
+
+function goBackEdit() {
+    resultBlob = null;
+    document.getElementById('signBtn').disabled = false;
+    showSection('editorSection');
+    renderPage();
+}
+
+function resetTool() {
+    closePdfModal();
+    rawBytes = null; selectedFile = null; pdfDoc = null; totalPages = 0; curPage = 1;
+    activeSigDataUrl = null; placedSigs = []; selectedSigId = null; resultBlob = null;
+    fileInput.value = '';
+    const btn = document.getElementById('signBtn'); if (btn) btn.disabled = false;
+    hideError();
+    showSection('uploadSection');
+}
 
 let rT;
-window.addEventListener('resize',()=>{
-    clearTimeout(rT);
-    rT=setTimeout(()=>{if(pdfDoc)renderPage();},300);
-});
+window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { if (pdfDoc) renderPage(); }, 300); });
 </script>
+
 <script src="js/adsense.js"></script>
 <script src="js/site-tracker.js"></script>
 

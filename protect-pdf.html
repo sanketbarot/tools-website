@@ -121,243 +121,211 @@
 <link rel="stylesheet" href="css/ads.css">
 
     <style>
-        .file-info-card {
-            display:flex; align-items:center; gap:14px;
-            padding:15px 18px; background:rgba(255,255,255,0.45);
-            border:1px solid rgba(255,255,255,0.60);
-            border-radius:14px; margin-bottom:20px;
-        }
-        .file-info-icon {
-            width:50px; height:50px;
-            background:linear-gradient(135deg,#ef4444,#dc2626);
-            border-radius:12px; display:flex;
-            align-items:center; justify-content:center;
-            font-size:20px; color:#fff; flex-shrink:0;
-        }
-        .file-info-details { flex:1; min-width:0; }
-        .file-info-details h4 {
-            font-size:14px; font-weight:700;
-            white-space:nowrap; overflow:hidden;
-            text-overflow:ellipsis; margin-bottom:5px;
-            color:var(--text-dark,#1e293b);
-        }
-        .file-meta { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-        .file-meta span {
-            font-size:12px; color:var(--text-light,#64748b);
-            display:flex; align-items:center; gap:4px;
-        }
-        .size-badge {
-            background:rgba(239,68,68,0.10); color:#dc2626;
-            padding:2px 10px; border-radius:20px;
-            font-weight:600; font-size:12px !important;
-        }
-        .pw-field { margin-bottom:16px; }
-        .pw-field label {
-            display:block; font-size:12px; font-weight:700;
-            text-transform:uppercase; letter-spacing:0.5px;
-            color:var(--text-light,#64748b); margin-bottom:8px;
-        }
-        .pw-input-wrap { position:relative; display:flex; align-items:center; }
-        .pw-input-wrap input {
-            width:100%; padding:12px 48px 12px 16px;
-            border:1.5px solid #e2e8f0; border-radius:12px;
-            font-size:14px; background:rgba(255,255,255,0.80);
-            color:var(--text-dark,#1e293b); outline:none;
-            transition:border-color 0.2s, box-shadow 0.2s;
-            font-family:'Courier New',monospace;
-            letter-spacing:1.5px; box-sizing:border-box;
-        }
-        .pw-input-wrap input:focus {
-            border-color:var(--primary,#6366f1);
-            box-shadow:0 0 0 3px rgba(79,70,229,0.10);
-        }
-        .pw-input-wrap input.mismatch {
-            border-color:#ef4444;
-            box-shadow:0 0 0 3px rgba(239,68,68,0.10);
-        }
-        .pw-input-wrap input.match {
-            border-color:#22c55e;
-            box-shadow:0 0 0 3px rgba(34,197,94,0.10);
-        }
-        .toggle-pw {
-            position:absolute; right:12px; background:none;
-            border:none; color:var(--text-light,#94a3b8);
-            cursor:pointer; font-size:15px; padding:4px;
-            transition:color 0.2s;
-        }
-        .toggle-pw:hover { color:var(--primary,#6366f1); }
-        .strength-bar-wrap { margin-top:8px; }
-        .strength-bar-track {
-            height:5px; background:#e2e8f0;
-            border-radius:10px; overflow:hidden; margin-bottom:4px;
-        }
-        .strength-bar-fill {
-            height:100%; border-radius:10px;
-            transition:width 0.4s ease, background 0.4s ease; width:0%;
-        }
-        .strength-label { font-size:11px; font-weight:600; color:var(--text-light,#94a3b8); }
-        .match-hint {
-            font-size:11px; font-weight:600; margin-top:5px;
-            display:flex; align-items:center; gap:5px;
-        }
-        .match-hint.ok  { color:#16a34a; }
-        .match-hint.bad { color:#dc2626; }
-        .permissions-grid {
-            display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;
-        }
-        .perm-toggle {
-            display:flex; align-items:center; gap:10px;
-            padding:11px 14px; background:rgba(255,255,255,0.55);
-            border:1.5px solid rgba(255,255,255,0.80);
-            border-radius:10px; cursor:pointer;
-            transition:all 0.2s ease; user-select:none;
-        }
-        .perm-toggle:hover {
-            background:rgba(255,255,255,0.80);
-            border-color:rgba(79,70,229,0.20);
-        }
-        .perm-toggle input[type="checkbox"] {
-            width:16px; height:16px;
-            accent-color:var(--primary,#6366f1);
-            cursor:pointer; flex-shrink:0;
-        }
-        .perm-toggle i {
-            font-size:14px; color:var(--text-light,#94a3b8);
-            width:16px; text-align:center; flex-shrink:0;
-        }
-        .perm-toggle span { font-size:12px; font-weight:600; color:var(--text-dark,#1e293b); }
-        .result-stats {
-            display:flex; justify-content:center;
-            gap:18px; flex-wrap:wrap; margin:18px 0;
-        }
-        .result-stat {
-            text-align:center; background:rgba(255,255,255,0.38);
-            border:1px solid rgba(255,255,255,0.55);
-            border-radius:12px; padding:13px 16px; min-width:100px;
-        }
-        .result-stat strong {
-            display:block; font-size:20px;
-            color:var(--primary,#6366f1); line-height:1; margin-bottom:4px;
-        }
-        .result-stat small {
-            color:var(--text-light,#64748b);
-            font-size:11px; font-weight:600; text-transform:uppercase;
-        }
-        .protect-badge {
-            display:inline-flex; align-items:center; gap:7px;
-            padding:6px 16px; background:rgba(239,68,68,0.10);
-            border:1px solid rgba(239,68,68,0.22);
-            border-radius:20px; font-size:13px;
-            font-weight:700; color:#dc2626; margin:10px 0 16px;
-        }
-        .error-box {
-            background:rgba(239,68,68,0.08);
-            border:1px solid rgba(239,68,68,0.25);
-            border-radius:10px; padding:12px 16px;
-            color:#dc2626; font-size:14px; margin-bottom:16px;
-            display:none; align-items:center; gap:8px; font-weight:500;
-        }
-        .icon-red    { background:linear-gradient(135deg,#ef4444,#dc2626); }
-        .icon-blue   { background:linear-gradient(135deg,#3b82f6,#2563eb); }
-        .icon-green  { background:linear-gradient(135deg,#22c55e,#16a34a); }
-        .icon-purple { background:linear-gradient(135deg,#a855f7,#9333ea); }
-        .icon-teal   { background:linear-gradient(135deg,#14b8a6,#0d9488); }
-        .info-banner {
-            background:rgba(79,70,229,0.07); border:1px solid rgba(79,70,229,0.20);
-            border-radius:10px; padding:10px 14px; font-size:12px; color:#4338ca;
-            display:flex; align-items:center; gap:8px; margin-bottom:14px; font-weight:500;
-        }
-        .faq-section { padding:50px 0; }
-        .faq-list { max-width:750px; margin:0 auto; }
-        .faq-item {
-            background:rgba(255,255,255,0.65); backdrop-filter:blur(12px);
-            border:1px solid rgba(255,255,255,0.6); border-radius:14px;
-            margin-bottom:12px; overflow:hidden; cursor:pointer;
-            transition:all 0.3s ease; box-shadow:0 2px 10px rgba(0,0,0,0.04);
-        }
-        .faq-item:hover {
-            background:rgba(255,255,255,0.80);
-            box-shadow:0 4px 18px rgba(0,0,0,0.07); transform:translateY(-1px);
-        }
-        .faq-item.open {
-            background:rgba(255,255,255,0.85);
-            border-color:rgba(79,70,229,0.20);
-            box-shadow:0 6px 25px rgba(79,70,229,0.10);
-        }
-        .faq-question {
-            display:flex; align-items:center;
-            justify-content:space-between; padding:18px 22px; gap:14px;
-        }
-        .faq-question h4 {
-            font-size:15px; font-weight:600;
-            color:var(--text-dark,#1e293b); margin:0; line-height:1.4; flex:1;
-        }
-        .faq-item.open .faq-question h4 { color:var(--primary,#6366f1); }
-        .faq-question i {
-            font-size:13px; color:var(--text-light,#94a3b8);
-            transition:transform 0.35s ease, color 0.3s ease;
-            flex-shrink:0; width:20px; text-align:center;
-        }
-        .faq-item.open .faq-question i { transform:rotate(180deg); color:var(--primary,#6366f1); }
-        .faq-answer { max-height:0; overflow:hidden; transition:max-height 0.4s ease, opacity 0.3s ease; opacity:0; }
-        .faq-item.open .faq-answer { max-height:400px; opacity:1; }
-        .faq-answer-inner { padding:0 22px 20px; }
-        .faq-item.open .faq-answer-inner {
-            border-top:1px solid rgba(79,70,229,0.10);
-            padding-top:16px; margin:0 22px; padding-left:0; padding-right:0;
-        }
-        .faq-answer-inner p { font-size:14px; line-height:1.7; color:var(--text-light,#64748b); margin:0; }
-        .faq-answer-inner p strong { color:var(--text-dark,#1e293b); }
-        .faq-num {
-            width:28px; height:28px; background:rgba(79,70,229,0.10);
-            color:var(--primary,#6366f1); border-radius:8px;
-            display:flex; align-items:center; justify-content:center;
-            font-size:12px; font-weight:700; flex-shrink:0; transition:all 0.3s ease;
-        }
-        .faq-item.open .faq-num { background:var(--primary,#6366f1); color:#fff; }
+/* Protect PDF — Bento SaaS Light/Dark Theme */
+.error-box {
+    display: none; align-items: center; gap: 10px; padding: 12px 16px;
+    margin: 0 0 16px; border-radius: 12px;
+    background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #dc2626; font-size: 13.5px; font-weight: 600;
+}
+.error-box i { font-size: 16px; flex-shrink: 0; }
 
-        @media(max-width:768px) {
-            .permissions-grid { grid-template-columns:1fr; }
-            .result-stats { gap:10px; }
-            .result-stat { min-width:80px; padding:11px 12px; }
-        }
-        @media(max-width:480px) {
-            .file-info-card { flex-wrap:wrap; }
-            .faq-question { padding:14px; }
-            .faq-question h4 { font-size:13px; }
-            .faq-item { border-radius:10px; margin-bottom:8px; }
-        }
+.file-info-card {
+    display: flex; align-items: center; gap: 14px; padding: 15px 18px;
+    background: var(--bg-card, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: 14px; margin-bottom: 16px;
+}
+.file-info-icon {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #fff; flex-shrink: 0;
+}
+.file-info-details { flex: 1; min-width: 0; }
+.file-info-details h4 {
+    font-size: 14px; font-weight: 700; margin: 0 0 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    color: var(--text-dark, #0f172a);
+}
+.file-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.file-meta span { font-size: 12px; color: var(--text-medium, #475569); display: flex; align-items: center; gap: 4px; }
+.size-badge {
+    background: rgba(239, 68, 68, 0.12); color: #dc2626;
+    padding: 2px 10px; border-radius: 99px; font-weight: 700; font-size: 11.5px !important;
+}
 
-        /* ════════════════════════════════════════
-           RELATED TOOLS
-        ════════════════════════════════════════ */
-        .related-tools { padding:56px 0 48px; }
-        .related-tools .section-header { text-align:center; margin-bottom:32px; }
-        .related-tools .section-header h2 { font-size:clamp(1.4rem,3vw,1.9rem); font-weight:800; color:var(--text-dark,#1e293b); margin:0 0 8px; }
-        .related-tools .section-header p  { color:var(--text-light,#64748b); font-size:0.95rem; margin:0; }
-        .related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; }
-        .related-card {
-            display:flex; flex-direction:column; align-items:center; text-align:center;
-            padding:20px 12px 16px; border-radius:16px;
-            background:rgba(255,255,255,0.6); backdrop-filter:blur(14px);
-            border:1.5px solid rgba(255,255,255,0.5);
-            box-shadow:0 4px 20px rgba(0,0,0,0.06);
-            text-decoration:none; transition:transform 0.22s,box-shadow 0.22s,border-color 0.22s;
-        }
-        .related-card:hover { transform:translateY(-4px); box-shadow:0 14px 36px rgba(0,0,0,0.13); border-color:rgba(239,68,68,0.22); }
-        .related-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:10px; flex-shrink:0; }
-        .related-card h4 { font-size:12.5px; font-weight:700; color:var(--text-dark,#1e293b); margin:0 0 4px; line-height:1.3; }
-        .related-card p  { font-size:11px; color:var(--text-light,#64748b); margin:0; line-height:1.4; }
-        .ri-blue   { background:rgba(59,130,246,0.12);  color:#2563eb; }
-        .ri-green  { background:rgba(34,197,94,0.12);   color:#16a34a; }
-        .ri-orange { background:rgba(16,185,129,0.12);  color:var(--accent-dark); }
-        .ri-pink   { background:rgba(236,72,153,0.12);  color:#db2777; }
-        .ri-purple { background:rgba(139,92,246,0.12);  color:var(--primary); }
-        .ri-teal   { background:rgba(20,184,166,0.12);  color:#0d9488; }
-        .ri-indigo { background:rgba(79,70,229,0.12);  color:#4f46e5; }
-        .ri-red    { background:rgba(239,68,68,0.12);   color:#dc2626; }
-        @media(max-width:480px){ .related-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;} .related-card{padding:14px 8px 12px;} .related-icon{width:38px;height:38px;font-size:16px;} .related-card h4{font-size:12px;} }
-    </style>
+.info-banner {
+    background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.22);
+    border-radius: 11px; padding: 10px 14px; font-size: 12.5px;
+    color: var(--primary, #4338ca); display: flex; align-items: center; gap: 9px;
+    margin-bottom: 16px; font-weight: 500;
+}
+
+.options-panel {
+    background: var(--bg-card, #ffffff); border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: 14px; padding: 18px 20px; margin-bottom: 16px;
+}
+.options-panel h4 {
+    font-size: 14px; font-weight: 700; margin: 0 0 12px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    color: var(--text-dark, #0f172a);
+}
+.options-panel h4 i { color: var(--primary, #4f46e5); }
+
+.pp-mode-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px;
+}
+.pp-mode-btn {
+    border: 1.5px solid var(--border-subtle, #e2e8f0);
+    background: var(--surface-muted, #f8fafc); border-radius: 12px;
+    padding: 12px 14px; text-align: left; cursor: pointer;
+    transition: all 0.18s; color: var(--text-dark, #0f172a);
+}
+.pp-mode-btn:hover { border-color: var(--primary, #4f46e5); }
+.pp-mode-btn.active {
+    border-color: var(--primary, #4f46e5);
+    background: rgba(79, 70, 229, 0.09);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+}
+.pp-mode-btn strong {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700; margin-bottom: 3px;
+}
+.pp-mode-btn small {
+    display: block; font-size: 11.5px; color: var(--text-medium, #64748b); line-height: 1.35;
+}
+.pp-rec-tag {
+    font-size: 10px; font-weight: 700; padding: 1px 6px;
+    border-radius: 99px; background: #16a34a; color: #fff; margin-left: auto;
+}
+
+.pw-field { margin-bottom: 15px; }
+.pw-label-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px;
+}
+.pw-label-row label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.4px; color: var(--text-medium, #475569); margin: 0;
+}
+.gen-pw-btn {
+    background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.24);
+    color: var(--primary, #4f46e5); border-radius: 8px; padding: 3px 9px;
+    font-size: 11.5px; font-weight: 700; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s;
+}
+.gen-pw-btn:hover { background: var(--primary, #4f46e5); color: #fff; }
+
+.pw-input-wrap { position: relative; display: flex; align-items: center; }
+.pw-input-wrap input {
+    width: 100%; padding: 12px 76px 12px 14px;
+    border: 1.5px solid var(--border-subtle, #e2e8f0); border-radius: 11px;
+    font-size: 14px; background: var(--surface-muted, #f8fafc);
+    color: var(--text-dark, #0f172a); outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: 0.8px; box-sizing: border-box;
+}
+.pw-input-wrap input:focus {
+    border-color: var(--primary, #4f46e5); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+}
+.pw-input-wrap input.mismatch { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14); }
+.pw-input-wrap input.match { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14); }
+.pw-actions-in {
+    position: absolute; right: 10px; display: flex; align-items: center; gap: 4px;
+}
+.toggle-pw {
+    background: none; border: none; color: var(--text-light, #64748b);
+    cursor: pointer; font-size: 14px; padding: 5px; border-radius: 6px; transition: color 0.2s;
+}
+.toggle-pw:hover { color: var(--primary, #4f46e5); }
+
+.strength-bar-wrap { margin-top: 8px; }
+.strength-bar-track {
+    height: 5px; background: var(--border-subtle, #e2e8f0);
+    border-radius: 10px; overflow: hidden; margin-bottom: 4px;
+}
+.strength-bar-fill { height: 100%; border-radius: 10px; transition: width 0.35s ease, background 0.35s ease; width: 0%; }
+.strength-label { font-size: 11.5px; font-weight: 600; color: var(--text-light, #64748b); }
+.match-hint { font-size: 11.5px; font-weight: 600; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+.match-hint.ok { color: #16a34a; }
+.match-hint.bad { color: #dc2626; }
+
+.pp-owner-toggle {
+    display: flex; align-items: center; gap: 8px; font-size: 12.5px;
+    font-weight: 600; color: var(--text-medium, #475569); cursor: pointer;
+    margin-top: 6px; user-select: none;
+}
+.pp-owner-toggle input { accent-color: var(--primary, #4f46e5); width: 15px; height: 15px; }
+
+.pp-presets { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+.pp-preset-btn {
+    border: 1px solid var(--border-subtle, #e2e8f0); background: var(--surface-muted, #f8fafc);
+    color: var(--text-medium, #475569); border-radius: 99px;
+    padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.16s;
+}
+.pp-preset-btn:hover, .pp-preset-btn.active {
+    border-color: var(--primary, #4f46e5); background: rgba(79, 70, 229, 0.1);
+    color: var(--primary, #4f46e5);
+}
+
+.permissions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.perm-toggle {
+    display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+    background: var(--surface-muted, #f8fafc); border: 1.5px solid var(--border-subtle, #e2e8f0);
+    border-radius: 10px; cursor: pointer; transition: all 0.2s ease; user-select: none;
+}
+.perm-toggle:hover { border-color: var(--primary, #4f46e5); }
+.perm-toggle input[type="checkbox"] {
+    width: 16px; height: 16px; accent-color: var(--primary, #4f46e5); cursor: pointer; flex-shrink: 0;
+}
+.perm-toggle i { font-size: 14px; color: var(--text-light, #64748b); width: 16px; text-align: center; flex-shrink: 0; }
+.perm-toggle span { font-size: 12.5px; font-weight: 600; color: var(--text-dark, #0f172a); }
+
+.result-stats { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 18px 0; }
+.result-stat {
+    text-align: center; background: var(--surface-muted, #f8fafc);
+    border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: 12px; padding: 13px 16px; min-width: 105px; flex: 1;
+}
+.result-stat strong { display: block; font-size: 19px; color: var(--primary, #4f46e5); line-height: 1.1; margin-bottom: 4px; }
+.result-stat small { color: var(--text-medium, #64748b); font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.protect-badge {
+    display: inline-flex; align-items: center; gap: 7px; padding: 6px 16px;
+    background: rgba(22, 163, 74, 0.1); border: 1px solid rgba(22, 163, 74, 0.25);
+    border-radius: 99px; font-size: 12.5px; font-weight: 700; color: #16a34a; margin: 10px 0 14px;
+}
+.pp-warn-box {
+    background: rgba(245, 158, 11, 0.10); border: 1px solid rgba(245, 158, 11, 0.28);
+    border-radius: 12px; padding: 14px 18px; margin: 16px 0; text-align: left;
+}
+.pp-warn-box p { font-size: 13px; color: #92400e; margin: 0; display: flex; align-items: flex-start; gap: 8px; }
+.icon-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+/* Dark Mode Overrides */
+html[data-theme="dark"] .file-info-card,
+html[data-theme="dark"] .options-panel {
+    background: #131c2e; border-color: rgba(148, 163, 184, 0.2);
+}
+html[data-theme="dark"] .pp-mode-btn,
+html[data-theme="dark"] .pw-input-wrap input,
+html[data-theme="dark"] .perm-toggle,
+html[data-theme="dark"] .pp-preset-btn,
+html[data-theme="dark"] .result-stat {
+    background: #0b1120; border-color: rgba(148, 163, 184, 0.22); color: #f1f5f9;
+}
+html[data-theme="dark"] .pp-mode-btn.active { background: rgba(129, 140, 248, 0.16); border-color: #818cf8; }
+html[data-theme="dark"] .info-banner { color: #a5b4fc; background: rgba(79, 70, 229, 0.18); }
+html[data-theme="dark"] .error-box { background: rgba(239, 68, 68, 0.15); border-color: rgba(248, 113, 113, 0.35); color: #fca5a5; }
+html[data-theme="dark"] .pp-warn-box p { color: #fcd34d; }
+html[data-theme="dark"] .protect-badge { color: #4ade80; }
+
+@media (max-width: 768px) {
+    .pp-mode-grid, .permissions-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+    .file-info-card { flex-wrap: wrap; }
+}
+</style>
 
     
     
@@ -442,7 +410,7 @@
     <div class="container">
         <div class="tool-wrapper glass">
 
-            <div class="error-box" id="errorBox" role="alert" aria-live="polite">
+            <div class="error-box" id="errorBox" role="alert" aria-live="polite" style="display:none;">
                 <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                 <span id="errorText">Something went wrong.</span>
             </div>
@@ -499,26 +467,47 @@
                     </div>
 
                     <div class="info-banner" role="note">
-                        <i class="fas fa-info-circle" aria-hidden="true"></i>
-                        <span>Uses <strong>RC4-128 bit encryption</strong> — Standard PDF Security Handler Rev.3. Compatible with Adobe Acrobat, Chrome, and all PDF readers.</span>
+                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                        <span>Uses <strong>RC4-128 bit Standard Security (Rev. 3)</strong> and auto-verifies the locked output directly in your browser.</span>
                     </div>
 
-                    <div class="options-panel glass-light">
-                        <h4><i class="fas fa-key" aria-hidden="true"></i> Set Password</h4>
+                    <div class="options-panel">
+                        <h4><i class="fas fa-lock" aria-hidden="true"></i> Protection Mode</h4>
+                        <div class="pp-mode-grid" id="ppModeGrid" role="radiogroup" aria-label="Protection mode">
+                            <button type="button" class="pp-mode-btn active" data-mode="open" onclick="setProtMode('open', this)">
+                                <strong><i class="fas fa-key" aria-hidden="true"></i> Password to Open <span class="pp-rec-tag">Rec</span></strong>
+                                <small>Encrypts file &amp; requires password before anyone can view or print</small>
+                            </button>
+                            <button type="button" class="pp-mode-btn" data-mode="permsOnly" onclick="setProtMode('permsOnly', this)">
+                                <strong><i class="fas fa-user-shield" aria-hidden="true"></i> Permissions Lock Only</strong>
+                                <small>Opens without password, but blocks printing, copying, or editing</small>
+                            </button>
+                        </div>
+                    </div>
 
-                        <div class="pw-field">
-                            <label for="openPw">
-                                <i class="fas fa-lock" style="color:#dc2626;margin-right:5px;" aria-hidden="true"></i>
-                                Open Password
-                                <span style="font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;margin-left:4px;color:#94a3b8;">
-                                    (required to open the PDF)
-                                </span>
-                            </label>
-                            <div class="pw-input-wrap">
-                                <input type="password" id="openPw" placeholder="Enter password..." autocomplete="new-password" aria-label="Open password" oninput="checkStrength();checkMatch()">
-                                <button class="toggle-pw" type="button" onclick="togglePwVis('openPw','eye1')" aria-label="Toggle password visibility">
-                                    <i class="fas fa-eye" id="eye1" aria-hidden="true"></i>
+                    <div class="options-panel" id="pwPanel">
+                        <h4><i class="fas fa-key" aria-hidden="true"></i> Set Passwords</h4>
+
+                        <div class="pw-field" id="openPwWrap">
+                            <div class="pw-label-row">
+                                <label for="openPw">
+                                    <i class="fas fa-lock" style="color:#ef4444;margin-right:4px;" aria-hidden="true"></i>
+                                    Open Password
+                                </label>
+                                <button type="button" class="gen-pw-btn" onclick="generateStrongPw()">
+                                    <i class="fas fa-magic" aria-hidden="true"></i> Generate Strong
                                 </button>
+                            </div>
+                            <div class="pw-input-wrap">
+                                <input type="password" id="openPw" placeholder="Enter password (min 4 chars)..." autocomplete="new-password" aria-label="Open password" oninput="checkStrength();checkMatch()">
+                                <div class="pw-actions-in">
+                                    <button class="toggle-pw" type="button" onclick="copyPwVal('openPw', this)" title="Copy password" aria-label="Copy password">
+                                        <i class="fas fa-copy" aria-hidden="true"></i>
+                                    </button>
+                                    <button class="toggle-pw" type="button" onclick="togglePwVis('openPw','eye1')" aria-label="Toggle password visibility">
+                                        <i class="fas fa-eye" id="eye1" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="strength-bar-wrap" aria-live="polite">
                                 <div class="strength-bar-track">
@@ -528,63 +517,95 @@
                             </div>
                         </div>
 
-                        <div class="pw-field">
-                            <label for="confirmPw">
-                                <i class="fas fa-lock-open" style="color:#6366f1;margin-right:5px;" aria-hidden="true"></i>
-                                Confirm Password
-                            </label>
+                        <div class="pw-field" id="confirmPwWrap">
+                            <div class="pw-label-row">
+                                <label for="confirmPw">
+                                    <i class="fas fa-check-double" style="color:#4f46e5;margin-right:4px;" aria-hidden="true"></i>
+                                    Confirm Open Password
+                                </label>
+                            </div>
                             <div class="pw-input-wrap">
                                 <input type="password" id="confirmPw" placeholder="Re-enter password..." autocomplete="new-password" aria-label="Confirm password" oninput="checkMatch()">
-                                <button class="toggle-pw" type="button" onclick="togglePwVis('confirmPw','eye2')" aria-label="Toggle confirm password visibility">
-                                    <i class="fas fa-eye" id="eye2" aria-hidden="true"></i>
-                                </button>
+                                <div class="pw-actions-in">
+                                    <button class="toggle-pw" type="button" onclick="togglePwVis('confirmPw','eye2')" aria-label="Toggle confirm password visibility">
+                                        <i class="fas fa-eye" id="eye2" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="match-hint" id="matchHint" aria-live="polite"></div>
                         </div>
+
+                        <label class="pp-owner-toggle" id="customOwnerCheckWrap">
+                            <input type="checkbox" id="useCustomOwner" onchange="toggleOwnerField()">
+                            <span>Set a separate Master / Owner password to unlock editing</span>
+                        </label>
+
+                        <div class="pw-field" id="ownerPwWrap" style="display:none;margin-top:12px;">
+                            <div class="pw-label-row">
+                                <label for="ownerPw">
+                                    <i class="fas fa-user-shield" style="color:#d97706;margin-right:4px;" aria-hidden="true"></i>
+                                    Owner / Permissions Password
+                                </label>
+                            </div>
+                            <div class="pw-input-wrap">
+                                <input type="password" id="ownerPw" placeholder="Master password for permissions..." autocomplete="new-password" aria-label="Owner password">
+                                <div class="pw-actions-in">
+                                    <button class="toggle-pw" type="button" onclick="togglePwVis('ownerPw','eye3')" aria-label="Toggle owner password visibility">
+                                        <i class="fas fa-eye" id="eye3" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="options-panel glass-light" style="margin-top:16px;">
+                    <div class="options-panel">
                         <h4>
                             <i class="fas fa-sliders-h" aria-hidden="true"></i> Permissions
-                            <span style="font-size:11px;font-weight:400;color:var(--text-light);margin-left:8px;">
-                                (what others can do after opening)
+                            <span style="font-size:11.5px;font-weight:400;color:var(--text-medium);">
+                                (what viewers are allowed to do)
                             </span>
                         </h4>
+                        <div class="pp-presets" role="group" aria-label="Permission presets">
+                            <button type="button" class="pp-preset-btn" onclick="applyPermPreset('readOnly', this)">Read-Only (Block All)</button>
+                            <button type="button" class="pp-preset-btn" onclick="applyPermPreset('printOnly', this)">Allow Print Only</button>
+                            <button type="button" class="pp-preset-btn" onclick="applyPermPreset('forms', this)">Allow Forms &amp; Print</button>
+                            <button type="button" class="pp-preset-btn active" onclick="applyPermPreset('standard', this)">Standard Default</button>
+                        </div>
                         <div class="permissions-grid" role="group" aria-label="PDF permissions">
                             <label class="perm-toggle">
-                                <input type="checkbox" id="permPrint" checked="">
+                                <input type="checkbox" id="permPrint" checked="" onchange="clearPresetActive()">
                                 <i class="fas fa-print" aria-hidden="true"></i>
                                 <span>Allow Printing</span>
                             </label>
                             <label class="perm-toggle">
-                                <input type="checkbox" id="permCopy" checked="">
+                                <input type="checkbox" id="permCopy" checked="" onchange="clearPresetActive()">
                                 <i class="fas fa-copy" aria-hidden="true"></i>
                                 <span>Allow Copying</span>
                             </label>
                             <label class="perm-toggle">
-                                <input type="checkbox" id="permEdit">
+                                <input type="checkbox" id="permEdit" onchange="clearPresetActive()">
                                 <i class="fas fa-pen" aria-hidden="true"></i>
                                 <span>Allow Editing</span>
                             </label>
                             <label class="perm-toggle">
-                                <input type="checkbox" id="permAnnotate" checked="">
+                                <input type="checkbox" id="permAnnotate" checked="" onchange="clearPresetActive()">
                                 <i class="fas fa-comment" aria-hidden="true"></i>
                                 <span>Allow Annotations</span>
                             </label>
                             <label class="perm-toggle">
-                                <input type="checkbox" id="permForms" checked="">
+                                <input type="checkbox" id="permForms" checked="" onchange="clearPresetActive()">
                                 <i class="fas fa-wpforms" aria-hidden="true"></i>
                                 <span>Allow Form Fill</span>
                             </label>
                             <label class="perm-toggle">
-                                <input type="checkbox" id="permExtract">
+                                <input type="checkbox" id="permExtract" onchange="clearPresetActive()">
                                 <i class="fas fa-file-export" aria-hidden="true"></i>
                                 <span>Allow Extract</span>
                             </label>
                         </div>
                     </div>
 
-                    <button class="action-btn" id="protectBtn" type="button" onclick="doProtect()" style="margin-top:20px;">
+                    <button class="action-btn" id="protectBtn" type="button" onclick="doProtect()" style="margin-top:8px;">
                         <i class="fas fa-shield-alt" aria-hidden="true"></i> Protect PDF
                     </button>
                 </div>
@@ -610,9 +631,9 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <h2>PDF Protected Successfully! 🔐</h2>
-                    <p>Your PDF is now password protected</p>
-                    <div class="protect-badge">
-                        <i class="fas fa-shield-alt" aria-hidden="true"></i> RC4-128 Encrypted
+                    <p id="resultSub">Your PDF is now encrypted &amp; verified</p>
+                    <div class="protect-badge" id="rVerifyBadge">
+                        <i class="fas fa-shield-alt" aria-hidden="true"></i> <span>RC4-128 Encrypted &amp; Verified</span>
                     </div>
                     <div class="result-stats">
                         <div class="result-stat">
@@ -622,10 +643,10 @@
                             <strong id="rSize">0 KB</strong><small>File Size</small>
                         </div>
                         <div class="result-stat">
-                            <strong style="color:#dc2626;">
+                            <strong style="color:#16a34a;">
                                 <i class="fas fa-lock" aria-hidden="true"></i>
                             </strong>
-                            <small>Protected</small>
+                            <small id="rModeStat">Password Locked</small>
                         </div>
                     </div>
                     <div class="result-info glass-light">
@@ -634,27 +655,28 @@
                             <span id="rFileName">document_protected.pdf</span>
                         </div>
                         <div class="info-item">
-                            <i class="fas fa-key" style="color:#dc2626;" aria-hidden="true"></i>
+                            <i class="fas fa-key" style="color:#ef4444;" aria-hidden="true"></i>
                             <span id="rPwHint">Password: ***</span>
                         </div>
                     </div>
-                    <div style="background:rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:14px 18px;margin:16px 0;text-align:left;">
-                        <p style="font-size:13px;color:#92400e;margin:0;display:flex;align-items:flex-start;gap:8px;">
-                            <i class="fas fa-exclamation-triangle" style="margin-top:1px;flex-shrink:0;" aria-hidden="true"></i>
-                            <span><strong>Important:</strong> Save your password safely!
-                            If you forget it, the PDF cannot be recovered.
-                            We do not store your password anywhere.</span>
+                    <div class="pp-warn-box">
+                        <p>
+                            <i class="fas fa-exclamation-triangle" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"></i>
+                            <span><strong>Important:</strong> Save your password safely! If you forget it, the encrypted PDF cannot be recovered. We never store your file or password.</span>
                         </p>
                     </div>
                     <button class="download-btn" type="button" onclick="doDownload()">
                         <i class="fas fa-download" aria-hidden="true"></i> Download Protected PDF
                     </button>
                     <div class="result-actions">
+                        <button class="btn-outline" type="button" onclick="goBack()">
+                            <i class="fas fa-sliders-h" aria-hidden="true"></i> Change Settings
+                        </button>
+                        <a href="unlock-pdf.html" class="btn-outline">
+                            <i class="fas fa-lock-open" aria-hidden="true"></i> Unlock PDF
+                        </a>
                         <button class="btn-outline" type="button" onclick="resetTool()">
                             <i class="fas fa-redo" aria-hidden="true"></i> Protect Another
-                        </button>
-                        <button class="btn-outline" type="button" onclick="goBack()">
-                            <i class="fas fa-sliders-h" aria-hidden="true"></i> Change Password
                         </button>
                     </div>
                 </div>
@@ -675,7 +697,38 @@
             <h2 id="related-heading">Related PDF Tools</h2>
             <p>Everything you need to work with PDFs — all free, all browser-based.</p>
         </div>
-        <div class="related-grid" id="relatedGrid"></div>
+        <div class="related-grid" id="relatedGrid">
+            <a href="unlock-pdf.html" class="related-card glass" aria-label="Unlock PDF">
+                <div class="related-icon ri-green"><i class="fas fa-lock-open" aria-hidden="true"></i></div>
+                <h4>Unlock PDF</h4>
+                <p>Remove password protection</p>
+            </a>
+            <a href="redact-pdf.html" class="related-card glass" aria-label="Redact PDF">
+                <div class="related-icon ri-pink"><i class="fas fa-user-secret" aria-hidden="true"></i></div>
+                <h4>Redact PDF</h4>
+                <p>Permanently black out text</p>
+            </a>
+            <a href="sign-pdf.html" class="related-card glass" aria-label="Sign PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-signature" aria-hidden="true"></i></div>
+                <h4>Sign PDF</h4>
+                <p>Add e-signatures to PDFs</p>
+            </a>
+            <a href="watermark.html" class="related-card glass" aria-label="Watermark PDF">
+                <div class="related-icon ri-blue"><i class="fas fa-stamp" aria-hidden="true"></i></div>
+                <h4>Watermark PDF</h4>
+                <p>Add text or logo stamps</p>
+            </a>
+            <a href="compress-pdf.html" class="related-card glass" aria-label="Compress PDF">
+                <div class="related-icon ri-orange"><i class="fas fa-compress-alt" aria-hidden="true"></i></div>
+                <h4>Compress PDF</h4>
+                <p>Reduce PDF file size</p>
+            </a>
+            <a href="merge-pdf.html" class="related-card glass" aria-label="Merge PDF">
+                <div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div>
+                <h4>Merge PDF</h4>
+                <p>Combine multiple PDFs</p>
+            </a>
+        </div>
     </div>
 </section>
 
@@ -847,42 +900,26 @@
 <!-- ═══════════════════════════════════════
      SCRIPTS
 ═══════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="js/tool-page.js"></script>
 
 <script>
 /* ════════════════════════════════════════
-   FOOTER YEAR
+   FOOTER YEAR & WORKER
 ════════════════════════════════════════ */
-(function() {
+(function initYear() {
     const year = new Date().getFullYear();
-    // બધા possible IDs try કરે
-    const ids = ['currentYear', 'footerYear', 'year', 'footer-year'];
-    ids.forEach(function(id) {
+    ['currentYear', 'footerYear', 'year', 'footer-year'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = year;
     });
 })();
-/* ════════════════════════════════════════
-   MOBILE MENU
-════════════════════════════════════════ */
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function() {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        const isOpen = nav.classList.toggle('open');
-        ham.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    };
-}
 
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const nav = document.getElementById('navLinks');
-        const ham = document.getElementById('hamburger');
-        if (nav) nav.classList.remove('open');
-        if (ham) ham.setAttribute('aria-expanded', 'false');
-    }
-});
+if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
 
 /* ════════════════════════════════════════
    STATE
@@ -891,113 +928,114 @@ let rawBytes     = null;
 let selectedFile = null;
 let protBlob     = null;
 let pagesCount   = 0;
+let protMode     = 'open'; // 'open' | 'permsOnly'
 
 /* ════════════════════════════════════════
-   CRYPTO PRIMITIVES — MD5
+   CRYPTO PRIMITIVES — RFC 1321 MD5 + RC4
 ════════════════════════════════════════ */
 function md5(input) {
-    function add(a,b){ return (a+b)|0; }
-    function rol(x,n){ return (x<<n)|(x>>>(32-n)); }
-    function F(b,c,d){ return (b&c)|(~b&d); }
-    function G(b,c,d){ return (b&d)|(c&~d); }
-    function H(b,c,d){ return b^c^d; }
-    function I(b,c,d){ return c^(b|~d); }
+    function add(a, b) { return (a + b) | 0; }
+    function rol(x, n) { return (x << n) | (x >>> (32 - n)); }
+    function F(b, c, d) { return (b & c) | (~b & d); }
+    function G(b, c, d) { return (b & d) | (c & ~d); }
+    function H(b, c, d) { return b ^ c ^ d; }
+    function I(b, c, d) { return c ^ (b | ~d); }
 
-    const msg = new Uint8Array(input.length + 64 + 8);
+    // RFC 1321 requires 1 byte (0x80) + padding + 8-byte bit length => allocate >= input.length + 9 rounded up to 64
+    const len = Math.ceil((input.length + 9) / 64) * 64;
+    const msg = new Uint8Array(len);
     msg.set(input);
     msg[input.length] = 0x80;
     const dv = new DataView(msg.buffer);
-    dv.setUint32(Math.ceil((input.length+1)/64)*64-8, input.length*8, true);
+    dv.setUint32(len - 8, (input.length * 8) >>> 0, true);
+    dv.setUint32(len - 4, Math.floor((input.length * 8) / 0x100000000), true);
 
-    let [a,b,c,d] = [0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476];
-    const len = Math.ceil((input.length+1)/64)*64;
+    let [a, b, c, d] = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476];
 
-    for (let i=0;i<len;i+=64){
-        const M=[];
-        for(let j=0;j<16;j++) M[j]=dv.getUint32(i+j*4,true);
-        let [aa,bb,cc,dd]=[a,b,c,d];
+    for (let i = 0; i < len; i += 64) {
+        const M = [];
+        for (let j = 0; j < 16; j++) M[j] = dv.getUint32(i + j * 4, true);
+        const [aa, bb, cc, dd] = [a, b, c, d];
+        const step = (fn, a2, b2, c2, d2, x, s, t) => add(rol(add(add(a2, fn(b2, c2, d2)), add(x, t)), s), b2);
 
-        const step=(fn,a2,b2,c2,d2,x,s,t)=>add(rol(add(add(a2,fn(b2,c2,d2)),add(x,t)),s),b2);
-        a=step(F,a,b,c,d,M[0], 7,-680876936);  d=step(F,d,a,b,c,M[1],12,-389564586);
-        c=step(F,c,d,a,b,M[2],17, 606105819);  b=step(F,b,c,d,a,M[3],22,-1044525330);
-        a=step(F,a,b,c,d,M[4], 7,-176418897);  d=step(F,d,a,b,c,M[5],12,1200080426);
-        c=step(F,c,d,a,b,M[6],17,-1473231341); b=step(F,b,c,d,a,M[7],22,-45705983);
-        a=step(F,a,b,c,d,M[8], 7,1770035416);  d=step(F,d,a,b,c,M[9],12,-1958414417);
-        c=step(F,c,d,a,b,M[10],17,-42063);     b=step(F,b,c,d,a,M[11],22,-1990404162);
-        a=step(F,a,b,c,d,M[12],7,1804603682);  d=step(F,d,a,b,c,M[13],12,-40341101);
-        c=step(F,c,d,a,b,M[14],17,-1502002290);b=step(F,b,c,d,a,M[15],22,1236535329);
+        a = step(F,a,b,c,d,M[0], 7,-680876936);  d = step(F,d,a,b,c,M[1],12,-389564586);
+        c = step(F,c,d,a,b,M[2],17, 606105819);  b = step(F,b,c,d,a,M[3],22,-1044525330);
+        a = step(F,a,b,c,d,M[4], 7,-176418897);  d = step(F,d,a,b,c,M[5],12,1200080426);
+        c = step(F,c,d,a,b,M[6],17,-1473231341); b = step(F,b,c,d,a,M[7],22,-45705983);
+        a = step(F,a,b,c,d,M[8], 7,1770035416);  d = step(F,d,a,b,c,M[9],12,-1958414417);
+        c = step(F,c,d,a,b,M[10],17,-42063);     b = step(F,b,c,d,a,M[11],22,-1990404162);
+        a = step(F,a,b,c,d,M[12],7,1804603682);  d = step(F,d,a,b,c,M[13],12,-40341101);
+        c = step(F,c,d,a,b,M[14],17,-1502002290);b = step(F,b,c,d,a,M[15],22,1236535329);
 
-        a=step(G,a,b,c,d,M[1], 5,-165796510);  d=step(G,d,a,b,c,M[6], 9,-1069501632);
-        c=step(G,c,d,a,b,M[11],14,643717713);  b=step(G,b,c,d,a,M[0],20,-373897302);
-        a=step(G,a,b,c,d,M[5], 5,-701558691);  d=step(G,d,a,b,c,M[10],9,38016083);
-        c=step(G,c,d,a,b,M[15],14,-660478335); b=step(G,b,c,d,a,M[4],20,-405537848);
-        a=step(G,a,b,c,d,M[9], 5,568446438);   d=step(G,d,a,b,c,M[14],9,-1019803690);
-        c=step(G,c,d,a,b,M[3],14,-187363961);  b=step(G,b,c,d,a,M[8],20,1163531501);
-        a=step(G,a,b,c,d,M[13],5,-1444681467); d=step(G,d,a,b,c,M[2], 9,-51403784);
-        c=step(G,c,d,a,b,M[7],14,1735328473);  b=step(G,b,c,d,a,M[12],20,-1926607734);
+        a = step(G,a,b,c,d,M[1], 5,-165796510);  d = step(G,d,a,b,c,M[6], 9,-1069501632);
+        c = step(G,c,d,a,b,M[11],14,643717713);  b = step(G,b,c,d,a,M[0],20,-373897302);
+        a = step(G,a,b,c,d,M[5], 5,-701558691);  d = step(G,d,a,b,c,M[10],9,38016083);
+        c = step(G,c,d,a,b,M[15],14,-660478335); b = step(G,b,c,d,a,M[4],20,-405537848);
+        a = step(G,a,b,c,d,M[9], 5,568446438);   d = step(G,d,a,b,c,M[14],9,-1019803690);
+        c = step(G,c,d,a,b,M[3],14,-187363961);  b = step(G,b,c,d,a,M[8],20,1163531501);
+        a = step(G,a,b,c,d,M[13],5,-1444681467); d = step(G,d,a,b,c,M[2], 9,-51403784);
+        c = step(G,c,d,a,b,M[7],14,1735328473);  b = step(G,b,c,d,a,M[12],20,-1926607734);
 
-        a=step(H,a,b,c,d,M[5], 4,-378558);     d=step(H,d,a,b,c,M[8],11,-2022574463);
-        c=step(H,c,d,a,b,M[11],16,1839030562); b=step(H,b,c,d,a,M[14],23,-35309556);
-        a=step(H,a,b,c,d,M[1], 4,-1530992060); d=step(H,d,a,b,c,M[4],11,1272893353);
-        c=step(H,c,d,a,b,M[7],16,-155497632);  b=step(H,b,c,d,a,M[10],23,-1094730640);
-        a=step(H,a,b,c,d,M[13],4,681279174);   d=step(H,d,a,b,c,M[0],11,-358537222);
-        c=step(H,c,d,a,b,M[3],16,-722521979);  b=step(H,b,c,d,a,M[6],23,76029189);
-        a=step(H,a,b,c,d,M[9], 4,-640364487);  d=step(H,d,a,b,c,M[12],11,-421815835);
-        c=step(H,c,d,a,b,M[15],16,530742520);  b=step(H,b,c,d,a,M[2],23,-995338651);
+        a = step(H,a,b,c,d,M[5], 4,-378558);     d = step(H,d,a,b,c,M[8],11,-2022574463);
+        c = step(H,c,d,a,b,M[11],16,1839030562); b = step(H,b,c,d,a,M[14],23,-35309556);
+        a = step(H,a,b,c,d,M[1], 4,-1530992060); d = step(H,d,a,b,c,M[4],11,1272893353);
+        c = step(H,c,d,a,b,M[7],16,-155497632);  b = step(H,b,c,d,a,M[10],23,-1094730640);
+        a = step(H,a,b,c,d,M[13],4,681279174);   d = step(H,d,a,b,c,M[0],11,-358537222);
+        c = step(H,c,d,a,b,M[3],16,-722521979);  b = step(H,b,c,d,a,M[6],23,76029189);
+        a = step(H,a,b,c,d,M[9], 4,-640364487);  d = step(H,d,a,b,c,M[12],11,-421815835);
+        c = step(H,c,d,a,b,M[15],16,530742520);  b = step(H,b,c,d,a,M[2],23,-995338651);
 
-        a=step(I,a,b,c,d,M[0], 6,-198630844);  d=step(I,d,a,b,c,M[7],10,1126891415);
-        c=step(I,c,d,a,b,M[14],15,-1416354905);b=step(I,b,c,d,a,M[5],21,-57434055);
-        a=step(I,a,b,c,d,M[12],6,1700485571);  d=step(I,d,a,b,c,M[3],10,-1894986606);
-        c=step(I,c,d,a,b,M[10],15,-1051523);   b=step(I,b,c,d,a,M[1],21,-2054922799);
-        a=step(I,a,b,c,d,M[8], 6,1873313359);  d=step(I,d,a,b,c,M[15],10,-30611744);
-        c=step(I,c,d,a,b,M[6],15,-1560198380); b=step(I,b,c,d,a,M[13],21,1309151649);
-        a=step(I,a,b,c,d,M[4], 6,-145523070);  d=step(I,d,a,b,c,M[11],10,-1120210379);
-        c=step(I,c,d,a,b,M[2],15,718787259);   b=step(I,b,c,d,a,M[9],21,-343485551);
+        a = step(I,a,b,c,d,M[0], 6,-198630844);  d = step(I,d,a,b,c,M[7],10,1126891415);
+        c = step(I,c,d,a,b,M[14],15,-1416354905);b = step(I,b,c,d,a,M[5],21,-57434055);
+        a = step(I,a,b,c,d,M[12],6,1700485571);  d = step(I,d,a,b,c,M[3],10,-1894986606);
+        c = step(I,c,d,a,b,M[10],15,-1051523);   b = step(I,b,c,d,a,M[1],21,-2054922799);
+        a = step(I,a,b,c,d,M[8], 6,1873313359);  d = step(I,d,a,b,c,M[15],10,-30611744);
+        c = step(I,c,d,a,b,M[6],15,-1560198380); b = step(I,b,c,d,a,M[13],21,1309151649);
+        a = step(I,a,b,c,d,M[4], 6,-145523070);  d = step(I,d,a,b,c,M[11],10,-1120210379);
+        c = step(I,c,d,a,b,M[2],15,718787259);   b = step(I,b,c,d,a,M[9],21,-343485551);
 
-        a=add(a,aa); b=add(b,bb); c=add(c,cc); d=add(d,dd);
+        a = add(a, aa); b = add(b, bb); c = add(c, cc); d = add(d, dd);
     }
 
     const out = new Uint8Array(16);
     const odv = new DataView(out.buffer);
-    odv.setUint32(0,a,true); odv.setUint32(4,b,true);
-    odv.setUint32(8,c,true); odv.setUint32(12,d,true);
+    odv.setUint32(0, a, true); odv.setUint32(4, b, true);
+    odv.setUint32(8, c, true); odv.setUint32(12, d, true);
     return out;
 }
 
-/* ════════════════════════════════════════
-   RC4
-════════════════════════════════════════ */
 function RC4(key, data) {
     const S = new Uint8Array(256);
-    for (let i=0;i<256;i++) S[i]=i;
-    let j=0;
-    for (let i=0;i<256;i++){
-        j=(j+S[i]+key[i%key.length])&0xff;
-        [S[i],S[j]]=[S[j],S[i]];
+    for (let i = 0; i < 256; i++) S[i] = i;
+    let j = 0;
+    for (let i = 0; i < 256; i++) {
+        j = (j + S[i] + key[i % key.length]) & 0xff;
+        [S[i], S[j]] = [S[j], S[i]];
     }
-    const out=new Uint8Array(data.length);
-    let x=0; j=0;
-    for(let k=0;k<data.length;k++){
-        x=(x+1)&0xff; j=(j+S[x])&0xff;
-        [S[x],S[j]]=[S[j],S[x]];
-        out[k]=data[k]^S[(S[x]+S[j])&0xff];
+    const out = new Uint8Array(data.length);
+    let x = 0; j = 0;
+    for (let k = 0; k < data.length; k++) {
+        x = (x + 1) & 0xff; j = (j + S[x]) & 0xff;
+        [S[x], S[j]] = [S[j], S[x]];
+        out[k] = data[k] ^ S[(S[x] + S[j]) & 0xff];
     }
     return out;
 }
 
-function toHex(arr){
-    return Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join('');
+function toHex(arr) {
+    return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function concatU8(...arrays){
-    const len=arrays.reduce((s,a)=>s+a.length,0);
-    const out=new Uint8Array(len); let off=0;
-    for(const a of arrays){out.set(a,off);off+=a.length;}
+function concatU8(...arrays) {
+    const len = arrays.reduce((s, a) => s + a.length, 0);
+    const out = new Uint8Array(len);
+    let off = 0;
+    for (const a of arrays) { out.set(a, off); off += a.length; }
     return out;
 }
 
 /* ════════════════════════════════════════
-   PDF STANDARD SECURITY HANDLER
+   PDF STANDARD SECURITY HANDLER REV. 3
 ════════════════════════════════════════ */
 const PDF_PAD = new Uint8Array([
     0x28,0xBF,0x4E,0x5E,0x4E,0x75,0x8A,0x41,
@@ -1009,7 +1047,7 @@ const PDF_PAD = new Uint8Array([
 function pdfPadPassword(pw) {
     const b = typeof pw === 'string' ? new TextEncoder().encode(pw) : pw;
     const r = new Uint8Array(32);
-    for(let i=0;i<32;i++) r[i] = i<b.length ? b[i] : PDF_PAD[i-b.length];
+    for (let i = 0; i < 32; i++) r[i] = i < b.length ? b[i] : PDF_PAD[i - b.length];
     return r;
 }
 
@@ -1027,38 +1065,31 @@ function pdfPermFlags(p) {
 }
 
 function computeO(ownerPw, userPw) {
-    const keyLen = 16;
     const padOwner = pdfPadPassword(ownerPw);
     let hash = md5(padOwner);
-    for(let i=0;i<50;i++) hash = md5(hash);
-    const key = hash.slice(0, keyLen);
-    const padUser = pdfPadPassword(userPw);
-    let result = RC4(key, padUser);
-    for(let i=1;i<=19;i++){
-        const k = key.map(b=>b^i);
-        result = RC4(k, result);
+    for (let i = 0; i < 50; i++) hash = md5(hash);
+    const key = hash.slice(0, 16);
+    let result = RC4(key, pdfPadPassword(userPw));
+    for (let i = 1; i <= 19; i++) {
+        result = RC4(key.map(b => b ^ i), result);
     }
     return result;
 }
 
 function computeEncryptionKey(userPw, O, P, fileId) {
-    const keyLen = 16;
-    const padUser = pdfPadPassword(userPw);
     const pBytes = new Uint8Array(4);
     new DataView(pBytes.buffer).setInt32(0, P, true);
-    const buf = concatU8(padUser, O, pBytes, fileId);
+    const buf = concatU8(pdfPadPassword(userPw), O, pBytes, fileId);
     let hash = md5(buf);
-    for(let i=0;i<50;i++) hash = md5(hash.slice(0,keyLen));
-    return hash.slice(0, keyLen);
+    for (let i = 0; i < 50; i++) hash = md5(hash.slice(0, 16));
+    return hash.slice(0, 16);
 }
 
 function computeU(encKey, fileId) {
-    const buf    = concatU8(PDF_PAD, fileId);
-    const hash   = md5(buf);
-    let result   = RC4(encKey, hash);
-    for(let i=1;i<=19;i++){
-        const k = encKey.map(b=>b^i);
-        result = RC4(k, result);
+    const hash = md5(concatU8(PDF_PAD, fileId));
+    let result = RC4(encKey, hash);
+    for (let i = 1; i <= 19; i++) {
+        result = RC4(encKey.map(b => b ^ i), result);
     }
     const out = new Uint8Array(32);
     out.set(result);
@@ -1067,34 +1098,28 @@ function computeU(encKey, fileId) {
 
 function objectEncKey(encKey, objNum, genNum) {
     const extra = new Uint8Array([
-        objNum&0xff, (objNum>>8)&0xff, (objNum>>16)&0xff,
-        genNum&0xff, (genNum>>8)&0xff
+        objNum & 0xff, (objNum >> 8) & 0xff, (objNum >> 16) & 0xff,
+        genNum & 0xff, (genNum >> 8) & 0xff
     ]);
-    const buf = concatU8(encKey, extra);
-    const h   = md5(buf);
-    const kl  = Math.min(encKey.length+5, 16);
-    return h.slice(0, kl);
+    return md5(concatU8(encKey, extra)).slice(0, Math.min(encKey.length + 5, 16));
 }
 
-/* ════════════════════════════════════════
-   BUILD CLEAN PDF VIA PDF-LIB
-════════════════════════════════════════ */
 async function buildCleanPDF(srcBytes) {
     const pdfDoc = await PDFLib.PDFDocument.load(srcBytes, {
-        ignoreEncryption: true,
-        updateMetadata:   false,
+        ignoreEncryption: false,
+        updateMetadata: false,
         throwOnInvalidObject: false,
     });
     const cleanBytes = await pdfDoc.save({
         useObjectStreams: false,
-        addDefaultPage:   false,
-        objectsPerTick:   50,
+        addDefaultPage: false,
+        objectsPerTick: 50,
     });
     return new Uint8Array(cleanBytes);
 }
 
 /* ════════════════════════════════════════
-   PDF ENCRYPT INJECTOR CLASS
+   SAFE PDF ENCRYPT INJECTOR (OFFSET-EXACT)
 ════════════════════════════════════════ */
 class PDFEncryptInjector {
     constructor(bytes, userPw, ownerPw, perms) {
@@ -1102,8 +1127,7 @@ class PDFEncryptInjector {
         this.userPw  = userPw;
         this.ownerPw = ownerPw;
         this.perms   = perms;
-        this.txt = '';
-        for(let i=0;i<bytes.length;i++) this.txt += String.fromCharCode(bytes[i]);
+        this.txt     = new TextDecoder('latin1').decode(bytes);
     }
 
     run() {
@@ -1117,302 +1141,286 @@ class PDFEncryptInjector {
         const rootRef = this.getRef(trailerDict, '/Root');
         const infoRef = this.getRef(trailerDict, '/Info');
         const oldSize = this.getNum(trailerDict, '/Size') || (objects.length + 2);
-        if (!rootRef) throw new Error('PDF has no /Root — invalid PDF structure');
-        const encObjNum    = oldSize;
-        const encryptedMap = this.encryptObjects(objects, encKey, encObjNum);
+        if (!rootRef) throw new Error('PDF has no /Root catalog reference.');
+
+        const encObjNum = Math.max(oldSize, ...objects.map(o => o.objNum)) + 1;
+        const encryptedMap = this.encryptObjects(objects, encKey);
         const encDictContent = [
-            '/Filter /Standard','/V 2','/R 3','/Length 128',
-            `/P ${P}`,`/O <${toHex(O)}>`,`/U <${toHex(U)}>`,
+            '/Filter /Standard', '/V 2', '/R 3', '/Length 128',
+            '/P ' + P, '/O <' + toHex(O) + '>', '/U <' + toHex(U) + '>'
         ].join('\n');
-        return this.assembleFinal(encryptedMap, encObjNum, encDictContent, oldSize, rootRef, infoRef, fileId);
+        return this.assembleFinal(encryptedMap, encObjNum, encDictContent, rootRef, infoRef, fileId);
     }
 
     parseXref() {
         const txt = this.txt;
         const sxIdx = txt.lastIndexOf('startxref');
-        if (sxIdx < 0) throw new Error('No startxref in PDF');
-        const sxAfter = txt.slice(sxIdx + 9).trimStart();
-        const xrefOff = parseInt(sxAfter);
-        if (isNaN(xrefOff)) throw new Error('Invalid startxref offset');
-        const xrefStr = txt.slice(xrefOff);
-        if (!xrefStr.startsWith('xref')) throw new Error('Expected xref at offset ' + xrefOff);
+        if (sxIdx < 0) throw new Error('No startxref table found in PDF.');
+        const xrefOff = parseInt(txt.slice(sxIdx + 9).trimStart(), 10);
+        if (isNaN(xrefOff) || !txt.slice(xrefOff).startsWith('xref')) {
+            throw new Error('Unsupported or missing xref table at offset ' + xrefOff);
+        }
 
         const objects = [];
         let pos = xrefOff + 4;
-
         while (pos < txt.length) {
             while (pos < txt.length && /\s/.test(txt[pos])) pos++;
-            if (txt.slice(pos, pos+7) === 'trailer') break;
+            if (txt.slice(pos, pos + 7) === 'trailer') break;
             const lineEnd = txt.indexOf('\n', pos);
             if (lineEnd < 0) break;
-            const line = txt.slice(pos, lineEnd).trim();
-            const parts = line.split(/\s+/);
-            if (parts.length < 2 || isNaN(parseInt(parts[0]))) break;
-            const firstObj = parseInt(parts[0]);
-            const count    = parseInt(parts[1]);
+            const parts = txt.slice(pos, lineEnd).trim().split(/\s+/);
+            if (parts.length < 2 || isNaN(parseInt(parts[0], 10))) break;
+            const firstObj = parseInt(parts[0], 10);
+            const count    = parseInt(parts[1], 10);
             pos = lineEnd + 1;
-            for (let i=0; i<count; i++) {
-                const entry  = txt.slice(pos, pos+20);
-                const eParts = entry.trim().split(/\s+/);
+            for (let i = 0; i < count; i++) {
+                const eParts = txt.slice(pos, pos + 20).trim().split(/\s+/);
                 if (eParts.length >= 3) {
-                    const offset = parseInt(eParts[0]);
-                    const gen    = parseInt(eParts[1]);
-                    const inUse  = eParts[2] === 'n';
-                    if (inUse && offset > 0) objects.push({ objNum: firstObj+i, genNum: gen, offset });
+                    const offset = parseInt(eParts[0], 10);
+                    const gen    = parseInt(eParts[1], 10);
+                    if (eParts[2] === 'n' && offset > 0) objects.push({ objNum: firstObj + i, genNum: gen, offset });
                 }
                 pos += 20;
             }
         }
 
-        while (pos < txt.length && /\s/.test(txt[pos])) pos++;
         const trailerStart = txt.indexOf('trailer', pos);
-        if (trailerStart < 0) throw new Error('No trailer keyword');
+        if (trailerStart < 0) throw new Error('Missing PDF trailer keyword.');
         const afterTrailer = txt.slice(trailerStart + 7).trimStart();
-        if (!afterTrailer.startsWith('<<')) throw new Error('No trailer dict');
-        const trailerDict = this.extractDict(afterTrailer, 0);
-        return { objects, trailerDict, xrefOffset: xrefOff };
+        if (!afterTrailer.startsWith('<<')) throw new Error('Missing trailer dictionary.');
+        return { objects, trailerDict: this.extractDict(afterTrailer, 0) };
     }
 
     extractDict(txt, start) {
         let i = start;
-        if (txt[i]==='<' && txt[i+1]==='<') i+=2; else return '';
+        if (txt[i] === '<' && txt[i + 1] === '<') i += 2; else return '';
         let depth = 1, result = '<<';
         while (i < txt.length && depth > 0) {
-            if (txt[i]==='<' && txt[i+1]==='<') { depth++; result+='<<'; i+=2; }
-            else if (txt[i]==='>' && txt[i+1]==='>') { depth--; result+='>>'; i+=2; }
-            else { result += txt[i]; i++; }
+            if (txt[i] === '(') {
+                const close = this.skipLiteralEnd(txt, i + 1);
+                result += txt.slice(i, close + 1);
+                i = close + 1;
+            } else if (txt[i] === '<' && txt[i + 1] === '<') { depth++; result += '<<'; i += 2; }
+            else if (txt[i] === '>' && txt[i + 1] === '>') { depth--; result += '>>'; i += 2; }
+            else { result += txt[i++]; }
         }
         return result;
     }
 
+    skipLiteralEnd(txt, start) {
+        let depth = 0, i = start;
+        while (i < txt.length) {
+            if (txt[i] === '\\') { i += 2; continue; }
+            if (txt[i] === '(') depth++;
+            else if (txt[i] === ')') { if (depth === 0) return i; depth--; }
+            i++;
+        }
+        return txt.length - 1;
+    }
+
     getNum(dict, key) {
-        const esc = key.replace('/','\\\/');
-        const m   = dict.match(new RegExp(esc+'\\s+(\\d+)'));
-        return m ? parseInt(m[1]) : null;
+        const esc = key.replace('/', '\\/');
+        const m = dict.match(new RegExp(esc + '\\s+(\\d+)'));
+        return m ? parseInt(m[1], 10) : null;
     }
 
     getRef(dict, key) {
-        const esc = key.replace('/','\\\/');
-        const m   = dict.match(new RegExp(esc+'\\s+(\\d+\\s+\\d+\\s+R)'));
+        const esc = key.replace('/', '\\/');
+        const m = dict.match(new RegExp(esc + '\\s+(\\d+\\s+\\d+\\s+R)'));
         return m ? m[1] : null;
     }
 
-    readObjectBody(offset) {
+    readAndEncryptObject(offset, encKey) {
         const txt = this.txt;
-        const headerRx = /(\d+)\s+(\d+)\s+obj\s*/;
-        const chunk    = txt.slice(offset, offset + 50);
-        const hm       = headerRx.exec(chunk);
-        if (!hm) return { body: '', bodyStart: offset, bodyEnd: offset, hasStream: false };
-        const objNum    = parseInt(hm[1]);
-        const genNum    = parseInt(hm[2]);
+        const hm = /^(\d+)\s+(\d+)\s+obj\s*/.exec(txt.slice(offset, offset + 64));
+        if (!hm) return null;
+        const objNum    = parseInt(hm[1], 10);
+        const genNum    = parseInt(hm[2], 10);
         const bodyStart = offset + hm[0].length;
-        const nextEndobj = txt.indexOf('endobj', bodyStart);
-        const nextStream = txt.indexOf('stream', bodyStart);
-        let bodyEnd;
-        if (nextStream > 0 && nextStream < nextEndobj) {
-            let streamStart = nextStream;
-            let dataStart = streamStart + 6;
-            if (txt[dataStart] === '\r') dataStart++;
-            if (txt[dataStart] === '\n') dataStart++;
-            const dictPart = txt.slice(bodyStart, streamStart);
-            const lenM     = /\/Length\s+(\d+)/.exec(dictPart);
-            let   dataEnd;
-            if (lenM) { dataEnd = dataStart + parseInt(lenM[1]); }
-            else { const esIdx = txt.indexOf('endstream', dataStart); dataEnd = esIdx > 0 ? esIdx : nextEndobj; }
-            const esIdx2 = txt.indexOf('endstream', dataEnd - 5);
-            const eoIdx2 = txt.indexOf('endobj', esIdx2 > 0 ? esIdx2 : dataEnd);
-            bodyEnd = eoIdx2 > 0 ? eoIdx2 : nextEndobj;
-        } else {
-            bodyEnd = nextEndobj > 0 ? nextEndobj : txt.length;
+        const oKey      = objectEncKey(encKey, objNum, genNum);
+
+        // Find end of top-level dict before looking for 'stream' keyword (prevents false matches inside string values!)
+        const afterWs = txt.slice(bodyStart).search(/\S/);
+        const dictStart = afterWs >= 0 ? bodyStart + afterWs : bodyStart;
+        if (txt.slice(dictStart, dictStart + 2) === '<<') {
+            const dictText = this.extractDict(txt, dictStart);
+            const afterDictPos = dictStart + dictText.length;
+            const afterDictWs = txt.slice(afterDictPos).search(/\S/);
+            const kwPos = afterDictWs >= 0 ? afterDictPos + afterDictWs : -1;
+
+            if (kwPos >= 0 && txt.slice(kwPos, kwPos + 6) === 'stream') {
+                let dataStart = kwPos + 6;
+                if (txt[dataStart] === '\r' && txt[dataStart + 1] === '\n') dataStart += 2;
+                else if (txt[dataStart] === '\n' || txt[dataStart] === '\r') dataStart += 1;
+
+                const lenM = /\/Length\s+(\d+)/.exec(dictText);
+                let dataEnd = lenM ? dataStart + parseInt(lenM[1], 10) : txt.indexOf('endstream', dataStart);
+                if (dataEnd < dataStart || dataEnd > txt.length) dataEnd = txt.indexOf('endstream', dataStart);
+
+                const encDictPart = this.encryptStrings(dictText, oKey).replace(/\/Length\s+\d+/, '/Length ' + (dataEnd - dataStart));
+                const rawStream   = this.bytes.subarray(dataStart, dataEnd);
+                const encStream   = RC4(oKey, rawStream);
+                let encStr = '';
+                for (let k = 0; k < encStream.length; k++) encStr += String.fromCharCode(encStream[k]);
+
+                return { objNum, genNum, body: encDictPart + '\nstream\n' + encStr + '\nendstream' };
+            }
         }
-        return { objNum, genNum, body: txt.slice(bodyStart, bodyEnd), bodyStart, bodyEnd, hasStream: nextStream > 0 && nextStream < nextEndobj };
+
+        const nextEndobj = txt.indexOf('endobj', bodyStart);
+        const body = txt.slice(bodyStart, nextEndobj > bodyStart ? nextEndobj : txt.length);
+        return { objNum, genNum, body: this.encryptStrings(body, oKey) };
     }
 
-    encryptObjects(objects, encKey, encObjNum) {
+    encryptObjects(objects, encKey) {
         const map = {};
         for (const obj of objects) {
-            const { objNum, genNum, body } = this.readObjectBody(obj.offset);
-            const oKey = objectEncKey(encKey, objNum, genNum);
-            map[objNum] = { genNum, body: this.encryptBody(body, oKey) };
+            const res = this.readAndEncryptObject(obj.offset, encKey);
+            if (res) map[res.objNum] = { genNum: res.genNum, body: res.body };
         }
         return map;
-    }
-
-    encryptBody(body, key) {
-        const streamRx = /([\s\S]*?)(stream\r?\n)([\s\S]*?)(\r?\nendstream)([\s\S]*)$/;
-        const sm = streamRx.exec(body);
-        if (sm) {
-            let dictPart = sm[1];
-            const streamKw   = sm[2];
-            const streamData = sm[3];
-            const endStream  = sm[4];
-            const tail       = sm[5];
-            dictPart = this.encryptStrings(dictPart, key);
-            const raw = new Uint8Array(streamData.length);
-            for(let i=0;i<streamData.length;i++) raw[i]=streamData.charCodeAt(i)&0xff;
-            const enc = RC4(key, raw);
-            let encStr='';
-            for(let i=0;i<enc.length;i++) encStr+=String.fromCharCode(enc[i]);
-            dictPart = dictPart.replace(/\/Length\s+\d+/, '/Length '+enc.length);
-            return dictPart + streamKw + encStr + endStream + tail;
-        } else {
-            return this.encryptStrings(body, key);
-        }
     }
 
     encryptStrings(text, key) {
         let out = '', i = 0;
         while (i < text.length) {
             if (text[i] === '(') {
-                const { raw, end } = this.readLiteralString(text, i+1);
-                const enc = RC4(key, raw);
-                out += '(' + this.encodeLiteral(enc) + ')';
+                const { raw, end } = this.readLiteralString(text, i + 1);
+                out += '(' + this.encodeLiteral(RC4(key, raw)) + ')';
                 i = end + 1;
-            } else if (text[i] === '<' && text[i+1] !== '<') {
-                const close = text.indexOf('>', i+1);
+            } else if (text[i] === '<') {
+                if (text[i + 1] === '<') { out += '<<'; i += 2; continue; }
+                const close = text.indexOf('>', i + 1);
                 if (close < 0) { out += text[i++]; continue; }
-                const hex = text.slice(i+1, close).replace(/\s/g,'');
-                if (!hex || hex.length%2!==0 || !/^[0-9a-fA-F]*$/.test(hex)) {
-                    out += text.slice(i, close+1); i = close+1; continue;
+                const hex = text.slice(i + 1, close).replace(/\s/g, '');
+                if (!hex || hex.length % 2 !== 0 || !/^[0-9a-fA-F]*$/.test(hex)) {
+                    out += text.slice(i, close + 1); i = close + 1; continue;
                 }
-                const raw = new Uint8Array(hex.length/2);
-                for(let k=0;k<raw.length;k++) raw[k]=parseInt(hex.slice(k*2,k*2+2),16);
-                const enc = RC4(key, raw);
-                out += '<' + toHex(enc) + '>';
-                i = close+1;
-            } else { out += text[i++]; }
+                const raw = new Uint8Array(hex.length / 2);
+                for (let k = 0; k < raw.length; k++) raw[k] = parseInt(hex.slice(k * 2, k * 2 + 2), 16);
+                out += '<' + toHex(RC4(key, raw)) + '>';
+                i = close + 1;
+            } else {
+                out += text[i++];
+            }
         }
         return out;
     }
 
     readLiteralString(text, start) {
-        let depth=0, bytes=[], i=start;
+        let depth = 0, bytes = [], i = start;
         while (i < text.length) {
             const c = text[i];
             if (c === '\\') {
                 i++;
                 const e = text[i];
-                if      (e==='n')  { bytes.push(10); i++; }
-                else if (e==='r')  { bytes.push(13); i++; }
-                else if (e==='t')  { bytes.push(9);  i++; }
-                else if (e==='b')  { bytes.push(8);  i++; }
-                else if (e==='f')  { bytes.push(12); i++; }
-                else if (e==='(')  { bytes.push(40); i++; }
-                else if (e===')')  { bytes.push(41); i++; }
-                else if (e==='\\') { bytes.push(92); i++; }
-                else if (e==='\n') { i++; }
-                else if (e==='\r') { i++; if(text[i]==='\n') i++; }
-                else if (e>='0'&&e<='7') {
-                    let oct='';
-                    for(let j=0;j<3&&i<text.length&&text[i]>='0'&&text[i]<='7';j++,i++) oct+=text[i];
-                    bytes.push(parseInt(oct,8)&0xff);
-                } else { bytes.push(text.charCodeAt(i)&0xff); i++; }
-            } else if (c==='(') { depth++; bytes.push(40); i++; }
-            else if (c===')') {
-                if (depth===0) return { raw: new Uint8Array(bytes), end: i };
+                if      (e === 'n')  { bytes.push(10); i++; }
+                else if (e === 'r')  { bytes.push(13); i++; }
+                else if (e === 't')  { bytes.push(9);  i++; }
+                else if (e === 'b')  { bytes.push(8);  i++; }
+                else if (e === 'f')  { bytes.push(12); i++; }
+                else if (e === '(')  { bytes.push(40); i++; }
+                else if (e === ')')  { bytes.push(41); i++; }
+                else if (e === '\\') { bytes.push(92); i++; }
+                else if (e === '\n') { i++; }
+                else if (e === '\r') { i++; if (text[i] === '\n') i++; }
+                else if (e >= '0' && e <= '7') {
+                    let oct = '';
+                    for (let j = 0; j < 3 && i < text.length && text[i] >= '0' && text[i] <= '7'; j++, i++) oct += text[i];
+                    bytes.push(parseInt(oct, 8) & 0xff);
+                } else { bytes.push(text.charCodeAt(i) & 0xff); i++; }
+            } else if (c === '(') { depth++; bytes.push(40); i++; }
+            else if (c === ')') {
+                if (depth === 0) return { raw: new Uint8Array(bytes), end: i };
                 depth--; bytes.push(41); i++;
-            } else { bytes.push(text.charCodeAt(i)&0xff); i++; }
+            } else { bytes.push(text.charCodeAt(i) & 0xff); i++; }
         }
         return { raw: new Uint8Array(bytes), end: i };
     }
 
     encodeLiteral(bytes) {
-        let s='';
-        for(const b of bytes){
-            if(b===40) s+='\\(';
-            else if(b===41) s+='\\)';
-            else if(b===92) s+='\\\\';
-            else if(b===13) s+='\\r';
-            else if(b===10) s+='\\n';
-            else s+=String.fromCharCode(b);
+        let s = '';
+        for (const b of bytes) {
+            if      (b === 40) s += '\\(';
+            else if (b === 41) s += '\\)';
+            else if (b === 92) s += '\\\\';
+            else if (b === 13) s += '\\r';
+            else if (b === 10) s += '\\n';
+            else s += String.fromCharCode(b);
         }
         return s;
     }
 
-    assembleFinal(encMap, encObjNum, encDictContent, oldSize, rootRef, infoRef, fileId) {
-        const enc       = new TextEncoder();
+    assembleFinal(encMap, encObjNum, encDictContent, rootRef, infoRef, fileId) {
+        const enc = new TextEncoder();
         const fileIdHex = toHex(fileId);
-        const parts     = [];
-        const offsets   = {};
+        const parts = [];
+        const offsets = {};
 
         const hdr = '%PDF-1.4\n%\xe2\xe3\xcf\xd3\n';
         parts.push(this.strToU8(hdr));
-        let pos = this.totalLen(parts);
+        let pos = hdr.length;
 
-        const sortedNums = Object.keys(encMap).map(Number).sort((a,b)=>a-b);
+        const sortedNums = Object.keys(encMap).map(Number).sort((a, b) => a - b);
         for (const num of sortedNums) {
             const { genNum, body } = encMap[num];
             offsets[num] = pos;
-            const header = `${num} ${genNum} obj\n`;
-            const footer = `\nendobj\n`;
-            const hBytes = enc.encode(header);
+            const hBytes = enc.encode(num + ' ' + genNum + ' obj\n');
             const bBytes = this.strToU8(body);
-            const fBytes = enc.encode(footer);
+            const fBytes = enc.encode('\nendobj\n');
             parts.push(hBytes, bBytes, fBytes);
             pos += hBytes.length + bBytes.length + fBytes.length;
         }
 
         offsets[encObjNum] = pos;
-        const encObjStr   = `${encObjNum} 0 obj\n<<\n${encDictContent}\n>>\nendobj\n`;
-        const encObjBytes = enc.encode(encObjStr);
+        const encObjBytes = enc.encode(encObjNum + ' 0 obj\n<<\n' + encDictContent + '\n>>\nendobj\n');
         parts.push(encObjBytes);
         pos += encObjBytes.length;
 
         const xrefPos = pos;
         const maxObj  = Math.max(encObjNum, ...Object.keys(offsets).map(Number)) + 1;
-
-        let xref = `xref\n0 ${maxObj}\n`;
-        xref += `0000000000 65535 f \n`;
-        for (let n=1; n<maxObj; n++) {
-            if (offsets[n] !== undefined) xref += `${String(offsets[n]).padStart(10,'0')} 00000 n \n`;
-            else xref += `0000000000 65535 f \n`;
+        let xref = 'xref\n0 ' + maxObj + '\n0000000000 65535 f \n';
+        for (let n = 1; n < maxObj; n++) {
+            xref += offsets[n] !== undefined
+                ? String(offsets[n]).padStart(10, '0') + ' 00000 n \n'
+                : '0000000000 65535 f \n';
         }
         parts.push(enc.encode(xref));
 
-        let trailer = `trailer\n<<\n/Size ${maxObj}\n`;
-        if (rootRef) trailer += `/Root ${rootRef}\n`;
-        if (infoRef) trailer += `/Info ${infoRef}\n`;
-        trailer += `/Encrypt ${encObjNum} 0 R\n`;
-        trailer += `/ID [<${fileIdHex}><${fileIdHex}>]\n`;
-        trailer += `>>\nstartxref\n${xrefPos}\n%%EOF\n`;
+        let trailer = 'trailer\n<<\n/Size ' + maxObj + '\n';
+        if (rootRef) trailer += '/Root ' + rootRef + '\n';
+        if (infoRef) trailer += '/Info ' + infoRef + '\n';
+        trailer += '/Encrypt ' + encObjNum + ' 0 R\n/ID [<' + fileIdHex + '><' + fileIdHex + '>]\n>>\nstartxref\n' + xrefPos + '\n%%EOF\n';
         parts.push(enc.encode(trailer));
 
-        const total = parts.reduce((s,p)=>s+p.length,0);
-        const out   = new Uint8Array(total);
-        let   off2  = 0;
-        for(const p of parts){ out.set(p,off2); off2+=p.length; }
-        return out;
+        return concatU8(...parts);
     }
 
     strToU8(str) {
         const b = new Uint8Array(str.length);
-        for(let i=0;i<str.length;i++) b[i]=str.charCodeAt(i)&0xff;
+        for (let i = 0; i < str.length; i++) b[i] = str.charCodeAt(i) & 0xff;
         return b;
     }
-
-    totalLen(parts) { return parts.reduce((s,p)=>s+p.length,0); }
 }
 
 /* ════════════════════════════════════════
-   UI HELPERS
+   UI HELPERS & CONTROLS
 ════════════════════════════════════════ */
-function toggleFaq(el) {
-    const open = el.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!open) el.classList.add('open');
-}
-
 function showSection(id) {
     document.querySelectorAll('[data-section]').forEach(s => s.style.display = 'none');
     const el = document.getElementById(id);
     if (el) el.style.display = 'block';
+    const wrap = document.querySelector('.tool-wrapper');
+    if (wrap && id !== 'uploadSection') {
+        window.scrollTo({ top: Math.max(0, wrap.offsetTop - 80), behavior: 'smooth' });
+    }
 }
 
 function setProgress(pct, title, sub) {
-    const f   = document.getElementById('progressFill');
-    const t   = document.getElementById('progressText');
-    const h   = document.getElementById('processTitle');
-    const s   = document.getElementById('processSubtitle');
+    const f = document.getElementById('progressFill');
+    const t = document.getElementById('progressText');
+    const h = document.getElementById('processTitle');
+    const s = document.getElementById('processSubtitle');
     const bar = document.querySelector('.progress-bar');
     if (f) f.style.width = pct + '%';
     if (t) t.textContent = pct + '%';
@@ -1423,7 +1431,7 @@ function setProgress(pct, title, sub) {
 
 function szF(bytes) {
     if (!bytes) return '0 B';
-    const k = 1024, u = ['B','KB','MB','GB'];
+    const k = 1024, u = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + u[i];
 }
@@ -1433,7 +1441,7 @@ function showError(msg) {
     document.getElementById('errorText').textContent = msg;
     el.style.display = 'flex';
     if (el._timer) clearTimeout(el._timer);
-    el._timer = setTimeout(() => el.style.display = 'none', 8000);
+    el._timer = setTimeout(() => { el.style.display = 'none'; }, 9000);
 }
 
 function hideError() {
@@ -1441,7 +1449,74 @@ function hideError() {
     if (el) el.style.display = 'none';
 }
 
-function tick() { return new Promise(r => setTimeout(r, 40)); }
+function tick(ms = 20) { return new Promise(r => setTimeout(r, ms)); }
+
+function setProtMode(mode, btn) {
+    protMode = mode;
+    document.querySelectorAll('#ppModeGrid .pp-mode-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    const isOpen = mode === 'open';
+    document.getElementById('openPwWrap').style.display    = isOpen ? 'block' : 'none';
+    document.getElementById('confirmPwWrap').style.display = isOpen ? 'block' : 'none';
+    document.getElementById('customOwnerCheckWrap').style.display = isOpen ? 'flex' : 'none';
+    if (!isOpen) {
+        document.getElementById('ownerPwWrap').style.display = 'block';
+    } else {
+        toggleOwnerField();
+    }
+}
+
+function toggleOwnerField() {
+    const cb = document.getElementById('useCustomOwner');
+    document.getElementById('ownerPwWrap').style.display = cb.checked ? 'block' : 'none';
+}
+
+function generateStrongPw() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*';
+    const arr = new Uint8Array(14);
+    crypto.getRandomValues(arr);
+    let pw = '';
+    for (let i = 0; i < arr.length; i++) pw += chars[arr[i] % chars.length];
+    document.getElementById('openPw').value = pw;
+    document.getElementById('confirmPw').value = pw;
+    document.getElementById('openPw').type = 'text';
+    document.getElementById('eye1').className = 'fas fa-eye-slash';
+    checkStrength();
+    checkMatch();
+}
+
+function copyPwVal(id, btn) {
+    const v = document.getElementById(id).value;
+    if (!v || !navigator.clipboard) return;
+    navigator.clipboard.writeText(v).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check" style="color:#16a34a;"></i>';
+        setTimeout(() => { btn.innerHTML = orig; }, 1200);
+    }).catch(() => {});
+}
+
+function applyPermPreset(preset, btn) {
+    document.querySelectorAll('.pp-preset-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const p = {
+        readOnly:  { print: false, copy: false, edit: false, annotate: false, forms: false, extract: false },
+        printOnly: { print: true,  copy: false, edit: false, annotate: false, forms: false, extract: false },
+        forms:     { print: true,  copy: false, edit: false, annotate: true,  forms: true,  extract: false },
+        standard:  { print: true,  copy: true,  edit: false, annotate: true,  forms: true,  extract: false },
+    }[preset];
+    if (!p) return;
+    document.getElementById('permPrint').checked    = p.print;
+    document.getElementById('permCopy').checked     = p.copy;
+    document.getElementById('permEdit').checked     = p.edit;
+    document.getElementById('permAnnotate').checked = p.annotate;
+    document.getElementById('permForms').checked    = p.forms;
+    document.getElementById('permExtract').checked  = p.extract;
+}
+
+function clearPresetActive() {
+    document.querySelectorAll('.pp-preset-btn').forEach(b => b.classList.remove('active'));
+}
 
 /* ════════════════════════════════════════
    FILE HANDLING
@@ -1449,11 +1524,14 @@ function tick() { return new Promise(r => setTimeout(r, 40)); }
 const dropZone  = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+['dragenter', 'dragover'].forEach(evt => {
+    dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('drag-over', 'dragover'); });
+});
+['dragleave', 'drop'].forEach(evt => {
+    dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.remove('drag-over', 'dragover'); });
+});
 dropZone.addEventListener('drop', e => {
-    e.preventDefault(); dropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    if (e.dataTransfer && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
 });
 fileInput.addEventListener('change', () => {
     if (fileInput.files[0]) handleFile(fileInput.files[0]);
@@ -1461,21 +1539,57 @@ fileInput.addEventListener('change', () => {
 
 async function handleFile(file) {
     hideError();
-    if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-        showError('Please select a valid PDF file.'); return;
+    if (!file || (!file.name.toLowerCase().endsWith('.pdf') && !file.type.includes('pdf'))) {
+        showError('Please select a valid PDF file.');
+        return;
     }
+    if (file.size === 0) {
+        showError('This PDF file is empty (0 bytes).');
+        return;
+    }
+
     try {
         selectedFile = file;
         const ab     = await file.arrayBuffer();
         rawBytes     = new Uint8Array(ab);
-        const txt  = new TextDecoder('latin1').decode(rawBytes);
-        const pm   = txt.match(/\/Type\s*\/Page[^s]/g);
-        pagesCount = pm ? pm.length : 1;
+
+        const headStr = new TextDecoder('latin1').decode(rawBytes.subarray(0, 1024));
+        if (!headStr.includes('%PDF-')) {
+            rawBytes = null;
+            showError('Invalid PDF header — this file may be corrupted. Try Repair PDF first.');
+            return;
+        }
+
+        // Check encryption & exact page count via pdf-lib + PDF.js
+        let isEncrypted = false;
+        try {
+            const pdf = await PDFLib.PDFDocument.load(rawBytes.slice());
+            pagesCount = pdf.getPageCount();
+        } catch (e) {
+            if (/encrypt/i.test((e && e.message) || '')) {
+                isEncrypted = true;
+            }
+        }
+
+        if (isEncrypted) {
+            rawBytes = null;
+            showError('This PDF is already encrypted/password-protected. Please use Unlock PDF first before applying a new password.');
+            return;
+        }
+
+        if (!pagesCount && typeof pdfjsLib !== 'undefined') {
+            try {
+                const jsDoc = await pdfjsLib.getDocument({ data: rawBytes.slice() }).promise;
+                pagesCount = jsDoc.numPages;
+                await jsDoc.destroy();
+            } catch (_) { pagesCount = 1; }
+        }
+
         document.getElementById('fileName').textContent  = file.name;
         document.getElementById('fileSize').textContent  = szF(file.size);
-        document.getElementById('pageCount').textContent = pagesCount;
+        document.getElementById('pageCount').textContent = pagesCount || 1;
         showSection('optionsSection');
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         showError('Could not read PDF: ' + e.message);
     }
@@ -1490,7 +1604,8 @@ function checkStrength() {
     const label = document.getElementById('strengthLabel');
     if (!pw) {
         fill.style.width = '0%'; fill.style.background = '#e2e8f0';
-        label.textContent = 'Enter a password'; label.style.color = '#94a3b8'; return;
+        label.textContent = 'Enter a password'; label.style.color = '#94a3b8';
+        return;
     }
     let sc = 0;
     if (pw.length >= 6)  sc++;
@@ -1499,13 +1614,13 @@ function checkStrength() {
     if (/[0-9]/.test(pw)) sc++;
     if (/[^A-Za-z0-9]/.test(pw)) sc++;
     const L = [
-        {pct:'20%',bg:'#ef4444',text:'Very Weak', color:'#ef4444'},
-        {pct:'40%',bg:'#f97316',text:'Weak',      color:'#f97316'},
-        {pct:'60%',bg:'#f59e0b',text:'Fair',      color:'#f59e0b'},
-        {pct:'80%',bg:'#22c55e',text:'Strong',    color:'#22c55e'},
-        {pct:'100%',bg:'#16a34a',text:'Very Strong',color:'#16a34a'}
+        { pct: '20%', bg: '#ef4444', text: 'Very Weak',   color: '#ef4444' },
+        { pct: '40%', bg: '#f97316', text: 'Weak',        color: '#f97316' },
+        { pct: '60%', bg: '#f59e0b', text: 'Fair',        color: '#f59e0b' },
+        { pct: '80%', bg: '#22c55e', text: 'Strong',      color: '#22c55e' },
+        { pct: '100%', bg: '#16a34a', text: 'Very Strong', color: '#16a34a' }
     ];
-    const lv = L[Math.min(sc-1, 4)] || L[0];
+    const lv = L[Math.min(sc, 4)];
     fill.style.width = lv.pct; fill.style.background = lv.bg;
     label.textContent = lv.text; label.style.color = lv.color;
 }
@@ -1515,7 +1630,7 @@ function checkMatch() {
     const pw2  = document.getElementById('confirmPw').value;
     const hint = document.getElementById('matchHint');
     const inp2 = document.getElementById('confirmPw');
-    if (!pw2) { hint.innerHTML = ''; inp2.classList.remove('match','mismatch'); return; }
+    if (!pw2) { hint.innerHTML = ''; inp2.classList.remove('match', 'mismatch'); return; }
     if (pw1 === pw2) {
         inp2.classList.add('match'); inp2.classList.remove('mismatch');
         hint.className = 'match-hint ok';
@@ -1530,42 +1645,60 @@ function checkMatch() {
 function togglePwVis(inputId, iconId) {
     const inp  = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
-    if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fas fa-eye-slash'; }
-    else { inp.type = 'password'; icon.className = 'fas fa-eye'; }
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
 }
 
 /* ════════════════════════════════════════
-   MAIN — DO PROTECT
+   MAIN — DO PROTECT & LIVE VERIFY
 ════════════════════════════════════════ */
 async function doProtect() {
-    const pw1 = document.getElementById('openPw').value;
-    const pw2 = document.getElementById('confirmPw').value;
-    const btn = document.getElementById('protectBtn');
+    const pw1     = document.getElementById('openPw').value;
+    const pw2     = document.getElementById('confirmPw').value;
+    const customO = document.getElementById('ownerPw').value;
+    const btn     = document.getElementById('protectBtn');
 
-    if (!pw1) { showError('Please enter a password.'); document.getElementById('openPw').focus(); return; }
-    if (pw1.length < 4) { showError('Password must be at least 4 characters.'); return; }
-    if (pw1 !== pw2) { showError('Passwords do not match.'); document.getElementById('confirmPw').focus(); return; }
     if (!rawBytes) { showError('No PDF loaded.'); return; }
+
+    let userPw = '', ownerPw = '';
+    if (protMode === 'open') {
+        if (!pw1) { showError('Please enter an open password.'); document.getElementById('openPw').focus(); return; }
+        if (pw1.length < 4) { showError('Password must be at least 4 characters.'); return; }
+        if (pw1 !== pw2) { showError('Passwords do not match.'); document.getElementById('confirmPw').focus(); return; }
+        userPw = pw1;
+        if (document.getElementById('useCustomOwner').checked) {
+            if (customO.length < 4) { showError('Owner password must be at least 4 characters.'); document.getElementById('ownerPw').focus(); return; }
+            ownerPw = customO;
+        } else {
+            const rnd = new Uint8Array(12); crypto.getRandomValues(rnd);
+            ownerPw = pw1 + '_' + toHex(rnd);
+        }
+    } else {
+        if (!customO || customO.length < 4) {
+            showError('Please enter a master/owner password (min 4 chars) to lock permissions.');
+            document.getElementById('ownerPw').focus();
+            return;
+        }
+        userPw  = '';
+        ownerPw = customO;
+    }
 
     btn.disabled = true;
     hideError();
     showSection('processingSection');
-    setProgress(5, 'Preparing...', 'Loading PDF document');
+    setProgress(8, 'Normalizing PDF...', 'Preparing uncompressed xref structure');
     await tick();
 
     try {
-        setProgress(20, 'Rebuilding PDF...', 'Normalizing document structure');
-        await tick();
-
         let cleanBytes;
         try {
-            cleanBytes = await buildCleanPDF(rawBytes);
-        } catch(e) {
-            console.warn('pdf-lib rebuild failed, using original bytes:', e);
-            cleanBytes = rawBytes;
+            cleanBytes = await buildCleanPDF(rawBytes.slice());
+        } catch (e) {
+            throw new Error('Could not parse this PDF cleanly for encryption (' + (e.message || 'unsupported xref/objects') + ').');
         }
 
-        setProgress(45, 'Computing keys...', 'Deriving encryption parameters');
+        setProgress(40, 'Deriving RC4-128 Keys...', 'Computing Standard Security Rev.3 hashes');
         await tick();
 
         const perms = {
@@ -1577,41 +1710,60 @@ async function doProtect() {
             extract:  document.getElementById('permExtract').checked,
         };
 
-        setProgress(60, 'Encrypting...', 'Applying RC4-128 to all objects');
+        setProgress(65, 'Encrypting Objects & Streams...', 'Locking document payload locally');
         await tick();
 
-        const ownerPw = pw1 + '_owner_' + Math.random().toString(36).slice(2);
+        const injector = new PDFEncryptInjector(cleanBytes, userPw, ownerPw, perms);
+        const encBytes = injector.run();
 
-        const encBytes = await new Promise((resolve, reject) => {
-            setTimeout(() => {
+        // Live PDF.js verification gate
+        setProgress(88, 'Verifying Encryption...', 'Testing encrypted PDF integrity');
+        await tick();
+        let verified = false;
+        if (typeof pdfjsLib !== 'undefined') {
+            if (protMode === 'open') {
+                let blockedWithoutPw = false;
                 try {
-                    const injector = new PDFEncryptInjector(cleanBytes, pw1, ownerPw, perms);
-                    resolve(injector.run());
-                } catch(e) { reject(e); }
-            }, 20);
-        });
-
-        setProgress(90, 'Finalizing...', 'Building output file');
-        await tick();
+                    const badDoc = await pdfjsLib.getDocument({ data: encBytes.slice() }).promise;
+                    await badDoc.destroy();
+                } catch (err) {
+                    if (err && (err.name === 'PasswordException' || /password/i.test(err.message || ''))) blockedWithoutPw = true;
+                }
+                if (!blockedWithoutPw) throw new Error('Verification failed: output PDF did not prompt for open password.');
+                const okDoc = await pdfjsLib.getDocument({ data: encBytes.slice(), password: userPw }).promise;
+                const pCount = okDoc.numPages;
+                await okDoc.destroy();
+                if (pCount !== pagesCount) throw new Error('Verification page count mismatch.');
+                verified = true;
+            } else {
+                const okDoc = await pdfjsLib.getDocument({ data: encBytes.slice() }).promise;
+                const pCount = okDoc.numPages;
+                await okDoc.destroy();
+                if (pCount !== pagesCount) throw new Error('Verification page count mismatch.');
+                verified = true;
+            }
+        }
 
         protBlob = new Blob([encBytes], { type: 'application/pdf' });
+        setProgress(100, 'Done!', 'PDF encrypted and verified!');
+        await tick(250);
 
-        setProgress(100, 'Done!', 'PDF protected successfully!');
-        await new Promise(r => setTimeout(r, 600));
-
-        const pwMask = pw1.length <= 2
-            ? '*'.repeat(pw1.length)
-            : pw1[0] + '*'.repeat(pw1.length - 2) + pw1[pw1.length - 1];
+        const activePw = protMode === 'open' ? userPw : ownerPw;
+        const pwMask = activePw.length <= 2
+            ? '*'.repeat(activePw.length)
+            : activePw[0] + '*'.repeat(Math.min(activePw.length - 2, 10)) + activePw[activePw.length - 1];
 
         document.getElementById('rPages').textContent    = pagesCount;
         document.getElementById('rSize').textContent     = szF(protBlob.size);
-        document.getElementById('rFileName').textContent =
-            selectedFile.name.replace(/\.pdf$/i, '') + '_protected.pdf';
-        document.getElementById('rPwHint').textContent   = 'Password: ' + pwMask;
+        document.getElementById('rFileName').textContent = selectedFile.name.replace(/\.pdf$/i, '') + '_protected.pdf';
+        document.getElementById('rPwHint').textContent   = (protMode === 'open' ? 'Open Password: ' : 'Master Password: ') + pwMask;
+        document.getElementById('rModeStat').textContent = protMode === 'open' ? 'Password Locked' : 'Permissions Locked';
+        document.querySelector('#rVerifyBadge span').textContent = verified
+            ? 'RC4-128 Encrypted & Verified'
+            : 'RC4-128 Encrypted';
 
         showSection('resultSection');
-
-    } catch(e) {
+    } catch (e) {
         console.error('Protect failed:', e);
         showSection('optionsSection');
         btn.disabled = false;
@@ -1620,7 +1772,7 @@ async function doProtect() {
 }
 
 /* ════════════════════════════════════════
-   DOWNLOAD / RESET / NAV
+   DOWNLOAD / RESET
 ════════════════════════════════════════ */
 function doDownload() {
     if (!protBlob) { showError('No protected PDF available.'); return; }
@@ -1631,7 +1783,7 @@ function doDownload() {
     const a   = document.createElement('a');
     a.href = url; a.download = name;
     document.body.appendChild(a); a.click();
-    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 600);
 }
 
 function goBack() {
@@ -1644,20 +1796,17 @@ function goBack() {
 function resetTool() {
     rawBytes = null; selectedFile = null; protBlob = null; pagesCount = 0;
     fileInput.value = '';
-    ['openPw','confirmPw'].forEach(id => {
+    ['openPw', 'confirmPw', 'ownerPw'].forEach(id => {
         const el = document.getElementById(id);
-        el.value = ''; el.classList.remove('match','mismatch');
+        if (el) { el.value = ''; el.classList.remove('match', 'mismatch'); }
     });
+    document.getElementById('useCustomOwner').checked = false;
+    setProtMode('open', document.querySelector('#ppModeGrid .pp-mode-btn[data-mode="open"]'));
     document.getElementById('matchHint').innerHTML = '';
     document.getElementById('strengthFill').style.width = '0%';
     document.getElementById('strengthLabel').textContent = 'Enter a password';
     document.getElementById('protectBtn').disabled = false;
-    document.getElementById('permPrint').checked    = true;
-    document.getElementById('permCopy').checked     = true;
-    document.getElementById('permEdit').checked     = false;
-    document.getElementById('permAnnotate').checked = true;
-    document.getElementById('permForms').checked    = true;
-    document.getElementById('permExtract').checked  = false;
+    applyPermPreset('standard', document.querySelectorAll('.pp-preset-btn')[3]);
     hideError();
     setProgress(0, 'Protecting PDF...', 'Adding password encryption');
     showSection('uploadSection');
@@ -1707,30 +1856,6 @@ function resetTool() {
     else setTimeout(setup, 200);
 })();
 
-/* ════════════════════════════════════════
-   RELATED TOOLS
-════════════════════════════════════════ */
-(function renderRelated() {
-    const tools = [
-        { href:'unlock-pdf.html',   icon:'fa-lock-open',    color:'ri-green',  label:'Unlock PDF',    desc:'Remove password' },
-        { href:'merge-pdf.html',    icon:'fa-object-group', color:'ri-teal',   label:'Merge PDF',     desc:'Combine multiple PDFs' },
-        { href:'split-pdf.html',    icon:'fa-cut',          color:'ri-blue',   label:'Split PDF',     desc:'Divide into pages' },
-        { href:'compress-pdf.html', icon:'fa-compress-alt', color:'ri-orange', label:'Compress PDF',  desc:'Reduce file size' },
-        { href:'sign-pdf.html',     icon:'fa-signature',    color:'ri-purple', label:'Sign PDF',      desc:'Add signatures' },
-        { href:'ocr-pdf.html',      icon:'fa-eye',          color:'ri-indigo', label:'OCR PDF',       desc:'Scanned PDF to text' },
-        { href:'jpg-to-pdf.html',   icon:'fa-image',        color:'ri-pink',   label:'JPG to PDF',    desc:'Images to PDF' },
-    ];
-    const g = document.getElementById('relatedGrid');
-    if (!g) return;
-    const f = document.createDocumentFragment();
-    tools.forEach(({ href, icon, color, label, desc }) => {
-        const a = document.createElement('a');
-        a.href = href; a.className = 'related-card glass'; a.setAttribute('aria-label', label);
-        a.innerHTML = `<div class="related-icon ${color}"><i class="fas ${icon}" aria-hidden="true"></i></div><h4>${label}</h4><p>${desc}</p>`;
-        f.appendChild(a);
-    });
-    g.appendChild(f);
-})();
 </script>
 <script src="js/site-tracker.js"></script>
 

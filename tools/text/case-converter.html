@@ -192,7 +192,7 @@
 
      
     <style>
-        .calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
+.calc-card{background:rgba(255,255,255,0.5);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.55);border-radius:16px;padding:28px;margin-top:18px}
         .calc-card h2{font-size:19px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
         .calc-card h2 i{color:var(--accent);font-size:17px}
 
@@ -265,36 +265,43 @@
         .privacy-note{text-align:center;margin-top:12px;font-size:11px;color:var(--text-light)}
         .privacy-note i{color:#22c55e;margin-right:4px}
 
-        /* FAQ Override */
-        .cc-faq .faq-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-        .cc-faq .faq-item:hover{background:rgba(255,255,255,0.8);transform:translateY(-1px)}
-        .cc-faq .faq-item.active{background:rgba(255,255,255,0.85);border-color:rgba(16,185,129,0.25)}
-        .cc-faq .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;user-select:none}
-        .cc-faq .faq-q h4{font-size:15px;font-weight:600;color:#1e293b;margin:0;flex:1}
-        .cc-faq .faq-item.active .faq-q h4{color:var(--accent)}
-        .cc-faq .faq-q .faq-arrow{font-size:13px;color:#94a3b8;transition:transform .3s;flex-shrink:0}
-        .cc-faq .faq-item.active .faq-q .faq-arrow{transform:rotate(180deg);color:var(--accent)}
-        .cc-faq .faq-q .faq-num{width:28px;height:28px;background:rgba(16,185,129,0.1);color:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .cc-faq .faq-item.active .faq-q .faq-num{background:var(--accent);color:#fff}
-        .cc-faq .faq-a{display:none;padding:0 22px 18px;border-top:1px solid rgba(16,185,129,0.1);margin:0 22px}
-        .cc-faq .faq-item.active .faq-a{display:block}
-        .cc-faq .faq-a p{font-size:14px;line-height:1.7;color:#64748b;margin:12px 0 0;padding:0}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-        @media(max-width:768px){
-            .case-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+        
+        /* Case Converter — Dark Mode Polish */
+        html[data-theme="dark"] .calc-card,
+        html[data-theme="dark"] .stat-pill,
+        html[data-theme="dark"] .output-card { background:#131c2e; border-color:rgba(148,163,184,0.2); }
+        html[data-theme="dark"] .text-wrap textarea,
+        html[data-theme="dark"] .case-btn,
+        html[data-theme="dark"] .output-text,
+        html[data-theme="dark"] .compare-box,
+        html[data-theme="dark"] .all-item { background:#0b1120; border-color:rgba(148,163,184,0.22); color:#f1f5f9; }
+        html[data-theme="dark"] .case-btn.active { border-color:var(--accent); background:rgba(16,185,129,0.14); }
+        @media(max-width:768px){.case-grid{grid-template-columns:repeat(3,1fr);gap:6px}
             .case-btn{padding:12px 8px}
             .case-btn .cb-icon{width:32px;height:32px;font-size:11px}
             .compare-grid{grid-template-columns:1fr}
-            .stats-bar{grid-template-columns:repeat(4,1fr);gap:6px}
-        }
-        @media(max-width:480px){
-            .calc-card{padding:20px 16px}
+            .stats-bar{grid-template-columns:repeat(4,1fr);gap:6px}}
+        @media(max-width:480px){.calc-card{padding:20px 16px}
             .case-grid{grid-template-columns:repeat(2,1fr)}
             .stats-bar{grid-template-columns:repeat(2,1fr)}
-            .cc-faq .faq-q{padding:14px 16px}
+            
             .action-row{gap:6px}
-            .action-btn{font-size:11px;padding:7px 12px}
-        }
+            .action-btn{font-size:11px;padding:7px 12px}}
     </style>
        <!-- ========== AD STYLES ========== -->
 <link rel="stylesheet" href="../../css/ads.css">
@@ -334,7 +341,7 @@
         <a href="../../index.html#tools"><i class="fas fa-th"></i> All Tools</a>
         
             <a href="../../blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="../../login.html" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <a href="../../login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -362,6 +369,7 @@
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
 <!-- TOOL AREA -->
+<main>
 <section class="tool-area">
     <div class="container">
 
@@ -384,9 +392,11 @@
 
             <!-- Quick Actions -->
             <div class="action-row" style="margin-bottom:16px">
-                <button class="action-btn" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
-                <button class="action-btn" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample Text</button>
-                <button class="action-btn danger" onclick="clearAll()"><i class="fas fa-trash"></i> Clear</button>
+                <button class="action-btn" type="button" onclick="pasteText()"><i class="fas fa-paste"></i> Paste</button>
+                <button class="action-btn" type="button" onclick="document.getElementById('ccFileInput').click()"><i class="fas fa-upload"></i> Open .TXT</button>
+                <input type="file" id="ccFileInput" accept=".txt,.md,.csv,text/*" hidden onchange="loadTxtFile(this)">
+                <button class="action-btn" type="button" onclick="loadSample()"><i class="fas fa-file-alt"></i> Sample Text</button>
+                <button class="action-btn danger" type="button" onclick="clearAll()"><i class="fas fa-trash"></i> Clear</button>
             </div>
 
             <!-- Case Buttons -->
@@ -513,10 +523,53 @@
     </div>
 </section>
 
+</main>
+
 <!-- MIDDLE AD -->
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
 <!-- HOW IT WORKS -->
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related Text &amp; AI Tools</h2>
+            <p>Clean, analyze, summarize, and transform text in seconds.</p>
+        </div>
+        <div class="related-grid">
+            <a href="../../tools/text/word-counter.html" class="related-card" aria-label="Word Counter">
+                <div class="related-icon ri-blue"><i class="fas fa-font" aria-hidden="true"></i></div>
+                <h4>Word Counter</h4>
+                <p>Words, characters &amp; reading time</p>
+            </a>
+            <a href="../../tools/text/lorem-generator.html" class="related-card" aria-label="Lorem Generator">
+                <div class="related-icon ri-teal"><i class="fas fa-paragraph" aria-hidden="true"></i></div>
+                <h4>Lorem Generator</h4>
+                <p>Placeholder paragraphs &amp; words</p>
+            </a>
+            <a href="../../ai-summarizer.html" class="related-card" aria-label="AI Summarizer">
+                <div class="related-icon ri-indigo"><i class="fas fa-brain" aria-hidden="true"></i></div>
+                <h4>AI Summarizer</h4>
+                <p>Summarize long PDFs &amp; text</p>
+            </a>
+            <a href="../../translate-pdf.html" class="related-card" aria-label="Translate PDF">
+                <div class="related-icon ri-cyan"><i class="fas fa-language" aria-hidden="true"></i></div>
+                <h4>Translate PDF</h4>
+                <p>Translate PDF documents fast</p>
+            </a>
+            <a href="../../ocr-pdf.html" class="related-card" aria-label="OCR PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-eye" aria-hidden="true"></i></div>
+                <h4>OCR PDF</h4>
+                <p>Extract searchable text with AI</p>
+            </a>
+            <a href="../../tools/developer/base64-encoder.html" class="related-card" aria-label="Base64 Encoder">
+                <div class="related-icon ri-purple"><i class="fas fa-exchange-alt" aria-hidden="true"></i></div>
+                <h4>Base64 Encoder</h4>
+                <p>Encode &amp; decode Base64</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How It Works</h2></div>
@@ -534,26 +587,26 @@
 <section class="faq-section">
     <div class="container">
         <div class="section-header"><h2>Frequently Asked Questions</h2></div>
-        <div class="cc-faq">
-            <div class="faq-item" onclick="ccFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">1</span><h4>What case conversions are supported?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p>We support 15 case types: UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, dot.case, path/case, tOGGLE cASE, AlTeRnAtInG, Inverse, and URL Slug.</p></div>
+        <div class="faq-list">
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">1</span><h4>What case conversions are supported?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p>We support 15 case types: UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, dot.case, path/case, tOGGLE cASE, AlTeRnAtInG, Inverse, and URL Slug.</p></div></div>
             </div>
-            <div class="faq-item" onclick="ccFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">2</span><h4>What is camelCase vs PascalCase?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p><strong>camelCase</strong> starts with lowercase and capitalizes each subsequent word (e.g., helloWorld). <strong>PascalCase</strong> capitalizes every word including the first (e.g., HelloWorld). Both remove spaces.</p></div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">2</span><h4>What is camelCase vs PascalCase?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p><strong>camelCase</strong> starts with lowercase and capitalizes each subsequent word (e.g., helloWorld). <strong>PascalCase</strong> capitalizes every word including the first (e.g., HelloWorld). Both remove spaces.</p></div></div>
             </div>
-            <div class="faq-item" onclick="ccFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">3</span><h4>What is snake_case and kebab-case?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p><strong>snake_case</strong> uses underscores between words (hello_world). <strong>kebab-case</strong> uses hyphens (hello-world). Both are commonly used in programming and URLs.</p></div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">3</span><h4>What is snake_case and kebab-case?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p><strong>snake_case</strong> uses underscores between words (hello_world). <strong>kebab-case</strong> uses hyphens (hello-world). Both are commonly used in programming and URLs.</p></div></div>
             </div>
-            <div class="faq-item" onclick="ccFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">4</span><h4>Can I convert multiple paragraphs?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p>Yes! Paste any amount of text and all paragraphs, line breaks, and formatting will be preserved during conversion (except for programmer cases like camelCase which remove spaces).</p></div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">4</span><h4>Can I convert multiple paragraphs?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Paste any amount of text and all paragraphs, line breaks, and formatting will be preserved during conversion (except for programmer cases like camelCase which remove spaces).</p></div></div>
             </div>
-            <div class="faq-item" onclick="ccFaqToggle(this)">
-                <div class="faq-q"><span class="faq-num">5</span><h4>Is my text stored?</h4><i class="fas fa-chevron-down faq-arrow"></i></div>
-                <div class="faq-a"><p>No! Everything runs in your browser. Your text is never sent to any server. 100% private and secure.</p></div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span class="faq-num">5</span><h4>Is my text stored?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
+                <div class="faq-answer"><div class="faq-answer-inner"><p>No! Everything runs in your browser. Your text is never sent to any server. 100% private and secure.</p></div></div>
             </div>
         </div>
     </div>
@@ -623,14 +676,12 @@
 
 <!-- JS -->
 <script>
-// ==========================================
-// CASE CONVERTER - COMPLETE
-// ==========================================
-
 var currentCase = '';
-var originalText = '';
 
-// ===== UPDATE STATS =====
+function ccToast(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'success');
+}
+
 function updateStats() {
     var text = document.getElementById('textInput').value;
     var chars = text.length;
@@ -643,42 +694,39 @@ function updateStats() {
     document.getElementById('liveSentences').textContent = sentences;
     document.getElementById('liveLines').textContent = lines;
     document.getElementById('charCount').textContent = chars + ' characters';
+
+    if (currentCase && text.trim()) {
+        convertCase(currentCase, true);
+    }
 }
 
-// ===== CONVERT CASE =====
-function convertCase(type) {
+function convertCase(type, silent) {
     var text = document.getElementById('textInput').value;
-    if (!text.trim()) { alert('Please enter some text first!'); return; }
+    if (!text.trim()) { ccToast('Please enter some text first!', 'error'); return; }
 
-    originalText = text;
     currentCase = type;
-    var result = '';
-
-    // Highlight active button
-    var btns = document.querySelectorAll('.case-btn');
-    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    document.querySelectorAll('.case-btn').forEach(function(b) { b.classList.remove('active'); });
     var activeBtn = document.getElementById('btn-' + type);
     if (activeBtn) activeBtn.classList.add('active');
 
-    switch (type) {
-        case 'upper': result = text.toUpperCase(); break;
-        case 'lower': result = text.toLowerCase(); break;
-        case 'title': result = toTitle(text); break;
-        case 'sentence': result = toSentence(text); break;
-        case 'camel': result = toCamel(text); break;
-        case 'pascal': result = toPascal(text); break;
-        case 'snake': result = toSnake(text); break;
-        case 'kebab': result = toKebab(text); break;
-        case 'constant': result = toConstant(text); break;
-        case 'dot': result = toDot(text); break;
-        case 'path': result = toPath(text); break;
-        case 'toggle': result = toToggle(text); break;
-        case 'alternating': result = toAlternating(text); break;
-        case 'inverse': result = toInverse(text); break;
-        case 'slug': result = toSlug(text); break;
-        default: result = text;
-    }
-
+    var fnMap = {
+        upper: function(t) { return t.toUpperCase(); },
+        lower: function(t) { return t.toLowerCase(); },
+        title: toTitle,
+        sentence: toSentence,
+        camel: toCamel,
+        pascal: toPascal,
+        snake: toSnake,
+        kebab: toKebab,
+        constant: toConstant,
+        dot: toDot,
+        path: toPath,
+        toggle: toToggle,
+        alternating: toAlternating,
+        inverse: toInverse,
+        slug: toSlug
+    };
+    var result = (fnMap[type] || function(t) { return t; })(text);
     var names = {
         upper:'UPPERCASE', lower:'lowercase', title:'Title Case', sentence:'Sentence case',
         camel:'camelCase', pascal:'PascalCase', snake:'snake_case', kebab:'kebab-case',
@@ -692,93 +740,52 @@ function convertCase(type) {
     document.getElementById('compareConverted').textContent = result.substring(0, 150) + (result.length > 150 ? '...' : '');
     document.getElementById('outputCard').classList.add('show');
 
-    // All conversions
     showAllConversions(text);
-
-    document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ===== CONVERSION FUNCTIONS =====
-function toTitle(text) {
-    return text.toLowerCase().replace(/\b\w/g, function(c) { return c.toUpperCase(); });
-}
-
-function toSentence(text) {
-    return text.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, function(c) { return c.toUpperCase(); });
+    if (!silent) document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function getWords(text) {
-    return text.replace(/[^a-zA-Z0-9\s]/g, ' ').trim().split(/\s+/).filter(function(w) { return w.length > 0; });
+    // Split camelCase / PascalCase boundaries too so camelCase <-> snake_case <-> kebab-case works both ways!
+    return String(text || '')
+        .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+        .replace(/[^a-zA-Z0-9\s]/g, ' ')
+        .trim()
+        .split(/\s+/)
+        .filter(function(w) { return w.length > 0; });
 }
-
-function toCamel(text) {
-    var words = getWords(text);
-    return words.map(function(w, i) {
-        w = w.toLowerCase();
-        return i === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1);
-    }).join('');
+function toTitle(text) {
+    var small = { a:1, an:1, and:1, as:1, at:1, but:1, by:1, for:1, in:1, nor:1, of:1, on:1, or:1, the:1, to:1 };
+    var idx = 0;
+    return text.toLowerCase().replace(/\b\w+/g, function(word) {
+        var cur = idx++;
+        if (cur > 0 && small[word]) return word;
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    });
 }
-
-function toPascal(text) {
-    var words = getWords(text);
-    return words.map(function(w) {
-        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-    }).join('');
-}
-
-function toSnake(text) {
-    return getWords(text).join('_').toLowerCase();
-}
-
-function toKebab(text) {
-    return getWords(text).join('-').toLowerCase();
-}
-
-function toConstant(text) {
-    return getWords(text).join('_').toUpperCase();
-}
-
-function toDot(text) {
-    return getWords(text).join('.').toLowerCase();
-}
-
-function toPath(text) {
-    return getWords(text).join('/').toLowerCase();
-}
-
-function toToggle(text) {
-    return text.split('').map(function(c) {
-        return c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase();
-    }).join('');
-}
-
+function toSentence(text) { return text.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, function(c) { return c.toUpperCase(); }); }
+function toCamel(text) { return getWords(text).map(function(w, i) { w = w.toLowerCase(); return i === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1); }).join(''); }
+function toPascal(text) { return getWords(text).map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(''); }
+function toSnake(text) { return getWords(text).join('_').toLowerCase(); }
+function toKebab(text) { return getWords(text).join('-').toLowerCase(); }
+function toConstant(text) { return getWords(text).join('_').toUpperCase(); }
+function toDot(text) { return getWords(text).join('.').toLowerCase(); }
+function toPath(text) { return getWords(text).join('/').toLowerCase(); }
+function toToggle(text) { return text.split('').map(function(c) { return c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase(); }).join(''); }
 function toAlternating(text) {
     var idx = 0;
     return text.split('').map(function(c) {
-        if (/[a-zA-Z]/.test(c)) {
-            var result = idx % 2 === 0 ? c.toUpperCase() : c.toLowerCase();
-            idx++;
-            return result;
-        }
+        if (/[a-zA-Z]/.test(c)) { var r = idx % 2 === 0 ? c.toUpperCase() : c.toLowerCase(); idx++; return r; }
         return c;
     }).join('');
 }
+function toInverse(text) { return toToggle(text); }
+function toSlug(text) { return getWords(text).join('-').toLowerCase().replace(/[^a-z0-9-]/g, ''); }
 
-function toInverse(text) {
-    return text.split('').map(function(c) {
-        return c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase();
-    }).join('');
-}
-
-function toSlug(text) {
-    return text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-}
-
-// ===== ALL CONVERSIONS =====
 function showAllConversions(text) {
     var card = document.getElementById('allConversionsCard');
     card.style.display = 'block';
     var container = document.getElementById('allPreview');
+    container.innerHTML = '';
 
     var conversions = [
         { name: 'UPPERCASE', fn: function(t) { return t.toUpperCase(); } },
@@ -789,110 +796,92 @@ function showAllConversions(text) {
         { name: 'PascalCase', fn: toPascal },
         { name: 'snake_case', fn: toSnake },
         { name: 'kebab-case', fn: toKebab },
-        { name: 'CONSTANT', fn: toConstant },
+        { name: 'CONSTANT_CASE', fn: toConstant },
         { name: 'dot.case', fn: toDot },
         { name: 'path/case', fn: toPath },
-        { name: 'tOGGLE', fn: toToggle },
-        { name: 'AlTeRnAtInG', fn: toAlternating },
         { name: 'URL Slug', fn: toSlug }
     ];
 
-    var html = '';
-    for (var i = 0; i < conversions.length; i++) {
-        var converted = conversions[i].fn(text);
-        var preview = converted.substring(0, 80) + (converted.length > 80 ? '...' : '');
-        html += '<div class="all-item" onclick="quickCopy(\'' + escapeHTML(converted).replace(/'/g, "\\'") + '\')">' +
-            '<span class="ai-label">' + conversions[i].name + '</span>' +
-            '<span class="ai-text">' + escapeHTML(preview) + '</span>' +
-            '<button class="ai-copy" onclick="event.stopPropagation();quickCopy(\'' + escapeHTML(converted).replace(/'/g, "\\'") + '\')"><i class="fas fa-copy"></i></button>' +
-            '</div>';
-    }
-    container.innerHTML = html;
-}
+    conversions.forEach(function(item) {
+        var converted = item.fn(text);
+        var preview = converted.substring(0, 90) + (converted.length > 90 ? '...' : '');
+        var row = document.createElement('div');
+        row.className = 'all-item';
+        row.onclick = function() { quickCopy(converted); };
 
-function escapeHTML(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
+        var lbl = document.createElement('span');
+        lbl.className = 'ai-label'; lbl.textContent = item.name;
+        var val = document.createElement('span');
+        val.className = 'ai-text'; val.textContent = preview;
+        var btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'ai-copy';
+        btn.innerHTML = '<i class="fas fa-copy"></i>';
+        btn.onclick = function(e) { e.stopPropagation(); quickCopy(converted); };
 
-// ===== ACTIONS =====
-function copyOutput() {
-    var text = document.getElementById('outputText').value;
-    if (!text) return;
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(function() { alert('Copied to clipboard!'); });
-    } else { prompt('Copy:', text); }
+        row.appendChild(lbl); row.appendChild(val); row.appendChild(btn);
+        container.appendChild(row);
+    });
 }
 
 function quickCopy(text) {
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(function() { alert('Copied!'); });
-    } else { prompt('Copy:', text); }
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(function() { ccToast('Copied!'); });
 }
-
+function copyOutput() {
+    var text = document.getElementById('outputText').value;
+    if (!text) return;
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(function() { ccToast('Result copied!'); });
+}
 function downloadOutput() {
     var text = document.getElementById('outputText').value;
     if (!text) return;
-    var blob = new Blob([text], { type: 'text/plain' });
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
-    a.href = url;
-    a.download = 'converted-text.txt';
-    document.body.appendChild(a);
-    a.click();
+    a.href = url; a.download = (currentCase || 'converted') + '-text.txt';
+    document.body.appendChild(a); a.click();
     setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 300);
 }
-
 function useAsInput() {
     var output = document.getElementById('outputText').value;
     if (!output) return;
     document.getElementById('textInput').value = output;
+    currentCase = '';
+    document.querySelectorAll('.case-btn').forEach(function(b) { b.classList.remove('active'); });
     updateStats();
     document.getElementById('outputCard').classList.remove('show');
     document.getElementById('allConversionsCard').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
+function loadTxtFile(input) {
+    var f = input.files && input.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function(e) { document.getElementById('textInput').value = e.target.result || ''; updateStats(); ccToast('Loaded ' + f.name); };
+    r.readAsText(f);
+    input.value = '';
+}
 function pasteText() {
     if (navigator.clipboard && navigator.clipboard.readText) {
         navigator.clipboard.readText().then(function(text) {
             document.getElementById('textInput').value += text;
             updateStats();
-        });
+        }).catch(function() { ccToast('Use Ctrl+V to paste directly', 'info'); });
     }
 }
-
 function loadSample() {
-    document.getElementById('textInput').value = 'The quick brown fox jumps over the lazy dog. This is a sample text for testing the case converter tool. You can convert this text to any case format you need!';
+    document.getElementById('textInput').value = 'the quick brown fox jumps over the lazy dog. Convert camelCaseVariable or snake_case_identifier seamlessly!';
     updateStats();
 }
-
 function clearAll() {
+    currentCase = '';
     document.getElementById('textInput').value = '';
     document.getElementById('outputCard').classList.remove('show');
     document.getElementById('allConversionsCard').style.display = 'none';
-    var btns = document.querySelectorAll('.case-btn');
-    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    document.querySelectorAll('.case-btn').forEach(function(b) { b.classList.remove('active'); });
     updateStats();
 }
-
 function shareWA() {
     var text = document.getElementById('outputText').value;
     if (text) window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-}
-
-// ===== FAQ =====
-function ccFaqToggle(el) {
-    var isActive = el.classList.contains('active');
-    var items = document.querySelectorAll('.cc-faq .faq-item');
-    for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
-    if (!isActive) el.classList.add('active');
-}
-
-// ===== MOBILE MENU =====
-if (typeof toggleMobileMenu === 'undefined') {
-    window.toggleMobileMenu = function() {
-        document.getElementById('navLinks').classList.toggle('open');
-    };
 }
 </script>
 

@@ -144,99 +144,104 @@
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <style>
         *{box-sizing:border-box}
-        .file-info-card{display:flex;align-items:center;gap:14px;padding:15px 18px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:16px}
-        .file-info-icon{width:50px;height:50px;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+        #editorSection,#processingSection,#resultSection{padding:8px 0}
+        .icon-blue{background:linear-gradient(135deg,#3b82f6,#6366f1)}
+
+        .file-info-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;margin-bottom:14px}
+        .file-info-icon{width:48px;height:48px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
         .file-info-details{flex:1;min-width:0}
-        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--text-dark,#1e293b)}
+        .file-info-details h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 4px;color:var(--text-dark,#1e293b)}
         .file-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:flex;align-items:center;gap:4px}
-        .size-badge{background:rgba(79,70,229,.1);color:#6366f1;padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
-        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
-        .info-banner{background:rgba(79,70,229,.07);border:1px solid rgba(79,70,229,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;font-weight:500;line-height:1.5}
+        .file-meta span{font-size:12px;color:var(--text-light,#64748b);display:inline-flex;align-items:center;gap:4px}
+        .size-badge{background:rgba(59,130,246,.12);color:#2563eb;padding:2px 10px;border-radius:20px;font-weight:600;font-size:12px!important}
+        [data-theme="dark"] .size-badge{color:#93c5fd;background:rgba(59,130,246,.22)}
 
-        /* Position Selector */
-        .pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:180px;margin:0 auto 16px}
-        .pos-cell{width:100%;aspect-ratio:1.4;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-light);transition:all .15s;background:rgba(255,255,255,.6);position:relative}
-        .pos-cell:hover{border-color:var(--primary);background:rgba(79,70,229,.06)}
-        .pos-cell.active{border-color:var(--primary);background:rgba(79,70,229,.12);color:var(--primary)}
-        .pos-cell::after{content:attr(data-label);font-size:8px;position:absolute;bottom:2px;color:inherit;opacity:.7}
+        .error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.28);border-radius:10px;padding:12px 16px;color:#dc2626;font-size:14px;margin-bottom:16px;display:none;align-items:center;gap:8px;font-weight:500}
+        [data-theme="dark"] .error-box{color:#fca5a5}
+        .success-toast{position:fixed;top:20px;right:20px;background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.22);animation:slideIn .3s ease;transition:opacity .3s,transform .3s}
+        @keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+        /* Layout & Options */
+        .pn-layout{display:grid;grid-template-columns:1.05fr 0.95fr;gap:16px;margin-bottom:16px;align-items:start}
+        .options-panel{background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:14px;padding:16px}
+        .options-panel h4{margin:0 0 12px;font-size:14px;font-weight:700;color:var(--text-dark,#1e293b);display:flex;align-items:center;gap:8px}
+        .sec-lbl{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-light,#64748b);margin:12px 0 6px}
+
+        /* Position 6-cell Selector */
+        .pos-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+        .pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:190px;flex-shrink:0}
+        .pos-cell{width:100%;aspect-ratio:1.45;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-light,#64748b);transition:all .15s;background:var(--surface-muted,#f8fafc);position:relative;user-select:none}
+        .pos-cell:hover{border-color:var(--primary,#6366f1);color:var(--primary,#6366f1)}
+        .pos-cell.active{border-color:var(--primary,#6366f1);background:rgba(79,70,229,.14);color:var(--primary,#6366f1)}
+        .pos-cell::after{content:attr(data-label);font-size:8px;position:absolute;bottom:2px;color:inherit;opacity:.8}
         .pos-cell input{display:none}
+        .pos-toggles{display:flex;flex-direction:column;gap:8px;flex:1;min-width:150px}
+        .chk-row{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--text-dark,#1e293b);cursor:pointer;user-select:none}
 
-        /* Preview Panel */
-        .preview-container{background:#1e293b;border-radius:14px;overflow:hidden;margin-bottom:16px}
-        .preview-toolbar{display:flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
-        .pv-btn{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.7);background:rgba(255,255,255,.08)}
-        .pv-btn:hover{background:rgba(255,255,255,.16);color:#fff}
-        .pv-btn:disabled{opacity:.3;pointer-events:none}
-        .pv-text{color:rgba(255,255,255,.6);font-size:11px;font-weight:600;min-width:60px;text-align:center}
-        .pv-spacer{flex:1}
-        .preview-canvas-scroll{overflow:auto;padding:16px;display:flex;justify-content:center;max-height:500px;min-height:250px}
-        .preview-canvas-wrap{position:relative;line-height:0;display:inline-block}
-        .preview-canvas-wrap canvas{display:block;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.5)}
-        .page-num-overlay{position:absolute;pointer-events:none;z-index:2;font-weight:700;white-space:nowrap}
-
-        /* Format, font, color options */
-        .opt-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end}
-        .opt-item{flex:1;min-width:140px}
-        .opt-item label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:6px}
-        .opt-item select,.opt-item input[type=number],.opt-item input[type=text]{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:13px;font-weight:600;outline:none;transition:border-color .2s;background:#fff;color:var(--text-dark)}
-        .opt-item select:focus,.opt-item input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
-        .opt-item input[type=color]{width:40px;height:36px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;padding:2px;background:#fff}
-
-        /* Format pills */
+        /* Format Pills */
         .format-pills{display:flex;gap:6px;flex-wrap:wrap}
-        .fmt-pill{padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6);color:var(--text-dark);user-select:none}
-        .fmt-pill:hover{border-color:var(--primary)}
-        .fmt-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .fmt-pill{padding:6px 11px;border-radius:8px;border:1.5px solid var(--border-subtle,#e2e8f0);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);user-select:none}
+        .fmt-pill:hover{border-color:var(--primary,#6366f1)}
+        .fmt-pill.active{background:var(--primary,#6366f1);color:#fff;border-color:var(--primary,#6366f1)}
         .fmt-pill input{display:none}
 
+        /* Form rows */
+        .opt-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+        .opt-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+        .opt-item label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--text-light,#64748b);margin-bottom:5px}
+        .opt-item select,.opt-item input[type=number],.opt-item input[type=text]{width:100%;padding:8px 10px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:9px;font-size:12px;font-weight:600;outline:none;transition:border-color .2s;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b)}
+        .opt-item select:focus,.opt-item input:focus{border-color:var(--primary,#6366f1);box-shadow:0 0 0 3px rgba(79,70,229,.14)}
+        .color-pair{display:flex;gap:6px;align-items:center}
+        .opt-item input[type=color]{width:38px;height:34px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:8px;cursor:pointer;padding:2px;background:var(--surface-muted,#f8fafc)}
+
         /* Scope */
-        .scope-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-        .scope-opt{padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.6);color:var(--text-dark);user-select:none;display:flex;align-items:center;gap:6px}
-        .scope-opt:hover{border-color:var(--primary)}
-        .scope-opt.active{border-color:var(--primary);background:rgba(79,70,229,.08)}
+        .scope-row{display:flex;gap:6px;flex-wrap:wrap}
+        .scope-opt{padding:6px 11px;border-radius:8px;border:1.5px solid var(--border-subtle,#e2e8f0);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);user-select:none;display:inline-flex;align-items:center;gap:5px}
+        .scope-opt:hover{border-color:var(--primary,#6366f1)}
+        .scope-opt.active{border-color:var(--primary,#6366f1);background:rgba(79,70,229,.14);color:var(--primary,#6366f1)}
         .scope-opt input{display:none}
-        .range-inputs{display:flex;align-items:center;gap:6px;margin-top:6px;display:none}
+        .range-inputs{display:none;align-items:center;gap:6px;margin-top:8px}
         .range-inputs.show{display:flex}
-        .range-inputs input{width:60px;padding:6px 8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px;text-align:center;outline:none}
-        .range-inputs input:focus{border-color:var(--primary)}
-        .range-inputs span{font-size:12px;color:var(--text-light);font-weight:600}
+        .range-inputs input{width:64px;padding:6px 8px;border:1.5px solid var(--border-subtle,#e2e8f0);border-radius:7px;font-size:12px;text-align:center;background:var(--surface-muted,#f8fafc);color:var(--text-dark,#1e293b);outline:none}
+        .range-inputs span{font-size:12px;color:var(--text-light,#64748b);font-weight:600}
 
-        /* Result */
-        .result-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:18px 0}
-        .result-stat{text-align:center;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);border-radius:12px;padding:13px 16px;min-width:100px}
+        /* Live Preview Panel */
+        .preview-container{background:#0f172a;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:sticky;top:80px}
+        .preview-toolbar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+        .pv-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s;color:rgba(255,255,255,.85);background:rgba(255,255,255,.09)}
+        .pv-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+        .pv-btn:disabled{opacity:.35;pointer-events:none}
+        .pv-text{color:rgba(255,255,255,.78);font-size:11px;font-weight:600;min-width:56px;text-align:center}
+        .pv-spacer{flex:1}
+        .pv-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;background:rgba(79,70,229,.28);color:#c7d2fe}
+        .preview-canvas-scroll{overflow:auto;padding:16px;display:flex;justify-content:center;max-height:540px;min-height:280px}
+        .preview-canvas-wrap{position:relative;line-height:0;display:inline-block}
+        .preview-canvas-wrap canvas{display:block;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.5)}
+        .page-num-overlay{position:absolute;pointer-events:none;z-index:2;white-space:nowrap;line-height:1}
+
+        /* Result & Modal */
+        .result-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px 0}
+        .result-stat{text-align:center;background:var(--surface-muted,#f8fafc);border:1px solid var(--border-subtle,#e2e8f0);border-radius:12px;padding:13px 16px;min-width:105px}
         .result-stat strong{display:block;font-size:20px;color:var(--primary,#6366f1);line-height:1;margin-bottom:4px}
-        .result-stat small{color:var(--text-light);font-size:11px;font-weight:600;text-transform:uppercase}
-        .progress-detail{font-size:12px;color:var(--text-light);margin-top:8px;text-align:center}
-        .icon-red{background:linear-gradient(135deg,#ef4444,#dc2626)}.icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.icon-green{background:linear-gradient(135deg,#22c55e,#16a34a)}.icon-orange{background:linear-gradient(135deg,var(--accent),var(--accent-dark))}.icon-purple{background:linear-gradient(135deg,#a855f7,#9333ea)}.icon-teal{background:linear-gradient(135deg,#14b8a6,#0d9488)}
+        .result-stat small{color:var(--text-light,#64748b);font-size:11px;font-weight:600;text-transform:uppercase}
+        .result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+        .progress-detail{font-size:12px;color:var(--text-light,#64748b);margin-top:8px;text-align:center}
 
-        .faq-section{padding:50px 0}.faq-list{max-width:750px;margin:0 auto}
-        .faq-item{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-        .faq-item:hover{background:rgba(255,255,255,.8);transform:translateY(-1px)}
-        .faq-item.open{background:rgba(255,255,255,.85);border-color:rgba(79,70,229,.2)}
-        .faq-question{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px}
-        .faq-question h4{font-size:15px;font-weight:600;color:var(--text-dark);margin:0;flex:1}
-        .faq-item.open .faq-question h4{color:var(--primary)}
-        .faq-question i{font-size:13px;color:var(--text-light);transition:transform .35s,color .3s;flex-shrink:0}
-        .faq-item.open .faq-question i{transform:rotate(180deg);color:var(--primary)}
-        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
-        .faq-item.open .faq-answer{max-height:400px;opacity:1}
-        .faq-answer-inner{padding:0 22px 20px}
-        .faq-item.open .faq-answer-inner{border-top:1px solid rgba(79,70,229,.1);padding-top:16px;margin:0 22px;padding-left:0;padding-right:0}
-        .faq-answer-inner p{font-size:14px;line-height:1.7;color:var(--text-light);margin:0}
-        .faq-answer-inner p strong{color:var(--text-dark)}
-        .faq-num{width:28px;height:28px;background:rgba(79,70,229,.1);color:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-        .faq-item.open .faq-num{background:var(--primary);color:#fff}
+        .pn-modal{position:fixed;inset:0;background:rgba(15,23,42,.74);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px}
+        .pn-modal.open{display:flex}
+        .pn-modal-box{width:100%;max-width:900px;height:86vh;background:var(--bg-card,#ffffff);border:1px solid var(--border-subtle,#e2e8f0);border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+        .pn-modal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border-subtle,#e2e8f0)}
+        .pn-modal-head h4{margin:0;font-size:15px;font-weight:700;color:var(--text-dark,#1e293b)}
+        .pn-modal-body{flex:1;background:#1e293b}
+        .pn-modal-body iframe{width:100%;height:100%;border:0}
 
-        @media(max-width:768px){
-            .opt-row{flex-direction:column}.opt-item{min-width:100%}
-            .result-stats{gap:10px}.result-stat{min-width:80px}
-            .pos-grid{width:150px}
+        @media(max-width:900px){
+            .pn-layout{grid-template-columns:1fr}
+            .preview-container{position:static}
         }
-        @media(max-width:480px){
-            .file-info-card{flex-wrap:wrap}
-            .faq-question{padding:14px}
-            .faq-item{border-radius:10px;margin-bottom:8px}
+        @media(max-width:600px){
+            .opt-row,.opt-row-3{grid-template-columns:1fr}
+            .result-stats{gap:10px}.result-stat{min-width:84px;padding:10px 12px}
         }
     </style>
     
@@ -274,7 +279,7 @@
         <a href="index.html#tools"><i class="fas fa-th"></i> All Tools</a>
         
             <a href="blog.html" role="menuitem"><i class="fas fa-blog" aria-hidden="true"></i> Blog</a>
-            <a href="#" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+            <a href="login.html" class="nav-btn" id="navLoginBtn"><i class="fas fa-user" aria-hidden="true"></i> <span id="navLoginText">Login</span></a>
     </div>
 </nav>
 
@@ -290,25 +295,26 @@
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="topBanner" data-format="auto"></div></div>
 
+<main>
 <section class="tool-area">
 <div class="container">
 <div class="tool-wrapper glass">
 
-    <div class="error-box" id="errorBox"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
+    <div class="error-box" id="errorBox" role="alert"><i class="fas fa-exclamation-triangle"></i><span id="errorText"></span></div>
 
     <!-- UPLOAD -->
     <div id="uploadSection" data-section="">
-        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Upload PDF file to add page numbers" onclick="document.getElementById('fileInput').click()" onkeydown="if(event.key==='Enter')document.getElementById('fileInput').click()">
             <div class="upload-zone-content">
                 <div class="upload-icon"><i class="fas fa-list-ol"></i></div>
                 <h2>Upload PDF to Number</h2>
                 <p>Drop your PDF here or click to browse</p>
-                <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF File</button>
+                <button class="upload-btn" type="button" onclick="event.stopPropagation();document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Select PDF File</button>
                 <input type="file" id="fileInput" accept=".pdf,application/pdf" hidden="">
                 <div class="upload-hints">
                     <span><i class="fas fa-lock"></i> 100% Private</span>
-                    <span><i class="fas fa-laptop"></i> Browser Only</span>
-                    <span><i class="fas fa-list-ol"></i> Custom Numbers</span>
+                    <span><i class="fas fa-book-open"></i> Facing Pages</span>
+                    <span><i class="fas fa-list-ol"></i> Custom Formats</span>
                 </div>
                 <p style="margin-top:12px;font-size:12px;color:var(--text-light)"><i class="fas fa-shield-alt"></i> Files never leave your device!</p>
             </div>
@@ -325,123 +331,130 @@
                 <div class="file-meta">
                     <span class="size-badge" id="fileSize">0 KB</span>
                     <span><i class="fas fa-copy"></i> <span id="pageCount">0</span> pages</span>
+                    <span><i class="fas fa-eye"></i> Live Preview Ready</span>
                 </div>
             </div>
-            <div class="files-actions"><button class="btn-danger-sm" onclick="resetTool()"><i class="fas fa-times"></i></button></div>
+            <div class="files-actions"><button class="btn-danger-sm" type="button" onclick="resetTool()" aria-label="Remove file"><i class="fas fa-times"></i></button></div>
         </div>
 
-        <!-- Options Panel -->
-        <div class="options-panel glass-light" style="margin-bottom:16px">
-            <h4 style="margin-bottom:14px"><i class="fas fa-sliders-h"></i> Page Number Settings</h4>
+        <div class="pn-layout">
+            <!-- Options Panel -->
+            <div class="options-panel">
+                <h4><i class="fas fa-sliders-h"></i> Page Number Settings</h4>
 
-            <!-- Position -->
-            <div style="margin-bottom:18px">
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:10px;text-align:center"><i class="fas fa-crosshairs"></i> Position</label>
-                <div class="pos-grid" id="posGrid">
-                    <label class="pos-cell" data-label="TL" onclick="setPos(this)"><input type="radio" name="pos" value="tl">↖</label>
-                    <label class="pos-cell" data-label="TC" onclick="setPos(this)"><input type="radio" name="pos" value="tc">↑</label>
-                    <label class="pos-cell" data-label="TR" onclick="setPos(this)"><input type="radio" name="pos" value="tr">↗</label>
-                    <label class="pos-cell" data-label="BL" onclick="setPos(this)"><input type="radio" name="pos" value="bl">↙</label>
-                    <label class="pos-cell active" data-label="BC" onclick="setPos(this)"><input type="radio" name="pos" value="bc" checked="">↓</label>
-                    <label class="pos-cell" data-label="BR" onclick="setPos(this)"><input type="radio" name="pos" value="br">↘</label>
-                </div>
-            </div>
-
-            <!-- Number Format -->
-            <div style="margin-bottom:14px">
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px"><i class="fas fa-hashtag"></i> Number Format</label>
-                <div class="format-pills">
-                    <label class="fmt-pill active" onclick="setFmt(this)"><input type="radio" name="fmt" value="num" checked="">1, 2, 3</label>
-                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="dash">- 1 -</label>
-                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="paren">(1)</label>
-                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="page">Page 1</label>
-                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="of">Page 1 of N</label>
-                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="roman">I, II, III</label>
-                </div>
-            </div>
-
-            <!-- Font, Size, Color, Margin -->
-            <div class="opt-row">
-                <div class="opt-item">
-                    <label>Font</label>
-                    <select id="fontSelect" onchange="updatePreview()">
-                        <option value="Helvetica">Helvetica</option>
-                        <option value="Times-Roman">Times Roman</option>
-                        <option value="Courier">Courier</option>
-                    </select>
-                </div>
-                <div class="opt-item">
-                    <label>Size (pt)</label>
-                    <input type="number" id="fontSize" value="11" min="6" max="36" onchange="updatePreview()">
-                </div>
-                <div class="opt-item">
-                    <label>Color</label>
-                    <div style="display:flex;gap:6px;align-items:center">
-                        <input type="color" id="fontColor" value="#000000" onchange="updatePreview()">
-                        <span id="colorHex" style="font-size:11px;color:var(--text-light);font-weight:600">#000000</span>
+                <span class="sec-lbl" style="margin-top:4px"><i class="fas fa-crosshairs"></i> Position &amp; Layout</span>
+                <div class="pos-wrap">
+                    <div class="pos-grid" id="posGrid">
+                        <label class="pos-cell" data-label="TL" onclick="setPos(this)"><input type="radio" name="pos" value="tl">↖</label>
+                        <label class="pos-cell" data-label="TC" onclick="setPos(this)"><input type="radio" name="pos" value="tc">↑</label>
+                        <label class="pos-cell" data-label="TR" onclick="setPos(this)"><input type="radio" name="pos" value="tr">↗</label>
+                        <label class="pos-cell" data-label="BL" onclick="setPos(this)"><input type="radio" name="pos" value="bl">↙</label>
+                        <label class="pos-cell active" data-label="BC" onclick="setPos(this)"><input type="radio" name="pos" value="bc" checked="">↓</label>
+                        <label class="pos-cell" data-label="BR" onclick="setPos(this)"><input type="radio" name="pos" value="br">↘</label>
+                    </div>
+                    <div class="pos-toggles">
+                        <label class="chk-row"><input type="checkbox" id="facingCheck" onchange="updatePreview()"> Mirror Left/Right (Book Facing)</label>
+                        <label class="chk-row"><input type="checkbox" id="bgPillCheck" onchange="updatePreview()"> Add Clean White Backdrop</label>
+                        <label class="chk-row"><input type="checkbox" id="continuousCheck" checked="" onchange="updatePreview()"> Continuous Counter (1, 2…)</label>
                     </div>
                 </div>
-                <div class="opt-item">
-                    <label>Margin (pt)</label>
-                    <input type="number" id="margin" value="30" min="5" max="100" onchange="updatePreview()">
-                </div>
-            </div>
 
-            <!-- Start Number -->
-            <div class="opt-row">
-                <div class="opt-item">
-                    <label>Start Number</label>
-                    <input type="number" id="startNum" value="1" min="0" max="9999" onchange="updatePreview()">
+                <span class="sec-lbl"><i class="fas fa-hashtag"></i> Number Format</span>
+                <div class="format-pills">
+                    <label class="fmt-pill active" onclick="setFmt(this)"><input type="radio" name="fmt" value="num" checked="">1, 2, 3</label>
+                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="slash">1 / N</label>
+                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="page">Page 1</label>
+                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="of">Page 1 of N</label>
+                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="dash">- 1 -</label>
+                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="paren">(1)</label>
+                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="roman">I, II, III</label>
+                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="roman_lower">i, ii, iii</label>
+                    <label class="fmt-pill" onclick="setFmt(this)"><input type="radio" name="fmt" value="alpha">A, B, C</label>
                 </div>
-                <div class="opt-item">
-                    <label>Prefix (optional)</label>
-                    <input type="text" id="prefix" value="" placeholder="e.g. 'A-'" maxlength="10" oninput="updatePreview()">
-                </div>
-                <div class="opt-item">
-                    <label>Suffix (optional)</label>
-                    <input type="text" id="suffix" value="" placeholder="e.g. '/Rev2'" maxlength="10" oninput="updatePreview()">
-                </div>
-            </div>
 
-            <!-- Scope -->
-            <div style="margin-bottom:4px">
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);display:block;margin-bottom:8px"><i class="fas fa-clone"></i> Apply To</label>
+                <div class="opt-row">
+                    <div class="opt-item">
+                        <label for="fontSelect">Font Style</label>
+                        <select id="fontSelect" onchange="updatePreview()">
+                            <option value="Helvetica">Helvetica</option>
+                            <option value="Helvetica-Bold">Helvetica Bold</option>
+                            <option value="Times-Roman">Times Roman</option>
+                            <option value="Times-Bold">Times Bold</option>
+                            <option value="Courier">Courier</option>
+                            <option value="Courier-Bold">Courier Bold</option>
+                        </select>
+                    </div>
+                    <div class="opt-item">
+                        <label for="fontSize">Font Size (pt)</label>
+                        <input type="number" id="fontSize" value="11" min="6" max="48" oninput="updatePreview()">
+                    </div>
+                    <div class="opt-item">
+                        <label for="fontColor">Text Color</label>
+                        <div class="color-pair">
+                            <input type="color" id="fontColor" value="#1e293b" oninput="onColorPick(this.value)">
+                            <span id="colorHex" style="font-size:11px;color:var(--text-light);font-weight:600">#1E293B</span>
+                        </div>
+                    </div>
+                    <div class="opt-item">
+                        <label for="margin">Edge Margin (pt)</label>
+                        <input type="number" id="margin" value="28" min="4" max="120" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="opt-row-3">
+                    <div class="opt-item">
+                        <label for="startNum">Start Number</label>
+                        <input type="number" id="startNum" value="1" min="0" max="99999" oninput="updatePreview()">
+                    </div>
+                    <div class="opt-item">
+                        <label for="prefix">Prefix</label>
+                        <input type="text" id="prefix" value="" placeholder="e.g. Ch-" maxlength="16" oninput="updatePreview()">
+                    </div>
+                    <div class="opt-item">
+                        <label for="suffix">Suffix</label>
+                        <input type="text" id="suffix" value="" placeholder="e.g.  / Final" maxlength="16" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <span class="sec-lbl"><i class="fas fa-clone"></i> Apply To Pages</span>
                 <div class="scope-row">
-                    <label class="scope-opt active" onclick="setScope(this)"><input type="radio" name="scope" value="all" checked=""><i class="fas fa-clone"></i> All Pages</label>
+                    <label class="scope-opt active" onclick="setScope(this)"><input type="radio" name="scope" value="all" checked=""><i class="fas fa-clone"></i> All</label>
+                    <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="skip1"><i class="fas fa-forward"></i> Skip First</label>
                     <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="odd"><i class="fas fa-grip-lines"></i> Odd Only</label>
                     <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="even"><i class="fas fa-grip-lines-vertical"></i> Even Only</label>
                     <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="range"><i class="fas fa-ellipsis-h"></i> Range</label>
-                    <label class="scope-opt" onclick="setScope(this)"><input type="radio" name="scope" value="skip1"><i class="fas fa-forward"></i> Skip First</label>
                 </div>
                 <div class="range-inputs" id="rangeRow">
-                    <span>From</span><input type="number" id="rangeFrom" value="1" min="1"><span>to</span><input type="number" id="rangeTo" value="1" min="1">
+                    <span>From</span><input type="number" id="rangeFrom" value="1" min="1" oninput="updatePreview()">
+                    <span>to</span><input type="number" id="rangeTo" value="1" min="1" oninput="updatePreview()">
+                </div>
+            </div>
+
+            <!-- Live Preview -->
+            <div class="preview-container">
+                <div class="preview-toolbar">
+                    <span style="color:rgba(255,255,255,.7);font-size:11px;font-weight:700"><i class="fas fa-eye"></i> LIVE PREVIEW</span>
+                    <span class="pv-badge" id="pvLabelPreview">Page 1</span>
+                    <div class="pv-spacer"></div>
+                    <button class="pv-btn" type="button" onclick="pvPrev()" id="pvPrev" disabled=""><i class="fas fa-chevron-left"></i></button>
+                    <span class="pv-text" id="pvText">1 / 1</span>
+                    <button class="pv-btn" type="button" onclick="pvNext()" id="pvNext"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="preview-canvas-scroll">
+                    <div class="preview-canvas-wrap" id="pvWrap">
+                        <canvas id="pvCanvas"></canvas>
+                        <div class="page-num-overlay" id="pvNumOverlay"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Live Preview -->
-        <div class="preview-container">
-            <div class="preview-toolbar">
-                <span style="color:rgba(255,255,255,.5);font-size:11px;font-weight:700"><i class="fas fa-eye"></i> LIVE PREVIEW</span>
-                <div class="pv-spacer"></div>
-                <button class="pv-btn" onclick="pvPrev()" id="pvPrev" disabled=""><i class="fas fa-chevron-left"></i></button>
-                <span class="pv-text" id="pvText">1 / 1</span>
-                <button class="pv-btn" onclick="pvNext()" id="pvNext"><i class="fas fa-chevron-right"></i></button>
-            </div>
-            <div class="preview-canvas-scroll">
-                <div class="preview-canvas-wrap" id="pvWrap">
-                    <canvas id="pvCanvas"></canvas>
-                    <div class="page-num-overlay" id="pvNumOverlay"></div>
-                </div>
-            </div>
-        </div>
-
-        <button class="action-btn" id="applyBtn" onclick="doApply()"><i class="fas fa-list-ol"></i> Add Page Numbers</button>
+        <button class="action-btn" id="applyBtn" type="button" onclick="doApply()"><i class="fas fa-list-ol"></i> Add Page Numbers &amp; Save PDF</button>
     </div>
 
     <!-- PROCESSING -->
     <div id="processingSection" data-section="" style="display:none">
-        <div class="processing-area">
+        <div class="processing-area" role="status" aria-live="polite">
             <div class="spinner"></div>
             <h3 id="processTitle">Adding Page Numbers...</h3>
             <p id="processSubtitle">Processing</p>
@@ -456,20 +469,22 @@
         <div class="result-area">
             <div class="result-icon success"><i class="fas fa-check-circle"></i></div>
             <h2>Page Numbers Added! 🔢</h2>
-            <p>Your PDF now has page numbers</p>
+            <p>Your numbered PDF is ready with razor-sharp vector text</p>
             <div class="result-stats">
-                <div class="result-stat"><strong id="rPages">0</strong><small>Pages</small></div>
+                <div class="result-stat"><strong id="rPages">0</strong><small>Total Pages</small></div>
                 <div class="result-stat"><strong id="rNumbered">0</strong><small>Numbered</small></div>
                 <div class="result-stat"><strong id="rSize">0 KB</strong><small>File Size</small></div>
             </div>
             <div class="result-info glass-light">
                 <div class="info-item"><i class="fas fa-file-pdf" style="color:#dc2626"></i><span id="rFileName">document_numbered.pdf</span></div>
-                <div class="info-item"><i class="fas fa-check-circle" style="color:#16a34a"></i><span>Page numbers added successfully</span></div>
+                <div class="info-item"><i class="fas fa-check-circle" style="color:#16a34a"></i><span>Rotation-aware vector page numbering applied</span></div>
             </div>
-            <button class="download-btn" onclick="doDownload()"><i class="fas fa-download"></i> Download Numbered PDF</button>
+            <button class="download-btn" type="button" onclick="doDownload()"><i class="fas fa-download"></i> Download Numbered PDF</button>
             <div class="result-actions">
-                <button class="btn-outline" onclick="resetTool()"><i class="fas fa-redo"></i> Number Another</button>
-                <button class="btn-outline" onclick="goBackEdit()"><i class="fas fa-sliders-h"></i> Change Settings</button>
+                <button class="btn-outline" type="button" onclick="resetTool()"><i class="fas fa-redo"></i> Number Another</button>
+                <button class="btn-outline" type="button" onclick="previewResultPdf()"><i class="fas fa-eye"></i> Preview PDF</button>
+                <button class="btn-outline" type="button" onclick="goBackEdit()"><i class="fas fa-sliders-h"></i> Change Settings</button>
+                <a class="btn-outline" href="compress-pdf.html" style="text-decoration:none"><i class="fas fa-compress-alt"></i> Compress PDF</a>
             </div>
         </div>
     </div>
@@ -477,11 +492,66 @@
 </div>
 </div>
 </section>
+</main>
+
+<!-- Preview Modal -->
+<div class="pn-modal" id="pnModal" role="dialog" aria-modal="true" aria-labelledby="pnModalTitle">
+    <div class="pn-modal-box">
+        <div class="pn-modal-head">
+            <h4 id="pnModalTitle">Numbered PDF Preview</h4>
+            <button type="button" class="btn-danger-sm" onclick="closePnModal()"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="pn-modal-body">
+            <iframe id="pnPreviewFrame" title="Numbered PDF Preview"></iframe>
+        </div>
+    </div>
+</div>
 
 <div class="adsense-wrapper"><div class="adsense-unit" data-slot="middleBanner" data-format="autorelaxed"></div></div>
 
 
 
+
+<section class="related-tools" aria-labelledby="related-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="related-heading">Related PDF Tools</h2>
+            <p>Everything you need to work with PDFs — all free, all browser-based.</p>
+        </div>
+        <div class="related-grid">
+            <a href="merge-pdf.html" class="related-card" aria-label="Merge PDF">
+                <div class="related-icon ri-teal"><i class="fas fa-object-group" aria-hidden="true"></i></div>
+                <h4>Merge PDF</h4>
+                <p>Combine multiple PDFs into one</p>
+            </a>
+            <a href="split-pdf.html" class="related-card" aria-label="Split PDF">
+                <div class="related-icon ri-blue"><i class="fas fa-cut" aria-hidden="true"></i></div>
+                <h4>Split PDF</h4>
+                <p>Extract or separate PDF pages</p>
+            </a>
+            <a href="compress-pdf.html" class="related-card" aria-label="Compress PDF">
+                <div class="related-icon ri-green"><i class="fas fa-compress-alt" aria-hidden="true"></i></div>
+                <h4>Compress PDF</h4>
+                <p>Reduce PDF size with target KB</p>
+            </a>
+            <a href="organize-pdf.html" class="related-card" aria-label="Organize PDF">
+                <div class="related-icon ri-purple"><i class="fas fa-layer-group" aria-hidden="true"></i></div>
+                <h4>Organize PDF</h4>
+                <p>Reorder, rotate &amp; delete pages</p>
+            </a>
+            <a href="pdf-to-jpg.html" class="related-card" aria-label="PDF to JPG">
+                <div class="related-icon ri-orange"><i class="fas fa-file-image" aria-hidden="true"></i></div>
+                <h4>PDF to JPG</h4>
+                <p>Convert PDF pages to images</p>
+            </a>
+            <a href="jpg-to-pdf.html" class="related-card" aria-label="JPG to PDF">
+                <div class="related-icon ri-red"><i class="fas fa-images" aria-hidden="true"></i></div>
+                <h4>JPG to PDF</h4>
+                <p>Turn images into crisp PDFs</p>
+            </a>
+        </div>
+    </div>
+</section>
 <section class="how-to-section">
     <div class="container">
         <div class="section-header"><h2>How to Add Page Numbers</h2><p>Simple 3-step process</p></div>
@@ -497,10 +567,10 @@
     <div class="container">
         <div class="section-header"><h2>Frequently Asked Questions</h2></div>
         <div class="faq-list">
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>Can I change the starting number?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Set <strong>Start Number</strong> to any value. You can also add a custom <strong>prefix</strong> and <strong>suffix</strong> around each number.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Can I skip the first page?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Use the <strong>"Skip First"</strong> option to start numbering from page 2. You can also choose to number only <strong>odd</strong> or <strong>even</strong> pages, or a specific <strong>range</strong>.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Is my PDF uploaded to a server?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! <strong>Everything runs in your browser</strong>. Your PDF never leaves your device.</p></div></div></div>
-            <div class="faq-item glass" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>What number formats are available?</h4><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Plain (1,2,3), Dashes (- 1 -), Parentheses ((1)), "Page X", "Page X of N", and <strong>Roman numerals</strong> (I, II, III).</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">1</span><h4>Can I change the starting number?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Set <strong>Start Number</strong> to any value. You can also add a custom <strong>prefix</strong> and <strong>suffix</strong> around each number.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">2</span><h4>Can I skip the first page?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Yes! Use the <strong>"Skip First"</strong> option to start numbering from page 2. You can also choose to number only <strong>odd</strong> or <strong>even</strong> pages, or a specific <strong>range</strong>.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">3</span><h4>Is my PDF uploaded to a server?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>No! <strong>Everything runs in your browser</strong>. Your PDF never leaves your device.</p></div></div></div>
+            <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-question"><span class="faq-num">4</span><h4>What number formats are available?</h4><i class="fas fa-chevron-down" aria-hidden="true"></i></div><div class="faq-answer"><div class="faq-answer-inner"><p>Plain (1,2,3), Dashes (- 1 -), Parentheses ((1)), "Page X", "Page X of N", and <strong>Roman numerals</strong> (I, II, III).</p></div></div></div>
         </div>
     </div>
 </section>
@@ -570,40 +640,51 @@
 <script src="js/adsense.js"></script>
 
 <script>
-/* ═══════════════════════════════════════
-   INIT
-═══════════════════════════════════════ */
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/* ═══════════════════════════════════════
-   STATE
-═══════════════════════════════════════ */
 let rawBytes=null,selectedFile=null,pdfDoc=null,totalPages=0;
 let pvPage=1,pvScale=1;
-let resultBlob=null;
+let resultBlob=null,previewUrl=null;
 
-/* ═══════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════ */
-function toggleFaq(el){const o=el.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!o)el.classList.add('open')}
-if(typeof toggleMobileMenu==='undefined'){window.toggleMobileMenu=function(){document.getElementById('navLinks').classList.toggle('open')}}
-function showSection(id){document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block'}
-function setProgress(p,t,s,d){const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');if(f)f.style.width=p+'%';if(pt)pt.textContent=Math.round(p)+'%';if(t)document.getElementById('processTitle').textContent=t;if(s)document.getElementById('processSubtitle').textContent=s;if(d!==undefined)document.getElementById('progressDetail').textContent=d}
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('fileInput');
+
+(function(){
+    const yr=document.getElementById('currentYear');
+    if(yr)yr.textContent=new Date().getFullYear();
+})();
+
+function showSection(id){
+    document.querySelectorAll('[data-section]').forEach(s=>s.style.display='none');
+    const el=document.getElementById(id);
+    if(el)el.style.display='block';
+    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'smooth'}));
+}
+function setProgress(p,t,s,d){
+    const f=document.getElementById('progressFill'),pt=document.getElementById('progressText');
+    if(f)f.style.width=p+'%';
+    if(pt)pt.textContent=Math.round(p)+'%';
+    if(t)document.getElementById('processTitle').textContent=t;
+    if(s)document.getElementById('processSubtitle').textContent=s;
+    if(d!==undefined)document.getElementById('progressDetail').textContent=d;
+}
 function szF(b){if(!b)return'0 B';const k=1024,u=['B','KB','MB','GB'];const i=Math.floor(Math.log(b)/Math.log(k));return(b/Math.pow(k,i)).toFixed(1)+' '+u[i]}
-function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',7000)}
+function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorBox').style.display='flex';setTimeout(()=>document.getElementById('errorBox').style.display='none',6000)}
 function hideError(){document.getElementById('errorBox').style.display='none'}
 function tick(){return new Promise(r=>setTimeout(r,20))}
+function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function onColorPick(val){
+    document.getElementById('colorHex').textContent=(val||'#000000').toUpperCase();
+    updatePreview();
+}
 
 function setPos(el){document.querySelectorAll('.pos-cell').forEach(c=>c.classList.remove('active'));el.classList.add('active');el.querySelector('input').checked=true;updatePreview()}
 function setFmt(el){document.querySelectorAll('.fmt-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');el.querySelector('input').checked=true;updatePreview()}
 function setScope(el){document.querySelectorAll('.scope-opt').forEach(s=>s.classList.remove('active'));el.classList.add('active');el.querySelector('input').checked=true;document.getElementById('rangeRow').className='range-inputs'+(el.querySelector('input').value==='range'?' show':'');updatePreview()}
 
-document.getElementById('fontColor').addEventListener('input',function(){document.getElementById('colorHex').textContent=this.value.toUpperCase()});
-
-/* ═══════════════════════════════════════
-   ROMAN NUMERALS
-═══════════════════════════════════════ */
 function toRoman(n){
+    if(n<=0)return String(n);
     const vals=[1000,900,500,400,100,90,50,40,10,9,5,4,1];
     const syms=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
     let s='';
@@ -611,73 +692,90 @@ function toRoman(n){
     return s;
 }
 
-/* ═══════════════════════════════════════
-   FORMAT PAGE NUMBER
-═══════════════════════════════════════ */
-function formatNum(pageIdx,total){
-    const startNum=parseInt(document.getElementById('startNum').value)||1;
-    const num=startNum+pageIdx;
-    const fmt=document.querySelector('input[name="fmt"]:checked')?.value||'num';
-    const prefix=document.getElementById('prefix').value||'';
-    const suffix=document.getElementById('suffix').value||'';
-
-    let core='';
-    switch(fmt){
-        case'num':core=String(num);break;
-        case'dash':core='- '+num+' -';break;
-        case'paren':core='('+num+')';break;
-        case'page':core='Page '+num;break;
-        case'of':core='Page '+num+' of '+total;break;
-        case'roman':core=toRoman(num);break;
-        default:core=String(num);
-    }
-    return prefix+core+suffix;
+function toAlpha(n){
+    if(n<=0)return String(n);
+    let s='';
+    while(n>0){n--;s=String.fromCharCode(65+(n%26))+s;n=Math.floor(n/26);}
+    return s;
 }
 
-/* ═══════════════════════════════════════
-   SHOULD PAGE GET A NUMBER
-═══════════════════════════════════════ */
+function numParse(id,fallback){
+    const v=parseInt(document.getElementById(id).value,10);
+    return Number.isFinite(v)?v:fallback;
+}
+
+function getSettings(){
+    return{
+        pos:document.querySelector('input[name="pos"]:checked')?.value||'bc',
+        fmt:document.querySelector('input[name="fmt"]:checked')?.value||'num',
+        font:document.getElementById('fontSelect').value,
+        fontSize:Math.max(6,Math.min(48,numParse('fontSize',11))),
+        color:document.getElementById('fontColor').value||'#1e293b',
+        margin:Math.max(4,Math.min(120,numParse('margin',28))),
+        startNum:Math.max(0,numParse('startNum',1)),
+        prefix:document.getElementById('prefix').value||'',
+        suffix:document.getElementById('suffix').value||'',
+        facing:document.getElementById('facingCheck').checked,
+        bgPill:document.getElementById('bgPillCheck').checked,
+        continuous:document.getElementById('continuousCheck').checked
+    };
+}
+
 function shouldNumber(pageIdx){
     const scope=document.querySelector('input[name="scope"]:checked')?.value||'all';
-    const pg=pageIdx+1; // 1-based
+    const pg=pageIdx+1;
     switch(scope){
         case'all':return true;
         case'odd':return pg%2===1;
         case'even':return pg%2===0;
         case'skip1':return pg>1;
         case'range':{
-            const from=parseInt(document.getElementById('rangeFrom').value)||1;
-            const to=parseInt(document.getElementById('rangeTo').value)||totalPages;
-            return pg>=from&&pg<=to;
+            const from=Math.max(1,numParse('rangeFrom',1));
+            const to=Math.min(totalPages||99999,numParse('rangeTo',totalPages||1));
+            return pg>=Math.min(from,to)&&pg<=Math.max(from,to);
         }
     }
     return true;
 }
 
-/* ═══════════════════════════════════════
-   GET SETTINGS
-═══════════════════════════════════════ */
-function getSettings(){
-    return{
-        pos:document.querySelector('input[name="pos"]:checked')?.value||'bc',
-        fmt:document.querySelector('input[name="fmt"]:checked')?.value||'num',
-        font:document.getElementById('fontSelect').value,
-        fontSize:parseInt(document.getElementById('fontSize').value)||11,
-        color:document.getElementById('fontColor').value,
-        margin:parseInt(document.getElementById('margin').value)||30,
-        startNum:parseInt(document.getElementById('startNum').value)||1,
-        prefix:document.getElementById('prefix').value||'',
-        suffix:document.getElementById('suffix').value||'',
-    };
+function getNumberingPlan(total){
+    const s=getSettings();
+    const targets=[];
+    for(let i=0;i<total;i++)if(shouldNumber(i))targets.push(i);
+    const totalShown=s.continuous?(targets.length||total):total;
+    const map={};
+    targets.forEach((pgIdx,seqIdx)=>{
+        const offset=s.continuous?seqIdx:pgIdx;
+        const n=s.startNum+offset;
+        const maxVal=s.continuous?(s.startNum+totalShown-1):(s.startNum+total-1);
+        let core='';
+        switch(s.fmt){
+            case'num':core=String(n);break;
+            case'slash':core=n+' / '+maxVal;break;
+            case'dash':core='- '+n+' -';break;
+            case'paren':core='('+n+')';break;
+            case'page':core='Page '+n;break;
+            case'of':core='Page '+n+' of '+maxVal;break;
+            case'roman':core=toRoman(n);break;
+            case'roman_lower':core=toRoman(n).toLowerCase();break;
+            case'alpha':core=toAlpha(n);break;
+            default:core=String(n);
+        }
+        map[pgIdx]=s.prefix+core+s.suffix;
+    });
+    return{map,count:targets.length};
 }
 
-/* ═══════════════════════════════════════
-   FILE HANDLING
-═══════════════════════════════════════ */
-const dropZone=document.getElementById('dropZone');const fileInput=document.getElementById('fileInput');
-dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
-dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+function getEffectivePosForPage(basePos,pageIdx,facing){
+    if(!facing||(pageIdx%2===0))return basePos;
+    if(basePos.endsWith('l'))return basePos[0]+'r';
+    if(basePos.endsWith('r'))return basePos[0]+'l';
+    return basePos;
+}
+
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover','drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover','drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragover','drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
 fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
 
 async function handleFile(file){
@@ -700,48 +798,46 @@ async function handleFile(file){
     }catch(e){showError('Failed to load PDF: '+e.message)}
 }
 
-/* ═══════════════════════════════════════
-   LIVE PREVIEW
-═══════════════════════════════════════ */
 async function updatePreview(){
     if(!pdfDoc)return;
     const pg=await pdfDoc.getPage(pvPage);
     const vp1=pg.getViewport({scale:1});
     const scrollEl=document.querySelector('.preview-canvas-scroll');
-    pvScale=Math.min((scrollEl.clientWidth-40)/vp1.width,1.5);
+    pvScale=Math.min(Math.max(240,scrollEl.clientWidth-36)/vp1.width,1.45);
     const vp=pg.getViewport({scale:pvScale});
 
     const canvas=document.getElementById('pvCanvas');
     const ctx=canvas.getContext('2d');
-    canvas.width=vp.width;canvas.height=vp.height;
+    canvas.width=Math.round(vp.width);canvas.height=Math.round(vp.height);
     document.getElementById('pvWrap').style.width=vp.width+'px';
     document.getElementById('pvWrap').style.height=vp.height+'px';
 
-    ctx.fillStyle='#fff';ctx.fillRect(0,0,vp.width,vp.height);
+    ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);
     await pg.render({canvasContext:ctx,viewport:vp}).promise;
 
-    // Page number overlay
     const overlay=document.getElementById('pvNumOverlay');
     const s=getSettings();
     const pageIdx=pvPage-1;
+    const plan=getNumberingPlan(totalPages);
+    const text=plan.map[pageIdx];
+    const badge=document.getElementById('pvLabelPreview');
 
-    if(shouldNumber(pageIdx)){
-        const text=formatNum(pageIdx,totalPages);
+    if(text!==undefined){
+        badge.textContent='"' + text + '"';
         const fs=s.fontSize*pvScale;
         const mg=s.margin*pvScale;
+        const pos=getEffectivePosForPage(s.pos,pageIdx,s.facing);
 
         overlay.textContent=text;
         overlay.style.fontSize=fs+'px';
         overlay.style.color=s.color;
-        overlay.style.fontFamily=s.font==='Courier'?'Courier,monospace':s.font==='Times-Roman'?'Times New Roman,serif':'Helvetica,Arial,sans-serif';
+        overlay.style.fontFamily=s.font.includes('Courier')?'Courier,monospace':(s.font.includes('Times')?'Times New Roman,serif':'Helvetica,Arial,sans-serif');
+        overlay.style.fontWeight=s.font.includes('Bold')?'700':'400';
         overlay.style.display='block';
-        overlay.style.opacity='1';
-        overlay.style.background='rgba(255,255,200,.5)';
+        overlay.style.background=s.bgPill?'rgba(255,255,255,0.92)':'rgba(250,204,21,0.28)';
         overlay.style.padding='2px 6px';
-        overlay.style.borderRadius='3px';
+        overlay.style.borderRadius='4px';
 
-        // Position
-        const pos=s.pos;
         overlay.style.top='auto';overlay.style.bottom='auto';
         overlay.style.left='auto';overlay.style.right='auto';
         overlay.style.transform='none';
@@ -749,14 +845,14 @@ async function updatePreview(){
         if(pos.startsWith('t'))overlay.style.top=mg+'px';
         else overlay.style.bottom=mg+'px';
 
-        if(pos.endsWith('l')){overlay.style.left=mg+'px'}
-        else if(pos.endsWith('r')){overlay.style.right=mg+'px'}
-        else{overlay.style.left='50%';overlay.style.transform='translateX(-50%)'}
+        if(pos.endsWith('l'))overlay.style.left=mg+'px';
+        else if(pos.endsWith('r'))overlay.style.right=mg+'px';
+        else{overlay.style.left='50%';overlay.style.transform='translateX(-50%)';}
     }else{
+        badge.textContent='Skipped';
         overlay.style.display='none';
     }
 
-    // Page nav
     document.getElementById('pvText').textContent=pvPage+' / '+totalPages;
     document.getElementById('pvPrev').disabled=pvPage<=1;
     document.getElementById('pvNext').disabled=pvPage>=totalPages;
@@ -765,25 +861,62 @@ async function updatePreview(){
 async function pvPrev(){if(pvPage>1){pvPage--;await updatePreview()}}
 async function pvNext(){if(pvPage<totalPages){pvPage++;await updatePreview()}}
 
-// Keyboard nav
 document.addEventListener('keydown',e=>{
     if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
     if(e.key==='ArrowLeft')pvPrev();
     if(e.key==='ArrowRight')pvNext();
+    if(e.key==='Escape')closePnModal();
 });
 
-// Resize
-let resizeT;window.addEventListener('resize',()=>{clearTimeout(resizeT);resizeT=setTimeout(()=>{if(pdfDoc)updatePreview()},300)});
+let resizeT;
+window.addEventListener('resize',()=>{clearTimeout(resizeT);resizeT=setTimeout(()=>{if(pdfDoc)updatePreview()},300)});
 
-/* ═══════════════════════════════════════
-   APPLY PAGE NUMBERS — pdf-lib
-═══════════════════════════════════════ */
+function drawPageNumberRotatedSafe(pg,text,font,s,pos,pdfColor){
+    const rot=((Math.round(pg.getRotation().angle||0)%360)+360)%360;
+    const box=pg.getCropBox()||pg.getMediaBox();
+    const swapped=(rot===90||rot===270);
+    const vW=swapped?box.height:box.width;
+    const vH=swapped?box.width:box.height;
+    const textW=font.widthOfTextAtSize(text,s.fontSize);
+
+    let vx;
+    if(pos.endsWith('l'))vx=s.margin;
+    else if(pos.endsWith('r'))vx=vW-s.margin-textW;
+    else vx=(vW-textW)/2;
+
+    const vy=pos.startsWith('t')?(vH-s.margin-s.fontSize*0.85):s.margin;
+
+    let ux,uy;
+    if(rot===90){ux=box.width-vy;uy=vx;}
+    else if(rot===180){ux=box.width-vx;uy=box.height-vy;}
+    else if(rot===270){ux=vy;uy=box.height-vx;}
+    else{ux=vx;uy=vy;}
+
+    const x=box.x+ux,y=box.y+uy;
+    const padX=4,padY=3;
+
+    if(s.bgPill){
+        let rx=vx-padX,ry=vy-s.fontSize*0.22-padY,rw=textW+padX*2,rh=s.fontSize*1.05+padY*2;
+        let pux,puy,prw=rw,prh=rh;
+        if(rot===90){pux=box.width-(ry+rh);puy=rx;prw=rh;prh=rw;}
+        else if(rot===180){pux=box.width-(rx+rw);puy=box.height-(ry+rh);}
+        else if(rot===270){pux=ry;puy=box.height-(rx+rw);prw=rh;prh=rw;}
+        else{pux=rx;puy=ry;}
+        pg.drawRectangle({x:box.x+pux,y:box.y+puy,width:prw,height:prh,color:PDFLib.rgb(1,1,1),opacity:0.92});
+    }
+
+    pg.drawText(text,{x,y,size:s.fontSize,font,color:pdfColor,rotate:PDFLib.degrees(rot)});
+}
+
 async function doApply(){
     if(!rawBytes){showError('No PDF loaded.');return}
+    const plan=getNumberingPlan(totalPages);
+    if(plan.count===0){showError('No pages match your current "Apply To" selection.');return}
+
     const btn=document.getElementById('applyBtn');
     btn.disabled=true;hideError();
     showSection('processingSection');
-    setProgress(5,'Loading PDF...','Preparing','');
+    setProgress(5,'Loading PDF...','Preparing font & page boxes','');
     await tick();
 
     try{
@@ -791,63 +924,45 @@ async function doApply(){
         const pdfLibDoc=await PDFLib.PDFDocument.load(rawBytes,{ignoreEncryption:true});
         const pages=pdfLibDoc.getPages();
 
-        // Embed font
-        let font;
-        if(s.font==='Courier')font=await pdfLibDoc.embedFont(PDFLib.StandardFonts.Courier);
-        else if(s.font==='Times-Roman')font=await pdfLibDoc.embedFont(PDFLib.StandardFonts.TimesRoman);
-        else font=await pdfLibDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const fontMap={
+            'Helvetica':PDFLib.StandardFonts.Helvetica,
+            'Helvetica-Bold':PDFLib.StandardFonts.HelveticaBold,
+            'Times-Roman':PDFLib.StandardFonts.TimesRoman,
+            'Times-Bold':PDFLib.StandardFonts.TimesRomanBold,
+            'Courier':PDFLib.StandardFonts.Courier,
+            'Courier-Bold':PDFLib.StandardFonts.CourierBold
+        };
+        const font=await pdfLibDoc.embedFont(fontMap[s.font]||PDFLib.StandardFonts.Helvetica);
 
-        // Parse color
         const hex=s.color.replace('#','');
-        const cr=parseInt(hex.substr(0,2),16)/255;
-        const cg=parseInt(hex.substr(2,2),16)/255;
-        const cb=parseInt(hex.substr(4,2),16)/255;
-        const pdfColor=PDFLib.rgb(cr,cg,cb);
+        const pdfColor=PDFLib.rgb(
+            parseInt(hex.substr(0,2),16)/255,
+            parseInt(hex.substr(2,2),16)/255,
+            parseInt(hex.substr(4,2),16)/255
+        );
 
         let numberedCount=0;
-
-        // Calculate total for "of N" format
-        let countedTotal=0;
-        for(let i=0;i<pages.length;i++){if(shouldNumber(i))countedTotal++}
-
         for(let i=0;i<pages.length;i++){
-            const pct=5+((i/pages.length)*88);
-            if(i%5===0){setProgress(pct,'Adding numbers...',`Page ${i+1} of ${pages.length}`,'');await tick()}
+            if(i%6===0){
+                setProgress(8+((i/pages.length)*84),'Adding Page Numbers...',`Page ${i+1} of ${pages.length}`,'Applying vector text');
+                await tick();
+            }
+            const text=plan.map[i];
+            if(text===undefined)continue;
 
-            if(!shouldNumber(i))continue;
-
-            const pg=pages[i];
-            const{width,height}=pg.getSize();
-            const text=formatNum(numberedCount,countedTotal||pages.length);
-            const textW=font.widthOfTextAtSize(text,s.fontSize);
+            const pos=getEffectivePosForPage(s.pos,i,s.facing);
+            drawPageNumberRotatedSafe(pages[i],text,font,s,pos,pdfColor);
             numberedCount++;
-
-            // Calculate X,Y position (PDF origin = bottom-left)
-            let x,y;
-            const pos=s.pos;
-
-            // Vertical
-            if(pos.startsWith('t'))y=height-s.margin;
-            else y=s.margin;
-
-            // Horizontal
-            if(pos.endsWith('l'))x=s.margin;
-            else if(pos.endsWith('r'))x=width-s.margin-textW;
-            else x=(width-textW)/2; // center
-
-            pg.drawText(text,{
-                x,y,size:s.fontSize,font,color:pdfColor,
-            });
         }
 
-        setProgress(95,'Saving PDF...','Building file','');
+        setProgress(95,'Saving PDF...','Building output','');
         await tick();
 
         const outBytes=await pdfLibDoc.save();
         resultBlob=new Blob([outBytes],{type:'application/pdf'});
 
-        setProgress(100,'Done!','Page numbers added!','');
-        await new Promise(r=>setTimeout(r,500));
+        setProgress(100,'Done!','Page numbers added cleanly','');
+        await new Promise(r=>setTimeout(r,350));
 
         document.getElementById('rPages').textContent=pages.length;
         document.getElementById('rNumbered').textContent=numberedCount;
@@ -863,9 +978,6 @@ async function doApply(){
     }
 }
 
-/* ═══════════════════════════════════════
-   DOWNLOAD
-═══════════════════════════════════════ */
 function doDownload(){
     if(!resultBlob){showError('No file.');return}
     const name=selectedFile?selectedFile.name.replace(/\.pdf$/i,'')+'_numbered.pdf':'numbered.pdf';
@@ -875,15 +987,28 @@ function doDownload(){
     setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},500);
 }
 
-/* ═══════════════════════════════════════
-   NAV
-═══════════════════════════════════════ */
+function previewResultPdf(){
+    if(!resultBlob)return;
+    if(previewUrl)URL.revokeObjectURL(previewUrl);
+    previewUrl=URL.createObjectURL(resultBlob);
+    document.getElementById('pnPreviewFrame').src=previewUrl;
+    document.getElementById('pnModal').classList.add('open');
+}
+
+function closePnModal(){
+    document.getElementById('pnModal').classList.remove('open');
+    document.getElementById('pnPreviewFrame').src='about:blank';
+    if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
+}
+
 function goBackEdit(){
+    closePnModal();
     resultBlob=null;document.getElementById('applyBtn').disabled=false;
     showSection('editorSection');updatePreview();
 }
 
 function resetTool(){
+    closePnModal();
     rawBytes=null;selectedFile=null;pdfDoc=null;totalPages=0;pvPage=1;resultBlob=null;
     fileInput.value='';document.getElementById('applyBtn').disabled=false;
     hideError();setProgress(0,'','','');showSection('uploadSection');
